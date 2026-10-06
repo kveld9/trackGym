@@ -70,6 +70,13 @@ jobs:
             MINOR="$(printf '%s' "$BASE" | cut -d. -f2)"
             PATCH="$(printf '%s' "$BASE" | cut -d. -f3)"
             RANGE="${LATEST_TAG}..HEAD"
+            COMMITS_COUNT="$(git rev-list --count "$RANGE" || true)"
+            if [ "$COMMITS_COUNT" -eq 0 ]; then
+              echo "No new commits since $LATEST_TAG. Skipping release."
+              echo "skip_release=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+
             LOG="$(git log "$RANGE" --pretty=format:'%s%n%b%n' || true)"
             if printf '%s' "$LOG" | grep -qiE 'feat(\([^)]+\))?!:|BREAKING[ -]CHANGE'; then
               MAJOR=$((MAJOR+1)); MINOR=0; PATCH=0
@@ -87,10 +94,8 @@ jobs:
           else
             BODY="$(git log "${PREV_TAG}..HEAD" --pretty=format:'- %s (%h)')"
           fi
-          if [ -z "$BODY" ]; then
-            BODY="- Maintenance update and internal optimizations"
-          fi
 
+          echo "skip_release=false" >> "$GITHUB_OUTPUT"
           echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
           echo "version_code=${VERSION_CODE}" >> "$GITHUB_OUTPUT"
           {
@@ -102,7 +107,7 @@ jobs:
 
       # Main Workflow: 2. Decode Keystore if configured or generate fallback
       - name: Setup Release Keystore
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.semver.outputs.skip_release != 'true'
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
         run: |
@@ -120,7 +125,7 @@ jobs:
 
       # Main Workflow: 3. Single-Pass Build & Tests
       - name: Test & Assemble APKs
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.semver.outputs.skip_release != 'true'
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD || env.DEFAULT_KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS || env.DEFAULT_KEY_ALIAS }}
@@ -132,7 +137,7 @@ jobs:
 
       # Main Workflow: 4. Package Artifacts & Compute Checksums
       - name: Package Release & Debug APKs
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.semver.outputs.skip_release != 'true'
         run: |
           set -euo pipefail
           VERSION="${{ steps.semver.outputs.version }}"
@@ -173,7 +178,7 @@ jobs:
 
       # Main Workflow: 5. Create Tag & Publish GitHub Release Directly
       - name: Publish GitHub Release
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.semver.outputs.skip_release != 'true'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.semver.outputs.version }}
