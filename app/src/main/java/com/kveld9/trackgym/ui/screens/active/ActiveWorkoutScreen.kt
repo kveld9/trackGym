@@ -94,7 +94,9 @@ import com.kveld9.trackgym.domain.model.WorkoutExercise
 import com.kveld9.trackgym.domain.model.WorkoutSet
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.platform.LocalContext
+import com.kveld9.trackgym.domain.model.RpeScale
 import com.kveld9.trackgym.ui.components.PrCelebrationBanner
+import com.kveld9.trackgym.ui.components.RpeSelectionDialog
 import com.kveld9.trackgym.ui.theme.GymBlue
 import com.kveld9.trackgym.ui.theme.GymWarmupAmber
 import com.kveld9.trackgym.ui.util.LocalKeepEnglishExerciseNames
@@ -1109,6 +1111,7 @@ fun SetRowItem(
     }
 
     var showQuickAdjust by remember { mutableStateOf(false) }
+    var showRpePicker by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -1310,6 +1313,18 @@ fun SetRowItem(
             }
         }
 
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 4.dp, vertical = 2.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            SetRpeChip(
+                rpe = set.rpe,
+                onClick = { showRpePicker = true }
+            )
+        }
+
         // Quick-adjust Micro-load Chips
         AnimatedVisibility(visible = showQuickAdjust && !set.isCompleted) {
             val currentDisplay = weightText.replace(',', '.').toDoubleOrNull()
@@ -1330,6 +1345,50 @@ fun SetRowItem(
                 onClose = { showQuickAdjust = false }
             )
         }
+    }
+
+    if (showRpePicker) {
+        RpeSelectionDialog(
+            currentRpe = set.rpe,
+            onSelectRpe = { selectedRpe ->
+                onUpdateSet(set.copy(rpe = selectedRpe))
+            },
+            onDismiss = { showRpePicker = false }
+        )
+    }
+}
+
+@Composable
+fun SetRpeChip(
+    rpe: Double?,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val rpeStr = RpeScale.formatRpe(rpe)
+    val rirLabel = if (rpe != null) RpeScale.options.firstOrNull { it.rpe == rpe }?.rirLabel else null
+    val rpeLabel = when {
+        rpeStr != null && rirLabel != null -> "@$rpeStr (RIR $rirLabel)"
+        rpeStr != null -> "@$rpeStr"
+        else -> stringResource(R.string.rpe_add)
+    }
+
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(6.dp))
+            .background(
+                if (rpe != null) MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
+                else MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.6f)
+            )
+            .clickable(onClick = onClick)
+            .padding(horizontal = 8.dp, vertical = 4.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = rpeLabel,
+            color = if (rpe != null) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+            fontSize = 11.sp,
+            fontWeight = if (rpe != null) FontWeight.Bold else FontWeight.Medium
+        )
     }
 }
 

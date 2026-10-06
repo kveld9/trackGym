@@ -176,6 +176,22 @@
     <string name="set_type_failure">Al fallo (F)</string>
     <string name="set_type_dialog_title">Seleccionar tipo de serie</string>
 
+    <!-- RPE / RIR Selection -->
+    <string name="rpe_dialog_title">Seleccionar RPE / RIR</string>
+    <string name="rpe_clear">Sin RPE</string>
+    <string name="rpe_add">+ RPE</string>
+    <string name="rpe_label_format">RPE %1$s</string>
+    <string name="rir_format">RIR %1$s</string>
+    <string name="rpe_desc_10">Esfuerzo máximo (0 reps en reserva)</string>
+    <string name="rpe_desc_9_5">Tal vez 1 rep más</string>
+    <string name="rpe_desc_9">1 rep en reserva</string>
+    <string name="rpe_desc_8_5">1-2 reps en reserva</string>
+    <string name="rpe_desc_8">2 reps en reserva</string>
+    <string name="rpe_desc_7_5">2-3 reps en reserva</string>
+    <string name="rpe_desc_7">3 reps en reserva</string>
+    <string name="rpe_desc_6_5">3-4 reps en reserva</string>
+    <string name="rpe_desc_6">Carga ligera / Calentamiento (4+ reps en reserva)</string>
+
     <!-- Rest Timer -->
     <string name="rest_timer_title">Temporizador de descanso</string>
     <string name="rest_timer_skip">Saltar</string>
