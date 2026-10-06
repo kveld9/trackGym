@@ -166,12 +166,16 @@
     <string name="section_backup">Respaldo y Portabilidad</string>
     <string name="setting_export_backup_title">Exportar Datos (JSON)</string>
     <string name="setting_export_backup_desc">Genera un respaldo portable de tus entrenamientos, series, ejercicios y récords</string>
+    <string name="setting_export_csv_title">Exportar Historial (CSV)</string>
+    <string name="setting_export_csv_desc">Exporta tus entrenamientos y series a un archivo CSV compatible con hojas de cálculo</string>
     <string name="setting_import_backup_title">Importar Respaldo (JSON)</string>
     <string name="setting_import_backup_desc">Restaura tu historial y ejercicios desde un archivo de respaldo JSON</string>
     <string name="setting_import_csv_title">Importar Historial (CSV)</string>
     <string name="setting_import_csv_desc">Migra entrenamientos desde aplicaciones compatibles o planillas de cálculo CSV estándar</string>
     <string name="toast_backup_exported_success">Respaldo exportado correctamente</string>
     <string name="toast_backup_export_error">Error al exportar respaldo: %1$s</string>
+    <string name="toast_csv_exported_success">Historial de entrenamientos exportado a CSV correctamente</string>
+    <string name="toast_csv_export_error">Error al exportar CSV: %1$s</string>
     <string name="toast_backup_read_error">Error al leer el archivo: %1$s</string>
     <string name="toast_backup_invalid_data">El archivo no contiene registros válidos</string>
     <string name="toast_csv_import_empty">El archivo CSV no contiene registros de entrenamiento válidos</string>

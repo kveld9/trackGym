@@ -8,6 +8,7 @@ import com.kveld9.trackgym.data.ThemeSettings
 import com.kveld9.trackgym.data.backup.DuplicatePolicy
 import com.kveld9.trackgym.data.backup.GymBackupDto
 import com.kveld9.trackgym.data.backup.JsonBackupManager
+import com.kveld9.trackgym.data.backup.CsvWorkoutExporter
 import com.kveld9.trackgym.data.repository.GymRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -134,6 +135,32 @@ class SettingsViewModel(
     }
 
     fun exportBackup(outputStream: OutputStream) = exportBackup { outputStream }
+
+    fun exportCsv(streamProvider: () -> OutputStream?) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+            try {
+                withContext(ioDispatcher) {
+                    val backupData = repository.getBackupData()
+                    if (backupData.workouts.isEmpty()) {
+                        throw IllegalStateException("No hay entrenamientos para exportar.")
+                    }
+                    val outputStream = streamProvider()
+                        ?: throw IllegalStateException("No se pudo abrir el archivo para exportar.")
+                    outputStream.use { stream ->
+                        CsvWorkoutExporter.exportToCsv(backupData.workouts, stream)
+                    }
+                }
+                _uiEvent.emit(SettingsUiEvent.Success(R.string.toast_csv_exported_success))
+            } catch (e: Exception) {
+                _uiEvent.emit(SettingsUiEvent.Error(R.string.toast_csv_export_error, listOf(e.localizedMessage.orEmpty())))
+            } finally {
+                _uiState.update { it.copy(isLoading = false) }
+            }
+        }
+    }
+
+    fun exportCsv(outputStream: OutputStream) = exportCsv { outputStream }
 
     fun startImport(streamProvider: () -> InputStream?) {
         viewModelScope.launch {
