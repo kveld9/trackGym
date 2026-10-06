@@ -8,7 +8,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 /**
- * Standard CSV workout record parsed from CSV backups (e.g. FitNotes, Strong, generic CSVs).
+ * Standard CSV workout record parsed from supported CSV backups or generic CSV spreadsheets.
  */
 data class CsvWorkoutRow(
     val date: String,

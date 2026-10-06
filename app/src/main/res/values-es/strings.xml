@@ -155,7 +155,7 @@
     <string name="setting_import_backup_title">Importar Respaldo (JSON)</string>
     <string name="setting_import_backup_desc">Restaura tu historial y ejercicios desde un archivo de respaldo JSON</string>
     <string name="setting_import_csv_title">Importar Historial (CSV)</string>
-    <string name="setting_import_csv_desc">Migra entrenamientos desde Strong, FitNotes o planillas de cálculo CSV estándar</string>
+    <string name="setting_import_csv_desc">Migra entrenamientos desde aplicaciones compatibles o planillas de cálculo CSV estándar</string>
     <string name="toast_backup_exported_success">Respaldo exportado correctamente</string>
     <string name="toast_backup_export_error">Error al exportar respaldo: %1$s</string>
     <string name="toast_backup_read_error">Error al leer el archivo: %1$s</string>
