@@ -153,6 +153,10 @@ class GymViewModel(
             val restoredDuration = elapsedFromStart.coerceAtLeast(active.durationSeconds).coerceAtLeast(0)
             _timerSeconds.value = restoredDuration
             startTimer()
+        } else {
+            stopTimer()
+            stopRestTimer()
+            _timerSeconds.value = 0
         }
     }
 

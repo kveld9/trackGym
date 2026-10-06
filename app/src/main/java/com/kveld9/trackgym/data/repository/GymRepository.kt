@@ -661,14 +661,18 @@ class GymRepository(private val database: GymDatabase) {
         val routineId = routineDao.insertRoutine(routineEntity)
 
         val routineExercises = workout.exercises.mapIndexed { index, we ->
-            val firstSet = we.sets.firstOrNull { it.isCompleted } ?: we.sets.firstOrNull()
+            val workingSets = we.sets.filter { it.setType != SetType.WARMUP }
+            val primarySet = workingSets.firstOrNull { it.isCompleted }
+                ?: workingSets.firstOrNull()
+                ?: we.sets.firstOrNull()
+            val targetCount = if (workingSets.isNotEmpty()) workingSets.size else we.sets.size.coerceAtLeast(1)
             RoutineExerciseEntity(
                 routineId = routineId,
                 exerciseId = we.exercise.id,
                 orderIndex = index,
-                targetSets = we.sets.size.coerceAtLeast(1),
-                defaultWeightKg = firstSet?.weightKg ?: 0.0,
-                defaultReps = firstSet?.reps ?: 10
+                targetSets = targetCount.coerceAtLeast(1),
+                defaultWeightKg = primarySet?.weightKg ?: 0.0,
+                defaultReps = primarySet?.reps ?: 10
             )
         }
         routineDao.insertRoutineExercises(routineExercises)
