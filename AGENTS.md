@@ -62,4 +62,17 @@
   - Release builds sign with official keystore if GitHub secrets `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD` are set.
   - Fallback: Uses debug signing config automatically if no custom keystore is configured, guaranteeing successful release APK generation.
 
+---
+
+## 5. UI/UX DESIGN & ERGONOMICS PROTOCOL
+
+- **Authoritative Specification**: All interface work must adhere to [`DESIGN.md`](./DESIGN.md).
+- **Core Constraints**:
+  - **Gym-Centric Physics**: 48 × 48 dp minimum touch targets on all interactive elements.
+  - **No Blocking Animations**: Transitions strictly capped at 150ms–200ms. Never delay workout logging.
+  - **Compositor Efficiency**: Animate only `graphicsLayer` properties (`alpha`, `scale`, `translation`). Never trigger layout passes in animations.
+  - **The UI Stack**: Every screen must explicitly model Blank/Empty, Loading, Partial, Error, and Ideal states.
+  - **Anti-Slop**: Information density over decoration. High perceptual contrast (OLED black + high-luminance neon green/gold tokens).
+  - **Release Optimization**: Always maintain `isMinifyEnabled = true` and `isShrinkResources = true` with R8 in release builds to enforce sub-5MB APK sizes.
+
 
