@@ -10,7 +10,7 @@ import com.kveld9.trackgym.domain.model.WorkoutSet
 object WorkoutComparisonEngine {
 
     /**
-     * Formats a list of sets into a clean Hevy-style summary,
+     * Formats a list of sets into a clean summary notation,
      * e.g. "2x8 @ 15.0 kg" or "1x10 @ 15.0 kg, 1x8 @ 18.0 kg".
      */
     fun formatSetsSummary(sets: List<WorkoutSet>): String {

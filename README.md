@@ -1,6 +1,6 @@
 # TrackGym 🏋️‍♂️
 
-> Native Android gym tracker app built with Kotlin and Jetpack Compose for logging workouts, exercises, weights, reps, and sets in Hevy style, featuring a "Before vs After" session comparison engine and automated Personal Record (PR) detection.
+> Native Android gym tracker app built with Kotlin and Jetpack Compose for logging workouts, exercises, weights, reps, and sets, featuring a comprehensive "Before vs After" session comparison engine and automated Personal Record (PR) detection.
 
 ---
 

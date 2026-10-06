@@ -6,7 +6,7 @@
 
 ## 1. IDENTITY AND OBSERVED STACK
 
-- **Product**: TrackGym — Hevy-style native Android gym tracker for exercises, weights, reps, sets, before-and-after session comparisons, and automated Personal Record (PR) detection.
+- **Product**: TrackGym — Native Android gym tracker for exercises, weights, reps, sets, before-and-after session comparisons, and automated Personal Record (PR) detection.
 - **Language**: Kotlin 2.2.10 (JVM Target 11 / JVM 21+ compatible).
 - **Platform / Runtime**: Android SDK (`minSdk 24`, `targetSdk 35`, `compileSdk 37`).
 - **UI Framework**: Jetpack Compose (Material 3), Compose BOM `2026.06.00`.
@@ -43,6 +43,8 @@
   - Base strings: `app/src/main/res/values/strings.xml` (English - default).
   - Supported translations: `app/src/main/res/values-es/strings.xml` (Spanish).
   - Open-source contributors can add new languages by submitting pull requests containing `app/src/main/res/values-<locale>/strings.xml` mirroring the keys defined in base English.
+- **Third-Party Brand & Intellectual Property Isolation**:
+  - Never include references, names, trademarks, or comparisons to third-party commercial fitness/gym applications in documentation, source code, comments, KDoc, commit messages, PRs, or repository metadata.
 
 ---
 
