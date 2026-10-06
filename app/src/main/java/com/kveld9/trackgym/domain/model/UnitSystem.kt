@@ -22,21 +22,23 @@ enum class WeightUnit(@get:StringRes val labelRes: Int, val symbol: String) {
         LB -> value / KG_TO_LB
     }
 
-    fun format(kg: Double, decimals: Int = 1): String {
+    fun format(kg: Double, decimals: Int = 2): String {
         val converted = fromKg(kg)
         return if (converted % 1.0 == 0.0) {
             "${converted.toInt()} $symbol"
         } else {
-            String.format(Locale.US, "%.${decimals}f %s", converted, symbol)
+            val formatted = String.format(Locale.US, "%.${decimals}f", converted).trimEnd('0').trimEnd('.')
+            "$formatted $symbol"
         }
     }
 
-    fun formatValue(kg: Double, decimals: Int = 1): String {
+    fun formatValue(kg: Double, decimals: Int = 2): String {
         val converted = fromKg(kg)
         return if (converted % 1.0 == 0.0) {
             "${converted.toInt()}"
         } else {
-            String.format(Locale.US, "%.${decimals}f", converted)
+            val formatted = String.format(Locale.US, "%.${decimals}f", converted)
+            formatted.trimEnd('0').trimEnd('.')
         }
     }
 
