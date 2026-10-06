@@ -73,6 +73,7 @@
   - **Compositor Efficiency**: Animate only `graphicsLayer` properties (`alpha`, `scale`, `translation`). Never trigger layout passes in animations.
   - **The UI Stack**: Every screen must explicitly model Blank/Empty, Loading, Partial, Error, and Ideal states.
   - **Anti-Slop**: Information density over decoration. High perceptual contrast (OLED black + high-luminance neon green/gold tokens).
+  - **Zero-Emoji Policy**: Emojis are strictly prohibited throughout the application (source code, Jetpack Compose layouts, badges, headers, labels, and Android string resources). Use formal typography, vector iconography (`androidx.compose.material.icons`), or dedicated design tokens instead.
   - **Release Optimization**: Always maintain `isMinifyEnabled = true` and `isShrinkResources = true` with R8 in release builds to enforce sub-5MB APK sizes.
 
 

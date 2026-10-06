@@ -61,6 +61,10 @@ Every feature screen and composable container must explicitly model and handle a
   - **TextMuted (`#8E8E93`)**: Secondary labels, units, timestamps.
 - Meets WCAG AAA contrast ratio standards (> 7:1) for primary numeric data.
 
+### 3.3 Zero-Emoji Architecture
+- Emojis are strictly banned from UI elements, strings, badges, headers, and code.
+- Visual anchors must be expressed through official typography, Material symbols (`Icons.Default.*`), or purpose-built layout tokens. No emoji characters allowed in strings or Composables.
+
 ---
 
 ## 4. ANTI-SLOP & INFORMATION DENSITY
