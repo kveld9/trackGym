@@ -15,7 +15,9 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "se
 data class ThemeSettings(
     val dynamicColor: Boolean = true,
     val themeMode: String = "SYSTEM", // "SYSTEM", "DARK", "LIGHT"
-    val amoledBlack: Boolean = false
+    val amoledBlack: Boolean = false,
+    val weightUnit: String = "KG", // "KG", "LB"
+    val distanceUnit: String = "KM" // "KM", "MI"
 )
 
 class ThemePreferences(
@@ -27,6 +29,8 @@ class ThemePreferences(
         val DYNAMIC_COLOR_KEY = booleanPreferencesKey("dynamic_color")
         val THEME_MODE_KEY = stringPreferencesKey("theme_mode")
         val AMOLED_BLACK_KEY = booleanPreferencesKey("amoled_black")
+        val WEIGHT_UNIT_KEY = stringPreferencesKey("weight_unit")
+        val DISTANCE_UNIT_KEY = stringPreferencesKey("distance_unit")
     }
 
     val themeSettings: Flow<ThemeSettings> = dataStore.data
@@ -34,7 +38,9 @@ class ThemePreferences(
             ThemeSettings(
                 dynamicColor = preferences[DYNAMIC_COLOR_KEY] ?: true,
                 themeMode = preferences[THEME_MODE_KEY] ?: "SYSTEM",
-                amoledBlack = preferences[AMOLED_BLACK_KEY] ?: false
+                amoledBlack = preferences[AMOLED_BLACK_KEY] ?: false,
+                weightUnit = preferences[WEIGHT_UNIT_KEY] ?: "KG",
+                distanceUnit = preferences[DISTANCE_UNIT_KEY] ?: "KM"
             )
         }
 
@@ -53,6 +59,18 @@ class ThemePreferences(
     suspend fun setAmoledBlack(enabled: Boolean) {
         dataStore.edit { preferences ->
             preferences[AMOLED_BLACK_KEY] = enabled
+        }
+    }
+
+    suspend fun setWeightUnit(unit: String) {
+        dataStore.edit { preferences ->
+            preferences[WEIGHT_UNIT_KEY] = unit
+        }
+    }
+
+    suspend fun setDistanceUnit(unit: String) {
+        dataStore.edit { preferences ->
+            preferences[DISTANCE_UNIT_KEY] = unit
         }
     }
 }

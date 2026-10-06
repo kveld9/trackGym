@@ -16,7 +16,7 @@ class MainActivity : ComponentActivity() {
 
     private val viewModel: GymViewModel by viewModels {
         val app = application as TrackGymApp
-        GymViewModel.Factory(app.repository)
+        GymViewModel.Factory(app.repository, app.themePreferences)
     }
 
     private val settingsViewModel: SettingsViewModel by viewModels {

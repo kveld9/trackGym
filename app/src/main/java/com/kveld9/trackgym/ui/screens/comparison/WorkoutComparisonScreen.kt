@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.sp
 import com.kveld9.trackgym.R
 import com.kveld9.trackgym.domain.model.ExerciseComparison
 import com.kveld9.trackgym.domain.model.SetComparison
+import com.kveld9.trackgym.domain.model.WeightUnit
 import com.kveld9.trackgym.domain.model.WorkoutComparison
 import com.kveld9.trackgym.ui.theme.GymBlack
 import com.kveld9.trackgym.ui.theme.GymBorder
@@ -59,6 +60,7 @@ import java.util.Locale
 fun WorkoutComparisonScreen(
     comparison: WorkoutComparison,
     onBackClick: () -> Unit,
+    weightUnit: WeightUnit = WeightUnit.KG,
     modifier: Modifier = Modifier
 ) {
     val dateFormat = SimpleDateFormat("EEEE, d MMMM", Locale.getDefault())
@@ -103,7 +105,8 @@ fun WorkoutComparisonScreen(
                     dateString = dateString,
                     durationSeconds = comparison.currentWorkout.durationSeconds,
                     totalVolumeKg = comparison.currentWorkout.totalVolume,
-                    recordsCount = comparison.totalRecordsUnlocked.size
+                    recordsCount = comparison.totalRecordsUnlocked.size,
+                    weightUnit = weightUnit
                 )
             }
 
@@ -170,7 +173,7 @@ fun WorkoutComparisonScreen(
             }
 
             items(comparison.exerciseComparisons) { exComp ->
-                ExerciseComparisonCard(exerciseComparison = exComp)
+                ExerciseComparisonCard(exerciseComparison = exComp, weightUnit = weightUnit)
             }
 
             item {
@@ -186,7 +189,8 @@ fun WorkoutSummaryHeader(
     dateString: String,
     durationSeconds: Long,
     totalVolumeKg: Double,
-    recordsCount: Int
+    recordsCount: Int,
+    weightUnit: WeightUnit = WeightUnit.KG
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -206,7 +210,11 @@ fun WorkoutSummaryHeader(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 StatBadge(label = stringResource(R.string.stat_duration), value = formatDuration(durationSeconds))
-                StatBadge(label = stringResource(R.string.stat_volume), value = "${formatKg(totalVolumeKg)} kg")
+                StatBadge(
+                    label = stringResource(R.string.stat_volume),
+                    value = "${weightUnit.formatValue(totalVolumeKg)} ${weightUnit.symbol}",
+                    valueColor = GymNeonGreen
+                )
                 if (recordsCount > 0) {
                     StatBadge(label = stringResource(R.string.stat_records), value = "$recordsCount 🏆", valueColor = GymGold)
                 }
@@ -217,7 +225,8 @@ fun WorkoutSummaryHeader(
 
 @Composable
 fun ExerciseComparisonCard(
-    exerciseComparison: ExerciseComparison
+    exerciseComparison: ExerciseComparison,
+    weightUnit: WeightUnit = WeightUnit.KG
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -307,7 +316,7 @@ fun ExerciseComparisonCard(
 
             // Set-by-Set comparisons
             exerciseComparison.setComparisons.forEach { setComp ->
-                SetComparisonRow(setComp = setComp)
+                SetComparisonRow(setComp = setComp, weightUnit = weightUnit)
                 Spacer(modifier = Modifier.height(6.dp))
             }
         }
@@ -315,7 +324,10 @@ fun ExerciseComparisonCard(
 }
 
 @Composable
-fun SetComparisonRow(setComp: SetComparison) {
+fun SetComparisonRow(
+    setComp: SetComparison,
+    weightUnit: WeightUnit = WeightUnit.KG
+) {
     val prev = setComp.previousSet
     val curr = setComp.currentSet
 
@@ -343,7 +355,7 @@ fun SetComparisonRow(setComp: SetComparison) {
 
         // Previous performance
         Text(
-            text = if (prev != null) "${formatKg(prev.weightKg)} kg × ${prev.reps}" else "—",
+            text = if (prev != null) "${weightUnit.formatValue(prev.weightKg)} ${weightUnit.symbol} × ${prev.reps}" else "—",
             color = TextMuted,
             fontSize = 13.sp
         )
@@ -357,7 +369,7 @@ fun SetComparisonRow(setComp: SetComparison) {
 
         // Current performance
         Text(
-            text = "${formatKg(curr.weightKg)} kg × ${curr.reps}",
+            text = "${weightUnit.formatValue(curr.weightKg)} ${weightUnit.symbol} × ${curr.reps}",
             color = TextWhite,
             fontSize = 13.sp,
             fontWeight = FontWeight.Bold
@@ -366,7 +378,7 @@ fun SetComparisonRow(setComp: SetComparison) {
         // Delta indicator
         if (setComp.isImprovement) {
             val deltaText = buildString {
-                if (setComp.weightDeltaKg > 0) append("+${formatKg(setComp.weightDeltaKg)}kg ")
+                if (setComp.weightDeltaKg > 0) append("+${weightUnit.formatValue(setComp.weightDeltaKg)}${weightUnit.symbol} ")
                 if (setComp.repsDelta > 0) append("+${setComp.repsDelta}r")
                 if (isEmpty()) append("✓")
             }

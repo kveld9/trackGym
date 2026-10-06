@@ -116,6 +116,21 @@
     <string name="setting_amoled_title">Pure Black Mode (AMOLED)</string>
     <string name="setting_amoled_desc">Absolute black background (#000000) in dark mode for maximum contrast and battery saving</string>
 
+    <!-- Settings - Units -->
+    <string name="section_units">Measurement Units</string>
+    <string name="setting_weight_unit_title">Weight Unit</string>
+    <string name="setting_weight_unit_desc">Select your preferred system for lifting weights and volume calculations</string>
+    <string name="setting_distance_unit_title">Distance Unit</string>
+    <string name="setting_distance_unit_desc">Select your preferred unit for distance-based activities</string>
+    <string name="unit_kg">kg</string>
+    <string name="unit_lb">lb</string>
+    <string name="unit_km">km</string>
+    <string name="unit_mi">mi</string>
+    <string name="unit_kilograms">Kilograms (kg)</string>
+    <string name="unit_pounds">Pounds (lb)</string>
+    <string name="unit_kilometers">Kilometers (km)</string>
+    <string name="unit_miles">Miles (mi)</string>
+
     <!-- Settings - Backup -->
     <string name="section_backup">Backup &amp; Portability</string>
     <string name="setting_export_backup_title">Export Data (JSON)</string>

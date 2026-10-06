@@ -68,6 +68,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kveld9.trackgym.R
 import com.kveld9.trackgym.domain.model.Exercise
+import com.kveld9.trackgym.domain.model.WeightUnit
 import com.kveld9.trackgym.domain.model.WorkoutExercise
 import com.kveld9.trackgym.domain.model.WorkoutSet
 import com.kveld9.trackgym.ui.components.PrCelebrationBanner
@@ -92,6 +93,7 @@ fun ActiveWorkoutScreen(
     val timerSeconds by viewModel.timerSeconds.collectAsState()
     val recentPr by viewModel.recentlyUnlockedPr.collectAsState()
     val allExercises by viewModel.filteredExercises.collectAsState()
+    val weightUnit by viewModel.weightUnit.collectAsState()
 
     var showExercisePicker by remember { mutableStateOf(false) }
     var showFinishDialog by remember { mutableStateOf(false) }
@@ -144,6 +146,7 @@ fun ActiveWorkoutScreen(
                     items(activeWorkout?.exercises.orEmpty(), key = { it.id }) { we ->
                         WorkoutExerciseCard(
                             workoutExercise = we,
+                            weightUnit = weightUnit,
                             onAddSet = {
                                 val lastSet = we.sets.lastOrNull()
                                 val weight = lastSet?.weightKg ?: 0.0
@@ -367,6 +370,7 @@ fun ActiveWorkoutTopBar(
 @Composable
 fun WorkoutExerciseCard(
     workoutExercise: WorkoutExercise,
+    weightUnit: WeightUnit = WeightUnit.KG,
     onAddSet: () -> Unit,
     onUpdateSet: (WorkoutSet) -> Unit,
     onToggleComplete: (WorkoutSet, Double, Int) -> Unit,
@@ -431,7 +435,7 @@ fun WorkoutExerciseCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(stringResource(R.string.table_header_set), color = TextMuted, fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.width(42.dp), textAlign = TextAlign.Center)
-                Text(stringResource(R.string.table_header_kg), color = TextMuted, fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
+                Text(weightUnit.symbol.uppercase(), color = TextMuted, fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
                 Text(stringResource(R.string.table_header_reps), color = TextMuted, fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
                 Text(stringResource(R.string.table_header_complete), color = TextMuted, fontSize = 13.sp, fontWeight = FontWeight.Bold, modifier = Modifier.width(48.dp), textAlign = TextAlign.Center)
             }
@@ -442,6 +446,7 @@ fun WorkoutExerciseCard(
             workoutExercise.sets.forEach { set ->
                 SetRowItem(
                     set = set,
+                    weightUnit = weightUnit,
                     onUpdateSet = onUpdateSet,
                     onToggleComplete = { w, r -> onToggleComplete(set, w, r) },
                     onDeleteSet = { onDeleteSet(set.id) }
@@ -470,14 +475,14 @@ fun WorkoutExerciseCard(
 @Composable
 fun SetRowItem(
     set: WorkoutSet,
+    weightUnit: WeightUnit = WeightUnit.KG,
     onUpdateSet: (WorkoutSet) -> Unit,
     onToggleComplete: (Double, Int) -> Unit,
     onDeleteSet: () -> Unit
 ) {
-    var weightText by remember(set.weightKg) {
-        mutableStateOf(if (set.weightKg > 0) {
-            if (set.weightKg % 1.0 == 0.0) set.weightKg.toInt().toString() else set.weightKg.toString()
-        } else "")
+    val initialDisplay = if (set.weightKg > 0.0) weightUnit.formatValue(set.weightKg) else ""
+    var weightText by remember(set.id, weightUnit) {
+        mutableStateOf(initialDisplay)
     }
     var repsText by remember(set.reps) {
         mutableStateOf(if (set.reps > 0) set.reps.toString() else "")
@@ -517,8 +522,9 @@ fun SetRowItem(
                 value = weightText,
                 onValueChange = { input ->
                     weightText = input
-                    val parsed = input.toDoubleOrNull() ?: 0.0
-                    onUpdateSet(set.copy(weightKg = parsed))
+                    val parsedDisplay = input.toDoubleOrNull() ?: 0.0
+                    val inKg = weightUnit.toKg(parsedDisplay)
+                    onUpdateSet(set.copy(weightKg = inKg))
                 },
                 placeholder = { Text("0", color = TextMuted) },
                 singleLine = true,
@@ -567,9 +573,14 @@ fun SetRowItem(
                 .clip(RoundedCornerShape(8.dp))
                 .background(checkBgColor)
                 .clickable {
-                    val finalWeight = weightText.toDoubleOrNull() ?: set.weightKg
+                    val typedDisplay = weightText.toDoubleOrNull()
+                    val finalWeightKg = if (typedDisplay != null) {
+                        weightUnit.toKg(typedDisplay)
+                    } else {
+                        set.weightKg
+                    }
                     val finalReps = repsText.toIntOrNull() ?: set.reps
-                    onToggleComplete(finalWeight, finalReps)
+                    onToggleComplete(finalWeightKg, finalReps)
                 },
             contentAlignment = Alignment.Center
         ) {

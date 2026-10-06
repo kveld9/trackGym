@@ -55,12 +55,14 @@ fun MainScreen(
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
     val lastFinishedComparison by viewModel.lastFinishedComparison.collectAsState()
     val selectedDetailComparison by viewModel.selectedDetailComparison.collectAsState()
+    val weightUnit by viewModel.weightUnit.collectAsState()
 
     // If viewing comparison screen (either after finishing or tapped from history)
     val activeComparison = selectedDetailComparison ?: lastFinishedComparison
     if (activeComparison != null) {
         WorkoutComparisonScreen(
             comparison = activeComparison,
+            weightUnit = weightUnit,
             onBackClick = {
                 if (selectedDetailComparison != null) {
                     viewModel.clearSelectedDetailComparison()
@@ -91,7 +93,7 @@ fun MainScreen(
                         },
                         label = {
                             Text(
-                                text = tabTitle,
+                                tabTitle,
                                 fontSize = 10.sp
                             )
                         },
@@ -124,6 +126,7 @@ fun MainScreen(
                 )
                 1 -> HistoryScreen(
                     viewModel = viewModel,
+                    weightUnit = weightUnit,
                     onWorkoutClick = { workoutId ->
                         viewModel.viewWorkoutDetail(workoutId)
                     }
@@ -132,7 +135,8 @@ fun MainScreen(
                     viewModel = viewModel
                 )
                 3 -> RecordsScreen(
-                    viewModel = viewModel
+                    viewModel = viewModel,
+                    weightUnit = weightUnit
                 )
                 4 -> SettingsScreen(
                     viewModel = settingsViewModel

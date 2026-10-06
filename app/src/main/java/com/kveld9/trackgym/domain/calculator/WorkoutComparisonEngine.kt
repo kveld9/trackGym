@@ -4,6 +4,7 @@ import com.kveld9.trackgym.domain.model.Exercise
 import com.kveld9.trackgym.domain.model.ExerciseComparison
 import com.kveld9.trackgym.domain.model.PersonalRecord
 import com.kveld9.trackgym.domain.model.SetComparison
+import com.kveld9.trackgym.domain.model.WeightUnit
 import com.kveld9.trackgym.domain.model.WorkoutExercise
 import com.kveld9.trackgym.domain.model.WorkoutSet
 
@@ -11,9 +12,9 @@ object WorkoutComparisonEngine {
 
     /**
      * Formats a list of sets into a clean summary notation,
-     * e.g. "2x8 @ 15.0 kg" or "1x10 @ 15.0 kg, 1x8 @ 18.0 kg".
+     * e.g. "2x8 @ 15 kg" or "1x10 @ 15 kg, 1x8 @ 18 kg".
      */
-    fun formatSetsSummary(sets: List<WorkoutSet>): String {
+    fun formatSetsSummary(sets: List<WorkoutSet>, weightUnit: WeightUnit = WeightUnit.KG): String {
         val completed = sets.filter { it.isCompleted && it.reps > 0 }
         if (completed.isEmpty()) return "No completed sets"
 
@@ -26,23 +27,15 @@ object WorkoutComparisonEngine {
             if (set.weightKg == currentWeight && set.reps == currentReps) {
                 count++
             } else {
-                grouped.add(count to "${currentReps} @ ${formatWeight(currentWeight)} kg")
+                grouped.add(count to "${currentReps} @ ${weightUnit.format(currentWeight)}")
                 currentWeight = set.weightKg
                 currentReps = set.reps
                 count = 1
             }
         }
-        grouped.add(count to "${currentReps} @ ${formatWeight(currentWeight)} kg")
+        grouped.add(count to "${currentReps} @ ${weightUnit.format(currentWeight)}")
 
         return grouped.joinToString(", ") { "${it.first}x${it.second}" }
-    }
-
-    private fun formatWeight(weight: Double): String {
-        return if (weight % 1.0 == 0.0) {
-            weight.toInt().toString()
-        } else {
-            String.format(java.util.Locale.US, "%.1f", weight)
-        }
     }
 
     /**
@@ -53,7 +46,8 @@ object WorkoutComparisonEngine {
         currentWorkoutExercise: WorkoutExercise,
         previousWorkoutExercise: WorkoutExercise?,
         previousWorkoutDate: Long?,
-        recordsUnlocked: List<PersonalRecord> = emptyList()
+        recordsUnlocked: List<PersonalRecord> = emptyList(),
+        weightUnit: WeightUnit = WeightUnit.KG
     ): ExerciseComparison {
         val currentSets = currentWorkoutExercise.sets.filter { it.isCompleted }
         val previousSets = previousWorkoutExercise?.sets?.filter { it.isCompleted } ?: emptyList()
@@ -91,8 +85,8 @@ object WorkoutComparisonEngine {
         return ExerciseComparison(
             exercise = exercise,
             previousWorkoutDate = previousWorkoutDate,
-            previousSummary = if (previousSets.isNotEmpty()) formatSetsSummary(previousSets) else "First time",
-            currentSummary = formatSetsSummary(currentSets),
+            previousSummary = if (previousSets.isNotEmpty()) formatSetsSummary(previousSets, weightUnit) else "First time",
+            currentSummary = formatSetsSummary(currentSets, weightUnit),
             setComparisons = setComparisons,
             totalVolumeDeltaKg = totalVolumeDelta,
             recordsUnlocked = recordsUnlocked

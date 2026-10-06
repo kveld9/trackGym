@@ -40,6 +40,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kveld9.trackgym.R
 import com.kveld9.trackgym.domain.model.PersonalRecord
+import com.kveld9.trackgym.domain.model.RecordType
+import com.kveld9.trackgym.domain.model.WeightUnit
 import com.kveld9.trackgym.ui.theme.GymBlack
 import com.kveld9.trackgym.ui.theme.GymGold
 import com.kveld9.trackgym.ui.theme.GymSurface
@@ -55,7 +57,8 @@ import java.util.Locale
 @Composable
 fun RecordsScreen(
     viewModel: GymViewModel,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    weightUnit: WeightUnit = WeightUnit.KG
 ) {
     val records by viewModel.allRecords.collectAsState()
     val exercises by viewModel.filteredExercises.collectAsState()
@@ -102,7 +105,11 @@ fun RecordsScreen(
 
                 items(records, key = { it.id }) { pr ->
                     val exercise = exercisesMap[pr.exerciseId]
-                    RecordItemCard(record = pr, exerciseName = exercise?.name ?: "Exercise")
+                    RecordItemCard(
+                        record = pr,
+                        exerciseName = exercise?.name ?: "Exercise",
+                        weightUnit = weightUnit
+                    )
                 }
 
                 item {
@@ -114,7 +121,11 @@ fun RecordsScreen(
 }
 
 @Composable
-fun RecordItemCard(record: PersonalRecord, exerciseName: String) {
+fun RecordItemCard(
+    record: PersonalRecord,
+    exerciseName: String,
+    weightUnit: WeightUnit = WeightUnit.KG
+) {
     val dateFormat = SimpleDateFormat("d MMM yyyy", Locale.getDefault())
     val dateStr = dateFormat.format(Date(record.achievedAt))
 
@@ -175,8 +186,15 @@ fun RecordItemCard(record: PersonalRecord, exerciseName: String) {
 
                 Spacer(modifier = Modifier.height(4.dp))
 
+                val recordDescription = when (record.recordType) {
+                    RecordType.MAX_WEIGHT -> "${weightUnit.format(record.weightKg)} (${record.reps} reps)"
+                    RecordType.MAX_REPS_AT_WEIGHT -> "${record.reps} reps @ ${weightUnit.format(record.weightKg)}"
+                    RecordType.ESTIMATED_1RM -> "1RM: ${weightUnit.format(record.recordValue)}"
+                    RecordType.MAX_VOLUME_SET -> "Vol: ${weightUnit.format(record.recordValue)}"
+                }
+
                 Text(
-                    text = record.description,
+                    text = recordDescription,
                     color = TextMuted,
                     fontSize = 13.sp
                 )

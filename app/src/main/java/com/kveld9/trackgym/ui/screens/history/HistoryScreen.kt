@@ -53,12 +53,15 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+import com.kveld9.trackgym.domain.model.WeightUnit
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HistoryScreen(
     viewModel: GymViewModel,
     onWorkoutClick: (Long) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    weightUnit: WeightUnit = WeightUnit.KG
 ) {
     val completedWorkouts by viewModel.completedWorkouts.collectAsState()
 
@@ -92,6 +95,7 @@ fun HistoryScreen(
                 items(completedWorkouts, key = { it.id }) { workout ->
                     WorkoutHistoryCard(
                         workout = workout,
+                        weightUnit = weightUnit,
                         onClick = {
                             viewModel.viewWorkoutDetail(workout.id)
                             onWorkoutClick(workout.id)
@@ -110,6 +114,7 @@ fun HistoryScreen(
 @Composable
 fun WorkoutHistoryCard(
     workout: Workout,
+    weightUnit: WeightUnit = WeightUnit.KG,
     onClick: () -> Unit
 ) {
     val dateFormat = SimpleDateFormat("EEEE, d MMMM", Locale.getDefault())
@@ -178,7 +183,7 @@ fun WorkoutHistoryCard(
                     fontWeight = FontWeight.Medium
                 )
                 Text(
-                    text = "⚡ ${stringResource(R.string.history_stat_kg, workout.totalVolume.toInt())}",
+                    text = "⚡ ${weightUnit.format(workout.totalVolume)}",
                     color = GymNeonGreen,
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Bold

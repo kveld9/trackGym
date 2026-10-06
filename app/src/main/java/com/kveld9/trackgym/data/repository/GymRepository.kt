@@ -209,7 +209,8 @@ class GymRepository(private val database: GymDatabase) {
     suspend fun finishWorkout(
         workoutId: Long,
         durationSeconds: Long,
-        notes: String = ""
+        notes: String = "",
+        weightUnit: com.kveld9.trackgym.domain.model.WeightUnit = com.kveld9.trackgym.domain.model.WeightUnit.KG
     ): WorkoutComparison = withContext(Dispatchers.IO) {
         val entity = workoutDao.getWorkoutById(workoutId)
             ?: throw IllegalArgumentException("Workout $workoutId not found")
@@ -222,7 +223,7 @@ class GymRepository(private val database: GymDatabase) {
         )
         workoutDao.updateWorkout(completedEntity)
 
-        compareWorkoutWithPrevious(workoutId)
+        compareWorkoutWithPrevious(workoutId, weightUnit)
             ?: throw IllegalStateException("Failed to generate workout comparison")
     }
 
@@ -242,7 +243,10 @@ class GymRepository(private val database: GymDatabase) {
         workoutDao.getWorkoutSets(prevWe.id).map { it.toDomain() }
     }
 
-    suspend fun compareWorkoutWithPrevious(workoutId: Long): WorkoutComparison? = withContext(Dispatchers.IO) {
+    suspend fun compareWorkoutWithPrevious(
+        workoutId: Long,
+        weightUnit: com.kveld9.trackgym.domain.model.WeightUnit = com.kveld9.trackgym.domain.model.WeightUnit.KG
+    ): WorkoutComparison? = withContext(Dispatchers.IO) {
         val currentWorkout = getFullWorkout(workoutId) ?: return@withContext null
         val exerciseComparisons = mutableListOf<ExerciseComparison>()
         val totalPrs = mutableListOf<PersonalRecord>()
@@ -271,7 +275,8 @@ class GymRepository(private val database: GymDatabase) {
                 currentWorkoutExercise = workoutExercise,
                 previousWorkoutExercise = prevWorkoutExercise,
                 previousWorkoutDate = prevWorkout?.completedAt,
-                recordsUnlocked = recordsForExercise
+                recordsUnlocked = recordsForExercise,
+                weightUnit = weightUnit
             )
             exerciseComparisons.add(comp)
         }

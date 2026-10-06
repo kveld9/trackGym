@@ -11,6 +11,8 @@ import com.kveld9.trackgym.domain.model.PersonalRecord
 import com.kveld9.trackgym.domain.model.Workout
 import com.kveld9.trackgym.domain.model.WorkoutComparison
 import com.kveld9.trackgym.domain.model.WorkoutSet
+import com.kveld9.trackgym.data.ThemePreferences
+import com.kveld9.trackgym.domain.model.WeightUnit
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,10 +20,20 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class GymViewModel(private val repository: GymRepository) : ViewModel() {
+class GymViewModel(
+    private val repository: GymRepository,
+    private val themePreferences: ThemePreferences? = null
+) : ViewModel() {
+
+    val weightUnit: StateFlow<WeightUnit> = (themePreferences?.themeSettings?.map {
+        WeightUnit.fromString(it.weightUnit)
+    } ?: flowOf(WeightUnit.KG))
+        .stateIn(viewModelScope, SharingStarted.Eagerly, WeightUnit.KG)
 
     private val _activeWorkout = MutableStateFlow<Workout?>(null)
     val activeWorkout: StateFlow<Workout?> = _activeWorkout.asStateFlow()
@@ -175,9 +187,15 @@ class GymViewModel(private val repository: GymRepository) : ViewModel() {
 
     fun finishWorkout(notes: String = "", onFinished: () -> Unit) {
         val current = _activeWorkout.value ?: return
+        val activeUnit = weightUnit.value
         viewModelScope.launch {
             stopTimer()
-            val comparison = repository.finishWorkout(current.id, _timerSeconds.value, notes)
+            val comparison = repository.finishWorkout(
+                workoutId = current.id,
+                durationSeconds = _timerSeconds.value,
+                notes = notes,
+                weightUnit = activeUnit
+            )
             _lastFinishedComparison.value = comparison
             _activeWorkout.value = null
             _timerSeconds.value = 0
@@ -211,8 +229,9 @@ class GymViewModel(private val repository: GymRepository) : ViewModel() {
     }
 
     fun viewWorkoutDetail(workoutId: Long) {
+        val activeUnit = weightUnit.value
         viewModelScope.launch {
-            val comparison = repository.compareWorkoutWithPrevious(workoutId)
+            val comparison = repository.compareWorkoutWithPrevious(workoutId, activeUnit)
             _selectedDetailComparison.value = comparison
         }
     }
@@ -221,10 +240,13 @@ class GymViewModel(private val repository: GymRepository) : ViewModel() {
         _selectedDetailComparison.value = null
     }
 
-    class Factory(private val repository: GymRepository) : ViewModelProvider.Factory {
+    class Factory(
+        private val repository: GymRepository,
+        private val themePreferences: ThemePreferences? = null
+    ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return GymViewModel(repository) as T
+            return GymViewModel(repository, themePreferences) as T
         }
     }
 }

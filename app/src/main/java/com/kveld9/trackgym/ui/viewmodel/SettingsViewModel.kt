@@ -74,6 +74,18 @@ class SettingsViewModel(
         }
     }
 
+    fun setWeightUnit(unit: String) {
+        viewModelScope.launch {
+            themePreferences.setWeightUnit(unit)
+        }
+    }
+
+    fun setDistanceUnit(unit: String) {
+        viewModelScope.launch {
+            themePreferences.setDistanceUnit(unit)
+        }
+    }
+
     fun exportBackup(outputStream: OutputStream) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
