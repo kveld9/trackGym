@@ -97,6 +97,16 @@ android {
         includeInBundle = false
     }
 
+    // Debugger/tooling metadata with no runtime consumer in the app.
+    packaging {
+        resources.excludes += listOf(
+            "DebugProbesKt.bin",
+            "kotlin-tooling-metadata.json",
+            "META-INF/*.version",
+            "META-INF/androidx/**"
+        )
+    }
+
     buildFeatures {
         compose = true
         buildConfig = true
