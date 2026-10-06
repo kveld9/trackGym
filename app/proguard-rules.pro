@@ -1,0 +1,1 @@
+# TrackGym Proguard Rules

@@ -1,0 +1,141 @@
+<resources>
+    <!-- App & General -->
+    <string name="app_name">TrackGym</string>
+    <string name="action_settings">Ajustes</string>
+    <string name="action_back">Volver</string>
+    <string name="action_cancel">Cancelar</string>
+    <string name="action_save">Guardar</string>
+    <string name="action_delete">Eliminar</string>
+    <string name="action_discard">Descartar</string>
+    <string name="action_finish">Finalizar</string>
+    <string name="action_close">Cerrar</string>
+
+    <!-- Navigation Tabs -->
+    <string name="tab_train">Entrenar</string>
+    <string name="tab_history">Historial</string>
+    <string name="tab_exercises">Ejercicios</string>
+    <string name="tab_records">Récords</string>
+    <string name="tab_settings">Ajustes</string>
+
+    <!-- Active Workout Screen -->
+    <string name="dashboard_title">TrackGym</string>
+    <string name="dashboard_subtitle">Registra tus series, supera tus pesos y desbloquea nuevos récords personales.</string>
+    <string name="btn_start_empty_workout">Iniciar Entrenamiento Vacío</string>
+    <string name="workout_default_title">Entrenamiento</string>
+    <string name="btn_add_set">Agregar Serie</string>
+    <string name="btn_add_exercise">Agregar Ejercicio</string>
+    <string name="title_select_exercise">Seleccionar Ejercicio</string>
+    <string name="dialog_finish_workout_title">Finalizar Entrenamiento</string>
+    <string name="dialog_finish_workout_msg">¡Excelente sesión! Añade notas sobre cómo te sentiste:</string>
+    <string name="notes_placeholder">Notas de la sesión...</string>
+    <string name="btn_save_and_summary">Guardar y Ver Resumen</string>
+    <string name="menu_remove_exercise">Quitar Ejercicio</string>
+    <string name="table_header_set">SERIE</string>
+    <string name="table_header_kg">KG</string>
+    <string name="table_header_reps">REPS</string>
+    <string name="table_header_complete">✓</string>
+    <string name="desc_complete_set">Completar serie</string>
+    <string name="badge_manual">MANUAL</string>
+
+    <!-- PR Celebration Banner -->
+    <string name="pr_banner_title">¡NUEVO RÉCORD PERSONAL!</string>
+
+    <!-- Workout Comparison Screen -->
+    <string name="comparison_title">Antes vs Ahora</string>
+    <string name="comparison_unlocked_prs_section">🏆 RÉCORDS DESBLOQUEADOS (%1$d)</string>
+    <string name="comparison_by_exercise_section">COMPARACIÓN POR EJERCICIO</string>
+    <string name="stat_duration">DURACIÓN</string>
+    <string name="stat_volume">VOLUMEN</string>
+    <string name="stat_records">RÉCORDS</string>
+    <string name="badge_record">RÉCORD</string>
+    <string name="badge_previous">ANTERIOR</string>
+    <string name="badge_current">ACTUAL</string>
+    <string name="set_format">Serie %1$d</string>
+    <string name="summary_first_time">Primera vez</string>
+    <string name="summary_no_sets">Sin series completadas</string>
+
+    <!-- History Screen -->
+    <string name="history_title">Historial de Sesiones</string>
+    <string name="history_empty_title">Sin entrenamientos completados</string>
+    <string name="history_empty_desc">Inicia un entrenamiento en la pestaña \'Entrenar\' para comenzar a acumular registros y comparar tu progreso.</string>
+    <string name="history_stat_min">%1$d min</string>
+    <string name="history_stat_sets">%1$d series</string>
+    <string name="history_stat_kg">%1$d kg</string>
+
+    <!-- Exercises Screen -->
+    <string name="exercises_title">Ejercicios</string>
+    <string name="search_exercise_placeholder">Buscar ejercicio...</string>
+    <string name="chip_all_muscles">Todos</string>
+    <string name="action_create_exercise">Crear Ejercicio</string>
+    <string name="dialog_create_exercise_title">Crear Ejercicio Manual</string>
+    <string name="label_exercise_name">Nombre del ejercicio</string>
+    <string name="placeholder_exercise_name">Ej: Press Smith Inclinado</string>
+    <string name="label_muscle_group">Grupo Muscular</string>
+    <string name="label_equipment_category">Categoría / Equipamiento</string>
+    <string name="label_notes_optional">Instrucciones / Notas (opcional)</string>
+
+    <!-- Records Screen -->
+    <string name="records_title">Récords Personales (PRs)</string>
+    <string name="records_history_section">HISTORIAL DE HITOS DESBLOQUEADOS (%1$d)</string>
+    <string name="records_empty_title">Sin récords registrados aún</string>
+    <string name="records_empty_desc">Completa tus series en los entrenamientos. Cuando levantes más peso o hagas más repeticiones que en tu sesión previa, desbloquearás un nuevo récord aquí automáticamente.</string>
+
+    <!-- Muscle Groups -->
+    <string name="muscle_chest">Pecho</string>
+    <string name="muscle_back">Espalda</string>
+    <string name="muscle_legs">Piernas</string>
+    <string name="muscle_shoulders">Hombros</string>
+    <string name="muscle_arms">Brazos</string>
+    <string name="muscle_core">Core</string>
+    <string name="muscle_full_body">Cuerpo Completo</string>
+    <string name="muscle_other">Otro</string>
+
+    <!-- Exercise Categories -->
+    <string name="category_barbell">Barra</string>
+    <string name="category_dumbbell">Mancuerna</string>
+    <string name="category_machine">Máquina</string>
+    <string name="category_cable">Polea</string>
+    <string name="category_bodyweight">Peso Corporal</string>
+    <string name="category_cardio">Cardio</string>
+    <string name="category_other">Otro</string>
+
+    <!-- Record Types -->
+    <string name="record_max_weight">Peso Máximo</string>
+    <string name="record_max_reps">Récord de Repeticiones</string>
+    <string name="record_estimated_1rm">Mejor 1RM Estimado</string>
+    <string name="record_max_volume">Volumen de Serie</string>
+
+    <!-- Settings - Appearance -->
+    <string name="section_appearance">Apariencia</string>
+    <string name="setting_theme_title">Tema</string>
+    <string name="theme_mode_system">Sistema</string>
+    <string name="theme_mode_dark">Oscuro</string>
+    <string name="theme_mode_light">Claro</string>
+    <string name="setting_dynamic_color_title">Color Dinámico (Monet)</string>
+    <string name="setting_dynamic_color_desc">Armoniza la interfaz con la paleta de tu fondo de pantalla en Android 12+</string>
+    <string name="setting_amoled_title">Negro Puro (AMOLED)</string>
+    <string name="setting_amoled_desc">Fondo negro absoluto (#000000) en modo oscuro para máximo contraste y ahorro de batería</string>
+
+    <!-- Settings - Backup -->
+    <string name="section_backup">Respaldo y Portabilidad</string>
+    <string name="setting_export_backup_title">Exportar Datos (JSON)</string>
+    <string name="setting_export_backup_desc">Genera un respaldo portable de tus entrenamientos, series, ejercicios y récords</string>
+    <string name="setting_import_backup_title">Importar Respaldo (JSON)</string>
+    <string name="setting_import_backup_desc">Restaura tu historial y ejercicios desde un archivo de respaldo JSON</string>
+    <string name="toast_backup_exported_success">Respaldo exportado correctamente</string>
+    <string name="toast_backup_export_error">Error al exportar respaldo: %1$s</string>
+    <string name="toast_backup_read_error">Error al leer el archivo: %1$s</string>
+    <string name="toast_import_success">Se importaron %1$d registros (%2$d omitidos)</string>
+    <string name="toast_import_error">Error al importar datos: %1$s</string>
+    <string name="duplicate_policy_title">Opciones de Importación</string>
+    <string name="duplicate_policy_prompt">Se encontraron registros coincidentes. ¿Cómo deseas resolver los duplicados?</string>
+    <string name="duplicate_policy_skip">Omitir existentes</string>
+    <string name="duplicate_policy_overwrite">Sobrescribir existentes</string>
+    <string name="duplicate_policy_allow_duplicates">Crear como copias nuevas</string>
+
+    <!-- Settings - About -->
+    <string name="app_version_info">TrackGym v%1$s</string>
+    <string name="app_author_info">Desarrollado con ❤️ por %1$s</string>
+    <string name="app_tagline">100% Offline • Sin Telemetría • Privacidad Total</string>
+    <string name="view_on_github">Ver en GitHub (%1$s)</string>
+</resources>

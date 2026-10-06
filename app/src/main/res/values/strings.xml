@@ -1,0 +1,141 @@
+<resources>
+    <!-- App & General -->
+    <string name="app_name">TrackGym</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_back">Back</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_save">Save</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_discard">Discard</string>
+    <string name="action_finish">Finish</string>
+    <string name="action_close">Close</string>
+
+    <!-- Navigation Tabs -->
+    <string name="tab_train">Train</string>
+    <string name="tab_history">History</string>
+    <string name="tab_exercises">Exercises</string>
+    <string name="tab_records">Records</string>
+    <string name="tab_settings">Settings</string>
+
+    <!-- Active Workout Screen -->
+    <string name="dashboard_title">TrackGym</string>
+    <string name="dashboard_subtitle">Log your sets, beat previous weights, and unlock personal records.</string>
+    <string name="btn_start_empty_workout">Start Empty Workout</string>
+    <string name="workout_default_title">Workout</string>
+    <string name="btn_add_set">Add Set</string>
+    <string name="btn_add_exercise">Add Exercise</string>
+    <string name="title_select_exercise">Select Exercise</string>
+    <string name="dialog_finish_workout_title">Finish Workout</string>
+    <string name="dialog_finish_workout_msg">Great session! Add optional notes on how you felt:</string>
+    <string name="notes_placeholder">Workout notes...</string>
+    <string name="btn_save_and_summary">Save &amp; View Summary</string>
+    <string name="menu_remove_exercise">Remove Exercise</string>
+    <string name="table_header_set">SET</string>
+    <string name="table_header_kg">KG</string>
+    <string name="table_header_reps">REPS</string>
+    <string name="table_header_complete">✓</string>
+    <string name="desc_complete_set">Complete set</string>
+    <string name="badge_manual">MANUAL</string>
+
+    <!-- PR Celebration Banner -->
+    <string name="pr_banner_title">NEW PERSONAL RECORD!</string>
+
+    <!-- Workout Comparison Screen -->
+    <string name="comparison_title">Before vs Now</string>
+    <string name="comparison_unlocked_prs_section">🏆 UNLOCKED RECORDS (%1$d)</string>
+    <string name="comparison_by_exercise_section">EXERCISE COMPARISON</string>
+    <string name="stat_duration">DURATION</string>
+    <string name="stat_volume">VOLUME</string>
+    <string name="stat_records">RECORDS</string>
+    <string name="badge_record">RECORD</string>
+    <string name="badge_previous">PREVIOUS</string>
+    <string name="badge_current">CURRENT</string>
+    <string name="set_format">Set %1$d</string>
+    <string name="summary_first_time">First time</string>
+    <string name="summary_no_sets">No completed sets</string>
+
+    <!-- History Screen -->
+    <string name="history_title">Session History</string>
+    <string name="history_empty_title">No completed workouts yet</string>
+    <string name="history_empty_desc">Start a session in the \'Train\' tab to begin accumulating history and tracking progress.</string>
+    <string name="history_stat_min">%1$d min</string>
+    <string name="history_stat_sets">%1$d sets</string>
+    <string name="history_stat_kg">%1$d kg</string>
+
+    <!-- Exercises Screen -->
+    <string name="exercises_title">Exercises</string>
+    <string name="search_exercise_placeholder">Search exercise...</string>
+    <string name="chip_all_muscles">All</string>
+    <string name="action_create_exercise">Create Exercise</string>
+    <string name="dialog_create_exercise_title">Create Custom Exercise</string>
+    <string name="label_exercise_name">Exercise name</string>
+    <string name="placeholder_exercise_name">e.g. Incline Smith Press</string>
+    <string name="label_muscle_group">Muscle Group</string>
+    <string name="label_equipment_category">Category / Equipment</string>
+    <string name="label_notes_optional">Instructions / Notes (optional)</string>
+
+    <!-- Records Screen -->
+    <string name="records_title">Personal Records (PRs)</string>
+    <string name="records_history_section">UNLOCKED MILESTONE HISTORY (%1$d)</string>
+    <string name="records_empty_title">No records unlocked yet</string>
+    <string name="records_empty_desc">Complete your sets during workouts. When you lift heavier or perform more reps than previous sessions, new records will be unlocked here automatically.</string>
+
+    <!-- Muscle Groups -->
+    <string name="muscle_chest">Chest</string>
+    <string name="muscle_back">Back</string>
+    <string name="muscle_legs">Legs</string>
+    <string name="muscle_shoulders">Shoulders</string>
+    <string name="muscle_arms">Arms</string>
+    <string name="muscle_core">Core</string>
+    <string name="muscle_full_body">Full Body</string>
+    <string name="muscle_other">Other</string>
+
+    <!-- Exercise Categories -->
+    <string name="category_barbell">Barbell</string>
+    <string name="category_dumbbell">Dumbbell</string>
+    <string name="category_machine">Machine</string>
+    <string name="category_cable">Cable</string>
+    <string name="category_bodyweight">Bodyweight</string>
+    <string name="category_cardio">Cardio</string>
+    <string name="category_other">Other</string>
+
+    <!-- Record Types -->
+    <string name="record_max_weight">Max Weight</string>
+    <string name="record_max_reps">Rep Record</string>
+    <string name="record_estimated_1rm">Best Estimated 1RM</string>
+    <string name="record_max_volume">Set Volume</string>
+
+    <!-- Settings - Appearance -->
+    <string name="section_appearance">Appearance</string>
+    <string name="setting_theme_title">Theme</string>
+    <string name="theme_mode_system">System</string>
+    <string name="theme_mode_dark">Dark</string>
+    <string name="theme_mode_light">Light</string>
+    <string name="setting_dynamic_color_title">Dynamic Color (Monet)</string>
+    <string name="setting_dynamic_color_desc">Harmonize the interface with your wallpaper palette on Android 12+</string>
+    <string name="setting_amoled_title">Pure Black Mode (AMOLED)</string>
+    <string name="setting_amoled_desc">Absolute black background (#000000) in dark mode for maximum contrast and battery saving</string>
+
+    <!-- Settings - Backup -->
+    <string name="section_backup">Backup &amp; Portability</string>
+    <string name="setting_export_backup_title">Export Data (JSON)</string>
+    <string name="setting_export_backup_desc">Generate a portable backup of your workouts, sets, exercises, and records</string>
+    <string name="setting_import_backup_title">Import Backup (JSON)</string>
+    <string name="setting_import_backup_desc">Restore your workout history and exercises from a JSON backup file</string>
+    <string name="toast_backup_exported_success">Backup exported successfully</string>
+    <string name="toast_backup_export_error">Error exporting backup: %1$s</string>
+    <string name="toast_backup_read_error">Error reading file: %1$s</string>
+    <string name="toast_import_success">Imported %1$d records (%2$d skipped)</string>
+    <string name="toast_import_error">Error importing data: %1$s</string>
+    <string name="duplicate_policy_title">Import Options</string>
+    <string name="duplicate_policy_prompt">Matching records were found. How do you want to handle duplicates?</string>
+    <string name="duplicate_policy_skip">Skip existing</string>
+    <string name="duplicate_policy_overwrite">Overwrite existing</string>
+    <string name="duplicate_policy_allow_duplicates">Create as new copies</string>
+
+    <!-- Settings - About -->
+    <string name="app_version_info">TrackGym v%1$s</string>
+    <string name="app_author_info">Developed with ❤️ by %1$s</string>
+    <string name="app_tagline">100% Offline • No Telemetry • Complete Privacy</string>
+    <string name="view_on_github">View on GitHub (%1$s)</string>
+</resources>

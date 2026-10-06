@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="gym_black">#121212</color>
+    <color name="gym_surface">#1E1E1E</color>
+    <color name="gym_primary">#00E676</color>
+    <color name="gym_secondary">#2979FF</color>
+    <color name="gym_gold">#FFD700</color>
+</resources>
