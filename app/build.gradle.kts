@@ -105,7 +105,6 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.compose.icons.core)
     implementation(libs.compose.icons.extended)
-    implementation(libs.material)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.kotlinx.serialization.json)
 
