@@ -48,6 +48,14 @@
     <string name="plate_calc_target_weight">Target Weight</string>
     <string name="plate_calc_under_bar">Weight is less than or equal to bar weight</string>
     <string name="plate_calc_no_plates">No matching plates</string>
+    <string name="bar_olympic">Olympic (%1$s)</string>
+    <string name="bar_women">Women (%1$s)</string>
+    <string name="bar_ez">EZ Curl (%1$s)</string>
+    <string name="bar_trap_hex">Trap Bar (%1$s)</string>
+    <string name="bar_smith">Smith (%1$s)</string>
+    <string name="plate_calc_collars_toggle">Collars (+%1$s)</string>
+    <string name="plate_calc_available_plates">Available Plates</string>
+    <string name="plate_calc_bar_profiles">Bar Profile</string>
     <string name="action_add_warmup_sets">Add Warmup Sets</string>
 
     <!-- PR Celebration Banner -->

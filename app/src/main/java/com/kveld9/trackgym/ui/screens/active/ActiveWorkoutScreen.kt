@@ -1834,17 +1834,24 @@ fun PlateCalculatorDialog(
     val defaultBar = com.kveld9.trackgym.domain.calculator.PlateCalculator.defaultBarWeight(weightUnit)
     var barWeightInput by remember { mutableStateOf(if (defaultBar % 1.0 == 0.0) defaultBar.toInt().toString() else defaultBar.toString()) }
 
-    val currentTarget = targetWeightInput.replace(',', '.').toDoubleOrNull() ?: 0.0
-    val currentBar = barWeightInput.replace(',', '.').toDoubleOrNull() ?: defaultBar
-    val availablePlates = remember(weightUnit) {
+    var includeCollars by remember { mutableStateOf(false) }
+    val defaultCollars = remember(weightUnit) { com.kveld9.trackgym.domain.calculator.PlateCalculator.defaultCollarsWeight(weightUnit) }
+
+    val allDefaultPlates = remember(weightUnit) {
         com.kveld9.trackgym.domain.calculator.PlateCalculator.defaultPlates(weightUnit)
     }
+    var activePlates by remember(weightUnit) { mutableStateOf(allDefaultPlates.toSet()) }
 
-    val calcResult = remember(currentTarget, currentBar, weightUnit) {
+    val currentTarget = targetWeightInput.replace(',', '.').toDoubleOrNull() ?: 0.0
+    val currentBar = barWeightInput.replace(',', '.').toDoubleOrNull() ?: defaultBar
+    val collarsWeight = if (includeCollars) defaultCollars else 0.0
+
+    val calcResult = remember(currentTarget, currentBar, collarsWeight, activePlates) {
         com.kveld9.trackgym.domain.calculator.PlateCalculator.calculatePlates(
             targetWeight = currentTarget,
             barWeight = currentBar,
-            availablePlates = availablePlates
+            collarsWeight = collarsWeight,
+            availablePlates = activePlates.toList()
         )
     }
 
@@ -1912,6 +1919,87 @@ fun PlateCalculatorDialog(
                         ),
                         shape = RoundedCornerShape(10.dp)
                     )
+                }
+
+                // Bar Profiles & Collars Selection
+                Text(
+                    text = stringResource(R.string.plate_calc_bar_profiles),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    com.kveld9.trackgym.domain.calculator.BarbellProfile.entries.forEach { profile ->
+                        val pWeight = profile.weight(weightUnit)
+                        val pWeightStr = if (pWeight % 1.0 == 0.0) "${pWeight.toInt()}${weightUnit.symbol}" else "$pWeight${weightUnit.symbol}"
+                        val isBarSelected = currentBar == pWeight
+                        FilterChip(
+                            selected = isBarSelected,
+                            onClick = {
+                                barWeightInput = if (pWeight % 1.0 == 0.0) pWeight.toInt().toString() else pWeight.toString()
+                            },
+                            label = { Text(stringResource(profile.nameRes, pWeightStr), fontSize = 11.sp) },
+                            colors = FilterChipDefaults.filterChipColors(
+                                selectedContainerColor = MaterialTheme.colorScheme.primary,
+                                selectedLabelColor = MaterialTheme.colorScheme.onPrimary
+                            )
+                        )
+                    }
+
+                    // Collar clips chip
+                    val collarStr = if (defaultCollars % 1.0 == 0.0) "${defaultCollars.toInt()}${weightUnit.symbol}" else "$defaultCollars${weightUnit.symbol}"
+                    FilterChip(
+                        selected = includeCollars,
+                        onClick = { includeCollars = !includeCollars },
+                        label = { Text(stringResource(R.string.plate_calc_collars_toggle, collarStr), fontSize = 11.sp) },
+                        colors = FilterChipDefaults.filterChipColors(
+                            selectedContainerColor = MaterialTheme.colorScheme.secondary,
+                            selectedLabelColor = MaterialTheme.colorScheme.onSecondary
+                        )
+                    )
+                }
+
+                // Available Plates Selection
+                Text(
+                    text = stringResource(R.string.plate_calc_available_plates),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    allDefaultPlates.forEach { plate ->
+                        val isEnabled = activePlates.contains(plate)
+                        val label = if (plate % 1.0 == 0.0) "${plate.toInt()}${weightUnit.symbol}" else "$plate${weightUnit.symbol}"
+                        FilterChip(
+                            selected = isEnabled,
+                            onClick = {
+                                activePlates = if (isEnabled) {
+                                    if (activePlates.size > 1) activePlates - plate else activePlates
+                                } else {
+                                    activePlates + plate
+                                }
+                            },
+                            label = { Text(label, fontSize = 11.sp) },
+                            colors = FilterChipDefaults.filterChipColors(
+                                selectedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                                selectedLabelColor = MaterialTheme.colorScheme.primary
+                            )
+                        )
+                    }
                 }
 
                 // Summary banner

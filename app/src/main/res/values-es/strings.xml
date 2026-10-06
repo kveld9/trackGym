@@ -48,6 +48,14 @@
     <string name="plate_calc_target_weight">Peso Objetivo</string>
     <string name="plate_calc_under_bar">El peso es menor o igual al peso de la barra</string>
     <string name="plate_calc_no_plates">No hay combinación de discos disponible</string>
+    <string name="bar_olympic">Olímpica (%1$s)</string>
+    <string name="bar_women">Mujer (%1$s)</string>
+    <string name="bar_ez">EZ Curl (%1$s)</string>
+    <string name="bar_trap_hex">Trap Bar (%1$s)</string>
+    <string name="bar_smith">Smith (%1$s)</string>
+    <string name="plate_calc_collars_toggle">Seguros (+%1$s)</string>
+    <string name="plate_calc_available_plates">Discos Disponibles</string>
+    <string name="plate_calc_bar_profiles">Perfil de Barra</string>
     <string name="action_add_warmup_sets">Agregar Series de Calentamiento</string>
 
     <!-- PR Celebration Banner -->
