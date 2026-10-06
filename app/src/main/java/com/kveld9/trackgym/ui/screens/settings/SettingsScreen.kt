@@ -85,10 +85,20 @@ fun SettingsScreen(
         viewModel.uiEvent.collect { event ->
             when (event) {
                 is SettingsUiEvent.Success -> {
-                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                    val message = if (event.formatArgs.isEmpty()) {
+                        context.getString(event.messageRes)
+                    } else {
+                        context.getString(event.messageRes, *event.formatArgs.toTypedArray())
+                    }
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                 }
                 is SettingsUiEvent.Error -> {
-                    Toast.makeText(context, event.message, Toast.LENGTH_LONG).show()
+                    val message = if (event.formatArgs.isEmpty()) {
+                        context.getString(event.messageRes)
+                    } else {
+                        context.getString(event.messageRes, *event.formatArgs.toTypedArray())
+                    }
+                    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
                 }
                 is SettingsUiEvent.ImportPromptDuplicate -> {
                     // Handled declaratively by uiState.pendingImportBackup
@@ -96,9 +106,6 @@ fun SettingsScreen(
             }
         }
     }
-
-    val exportErrorFormat = stringResource(R.string.toast_backup_export_error)
-    val readErrorFormat = stringResource(R.string.toast_backup_read_error)
 
     val exportLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CreateDocument("application/json")

@@ -26,9 +26,12 @@ import java.io.InputStream
 import java.io.OutputStream
 import java.io.OutputStreamWriter
 
+import androidx.annotation.StringRes
+import com.kveld9.trackgym.R
+
 sealed class SettingsUiEvent {
-    data class Success(val message: String) : SettingsUiEvent()
-    data class Error(val message: String) : SettingsUiEvent()
+    data class Success(@get:StringRes val messageRes: Int, val formatArgs: List<Any> = emptyList()) : SettingsUiEvent()
+    data class Error(@get:StringRes val messageRes: Int, val formatArgs: List<Any> = emptyList()) : SettingsUiEvent()
     data class ImportPromptDuplicate(val backup: GymBackupDto) : SettingsUiEvent()
 }
 
@@ -109,9 +112,9 @@ class SettingsViewModel(
                         }
                     }
                 }
-                _uiEvent.emit(SettingsUiEvent.Success("Respaldo exportado correctamente."))
+                _uiEvent.emit(SettingsUiEvent.Success(R.string.toast_backup_exported_success))
             } catch (e: Exception) {
-                _uiEvent.emit(SettingsUiEvent.Error(e.localizedMessage ?: "Error al exportar respaldo."))
+                _uiEvent.emit(SettingsUiEvent.Error(R.string.toast_backup_export_error, listOf(e.localizedMessage.orEmpty())))
             } finally {
                 _uiState.update { it.copy(isLoading = false) }
             }
@@ -135,7 +138,7 @@ class SettingsViewModel(
                 }
 
                 if (parsedBackup.workouts.isEmpty() && parsedBackup.exercises.isEmpty()) {
-                    _uiEvent.emit(SettingsUiEvent.Error("El archivo no contiene registros válidos."))
+                    _uiEvent.emit(SettingsUiEvent.Error(R.string.toast_backup_invalid_data))
                     return@launch
                 }
 
@@ -147,7 +150,7 @@ class SettingsViewModel(
                     executeImport(parsedBackup, DuplicatePolicy.OVERWRITE_ALL)
                 }
             } catch (e: Exception) {
-                _uiEvent.emit(SettingsUiEvent.Error(e.localizedMessage ?: "Error al leer el archivo de respaldo."))
+                _uiEvent.emit(SettingsUiEvent.Error(R.string.toast_backup_read_error, listOf(e.localizedMessage.orEmpty())))
             } finally {
                 _uiState.update { it.copy(isLoading = false) }
             }
@@ -169,7 +172,7 @@ class SettingsViewModel(
                 }
 
                 if (parsedBackup.workouts.isEmpty()) {
-                    _uiEvent.emit(SettingsUiEvent.Error("El archivo CSV no contiene registros de entrenamiento válidos."))
+                    _uiEvent.emit(SettingsUiEvent.Error(R.string.toast_csv_import_empty))
                     return@launch
                 }
 
@@ -181,7 +184,7 @@ class SettingsViewModel(
                     executeImport(parsedBackup, DuplicatePolicy.OVERWRITE_ALL)
                 }
             } catch (e: Exception) {
-                _uiEvent.emit(SettingsUiEvent.Error(e.localizedMessage ?: "Error al procesar el archivo CSV."))
+                _uiEvent.emit(SettingsUiEvent.Error(R.string.toast_csv_import_error, listOf(e.localizedMessage.orEmpty())))
             } finally {
                 _uiState.update { it.copy(isLoading = false) }
             }
@@ -207,14 +210,9 @@ class SettingsViewModel(
                 val (inserted, skipped) = withContext(ioDispatcher) {
                     repository.importBackup(backup, policy)
                 }
-                val msg = if (skipped > 0) {
-                    "Se importaron $inserted registros ($skipped omitidos)."
-                } else {
-                    "Se importaron $inserted registros exitosamente."
-                }
-                _uiEvent.emit(SettingsUiEvent.Success(msg))
+                _uiEvent.emit(SettingsUiEvent.Success(R.string.toast_import_success, listOf(inserted, skipped)))
             } catch (e: Exception) {
-                _uiEvent.emit(SettingsUiEvent.Error(e.localizedMessage ?: "Error al importar datos."))
+                _uiEvent.emit(SettingsUiEvent.Error(R.string.toast_import_error, listOf(e.localizedMessage.orEmpty())))
             } finally {
                 _uiState.update { it.copy(isLoading = false) }
             }

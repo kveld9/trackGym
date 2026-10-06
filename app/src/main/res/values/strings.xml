@@ -159,6 +159,9 @@
     <string name="toast_backup_exported_success">Backup exported successfully</string>
     <string name="toast_backup_export_error">Error exporting backup: %1$s</string>
     <string name="toast_backup_read_error">Error reading file: %1$s</string>
+    <string name="toast_backup_invalid_data">The backup file contains no valid records</string>
+    <string name="toast_csv_import_empty">The CSV file contains no valid workout records</string>
+    <string name="toast_csv_import_error">Error processing CSV file: %1$s</string>
     <string name="toast_import_success">Imported %1$d records (%2$d skipped)</string>
     <string name="toast_import_error">Error importing data: %1$s</string>
     <string name="duplicate_policy_title">Import Options</string>

@@ -159,6 +159,9 @@
     <string name="toast_backup_exported_success">Respaldo exportado correctamente</string>
     <string name="toast_backup_export_error">Error al exportar respaldo: %1$s</string>
     <string name="toast_backup_read_error">Error al leer el archivo: %1$s</string>
+    <string name="toast_backup_invalid_data">El archivo no contiene registros válidos</string>
+    <string name="toast_csv_import_empty">El archivo CSV no contiene registros de entrenamiento válidos</string>
+    <string name="toast_csv_import_error">Error al procesar el archivo CSV: %1$s</string>
     <string name="toast_import_success">Se importaron %1$d registros (%2$d omitidos)</string>
     <string name="toast_import_error">Error al importar datos: %1$s</string>
     <string name="duplicate_policy_title">Opciones de Importación</string>
