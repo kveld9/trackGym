@@ -4,6 +4,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,9 +25,12 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.AlertDialog
@@ -37,8 +41,11 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -51,6 +58,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -60,6 +68,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -68,16 +78,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kveld9.trackgym.R
 import com.kveld9.trackgym.domain.model.Exercise
+import com.kveld9.trackgym.domain.model.Routine
+import com.kveld9.trackgym.domain.model.RoutineFolder
+import com.kveld9.trackgym.domain.model.SetType
 import com.kveld9.trackgym.domain.model.WeightUnit
 import com.kveld9.trackgym.domain.model.WorkoutExercise
 import com.kveld9.trackgym.domain.model.WorkoutSet
 import com.kveld9.trackgym.ui.components.PrCelebrationBanner
 import com.kveld9.trackgym.ui.theme.GymBlack
+import com.kveld9.trackgym.ui.theme.GymBlue
 import com.kveld9.trackgym.ui.theme.GymBorder
 import com.kveld9.trackgym.ui.theme.GymNeonGreen
 import com.kveld9.trackgym.ui.theme.GymRed
 import com.kveld9.trackgym.ui.theme.GymSurface
 import com.kveld9.trackgym.ui.theme.GymSurfaceVariant
+import com.kveld9.trackgym.ui.theme.GymWarmupAmber
 import com.kveld9.trackgym.ui.theme.TextMuted
 import com.kveld9.trackgym.ui.theme.TextWhite
 import com.kveld9.trackgym.ui.viewmodel.GymViewModel
@@ -95,13 +110,35 @@ fun ActiveWorkoutScreen(
     val allExercises by viewModel.filteredExercises.collectAsState()
     val weightUnit by viewModel.weightUnit.collectAsState()
 
+    // Rest Timer state
+    val restRemaining by viewModel.restTimerRemainingSeconds.collectAsState()
+    val restTotal by viewModel.restTimerTotalSeconds.collectAsState()
+    val restIsRunning by viewModel.restTimerIsRunning.collectAsState()
+
+    // Routines state
+    val routines by viewModel.routines.collectAsState()
+    val folders by viewModel.folders.collectAsState()
+
+    val haptic = LocalHapticFeedback.current
+    LaunchedEffect(Unit) {
+        viewModel.restTimerFinishedEvent.collect {
+            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+        }
+    }
+
     var showExercisePicker by remember { mutableStateOf(false) }
     var showFinishDialog by remember { mutableStateOf(false) }
+    var showSaveRoutineDialog by remember { mutableStateOf(false) }
     var finishNotes by remember { mutableStateOf("") }
+    var routineNameInput by remember { mutableStateOf("") }
 
     if (activeWorkout == null) {
         EmptyWorkoutDashboard(
+            routines = routines,
+            folders = folders,
             onStartWorkout = { viewModel.startWorkout() },
+            onStartRoutine = { routineId -> viewModel.startWorkoutFromRoutine(routineId) },
+            onDeleteRoutine = { routineId -> viewModel.deleteRoutine(routineId) },
             modifier = modifier
         )
     } else {
@@ -110,8 +147,26 @@ fun ActiveWorkoutScreen(
                 ActiveWorkoutTopBar(
                     timerSeconds = timerSeconds,
                     onFinishClick = { showFinishDialog = true },
-                    onCancelClick = { viewModel.cancelActiveWorkout() }
+                    onCancelClick = { viewModel.cancelActiveWorkout() },
+                    onSaveAsRoutineClick = {
+                        routineNameInput = activeWorkout?.name.orEmpty()
+                        showSaveRoutineDialog = true
+                    }
                 )
+            },
+            bottomBar = {
+                if (restRemaining != null) {
+                    FloatingRestTimer(
+                        remainingSeconds = restRemaining ?: 0,
+                        totalSeconds = restTotal,
+                        isRunning = restIsRunning,
+                        onAddSeconds = { viewModel.addRestSeconds(it) },
+                        onPauseResume = {
+                            if (restIsRunning) viewModel.pauseRestTimer() else viewModel.resumeRestTimer()
+                        },
+                        onSkip = { viewModel.stopRestTimer() }
+                    )
+                }
             },
             containerColor = GymBlack,
             modifier = modifier
@@ -207,6 +262,53 @@ fun ActiveWorkoutScreen(
         }
     }
 
+    if (showSaveRoutineDialog) {
+        AlertDialog(
+            onDismissRequest = { showSaveRoutineDialog = false },
+            containerColor = GymSurface,
+            title = {
+                Text(
+                    text = stringResource(R.string.dialog_save_routine_title),
+                    color = TextWhite,
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            text = {
+                Column {
+                    OutlinedTextField(
+                        value = routineNameInput,
+                        onValueChange = { routineNameInput = it },
+                        label = { Text(stringResource(R.string.dialog_routine_name)) },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = GymNeonGreen,
+                            unfocusedBorderColor = GymBorder,
+                            focusedTextColor = TextWhite,
+                            unfocusedTextColor = TextWhite
+                        )
+                    )
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showSaveRoutineDialog = false
+                        viewModel.saveActiveWorkoutAsRoutine(routineNameInput)
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = GymNeonGreen)
+                ) {
+                    Text(stringResource(R.string.action_save), color = GymBlack, fontWeight = FontWeight.Bold)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showSaveRoutineDialog = false }) {
+                    Text(stringResource(R.string.action_cancel), color = TextMuted)
+                }
+            }
+        )
+    }
+
     if (showFinishDialog) {
         AlertDialog(
             onDismissRequest = { showFinishDialog = false },
@@ -254,20 +356,32 @@ fun ActiveWorkoutScreen(
 
 @Composable
 fun EmptyWorkoutDashboard(
+    routines: List<Routine>,
+    folders: List<RoutineFolder>,
     onStartWorkout: () -> Unit,
+    onStartRoutine: (Long) -> Unit,
+    onDeleteRoutine: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var selectedFolderId by remember { mutableStateOf<Long?>(null) }
+    val filteredRoutines = if (selectedFolderId == null) {
+        routines
+    } else {
+        routines.filter { it.folderId == selectedFolderId }
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(GymBlack)
             .verticalScroll(rememberScrollState())
-            .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+            .padding(20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Spacer(modifier = Modifier.height(16.dp))
+
         Surface(
-            modifier = Modifier.size(96.dp),
+            modifier = Modifier.size(80.dp),
             shape = CircleShape,
             color = GymSurfaceVariant
         ) {
@@ -276,31 +390,34 @@ fun EmptyWorkoutDashboard(
                     imageVector = Icons.Default.FitnessCenter,
                     contentDescription = null,
                     tint = GymNeonGreen,
-                    modifier = Modifier.size(48.dp)
+                    modifier = Modifier.size(40.dp)
                 )
             }
         }
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = stringResource(R.string.dashboard_title),
             color = TextWhite,
-            fontSize = 28.sp,
+            fontSize = 26.sp,
             fontWeight = FontWeight.Bold
         )
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(6.dp))
         Text(
             text = stringResource(R.string.dashboard_subtitle),
             color = TextMuted,
-            fontSize = 15.sp,
+            fontSize = 14.sp,
             textAlign = TextAlign.Center
         )
-        Spacer(modifier = Modifier.height(36.dp))
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        // Primary CTA: Start Empty Workout
         Button(
             onClick = onStartWorkout,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp),
-            shape = RoundedCornerShape(16.dp),
+                .height(54.dp),
+            shape = RoundedCornerShape(14.dp),
             colors = ButtonDefaults.buttonColors(containerColor = GymNeonGreen)
         ) {
             Icon(Icons.Default.PlayArrow, contentDescription = null, tint = GymBlack)
@@ -312,6 +429,320 @@ fun EmptyWorkoutDashboard(
                 fontWeight = FontWeight.Bold
             )
         }
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        // Routines & Templates Section
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column {
+                Text(
+                    text = stringResource(R.string.routines_title),
+                    color = TextWhite,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = stringResource(R.string.routines_subtitle),
+                    color = TextMuted,
+                    fontSize = 12.sp
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        // Folder Chips
+        if (folders.isNotEmpty()) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                FilterChip(
+                    selected = selectedFolderId == null,
+                    onClick = { selectedFolderId = null },
+                    label = { Text(stringResource(R.string.routine_folder_all)) },
+                    colors = FilterChipDefaults.filterChipColors(
+                        selectedContainerColor = GymNeonGreen,
+                        selectedLabelColor = GymBlack,
+                        containerColor = GymSurfaceVariant,
+                        labelColor = TextMuted
+                    )
+                )
+                folders.forEach { folder ->
+                    FilterChip(
+                        selected = selectedFolderId == folder.id,
+                        onClick = { selectedFolderId = folder.id },
+                        label = { Text(folder.name) },
+                        colors = FilterChipDefaults.filterChipColors(
+                            selectedContainerColor = GymNeonGreen,
+                            selectedLabelColor = GymBlack,
+                            containerColor = GymSurfaceVariant,
+                            labelColor = TextMuted
+                        )
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(12.dp))
+        }
+
+        if (filteredRoutines.isEmpty()) {
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(14.dp),
+                colors = CardDefaults.cardColors(containerColor = GymSurface),
+                border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(GymBorder))
+            ) {
+                Column(
+                    modifier = Modifier.padding(20.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Bookmark,
+                        contentDescription = null,
+                        tint = TextMuted,
+                        modifier = Modifier.size(32.dp)
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = stringResource(R.string.routine_empty_title),
+                        color = TextWhite,
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = stringResource(R.string.routine_empty_desc),
+                        color = TextMuted,
+                        fontSize = 12.sp,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+        } else {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                filteredRoutines.forEach { routine ->
+                    RoutineCardItem(
+                        routine = routine,
+                        onStart = { onStartRoutine(routine.id) },
+                        onDelete = { onDeleteRoutine(routine.id) }
+                    )
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(32.dp))
+    }
+}
+
+@Composable
+fun RoutineCardItem(
+    routine: Routine,
+    onStart: () -> Unit,
+    onDelete: () -> Unit
+) {
+    var menuExpanded by remember { mutableStateOf(false) }
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(14.dp),
+        colors = CardDefaults.cardColors(containerColor = GymSurface),
+        border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(GymBorder))
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(14.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = routine.name,
+                    color = TextWhite,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                val exerciseNames = routine.exercises.joinToString(", ") { it.exercise.name }
+                Text(
+                    text = if (exerciseNames.isNotBlank()) exerciseNames else stringResource(R.string.routine_exercises_count, routine.exercises.size),
+                    color = TextMuted,
+                    fontSize = 12.sp,
+                    maxLines = 1
+                )
+            }
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Button(
+                    onClick = onStart,
+                    shape = RoundedCornerShape(10.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = GymNeonGreen),
+                    modifier = Modifier.height(38.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.btn_start_routine),
+                        color = GymBlack,
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                Box {
+                    IconButton(
+                        onClick = { menuExpanded = true },
+                        modifier = Modifier.size(48.dp)
+                    ) {
+                        Icon(Icons.Default.MoreVert, contentDescription = null, tint = TextMuted)
+                    }
+                    DropdownMenu(
+                        expanded = menuExpanded,
+                        onDismissRequest = { menuExpanded = false },
+                        modifier = Modifier.background(GymSurface)
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.menu_delete_routine), color = GymRed) },
+                            onClick = {
+                                menuExpanded = false
+                                onDelete()
+                            }
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun FloatingRestTimer(
+    remainingSeconds: Int,
+    totalSeconds: Int,
+    isRunning: Boolean,
+    onAddSeconds: (Int) -> Unit,
+    onPauseResume: () -> Unit,
+    onSkip: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val minutes = remainingSeconds / 60
+    val seconds = remainingSeconds % 60
+    val timeFormatted = String.format("%02d:%02d", minutes, seconds)
+    val progress = if (totalSeconds > 0) {
+        (remainingSeconds.toFloat() / totalSeconds.toFloat()).coerceIn(0f, 1f)
+    } else 0f
+
+    Surface(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 6.dp),
+        shape = RoundedCornerShape(16.dp),
+        color = GymSurface,
+        border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(GymBorder)),
+        shadowElevation = 8.dp
+    ) {
+        Column(modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Default.Timer,
+                        contentDescription = null,
+                        tint = GymNeonGreen,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = stringResource(R.string.rest_timer_title),
+                        color = TextMuted,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = timeFormatted,
+                        color = TextWhite,
+                        fontSize = 17.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(2.dp)
+                ) {
+                    TextButton(
+                        onClick = { onAddSeconds(-15) },
+                        modifier = Modifier.size(48.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.rest_timer_minus_15),
+                            color = TextMuted,
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+
+                    TextButton(
+                        onClick = { onAddSeconds(15) },
+                        modifier = Modifier.size(48.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.rest_timer_add_15),
+                            color = GymNeonGreen,
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+
+                    IconButton(
+                        onClick = onPauseResume,
+                        modifier = Modifier.size(48.dp)
+                    ) {
+                        Icon(
+                            imageVector = if (isRunning) Icons.Default.Pause else Icons.Default.PlayArrow,
+                            contentDescription = if (isRunning) "Pause" else "Resume",
+                            tint = TextWhite,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+
+                    IconButton(
+                        onClick = onSkip,
+                        modifier = Modifier.size(48.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = stringResource(R.string.rest_timer_skip),
+                            tint = GymRed,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            LinearProgressIndicator(
+                progress = { progress },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(4.dp)
+                    .clip(RoundedCornerShape(2.dp)),
+                color = GymNeonGreen,
+                trackColor = GymSurfaceVariant
+            )
+        }
     }
 }
 
@@ -320,8 +751,10 @@ fun EmptyWorkoutDashboard(
 fun ActiveWorkoutTopBar(
     timerSeconds: Long,
     onFinishClick: () -> Unit,
-    onCancelClick: () -> Unit
+    onCancelClick: () -> Unit,
+    onSaveAsRoutineClick: () -> Unit
 ) {
+    var menuExpanded by remember { mutableStateOf(false) }
     val minutes = timerSeconds / 60
     val seconds = timerSeconds % 60
     val timeFormatted = String.format("%02d:%02d", minutes, seconds)
@@ -351,9 +784,35 @@ fun ActiveWorkoutTopBar(
             }
         },
         actions = {
-            TextButton(onClick = onCancelClick) {
-                Text(stringResource(R.string.action_discard), color = GymRed, fontSize = 14.sp)
+            Box {
+                IconButton(
+                    onClick = { menuExpanded = true },
+                    modifier = Modifier.size(48.dp)
+                ) {
+                    Icon(Icons.Default.MoreVert, contentDescription = null, tint = TextMuted)
+                }
+                DropdownMenu(
+                    expanded = menuExpanded,
+                    onDismissRequest = { menuExpanded = false },
+                    modifier = Modifier.background(GymSurface)
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.action_save_as_routine), color = TextWhite) },
+                        onClick = {
+                            menuExpanded = false
+                            onSaveAsRoutineClick()
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.action_discard), color = GymRed) },
+                        onClick = {
+                            menuExpanded = false
+                            onCancelClick()
+                        }
+                    )
+                }
             }
+
             Spacer(modifier = Modifier.width(4.dp))
             Button(
                 onClick = onFinishClick,
@@ -409,12 +868,16 @@ fun WorkoutExerciseCard(
                 }
 
                 Box {
-                    IconButton(onClick = { menuExpanded = true }) {
+                    IconButton(
+                        onClick = { menuExpanded = true },
+                        modifier = Modifier.size(48.dp)
+                    ) {
                         Icon(Icons.Default.MoreVert, contentDescription = null, tint = TextMuted)
                     }
                     DropdownMenu(
                         expanded = menuExpanded,
-                        onDismissRequest = { menuExpanded = false }
+                        onDismissRequest = { menuExpanded = false },
+                        modifier = Modifier.background(GymSurface)
                     ) {
                         DropdownMenuItem(
                             text = { Text(stringResource(R.string.menu_remove_exercise), color = GymRed) },
@@ -434,7 +897,7 @@ fun WorkoutExerciseCard(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(stringResource(R.string.table_header_set), color = TextMuted, fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.width(42.dp), textAlign = TextAlign.Center)
+                Text(stringResource(R.string.table_header_set), color = TextMuted, fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.width(48.dp), textAlign = TextAlign.Center)
                 Text(weightUnit.symbol.uppercase(), color = TextMuted, fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
                 Text(stringResource(R.string.table_header_reps), color = TextMuted, fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
                 Text(stringResource(R.string.table_header_complete), color = TextMuted, fontSize = 13.sp, fontWeight = FontWeight.Bold, modifier = Modifier.width(48.dp), textAlign = TextAlign.Center)
@@ -488,10 +951,26 @@ fun SetRowItem(
         mutableStateOf(if (set.reps > 0) set.reps.toString() else "")
     }
 
+    var showSetTypePicker by remember { mutableStateOf(false) }
+
     val checkBgColor by animateColorAsState(
         targetValue = if (set.isCompleted) GymNeonGreen else GymSurfaceVariant,
         label = "checkColor"
     )
+
+    val badgeColor = when (set.setType) {
+        SetType.NORMAL -> if (set.isCompleted) GymNeonGreen else TextMuted
+        SetType.WARMUP -> GymWarmupAmber
+        SetType.DROP -> GymBlue
+        SetType.FAILURE -> GymRed
+    }
+
+    val badgeLabel = when (set.setType) {
+        SetType.NORMAL -> "${set.setNumber}"
+        SetType.WARMUP -> "W"
+        SetType.DROP -> "D"
+        SetType.FAILURE -> "F"
+    }
 
     Row(
         modifier = Modifier
@@ -501,19 +980,56 @@ fun SetRowItem(
             .padding(vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Set number badge
+        // Set number / SetType badge (Interactive with 48x48 dp touch target)
         Box(
             modifier = Modifier
-                .width(42.dp)
-                .height(36.dp),
+                .size(48.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(if (set.setType != SetType.NORMAL) badgeColor.copy(alpha = 0.15f) else Color.Transparent)
+                .clickable { showSetTypePicker = true },
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "${set.setNumber}",
-                color = if (set.isCompleted) GymNeonGreen else TextMuted,
+                text = badgeLabel,
+                color = badgeColor,
                 fontWeight = FontWeight.Bold,
                 fontSize = 14.sp
             )
+
+            DropdownMenu(
+                expanded = showSetTypePicker,
+                onDismissRequest = { showSetTypePicker = false },
+                modifier = Modifier.background(GymSurface)
+            ) {
+                SetType.entries.forEach { type ->
+                    DropdownMenuItem(
+                        text = {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    text = type.shortLabel,
+                                    color = when (type) {
+                                        SetType.NORMAL -> GymNeonGreen
+                                        SetType.WARMUP -> GymWarmupAmber
+                                        SetType.DROP -> GymBlue
+                                        SetType.FAILURE -> GymRed
+                                    },
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.width(28.dp)
+                                )
+                                Text(
+                                    text = stringResource(type.nameRes),
+                                    color = TextWhite,
+                                    fontSize = 14.sp
+                                )
+                            }
+                        },
+                        onClick = {
+                            showSetTypePicker = false
+                            onUpdateSet(set.copy(setType = type))
+                        }
+                    )
+                }
+            }
         }
 
         // Weight Input
@@ -565,11 +1081,10 @@ fun SetRowItem(
             )
         }
 
-        // Complete Checkbox Button
+        // Complete Checkbox Button (48x48 dp minimum touch target)
         Box(
             modifier = Modifier
-                .width(48.dp)
-                .height(36.dp)
+                .size(48.dp)
                 .clip(RoundedCornerShape(8.dp))
                 .background(checkBgColor)
                 .clickable {
@@ -588,7 +1103,7 @@ fun SetRowItem(
                 imageVector = Icons.Default.Check,
                 contentDescription = stringResource(R.string.desc_complete_set),
                 tint = if (set.isCompleted) GymBlack else TextMuted,
-                modifier = Modifier.size(20.dp)
+                modifier = Modifier.size(24.dp)
             )
         }
     }
