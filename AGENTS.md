@@ -44,3 +44,20 @@
   - Supported translations: `app/src/main/res/values-es/strings.xml` (Spanish).
   - Open-source contributors can add new languages by submitting pull requests containing `app/src/main/res/values-<locale>/strings.xml` mirroring the keys defined in base English.
 
+---
+
+## 4. CI/CD & AUTOMATED RELEASES PROTOCOL
+
+- **Single-Pass Pipeline**: `.github/workflows/ci.yml` runs on `ubuntu-latest`.
+- **Pull Requests**: Runs fast unit tests (`./gradlew testDebugUnitTest`).
+- **Main Branch Push**:
+  1. Computes Semantic Versioning from Conventional Commits (`feat!:`, `BREAKING CHANGE` -> Major, `feat:` -> Minor, `fix:`/other -> Patch).
+  2. Bumps and passes `versionName` and `versionCode` via Gradle `-P` properties (`-PversionName=... -PversionCode=...`).
+  3. Single Gradle execution builds release & debug APKs.
+  4. Packages APKs into `trackGym-${VERSION}-release.apk` and `trackGym-${VERSION}-debug.apk` with `SHA256SUMS.txt`.
+  5. Automatically creates Git tag `v${VERSION}` and publishes a GitHub Release with changelog and downloads.
+- **Keystore Configuration**:
+  - Release builds sign with official keystore if GitHub secrets `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD` are set.
+  - Fallback: Uses debug signing config automatically if no custom keystore is configured, guaranteeing successful release APK generation.
+
+

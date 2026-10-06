@@ -1,4 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.io.FileInputStream
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -11,14 +13,54 @@ android {
     namespace = "com.kveld9.trackgym"
     compileSdk = 37
 
+    val appVersionName: String = (project.findProperty("versionName") as? String) ?: "1.0.0"
+    val appVersionCode: Int = (project.findProperty("versionCode") as? String)?.toIntOrNull() ?: 1
+
     defaultConfig {
         applicationId = "com.kveld9.trackgym"
         minSdk = 24
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = appVersionCode
+        versionName = appVersionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        create("release") {
+            val localProps = Properties()
+            val localPropsFile = project.rootProject.file("local.properties")
+            if (localPropsFile.exists()) {
+                FileInputStream(localPropsFile).use { stream -> localProps.load(stream) }
+            }
+
+            val keystorePath = System.getenv("KEYSTORE_PATH")
+                ?: (project.findProperty("KEYSTORE_PATH") as? String)
+                ?: localProps.getProperty("KEYSTORE_PATH")
+                ?: "../release.jks"
+            val keystoreFile = file(keystorePath)
+            if (keystoreFile.exists()) {
+                storeFile = keystoreFile
+                storePassword = System.getenv("KEYSTORE_PASSWORD")
+                    ?: (project.findProperty("KEYSTORE_PASSWORD") as? String)
+                    ?: localProps.getProperty("KEYSTORE_PASSWORD")
+                    ?: ""
+                keyAlias = System.getenv("KEY_ALIAS")
+                    ?: (project.findProperty("KEY_ALIAS") as? String)
+                    ?: localProps.getProperty("KEY_ALIAS")
+                    ?: ""
+                keyPassword = System.getenv("KEY_PASSWORD")
+                    ?: (project.findProperty("KEY_PASSWORD") as? String)
+                    ?: localProps.getProperty("KEY_PASSWORD")
+                    ?: ""
+            } else {
+                val debugSigning = getByName("debug")
+                storeFile = debugSigning.storeFile
+                storePassword = debugSigning.storePassword
+                keyAlias = debugSigning.keyAlias
+                keyPassword = debugSigning.keyPassword
+            }
+        }
     }
 
     buildTypes {
@@ -28,6 +70,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 
