@@ -195,33 +195,25 @@ class GymRepository(private val database: GymDatabase) {
         database.withTransaction {
             val existingSets = workoutDao.getWorkoutSets(workoutExerciseId).map { it.toDomain() }
             val completedWarmups = existingSets.filter { it.setType == SetType.WARMUP && it.isCompleted }
+            val completedWarmupWeights = completedWarmups.map { it.weightKg }
+            val newWarmups = warmupSets.filter { ws ->
+                completedWarmupWeights.none { completedWeight -> kotlin.math.abs(completedWeight - ws.weightKg) < 0.01 }
+            }
+            val allWarmups = (completedWarmups + newWarmups).sortedBy { it.weightKg }
             val nonWarmupExisting = existingSets.filter { it.setType != SetType.WARMUP }
 
             workoutDao.deleteWorkoutSetsForExercise(workoutExerciseId)
 
             var currentSetNumber = 1
-            completedWarmups.forEach { ws ->
-                val entity = WorkoutSetEntity(
-                    workoutExerciseId = workoutExerciseId,
-                    setNumber = currentSetNumber++,
-                    setType = ws.setType.name,
-                    weightKg = ws.weightKg,
-                    reps = ws.reps,
-                    isCompleted = ws.isCompleted,
-                    completedAt = ws.completedAt,
-                    rpe = ws.rpe
-                )
-                workoutDao.insertWorkoutSet(entity)
-            }
-
-            warmupSets.forEach { ws ->
+            allWarmups.forEach { ws ->
                 val entity = WorkoutSetEntity(
                     workoutExerciseId = workoutExerciseId,
                     setNumber = currentSetNumber++,
                     setType = SetType.WARMUP.name,
                     weightKg = ws.weightKg,
                     reps = ws.reps,
-                    isCompleted = false,
+                    isCompleted = ws.isCompleted,
+                    completedAt = ws.completedAt,
                     rpe = ws.rpe
                 )
                 workoutDao.insertWorkoutSet(entity)
