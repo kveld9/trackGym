@@ -86,6 +86,18 @@ class SettingsViewModel(
         }
     }
 
+    fun setAutoRestTimer(enabled: Boolean) {
+        viewModelScope.launch {
+            themePreferences.setAutoRestTimer(enabled)
+        }
+    }
+
+    fun setDefaultRestSeconds(seconds: Int) {
+        viewModelScope.launch {
+            themePreferences.setDefaultRestSeconds(seconds)
+        }
+    }
+
     fun exportBackup(outputStream: OutputStream) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
