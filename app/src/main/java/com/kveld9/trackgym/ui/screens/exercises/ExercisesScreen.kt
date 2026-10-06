@@ -51,6 +51,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.material3.MaterialTheme
 import com.kveld9.trackgym.R
 import com.kveld9.trackgym.domain.model.Exercise
 import com.kveld9.trackgym.domain.model.ExerciseCategory
@@ -82,25 +83,25 @@ fun ExercisesScreen(
                 title = {
                     Text(
                         text = stringResource(R.string.exercises_title),
-                        color = TextWhite,
+                        color = MaterialTheme.colorScheme.onBackground,
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp
                     )
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = GymBlack)
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
             )
         },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { showCreateDialog = true },
-                containerColor = GymNeonGreen,
-                contentColor = GymBlack,
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
                 shape = CircleShape
             ) {
                 Icon(Icons.Default.Add, contentDescription = stringResource(R.string.action_create_exercise))
             }
         },
-        containerColor = GymBlack,
+        containerColor = MaterialTheme.colorScheme.background,
         modifier = modifier
     ) { paddingValues ->
         Column(
@@ -112,9 +113,9 @@ fun ExercisesScreen(
             OutlinedTextField(
                 value = searchQuery,
                 onValueChange = { viewModel.setSearchQuery(it) },
-                placeholder = { Text(stringResource(R.string.search_exercise_placeholder), color = TextMuted) },
+                placeholder = { Text(stringResource(R.string.search_exercise_placeholder), color = MaterialTheme.colorScheme.onSurfaceVariant) },
                 leadingIcon = {
-                    Icon(Icons.Default.Search, contentDescription = null, tint = TextMuted)
+                    Icon(Icons.Default.Search, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                 },
                 singleLine = true,
                 modifier = Modifier
@@ -122,12 +123,12 @@ fun ExercisesScreen(
                     .padding(horizontal = 16.dp),
                 shape = RoundedCornerShape(12.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = GymNeonGreen,
-                    unfocusedBorderColor = GymBorder,
-                    focusedContainerColor = GymSurface,
-                    unfocusedContainerColor = GymSurface,
-                    focusedTextColor = TextWhite,
-                    unfocusedTextColor = TextWhite
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                    focusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                 )
             )
 
