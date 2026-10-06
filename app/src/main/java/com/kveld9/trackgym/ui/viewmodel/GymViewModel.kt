@@ -379,22 +379,35 @@ class GymViewModel(
         }
     }
 
+    fun refreshActiveWorkout() {
+        viewModelScope.launch {
+            loadActiveWorkout()
+        }
+    }
+
     fun finishWorkout(notes: String = "", onFinished: () -> Unit) {
         val current = _activeWorkout.value ?: return
         val activeUnit = weightUnit.value
         viewModelScope.launch {
             stopTimer()
             stopRestTimer()
-            val comparison = repository.finishWorkout(
-                workoutId = current.id,
-                durationSeconds = _timerSeconds.value,
-                notes = notes,
-                weightUnit = activeUnit
-            )
-            _lastFinishedComparison.value = comparison
-            setActiveWorkout(null)
-            _timerSeconds.value = 0
-            onFinished()
+            try {
+                val comparison = repository.finishWorkout(
+                    workoutId = current.id,
+                    durationSeconds = _timerSeconds.value,
+                    notes = notes,
+                    weightUnit = activeUnit
+                )
+                if (comparison != null) {
+                    _lastFinishedComparison.value = comparison
+                }
+            } catch (e: Exception) {
+                // Workout was removed or not found (e.g. wiped by an overwrite import)
+            } finally {
+                setActiveWorkout(null)
+                _timerSeconds.value = 0
+                onFinished()
+            }
         }
     }
 

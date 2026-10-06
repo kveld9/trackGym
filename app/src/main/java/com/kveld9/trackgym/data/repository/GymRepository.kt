@@ -268,9 +268,9 @@ class GymRepository(private val database: GymDatabase) {
         durationSeconds: Long,
         notes: String = "",
         weightUnit: com.kveld9.trackgym.domain.model.WeightUnit = com.kveld9.trackgym.domain.model.WeightUnit.KG
-    ): WorkoutComparison = withContext(Dispatchers.IO) {
+    ): WorkoutComparison? = withContext(Dispatchers.IO) {
         val entity = workoutDao.getWorkoutById(workoutId)
-            ?: throw IllegalArgumentException("Workout $workoutId not found")
+            ?: return@withContext null
 
         val completedEntity = entity.copy(
             isCompleted = true,
@@ -281,7 +281,6 @@ class GymRepository(private val database: GymDatabase) {
         workoutDao.updateWorkout(completedEntity)
 
         compareWorkoutWithPrevious(workoutId, weightUnit)
-            ?: throw IllegalStateException("Failed to generate workout comparison")
     }
 
     fun getCompletedWorkouts(): Flow<List<Workout>> {

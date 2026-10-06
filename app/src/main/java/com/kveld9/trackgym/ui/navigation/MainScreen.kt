@@ -19,6 +19,7 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -56,6 +57,12 @@ fun MainScreen(
     val lastFinishedComparison by viewModel.lastFinishedComparison.collectAsState()
     val selectedDetailComparison by viewModel.selectedDetailComparison.collectAsState()
     val weightUnit by viewModel.weightUnit.collectAsState()
+
+    LaunchedEffect(selectedTab) {
+        if (selectedTab == 0) {
+            viewModel.refreshActiveWorkout()
+        }
+    }
 
     // If viewing comparison screen (either after finishing or tapped from history)
     val activeComparison = selectedDetailComparison ?: lastFinishedComparison
