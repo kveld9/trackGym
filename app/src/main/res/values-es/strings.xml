@@ -194,6 +194,12 @@
     <string name="rpe_desc_6_5">3-4 reps en reserva</string>
     <string name="rpe_desc_6">Carga ligera / Calentamiento (4+ reps en reserva)</string>
 
+    <!-- Workout & Exercise Notes -->
+    <string name="workout_session_notes">Notas de la Sesión</string>
+    <string name="workout_session_notes_placeholder">Registra sensaciones, fatiga o contexto...</string>
+    <string name="pinned_exercise_notes">Ajuste de máquina / Notas fijadas</string>
+    <string name="pinned_notes_placeholder">Ej. Asiento en posición 4, agarre ancho...</string>
+
     <!-- Rest Timer -->
     <string name="rest_timer_title">Temporizador de descanso</string>
     <string name="rest_timer_skip">Saltar</string>

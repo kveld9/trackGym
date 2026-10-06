@@ -287,6 +287,21 @@ class GymViewModel(
         }
     }
 
+    fun updateExerciseNotes(exerciseId: Long, notes: String) {
+        viewModelScope.launch {
+            repository.updateExerciseNotes(exerciseId, notes)
+            setActiveWorkout(repository.getActiveWorkout())
+        }
+    }
+
+    fun updateWorkoutNotes(notes: String) {
+        val current = _activeWorkout.value ?: return
+        viewModelScope.launch {
+            repository.updateWorkoutNotes(current.id, notes)
+            _activeWorkout.value = _activeWorkout.value?.copy(notes = notes)
+        }
+    }
+
     fun toggleCompleteSet(
         set: WorkoutSet,
         workoutId: Long,

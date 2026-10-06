@@ -20,6 +20,9 @@ interface WorkoutDao {
     @Update
     suspend fun updateWorkout(workout: WorkoutEntity)
 
+    @Query("UPDATE workouts SET notes = :notes WHERE id = :id")
+    suspend fun updateWorkoutNotes(id: Long, notes: String)
+
     @Delete
     suspend fun deleteWorkout(workout: WorkoutEntity)
 

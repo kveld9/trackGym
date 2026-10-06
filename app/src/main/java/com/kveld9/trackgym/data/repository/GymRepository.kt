@@ -91,6 +91,14 @@ class GymRepository(private val database: GymDatabase) {
         exerciseDao.deleteExercise(ExerciseEntity.fromDomain(exercise))
     }
 
+    suspend fun updateExerciseNotes(exerciseId: Long, notes: String) = withContext(Dispatchers.IO) {
+        exerciseDao.updateExerciseNotes(exerciseId, notes.trim())
+    }
+
+    suspend fun updateWorkoutNotes(workoutId: Long, notes: String) = withContext(Dispatchers.IO) {
+        workoutDao.updateWorkoutNotes(workoutId, notes.trim())
+    }
+
     // WORKOUTS
     suspend fun getActiveWorkout(): Workout? = withContext(Dispatchers.IO) {
         val activeEntity = workoutDao.getActiveWorkout() ?: return@withContext null

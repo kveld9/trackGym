@@ -194,6 +194,12 @@
     <string name="rpe_desc_6_5">3-4 reps in reserve</string>
     <string name="rpe_desc_6">Light / Warm-up (4+ reps in reserve)</string>
 
+    <!-- Workout & Exercise Notes -->
+    <string name="workout_session_notes">Workout Notes</string>
+    <string name="workout_session_notes_placeholder">Log thoughts, fatigue, or session context...</string>
+    <string name="pinned_exercise_notes">Machine setup / Pinned notes</string>
+    <string name="pinned_notes_placeholder">e.g. Seat at pin 4, wide grip, neutral wrists...</string>
+
     <!-- Rest Timer -->
     <string name="rest_timer_title">Rest Timer</string>
     <string name="rest_timer_skip">Skip</string>

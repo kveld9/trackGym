@@ -96,8 +96,10 @@ import com.kveld9.trackgym.domain.model.WorkoutSet
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.platform.LocalContext
 import com.kveld9.trackgym.domain.model.RpeScale
+import com.kveld9.trackgym.ui.components.PinnedExerciseNotesCard
 import com.kveld9.trackgym.ui.components.PrCelebrationBanner
 import com.kveld9.trackgym.ui.components.RpeSelectionDialog
+import com.kveld9.trackgym.ui.components.WorkoutSessionNotesCard
 import com.kveld9.trackgym.ui.theme.GymBlue
 import com.kveld9.trackgym.ui.theme.GymWarmupAmber
 import com.kveld9.trackgym.ui.util.LocalKeepEnglishExerciseNames
@@ -201,13 +203,22 @@ fun ActiveWorkoutScreen(
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     item {
-                        Text(
-                            text = activeWorkout?.name ?: stringResource(R.string.workout_default_title),
-                            color = MaterialTheme.colorScheme.onBackground,
-                            fontSize = 22.sp,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(top = 8.dp)
-                        )
+                        Column {
+                            Text(
+                                text = activeWorkout?.name ?: stringResource(R.string.workout_default_title),
+                                color = MaterialTheme.colorScheme.onBackground,
+                                fontSize = 22.sp,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(top = 8.dp)
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            WorkoutSessionNotesCard(
+                                notes = activeWorkout?.notes.orEmpty(),
+                                onNotesChange = { newNotes ->
+                                    viewModel.updateWorkoutNotes(newNotes)
+                                }
+                            )
+                        }
                     }
 
                     items(activeWorkout?.exercises.orEmpty(), key = { it.id }) { we ->
@@ -222,6 +233,9 @@ fun ActiveWorkoutScreen(
                                 viewModel.duplicateLastSet(we.id)
                             },
                             onUpdateSet = { set -> viewModel.updateSet(set) },
+                            onUpdateExerciseNotes = { notes ->
+                                viewModel.updateExerciseNotes(we.exercise.id, notes)
+                            },
                             onToggleComplete = { set, weight, reps ->
                                 activeWorkout?.let { wo ->
                                     viewModel.toggleCompleteSet(set, wo.id, we.exercise.id, weight, reps)
@@ -916,6 +930,7 @@ fun WorkoutExerciseCard(
     onAddSet: () -> Unit,
     onDuplicateSet: () -> Unit = {},
     onUpdateSet: (WorkoutSet) -> Unit,
+    onUpdateExerciseNotes: (String) -> Unit = {},
     onToggleComplete: (WorkoutSet, Double, Int) -> Unit,
     onDeleteSet: (Long) -> Unit,
     onRemoveExercise: () -> Unit,
@@ -1003,7 +1018,15 @@ fun WorkoutExerciseCard(
                 }
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Pinned Machine Setup & Notes
+            PinnedExerciseNotesCard(
+                notes = workoutExercise.exercise.notes,
+                onNotesChange = onUpdateExerciseNotes
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
 
             // Sets Table Header
             Row(
