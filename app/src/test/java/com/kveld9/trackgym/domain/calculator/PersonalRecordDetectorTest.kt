@@ -91,4 +91,29 @@ class PersonalRecordDetectorTest {
 
         assertTrue("No PR should be unlocked for sub-maximal set", unlocked.isEmpty())
     }
+
+    @Test
+    fun `warmup sets are excluded from personal records calculations`() {
+        val exerciseId = 1L
+        val workoutId = 2L
+
+        val currentWarmupSet = WorkoutSet(
+            id = 1,
+            workoutExerciseId = 1,
+            setNumber = 1,
+            weightKg = 100.0,
+            reps = 10,
+            isCompleted = true,
+            setType = com.kveld9.trackgym.domain.model.SetType.WARMUP
+        )
+
+        val unlocked = PersonalRecordDetector.evaluateSet(
+            exerciseId = exerciseId,
+            workoutId = workoutId,
+            currentSet = currentWarmupSet,
+            historicalSets = emptyList()
+        )
+
+        assertTrue("Warmup set should never unlock a personal record", unlocked.isEmpty())
+    }
 }

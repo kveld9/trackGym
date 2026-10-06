@@ -2,6 +2,7 @@ package com.kveld9.trackgym.domain.calculator
 
 import com.kveld9.trackgym.domain.model.PersonalRecord
 import com.kveld9.trackgym.domain.model.RecordType
+import com.kveld9.trackgym.domain.model.SetType
 import com.kveld9.trackgym.domain.model.WorkoutSet
 
 object PersonalRecordDetector {
@@ -17,11 +18,11 @@ object PersonalRecordDetector {
         historicalSets: List<WorkoutSet>,
         timestamp: Long = System.currentTimeMillis()
     ): List<PersonalRecord> {
-        if (!currentSet.isCompleted || currentSet.weightKg <= 0.0 || currentSet.reps <= 0) {
+        if (!currentSet.isCompleted || currentSet.weightKg <= 0.0 || currentSet.reps <= 0 || currentSet.setType == SetType.WARMUP) {
             return emptyList()
         }
 
-        val completedHistory = historicalSets.filter { it.isCompleted && it.id != currentSet.id }
+        val completedHistory = historicalSets.filter { it.isCompleted && it.id != currentSet.id && it.setType != SetType.WARMUP }
         val newRecords = mutableListOf<PersonalRecord>()
 
         checkMaxWeight(exerciseId, workoutId, currentSet, completedHistory, timestamp)?.let {
