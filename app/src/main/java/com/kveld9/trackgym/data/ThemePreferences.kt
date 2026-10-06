@@ -54,7 +54,6 @@ class ThemePreferences(
     private fun resolveThemeMode(rawMode: String?, legacyAmoled: Boolean): String = when {
         rawMode == "AMOLED" -> "AMOLED"
         rawMode == "LIGHT" -> "LIGHT"
-        rawMode == "DARK" && legacyAmoled -> "AMOLED"
         rawMode == "DARK" -> "DARK"
         legacyAmoled -> "AMOLED"
         else -> "AMOLED"
@@ -63,6 +62,7 @@ class ThemePreferences(
     suspend fun setThemeMode(mode: String) {
         dataStore.edit { preferences ->
             preferences[THEME_MODE_KEY] = mode
+            preferences.remove(LEGACY_AMOLED_KEY)
         }
     }
 
