@@ -42,7 +42,7 @@
 
     <!-- Workout Comparison Screen -->
     <string name="comparison_title">Antes vs Ahora</string>
-    <string name="comparison_unlocked_prs_section">🏆 RÉCORDS DESBLOQUEADOS (%1$d)</string>
+    <string name="comparison_unlocked_prs_section">RÉCORDS DESBLOQUEADOS (%1$d)</string>
     <string name="comparison_by_exercise_section">COMPARACIÓN POR EJERCICIO</string>
     <string name="stat_duration">DURACIÓN</string>
     <string name="stat_volume">VOLUMEN</string>
@@ -150,7 +150,7 @@
 
     <!-- Settings - About -->
     <string name="app_version_info">TrackGym v%1$s</string>
-    <string name="app_author_info">Desarrollado con ❤️ por %1$s</string>
+    <string name="app_author_info">Desarrollado por %1$s</string>
     <string name="app_tagline">100% Offline • Sin Telemetría • Privacidad Total</string>
     <string name="view_on_github">Ver en GitHub (%1$s)</string>
 

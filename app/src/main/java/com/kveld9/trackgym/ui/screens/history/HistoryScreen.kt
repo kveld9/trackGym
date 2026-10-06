@@ -56,17 +56,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kveld9.trackgym.R
+import androidx.compose.material3.MaterialTheme
 import com.kveld9.trackgym.domain.calculator.DayActivity
 import com.kveld9.trackgym.domain.calculator.TrainingConsistencyStats
 import com.kveld9.trackgym.domain.model.WeightUnit
 import com.kveld9.trackgym.domain.model.Workout
-import com.kveld9.trackgym.ui.theme.GymBlack
-import com.kveld9.trackgym.ui.theme.GymBorder
-import com.kveld9.trackgym.ui.theme.GymNeonGreen
-import com.kveld9.trackgym.ui.theme.GymSurface
-import com.kveld9.trackgym.ui.theme.GymSurfaceVariant
-import com.kveld9.trackgym.ui.theme.TextMuted
-import com.kveld9.trackgym.ui.theme.TextWhite
 import com.kveld9.trackgym.ui.viewmodel.GymViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -92,15 +86,15 @@ fun HistoryScreen(
                 title = {
                     Text(
                         text = stringResource(R.string.history_title),
-                        color = TextWhite,
+                        color = MaterialTheme.colorScheme.onBackground,
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp
                     )
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = GymBlack)
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
             )
         },
-        containerColor = GymBlack,
+        containerColor = MaterialTheme.colorScheme.background,
         modifier = modifier
     ) { paddingValues ->
         if (completedWorkouts.isEmpty()) {
@@ -146,11 +140,11 @@ fun HistoryScreen(
     if (workoutToSaveAsRoutine != null) {
         AlertDialog(
             onDismissRequest = { workoutToSaveAsRoutine = null },
-            containerColor = GymSurface,
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
             title = {
                 Text(
                     text = stringResource(R.string.dialog_save_routine_title),
-                    color = TextWhite,
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.Bold
                 )
             },
@@ -163,10 +157,10 @@ fun HistoryScreen(
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth(),
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = GymNeonGreen,
-                            unfocusedBorderColor = GymBorder,
-                            focusedTextColor = TextWhite,
-                            unfocusedTextColor = TextWhite
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                            unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                         )
                     )
                 }
@@ -180,14 +174,14 @@ fun HistoryScreen(
                         }
                         workoutToSaveAsRoutine = null
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = GymNeonGreen)
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                 ) {
-                    Text(stringResource(R.string.action_save), color = GymBlack, fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.action_save), color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Bold)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { workoutToSaveAsRoutine = null }) {
-                    Text(stringResource(R.string.action_cancel), color = TextMuted)
+                    Text(stringResource(R.string.action_cancel), color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
         )
@@ -203,8 +197,8 @@ fun TrainingConsistencyHeader(
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = GymSurface),
-        border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(GymBorder))
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+        border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)))
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             // Header: Title and Streak Badge
@@ -215,7 +209,7 @@ fun TrainingConsistencyHeader(
             ) {
                 Text(
                     text = stringResource(R.string.consistency_title),
-                    color = TextWhite,
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -234,12 +228,12 @@ fun TrainingConsistencyHeader(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .clip(RoundedCornerShape(8.dp))
-                        .background(if (stats.currentStreakWeeks > 0) GymNeonGreen.copy(alpha = 0.15f) else GymSurfaceVariant)
+                        .background(if (stats.currentStreakWeeks > 0) MaterialTheme.colorScheme.primary.copy(alpha = 0.15f) else MaterialTheme.colorScheme.surfaceContainerHigh)
                         .padding(horizontal = 8.dp, vertical = 4.dp)
                 ) {
                     Text(
-                        text = if (stats.currentStreakWeeks > 0) "🔥 $streakText" else streakText,
-                        color = if (stats.currentStreakWeeks > 0) GymNeonGreen else TextMuted,
+                        text = streakText,
+                        color = if (stats.currentStreakWeeks > 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -255,12 +249,12 @@ fun TrainingConsistencyHeader(
             ) {
                 Text(
                     text = stringResource(R.string.consistency_workouts_month, stats.totalWorkoutsLast30Days),
-                    color = TextMuted,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 12.sp
                 )
                 Text(
                     text = stringResource(R.string.consistency_volume_month, weightUnit.format(stats.totalVolumeLast30Days)),
-                    color = TextMuted,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 12.sp
                 )
             }
@@ -287,10 +281,10 @@ fun ActivityHeatmapGrid(days: List<DayActivity>) {
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     week.forEach { day ->
                         val cellColor = when (day.intensityLevel) {
-                            1 -> GymNeonGreen.copy(alpha = 0.35f)
-                            2 -> GymNeonGreen.copy(alpha = 0.70f)
-                            3 -> GymNeonGreen
-                            else -> GymSurfaceVariant
+                            1 -> MaterialTheme.colorScheme.primary.copy(alpha = 0.35f)
+                            2 -> MaterialTheme.colorScheme.primary.copy(alpha = 0.70f)
+                            3 -> MaterialTheme.colorScheme.primary
+                            else -> MaterialTheme.colorScheme.surfaceContainerHigh
                         }
                         Box(
                             modifier = Modifier
@@ -313,15 +307,15 @@ fun ActivityHeatmapGrid(days: List<DayActivity>) {
         ) {
             Text(
                 text = stringResource(R.string.consistency_legend_less),
-                color = TextMuted,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontSize = 10.sp
             )
             Spacer(modifier = Modifier.width(4.dp))
             listOf(
-                GymSurfaceVariant,
-                GymNeonGreen.copy(alpha = 0.35f),
-                GymNeonGreen.copy(alpha = 0.70f),
-                GymNeonGreen
+                MaterialTheme.colorScheme.surfaceContainerHigh,
+                MaterialTheme.colorScheme.primary.copy(alpha = 0.35f),
+                MaterialTheme.colorScheme.primary.copy(alpha = 0.70f),
+                MaterialTheme.colorScheme.primary
             ).forEach { color ->
                 Box(
                     modifier = Modifier
@@ -333,7 +327,7 @@ fun ActivityHeatmapGrid(days: List<DayActivity>) {
             }
             Text(
                 text = stringResource(R.string.consistency_legend_more),
-                color = TextMuted,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontSize = 10.sp
             )
         }
@@ -358,8 +352,8 @@ fun WorkoutHistoryCard(
             .clip(RoundedCornerShape(16.dp))
             .clickable { onClick() },
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = GymSurface),
-        border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(GymBorder))
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+        border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)))
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(
@@ -370,14 +364,14 @@ fun WorkoutHistoryCard(
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = workout.name,
-                        color = TextWhite,
+                        color = MaterialTheme.colorScheme.onSurface,
                         fontSize = 17.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.height(2.dp))
                     Text(
                         text = dateString,
-                        color = TextMuted,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 13.sp
                     )
                 }
@@ -388,15 +382,15 @@ fun WorkoutHistoryCard(
                             onClick = { menuExpanded = true },
                             modifier = Modifier.size(48.dp)
                         ) {
-                            Icon(Icons.Default.MoreVert, contentDescription = null, tint = TextMuted)
+                            Icon(Icons.Default.MoreVert, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                         DropdownMenu(
                             expanded = menuExpanded,
                             onDismissRequest = { menuExpanded = false },
-                            modifier = Modifier.background(GymSurface)
+                            modifier = Modifier.background(MaterialTheme.colorScheme.surfaceContainer)
                         ) {
                             DropdownMenuItem(
-                                text = { Text(stringResource(R.string.action_save_as_routine), color = TextWhite) },
+                                text = { Text(stringResource(R.string.action_save_as_routine), color = MaterialTheme.colorScheme.onSurface) },
                                 onClick = {
                                     menuExpanded = false
                                     onSaveAsRoutine()
@@ -408,7 +402,7 @@ fun WorkoutHistoryCard(
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                         contentDescription = null,
-                        tint = GymNeonGreen,
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(20.dp)
                     )
                 }
@@ -421,25 +415,25 @@ fun WorkoutHistoryCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(10.dp))
-                    .background(GymSurfaceVariant)
+                    .background(MaterialTheme.colorScheme.surfaceContainerHigh)
                     .padding(horizontal = 12.dp, vertical = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "⏱️ ${stringResource(R.string.history_stat_min, durationMin)}",
-                    color = TextWhite,
+                    text = stringResource(R.string.history_stat_min, durationMin),
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Medium
                 )
                 Text(
-                    text = "🏋️ ${stringResource(R.string.history_stat_sets, workout.totalCompletedSets)}",
-                    color = TextWhite,
+                    text = stringResource(R.string.history_stat_sets, workout.totalCompletedSets),
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Medium
                 )
                 Text(
-                    text = "⚡ ${weightUnit.format(workout.totalVolume)}",
-                    color = GymNeonGreen,
+                    text = weightUnit.format(workout.totalVolume),
+                    color = MaterialTheme.colorScheme.primary,
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -449,7 +443,7 @@ fun WorkoutHistoryCard(
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(
                     text = workout.exercises.joinToString(" • ") { "${it.exercise.name} (${it.sets.count { s -> s.isCompleted }}s)" },
-                    color = TextMuted,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 12.sp,
                     maxLines = 2
                 )
@@ -470,13 +464,13 @@ fun EmptyHistoryView(modifier: Modifier = Modifier) {
         Surface(
             modifier = Modifier.size(80.dp),
             shape = CircleShape,
-            color = GymSurfaceVariant
+            color = MaterialTheme.colorScheme.surfaceContainerHigh
         ) {
             Box(contentAlignment = Alignment.Center) {
                 Icon(
                     imageVector = Icons.Default.History,
                     contentDescription = null,
-                    tint = TextMuted,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(40.dp)
                 )
             }
@@ -484,14 +478,14 @@ fun EmptyHistoryView(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(20.dp))
         Text(
             text = stringResource(R.string.history_empty_title),
-            color = TextWhite,
+            color = MaterialTheme.colorScheme.onBackground,
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = stringResource(R.string.history_empty_desc),
-            color = TextMuted,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             fontSize = 14.sp,
             textAlign = TextAlign.Center
         )

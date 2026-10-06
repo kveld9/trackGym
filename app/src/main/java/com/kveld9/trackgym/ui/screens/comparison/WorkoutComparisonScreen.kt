@@ -39,18 +39,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kveld9.trackgym.R
+import androidx.compose.material3.MaterialTheme
 import com.kveld9.trackgym.domain.model.ExerciseComparison
 import com.kveld9.trackgym.domain.model.SetComparison
 import com.kveld9.trackgym.domain.model.WeightUnit
 import com.kveld9.trackgym.domain.model.WorkoutComparison
-import com.kveld9.trackgym.ui.theme.GymBlack
-import com.kveld9.trackgym.ui.theme.GymBorder
-import com.kveld9.trackgym.ui.theme.GymGold
-import com.kveld9.trackgym.ui.theme.GymNeonGreen
-import com.kveld9.trackgym.ui.theme.GymSurface
-import com.kveld9.trackgym.ui.theme.GymSurfaceVariant
-import com.kveld9.trackgym.ui.theme.TextMuted
-import com.kveld9.trackgym.ui.theme.TextWhite
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -72,7 +65,7 @@ fun WorkoutComparisonScreen(
                 title = {
                     Text(
                         text = stringResource(R.string.comparison_title),
-                        color = TextWhite,
+                        color = MaterialTheme.colorScheme.onBackground,
                         fontWeight = FontWeight.Bold,
                         fontSize = 18.sp
                     )
@@ -82,14 +75,14 @@ fun WorkoutComparisonScreen(
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.action_back),
-                            tint = TextWhite
+                            tint = MaterialTheme.colorScheme.onBackground
                         )
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = GymBlack)
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
             )
         },
-        containerColor = GymBlack,
+        containerColor = MaterialTheme.colorScheme.background,
         modifier = modifier
     ) { paddingValues ->
         LazyColumn(
@@ -115,7 +108,7 @@ fun WorkoutComparisonScreen(
                 item {
                     Text(
                         text = stringResource(R.string.comparison_unlocked_prs_section, comparison.totalRecordsUnlocked.size),
-                        color = GymGold,
+                        color = MaterialTheme.colorScheme.tertiary,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
                         letterSpacing = 1.sp,
@@ -127,8 +120,8 @@ fun WorkoutComparisonScreen(
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(12.dp),
-                        colors = CardDefaults.cardColors(containerColor = GymSurface),
-                        border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(GymGold))
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+                        border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.tertiary))
                     ) {
                         Row(
                             modifier = Modifier.padding(14.dp),
@@ -137,21 +130,21 @@ fun WorkoutComparisonScreen(
                             Icon(
                                 imageVector = Icons.Default.EmojiEvents,
                                 contentDescription = null,
-                                tint = GymGold,
+                                tint = MaterialTheme.colorScheme.tertiary,
                                 modifier = Modifier.size(28.dp)
                             )
                             Spacer(modifier = Modifier.width(12.dp))
                             Column {
                                 Text(
                                     text = stringResource(pr.recordType.nameRes),
-                                    color = GymGold,
+                                    color = MaterialTheme.colorScheme.tertiary,
                                     fontSize = 13.sp,
                                     fontWeight = FontWeight.Bold
                                 )
                                 Spacer(modifier = Modifier.height(2.dp))
                                 Text(
                                     text = pr.description,
-                                    color = TextWhite,
+                                    color = MaterialTheme.colorScheme.onSurface,
                                     fontSize = 14.sp,
                                     fontWeight = FontWeight.Medium
                                 )
@@ -164,7 +157,7 @@ fun WorkoutComparisonScreen(
             item {
                 Text(
                     text = stringResource(R.string.comparison_by_exercise_section),
-                    color = TextMuted,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Bold,
                     letterSpacing = 1.sp,
@@ -195,13 +188,13 @@ fun WorkoutSummaryHeader(
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = GymSurface),
-        border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(GymBorder))
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+        border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)))
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = title, color = TextWhite, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            Text(text = title, color = MaterialTheme.colorScheme.onSurface, fontSize = 20.sp, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(2.dp))
-            Text(text = dateString, color = TextMuted, fontSize = 13.sp)
+            Text(text = dateString, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp)
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -213,10 +206,10 @@ fun WorkoutSummaryHeader(
                 StatBadge(
                     label = stringResource(R.string.stat_volume),
                     value = "${weightUnit.formatValue(totalVolumeKg)} ${weightUnit.symbol}",
-                    valueColor = GymNeonGreen
+                    valueColor = MaterialTheme.colorScheme.primary
                 )
                 if (recordsCount > 0) {
-                    StatBadge(label = stringResource(R.string.stat_records), value = "$recordsCount 🏆", valueColor = GymGold)
+                    StatBadge(label = stringResource(R.string.stat_records), value = recordsCount.toString(), valueColor = MaterialTheme.colorScheme.tertiary)
                 }
             }
         }
@@ -231,8 +224,8 @@ fun ExerciseComparisonCard(
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = GymSurface),
-        border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(GymBorder))
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+        border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)))
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(
@@ -243,14 +236,14 @@ fun ExerciseComparisonCard(
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = exerciseComparison.exercise.name,
-                        color = TextWhite,
+                        color = MaterialTheme.colorScheme.onSurface,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.height(2.dp))
                     Text(
                         text = stringResource(exerciseComparison.exercise.muscleGroup.nameRes),
-                        color = GymNeonGreen,
+                        color = MaterialTheme.colorScheme.primary,
                         fontSize = 12.sp
                     )
                 }
@@ -259,13 +252,13 @@ fun ExerciseComparisonCard(
                     Row(
                         modifier = Modifier
                             .clip(RoundedCornerShape(8.dp))
-                            .background(GymGold.copy(alpha = 0.2f))
+                            .background(MaterialTheme.colorScheme.tertiary.copy(alpha = 0.2f))
                             .padding(horizontal = 8.dp, vertical = 4.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(Icons.Default.EmojiEvents, contentDescription = null, tint = GymGold, modifier = Modifier.size(14.dp))
+                        Icon(Icons.Default.EmojiEvents, contentDescription = null, tint = MaterialTheme.colorScheme.tertiary, modifier = Modifier.size(14.dp))
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text(stringResource(R.string.badge_record), color = GymGold, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.badge_record), color = MaterialTheme.colorScheme.tertiary, fontSize = 11.sp, fontWeight = FontWeight.Bold)
                     }
                 }
             }
@@ -277,17 +270,17 @@ fun ExerciseComparisonCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(10.dp))
-                    .background(GymSurfaceVariant)
+                    .background(MaterialTheme.colorScheme.surfaceContainerHigh)
                     .padding(12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(modifier = Modifier.weight(1f)) {
-                    Text(stringResource(R.string.badge_previous), color = TextMuted, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.badge_previous), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 10.sp, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(2.dp))
                     Text(
                         text = exerciseComparison.previousSummary,
-                        color = Color.LightGray,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 13.sp,
                         fontWeight = FontWeight.Medium
                     )
@@ -296,16 +289,16 @@ fun ExerciseComparisonCard(
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                     contentDescription = null,
-                    tint = GymNeonGreen,
+                    tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(18.dp).padding(horizontal = 4.dp)
                 )
 
                 Column(modifier = Modifier.weight(1f), horizontalAlignment = Alignment.End) {
-                    Text(stringResource(R.string.badge_current), color = GymNeonGreen, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.badge_current), color = MaterialTheme.colorScheme.primary, fontSize = 10.sp, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(2.dp))
                     Text(
                         text = exerciseComparison.currentSummary,
-                        color = TextWhite,
+                        color = MaterialTheme.colorScheme.onSurface,
                         fontSize = 13.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -335,10 +328,10 @@ fun SetComparisonRow(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(8.dp))
-            .background(if (setComp.isImprovement) GymNeonGreen.copy(alpha = 0.08f) else Color.Transparent)
+            .background(if (setComp.isImprovement) MaterialTheme.colorScheme.primary.copy(alpha = 0.08f) else Color.Transparent)
             .border(
                 1.dp,
-                if (setComp.recordsUnlocked.isNotEmpty()) GymGold.copy(alpha = 0.6f) else Color.Transparent,
+                if (setComp.recordsUnlocked.isNotEmpty()) MaterialTheme.colorScheme.tertiary.copy(alpha = 0.6f) else Color.Transparent,
                 RoundedCornerShape(8.dp)
             )
             .padding(horizontal = 10.dp, vertical = 6.dp),
@@ -348,7 +341,7 @@ fun SetComparisonRow(
         // Set number
         Text(
             text = stringResource(R.string.set_format, setComp.setNumber),
-            color = TextMuted,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             fontSize = 12.sp,
             fontWeight = FontWeight.Bold
         )
@@ -356,21 +349,21 @@ fun SetComparisonRow(
         // Previous performance
         Text(
             text = if (prev != null) "${weightUnit.formatValue(prev.weightKg)} ${weightUnit.symbol} × ${prev.reps}" else "—",
-            color = TextMuted,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             fontSize = 13.sp
         )
 
         Icon(
             imageVector = Icons.AutoMirrored.Filled.ArrowForward,
             contentDescription = null,
-            tint = TextMuted,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.size(14.dp)
         )
 
         // Current performance
         Text(
             text = "${weightUnit.formatValue(curr.weightKg)} ${weightUnit.symbol} × ${curr.reps}",
-            color = TextWhite,
+            color = MaterialTheme.colorScheme.onSurface,
             fontSize = 13.sp,
             fontWeight = FontWeight.Bold
         )
@@ -384,14 +377,14 @@ fun SetComparisonRow(
             }
             Text(
                 text = deltaText.trim(),
-                color = GymNeonGreen,
+                color = MaterialTheme.colorScheme.primary,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Bold
             )
         } else {
             Text(
                 text = "=",
-                color = TextMuted,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontSize = 12.sp
             )
         }
@@ -399,11 +392,12 @@ fun SetComparisonRow(
 }
 
 @Composable
-fun StatBadge(label: String, value: String, valueColor: Color = TextWhite) {
+fun StatBadge(label: String, value: String, valueColor: Color = Color.Unspecified) {
+    val finalValueColor = if (valueColor != Color.Unspecified) valueColor else MaterialTheme.colorScheme.onSurface
     Column {
-        Text(text = label, color = TextMuted, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+        Text(text = label, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 10.sp, fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(2.dp))
-        Text(text = value, color = valueColor, fontSize = 15.sp, fontWeight = FontWeight.Bold)
+        Text(text = value, color = finalValueColor, fontSize = 15.sp, fontWeight = FontWeight.Bold)
     }
 }
 
