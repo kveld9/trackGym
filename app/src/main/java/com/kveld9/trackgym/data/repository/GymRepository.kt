@@ -22,6 +22,12 @@ import com.kveld9.trackgym.domain.model.ExerciseCategory
 import com.kveld9.trackgym.domain.model.ExerciseComparison
 import com.kveld9.trackgym.domain.model.MuscleGroup
 import com.kveld9.trackgym.domain.model.PersonalRecord
+import com.kveld9.trackgym.data.local.entity.RoutineEntity
+import com.kveld9.trackgym.data.local.entity.RoutineExerciseEntity
+import com.kveld9.trackgym.data.local.entity.RoutineFolderEntity
+import com.kveld9.trackgym.domain.model.Routine
+import com.kveld9.trackgym.domain.model.RoutineExercise
+import com.kveld9.trackgym.domain.model.RoutineFolder
 import com.kveld9.trackgym.domain.model.SetType
 import com.kveld9.trackgym.domain.model.Workout
 import com.kveld9.trackgym.domain.model.WorkoutComparison
@@ -29,6 +35,8 @@ import com.kveld9.trackgym.domain.model.WorkoutExercise
 import com.kveld9.trackgym.domain.model.WorkoutSet
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
@@ -37,6 +45,7 @@ class GymRepository(private val database: GymDatabase) {
     private val exerciseDao = database.exerciseDao()
     private val workoutDao = database.workoutDao()
     private val prDao = database.personalRecordDao()
+    private val routineDao = database.routineDao()
 
     suspend fun ensureDefaultExercisesSeeded() = withContext(Dispatchers.IO) {
         if (exerciseDao.countExercises() == 0) {
@@ -529,5 +538,121 @@ class GymRepository(private val database: GymDatabase) {
 
             insertedCount to skippedCount
         }
+    }
+
+    // ROUTINES & FOLDERS
+    fun getAllFolders(): Flow<List<RoutineFolder>> {
+        return routineDao.getAllFolders().map { list -> list.map { it.toDomain() } }
+    }
+
+    suspend fun createFolder(name: String): Long = withContext(Dispatchers.IO) {
+        routineDao.insertFolder(RoutineFolderEntity(name = name.trim()))
+    }
+
+    suspend fun deleteFolder(id: Long) = withContext(Dispatchers.IO) {
+        routineDao.deleteFolder(id)
+    }
+
+    fun getAllRoutines(): Flow<List<Routine>> {
+        return combine(
+            routineDao.getAllRoutines(),
+            routineDao.getAllFolders(),
+            exerciseDao.getAllExercises()
+        ) { routines, folders, exercises ->
+            val folderMap = folders.associateBy { it.id }
+            val exerciseMap = exercises.associateBy { it.id }
+
+            routines.map { entity ->
+                val exercisesForRoutine = routineDao.getExercisesForRoutine(entity.id)
+                val mappedExercises = exercisesForRoutine.mapNotNull { re ->
+                    val ex = exerciseMap[re.exerciseId]?.toDomain() ?: return@mapNotNull null
+                    RoutineExercise(
+                        id = re.id,
+                        exercise = ex,
+                        orderIndex = re.orderIndex,
+                        targetSets = re.targetSets,
+                        defaultWeightKg = re.defaultWeightKg,
+                        defaultReps = re.defaultReps
+                    )
+                }
+                Routine(
+                    id = entity.id,
+                    folderId = entity.folderId,
+                    folderName = folderMap[entity.folderId]?.name,
+                    name = entity.name,
+                    notes = entity.notes,
+                    exercises = mappedExercises,
+                    createdAt = entity.createdAt
+                )
+            }
+        }.flowOn(Dispatchers.IO)
+    }
+
+    suspend fun saveWorkoutAsRoutine(
+        workoutId: Long,
+        routineName: String,
+        folderId: Long? = null
+    ): Long = withContext(Dispatchers.IO) {
+        val workout = getFullWorkout(workoutId) ?: return@withContext -1L
+        val routineEntity = RoutineEntity(
+            folderId = folderId,
+            name = routineName.ifBlank { workout.name },
+            notes = workout.notes
+        )
+        val routineId = routineDao.insertRoutine(routineEntity)
+
+        val routineExercises = workout.exercises.mapIndexed { index, we ->
+            val firstSet = we.sets.firstOrNull { it.isCompleted } ?: we.sets.firstOrNull()
+            RoutineExerciseEntity(
+                routineId = routineId,
+                exerciseId = we.exercise.id,
+                orderIndex = index,
+                targetSets = we.sets.size.coerceAtLeast(1),
+                defaultWeightKg = firstSet?.weightKg ?: 0.0,
+                defaultReps = firstSet?.reps ?: 10
+            )
+        }
+        routineDao.insertRoutineExercises(routineExercises)
+        routineId
+    }
+
+    suspend fun startWorkoutFromRoutine(routineId: Long): Long = withContext(Dispatchers.IO) {
+        val routine = routineDao.getRoutineById(routineId) ?: return@withContext -1L
+        val active = getActiveWorkout()
+        if (active != null) return@withContext active.id
+
+        val workoutEntity = WorkoutEntity(
+            title = routine.name,
+            startedAt = System.currentTimeMillis(),
+            notes = routine.notes,
+            isCompleted = false
+        )
+        val workoutId = workoutDao.insertWorkout(workoutEntity)
+        val routineExercises = routineDao.getExercisesForRoutine(routineId)
+
+        for (re in routineExercises) {
+            val weEntity = WorkoutExerciseEntity(
+                workoutId = workoutId,
+                exerciseId = re.exerciseId,
+                orderIndex = re.orderIndex
+            )
+            val weId = workoutDao.insertWorkoutExercise(weEntity)
+            for (setIndex in 1..re.targetSets) {
+                val setEntity = WorkoutSetEntity(
+                    workoutExerciseId = weId,
+                    setNumber = setIndex,
+                    weightKg = re.defaultWeightKg,
+                    reps = re.defaultReps,
+                    isCompleted = false,
+                    setType = SetType.NORMAL.name
+                )
+                workoutDao.insertWorkoutSet(setEntity)
+            }
+        }
+        workoutId
+    }
+
+    suspend fun deleteRoutine(routineId: Long) = withContext(Dispatchers.IO) {
+        routineDao.deleteRoutine(routineId)
     }
 }

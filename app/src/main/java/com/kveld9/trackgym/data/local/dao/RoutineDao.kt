@@ -1,0 +1,54 @@
+package com.kveld9.trackgym.data.local.dao
+
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Update
+import com.kveld9.trackgym.data.local.entity.RoutineEntity
+import com.kveld9.trackgym.data.local.entity.RoutineExerciseEntity
+import com.kveld9.trackgym.data.local.entity.RoutineFolderEntity
+import kotlinx.coroutines.flow.Flow
+
+@Dao
+interface RoutineDao {
+
+    // Folders
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertFolder(folder: RoutineFolderEntity): Long
+
+    @Query("SELECT * FROM routine_folders ORDER BY name ASC")
+    fun getAllFolders(): Flow<List<RoutineFolderEntity>>
+
+    @Query("SELECT * FROM routine_folders WHERE id = :id")
+    suspend fun getFolderById(id: Long): RoutineFolderEntity?
+
+    @Query("DELETE FROM routine_folders WHERE id = :id")
+    suspend fun deleteFolder(id: Long)
+
+    // Routines
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertRoutine(routine: RoutineEntity): Long
+
+    @Update
+    suspend fun updateRoutine(routine: RoutineEntity)
+
+    @Query("SELECT * FROM routines ORDER BY createdAt DESC")
+    fun getAllRoutines(): Flow<List<RoutineEntity>>
+
+    @Query("SELECT * FROM routines WHERE id = :id")
+    suspend fun getRoutineById(id: Long): RoutineEntity?
+
+    @Query("DELETE FROM routines WHERE id = :id")
+    suspend fun deleteRoutine(id: Long)
+
+    // Routine Exercises
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertRoutineExercises(exercises: List<RoutineExerciseEntity>)
+
+    @Query("SELECT * FROM routine_exercises WHERE routineId = :routineId ORDER BY orderIndex ASC")
+    suspend fun getExercisesForRoutine(routineId: Long): List<RoutineExerciseEntity>
+
+    @Query("DELETE FROM routine_exercises WHERE routineId = :routineId")
+    suspend fun deleteExercisesForRoutine(routineId: Long)
+}

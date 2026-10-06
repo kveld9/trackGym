@@ -6,9 +6,13 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.kveld9.trackgym.data.local.dao.ExerciseDao
 import com.kveld9.trackgym.data.local.dao.PersonalRecordDao
+import com.kveld9.trackgym.data.local.dao.RoutineDao
 import com.kveld9.trackgym.data.local.dao.WorkoutDao
 import com.kveld9.trackgym.data.local.entity.ExerciseEntity
 import com.kveld9.trackgym.data.local.entity.PersonalRecordEntity
+import com.kveld9.trackgym.data.local.entity.RoutineEntity
+import com.kveld9.trackgym.data.local.entity.RoutineExerciseEntity
+import com.kveld9.trackgym.data.local.entity.RoutineFolderEntity
 import com.kveld9.trackgym.data.local.entity.WorkoutEntity
 import com.kveld9.trackgym.data.local.entity.WorkoutExerciseEntity
 import com.kveld9.trackgym.data.local.entity.WorkoutSetEntity
@@ -19,9 +23,12 @@ import com.kveld9.trackgym.data.local.entity.WorkoutSetEntity
         WorkoutEntity::class,
         WorkoutExerciseEntity::class,
         WorkoutSetEntity::class,
-        PersonalRecordEntity::class
+        PersonalRecordEntity::class,
+        RoutineFolderEntity::class,
+        RoutineEntity::class,
+        RoutineExerciseEntity::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 abstract class GymDatabase : RoomDatabase() {
@@ -29,6 +36,7 @@ abstract class GymDatabase : RoomDatabase() {
     abstract fun exerciseDao(): ExerciseDao
     abstract fun workoutDao(): WorkoutDao
     abstract fun personalRecordDao(): PersonalRecordDao
+    abstract fun routineDao(): RoutineDao
 
     companion object {
         @Volatile
