@@ -45,6 +45,8 @@
     <string name="plate_calc_each_side">EACH SIDE</string>
     <string name="plate_calc_remainder">Remaining: %1$s</string>
     <string name="plate_calc_target_weight">Target Weight</string>
+    <string name="plate_calc_under_bar">Weight is less than or equal to bar weight</string>
+    <string name="plate_calc_no_plates">No matching plates</string>
     <string name="action_add_warmup_sets">Add Warmup Sets</string>
 
     <!-- PR Celebration Banner -->

@@ -1499,7 +1499,7 @@ fun PlateCalculatorDialog(
                         onValueChange = { targetWeightInput = it },
                         label = { Text("${stringResource(R.string.plate_calc_target_weight)} (${weightUnit.symbol})", fontSize = 11.sp) },
                         singleLine = true,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                         modifier = Modifier.weight(1f),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = MaterialTheme.colorScheme.primary,
@@ -1515,7 +1515,7 @@ fun PlateCalculatorDialog(
                         onValueChange = { barWeightInput = it },
                         label = { Text("${stringResource(R.string.plate_calc_bar_weight)} (${weightUnit.symbol})", fontSize = 11.sp) },
                         singleLine = true,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                         modifier = Modifier.weight(1f),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = MaterialTheme.colorScheme.primary,
@@ -1574,10 +1574,14 @@ fun PlateCalculatorDialog(
                     }
                 }
 
-                // Visual Plate Breakdown
                 if (calcResult.platesPerSide.isEmpty()) {
+                    val emptyMsg = if (currentTarget <= currentBar) {
+                        stringResource(R.string.plate_calc_under_bar)
+                    } else {
+                        stringResource(R.string.plate_calc_no_plates)
+                    }
                     Text(
-                        text = if (currentTarget <= currentBar) "Weight is less than or equal to bar weight" else "No matching plates",
+                        text = emptyMsg,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 13.sp,
                         modifier = Modifier.padding(vertical = 8.dp)

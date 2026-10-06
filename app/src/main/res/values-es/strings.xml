@@ -45,6 +45,8 @@
     <string name="plate_calc_each_side">POR CADA LADO</string>
     <string name="plate_calc_remainder">Restante: %1$s</string>
     <string name="plate_calc_target_weight">Peso Objetivo</string>
+    <string name="plate_calc_under_bar">El peso es menor o igual al peso de la barra</string>
+    <string name="plate_calc_no_plates">No hay combinación de discos disponible</string>
     <string name="action_add_warmup_sets">Agregar Series de Calentamiento</string>
 
     <!-- PR Celebration Banner -->
