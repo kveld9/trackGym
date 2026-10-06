@@ -388,6 +388,10 @@ class GymViewModel(
         _selectedDetailComparison.value = null
     }
 
+    fun clearLastFinishedComparison() {
+        _lastFinishedComparison.value = null
+    }
+
     class Factory(
         private val repository: GymRepository,
         private val themePreferences: ThemePreferences? = null

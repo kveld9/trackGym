@@ -67,7 +67,7 @@ fun MainScreen(
                 if (selectedDetailComparison != null) {
                     viewModel.clearSelectedDetailComparison()
                 } else {
-                    viewModel.finishWorkout("") {}
+                    viewModel.clearLastFinishedComparison()
                 }
             }
         )
