@@ -1,5 +1,6 @@
 package com.kveld9.trackgym.ui.screens.active
 
+import java.util.Locale
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.BorderStroke
@@ -1290,7 +1291,11 @@ fun SetRowItem(
                 weightUnit = weightUnit,
                 currentWeight = currentDisplay,
                 onAdjust = { updatedDisplay ->
-                    weightText = weightUnit.formatValue(updatedDisplay)
+                    weightText = if (updatedDisplay % 1.0 == 0.0) {
+                        "${updatedDisplay.toInt()}"
+                    } else {
+                        String.format(Locale.US, "%.2f", updatedDisplay).trimEnd('0').trimEnd('.')
+                    }
                     val inKg = weightUnit.toKg(updatedDisplay)
                     onUpdateSet(set.copy(weightKg = inKg))
                 },
