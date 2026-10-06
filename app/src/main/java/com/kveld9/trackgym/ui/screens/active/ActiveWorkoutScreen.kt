@@ -84,17 +84,10 @@ import com.kveld9.trackgym.domain.model.SetType
 import com.kveld9.trackgym.domain.model.WeightUnit
 import com.kveld9.trackgym.domain.model.WorkoutExercise
 import com.kveld9.trackgym.domain.model.WorkoutSet
+import androidx.compose.material3.MaterialTheme
 import com.kveld9.trackgym.ui.components.PrCelebrationBanner
-import com.kveld9.trackgym.ui.theme.GymBlack
 import com.kveld9.trackgym.ui.theme.GymBlue
-import com.kveld9.trackgym.ui.theme.GymBorder
-import com.kveld9.trackgym.ui.theme.GymNeonGreen
-import com.kveld9.trackgym.ui.theme.GymRed
-import com.kveld9.trackgym.ui.theme.GymSurface
-import com.kveld9.trackgym.ui.theme.GymSurfaceVariant
 import com.kveld9.trackgym.ui.theme.GymWarmupAmber
-import com.kveld9.trackgym.ui.theme.TextMuted
-import com.kveld9.trackgym.ui.theme.TextWhite
 import com.kveld9.trackgym.ui.viewmodel.GymViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -168,7 +161,7 @@ fun ActiveWorkoutScreen(
                     )
                 }
             },
-            containerColor = GymBlack,
+            containerColor = MaterialTheme.colorScheme.background,
             modifier = modifier
         ) { paddingValues ->
             Column(
@@ -191,7 +184,7 @@ fun ActiveWorkoutScreen(
                     item {
                         Text(
                             text = activeWorkout?.name ?: stringResource(R.string.workout_default_title),
-                            color = TextWhite,
+                            color = MaterialTheme.colorScheme.onBackground,
                             fontSize = 22.sp,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(top = 8.dp)
@@ -226,13 +219,13 @@ fun ActiveWorkoutScreen(
                                 .fillMaxWidth()
                                 .height(52.dp),
                             shape = RoundedCornerShape(12.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = GymSurfaceVariant)
+                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh)
                         ) {
-                            Icon(Icons.Default.Add, contentDescription = null, tint = GymNeonGreen)
+                            Icon(Icons.Default.Add, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
                                 text = stringResource(R.string.btn_add_exercise),
-                                color = GymNeonGreen,
+                                color = MaterialTheme.colorScheme.primary,
                                 fontWeight = FontWeight.SemiBold
                             )
                         }
@@ -249,7 +242,7 @@ fun ActiveWorkoutScreen(
     if (showExercisePicker) {
         ModalBottomSheet(
             onDismissRequest = { showExercisePicker = false },
-            containerColor = GymSurface,
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
             sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
         ) {
             ExercisePickerContent(
@@ -265,11 +258,11 @@ fun ActiveWorkoutScreen(
     if (showSaveRoutineDialog) {
         AlertDialog(
             onDismissRequest = { showSaveRoutineDialog = false },
-            containerColor = GymSurface,
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
             title = {
                 Text(
                     text = stringResource(R.string.dialog_save_routine_title),
-                    color = TextWhite,
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.Bold
                 )
             },
@@ -282,10 +275,10 @@ fun ActiveWorkoutScreen(
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth(),
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = GymNeonGreen,
-                            unfocusedBorderColor = GymBorder,
-                            focusedTextColor = TextWhite,
-                            unfocusedTextColor = TextWhite
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                            unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                         )
                     )
                 }
@@ -296,14 +289,14 @@ fun ActiveWorkoutScreen(
                         showSaveRoutineDialog = false
                         viewModel.saveActiveWorkoutAsRoutine(routineNameInput)
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = GymNeonGreen)
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                 ) {
-                    Text(stringResource(R.string.action_save), color = GymBlack, fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.action_save), color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Bold)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showSaveRoutineDialog = false }) {
-                    Text(stringResource(R.string.action_cancel), color = TextMuted)
+                    Text(stringResource(R.string.action_cancel), color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
         )
@@ -312,11 +305,11 @@ fun ActiveWorkoutScreen(
     if (showFinishDialog) {
         AlertDialog(
             onDismissRequest = { showFinishDialog = false },
-            containerColor = GymSurface,
-            title = { Text(stringResource(R.string.dialog_finish_workout_title), color = TextWhite, fontWeight = FontWeight.Bold) },
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+            title = { Text(stringResource(R.string.dialog_finish_workout_title), color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold) },
             text = {
                 Column {
-                    Text(stringResource(R.string.dialog_finish_workout_msg), color = TextMuted)
+                    Text(stringResource(R.string.dialog_finish_workout_msg), color = MaterialTheme.colorScheme.onSurfaceVariant)
                     Spacer(modifier = Modifier.height(12.dp))
                     OutlinedTextField(
                         value = finishNotes,
@@ -324,10 +317,10 @@ fun ActiveWorkoutScreen(
                         placeholder = { Text(stringResource(R.string.notes_placeholder)) },
                         modifier = Modifier.fillMaxWidth(),
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = GymNeonGreen,
-                            unfocusedBorderColor = GymBorder,
-                            focusedTextColor = TextWhite,
-                            unfocusedTextColor = TextWhite
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                            unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                         )
                     )
                 }
@@ -340,14 +333,14 @@ fun ActiveWorkoutScreen(
                             onWorkoutFinished()
                         }
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = GymNeonGreen)
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                 ) {
-                    Text(stringResource(R.string.btn_save_and_summary), color = GymBlack, fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.btn_save_and_summary), color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Bold)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showFinishDialog = false }) {
-                    Text(stringResource(R.string.action_cancel), color = TextMuted)
+                    Text(stringResource(R.string.action_cancel), color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
         )
@@ -373,7 +366,7 @@ fun EmptyWorkoutDashboard(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(GymBlack)
+            .background(MaterialTheme.colorScheme.background)
             .verticalScroll(rememberScrollState())
             .padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -383,13 +376,13 @@ fun EmptyWorkoutDashboard(
         Surface(
             modifier = Modifier.size(80.dp),
             shape = CircleShape,
-            color = GymSurfaceVariant
+            color = MaterialTheme.colorScheme.surfaceContainerHigh
         ) {
             Box(contentAlignment = Alignment.Center) {
                 Icon(
                     imageVector = Icons.Default.FitnessCenter,
                     contentDescription = null,
-                    tint = GymNeonGreen,
+                    tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(40.dp)
                 )
             }
@@ -397,14 +390,14 @@ fun EmptyWorkoutDashboard(
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = stringResource(R.string.dashboard_title),
-            color = TextWhite,
+            color = MaterialTheme.colorScheme.onBackground,
             fontSize = 26.sp,
             fontWeight = FontWeight.Bold
         )
         Spacer(modifier = Modifier.height(6.dp))
         Text(
             text = stringResource(R.string.dashboard_subtitle),
-            color = TextMuted,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             fontSize = 14.sp,
             textAlign = TextAlign.Center
         )
@@ -418,13 +411,13 @@ fun EmptyWorkoutDashboard(
                 .fillMaxWidth()
                 .height(54.dp),
             shape = RoundedCornerShape(14.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = GymNeonGreen)
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
         ) {
-            Icon(Icons.Default.PlayArrow, contentDescription = null, tint = GymBlack)
+            Icon(Icons.Default.PlayArrow, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimary)
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = stringResource(R.string.btn_start_empty_workout),
-                color = GymBlack,
+                color = MaterialTheme.colorScheme.onPrimary,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -441,13 +434,13 @@ fun EmptyWorkoutDashboard(
             Column {
                 Text(
                     text = stringResource(R.string.routines_title),
-                    color = TextWhite,
+                    color = MaterialTheme.colorScheme.onBackground,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
                     text = stringResource(R.string.routines_subtitle),
-                    color = TextMuted,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 12.sp
                 )
             }
@@ -468,10 +461,10 @@ fun EmptyWorkoutDashboard(
                     onClick = { selectedFolderId = null },
                     label = { Text(stringResource(R.string.routine_folder_all)) },
                     colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = GymNeonGreen,
-                        selectedLabelColor = GymBlack,
-                        containerColor = GymSurfaceVariant,
-                        labelColor = TextMuted
+                        selectedContainerColor = MaterialTheme.colorScheme.primary,
+                        selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                        labelColor = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 )
                 folders.forEach { folder ->
@@ -480,10 +473,10 @@ fun EmptyWorkoutDashboard(
                         onClick = { selectedFolderId = folder.id },
                         label = { Text(folder.name) },
                         colors = FilterChipDefaults.filterChipColors(
-                            selectedContainerColor = GymNeonGreen,
-                            selectedLabelColor = GymBlack,
-                            containerColor = GymSurfaceVariant,
-                            labelColor = TextMuted
+                            selectedContainerColor = MaterialTheme.colorScheme.primary,
+                            selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                            labelColor = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     )
                 }
@@ -495,8 +488,8 @@ fun EmptyWorkoutDashboard(
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(14.dp),
-                colors = CardDefaults.cardColors(containerColor = GymSurface),
-                border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(GymBorder))
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+                border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)))
             ) {
                 Column(
                     modifier = Modifier.padding(20.dp),
@@ -505,20 +498,20 @@ fun EmptyWorkoutDashboard(
                     Icon(
                         imageVector = Icons.Default.Bookmark,
                         contentDescription = null,
-                        tint = TextMuted,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(32.dp)
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = stringResource(R.string.routine_empty_title),
-                        color = TextWhite,
+                        color = MaterialTheme.colorScheme.onSurface,
                         fontSize = 15.sp,
                         fontWeight = FontWeight.SemiBold
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = stringResource(R.string.routine_empty_desc),
-                        color = TextMuted,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 12.sp,
                         textAlign = TextAlign.Center
                     )
@@ -554,8 +547,8 @@ fun RoutineCardItem(
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(14.dp),
-        colors = CardDefaults.cardColors(containerColor = GymSurface),
-        border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(GymBorder))
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+        border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)))
     ) {
         Row(
             modifier = Modifier
@@ -567,7 +560,7 @@ fun RoutineCardItem(
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = routine.name,
-                    color = TextWhite,
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -575,7 +568,7 @@ fun RoutineCardItem(
                 val exerciseNames = routine.exercises.joinToString(", ") { it.exercise.name }
                 Text(
                     text = if (exerciseNames.isNotBlank()) exerciseNames else stringResource(R.string.routine_exercises_count, routine.exercises.size),
-                    color = TextMuted,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 12.sp,
                     maxLines = 1
                 )
@@ -585,12 +578,12 @@ fun RoutineCardItem(
                 Button(
                     onClick = onStart,
                     shape = RoundedCornerShape(10.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = GymNeonGreen),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                     modifier = Modifier.height(38.dp)
                 ) {
                     Text(
                         text = stringResource(R.string.btn_start_routine),
-                        color = GymBlack,
+                        color = MaterialTheme.colorScheme.onPrimary,
                         fontSize = 13.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -601,15 +594,15 @@ fun RoutineCardItem(
                         onClick = { menuExpanded = true },
                         modifier = Modifier.size(48.dp)
                     ) {
-                        Icon(Icons.Default.MoreVert, contentDescription = null, tint = TextMuted)
+                        Icon(Icons.Default.MoreVert, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                     DropdownMenu(
                         expanded = menuExpanded,
                         onDismissRequest = { menuExpanded = false },
-                        modifier = Modifier.background(GymSurface)
+                        modifier = Modifier.background(MaterialTheme.colorScheme.surfaceContainer)
                     ) {
                         DropdownMenuItem(
-                            text = { Text(stringResource(R.string.menu_delete_routine), color = GymRed) },
+                            text = { Text(stringResource(R.string.menu_delete_routine), color = MaterialTheme.colorScheme.error) },
                             onClick = {
                                 menuExpanded = false
                                 onDelete()
@@ -644,8 +637,8 @@ fun FloatingRestTimer(
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 6.dp),
         shape = RoundedCornerShape(16.dp),
-        color = GymSurface,
-        border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(GymBorder)),
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))),
         shadowElevation = 8.dp
     ) {
         Column(modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp)) {
@@ -658,20 +651,20 @@ fun FloatingRestTimer(
                     Icon(
                         imageVector = Icons.Default.Timer,
                         contentDescription = null,
-                        tint = GymNeonGreen,
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(18.dp)
                     )
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
                         text = stringResource(R.string.rest_timer_title),
-                        color = TextMuted,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Medium
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = timeFormatted,
-                        color = TextWhite,
+                        color = MaterialTheme.colorScheme.onSurface,
                         fontSize = 17.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -687,7 +680,7 @@ fun FloatingRestTimer(
                     ) {
                         Text(
                             text = stringResource(R.string.rest_timer_minus_15),
-                            color = TextMuted,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -699,7 +692,7 @@ fun FloatingRestTimer(
                     ) {
                         Text(
                             text = stringResource(R.string.rest_timer_add_15),
-                            color = GymNeonGreen,
+                            color = MaterialTheme.colorScheme.primary,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -712,7 +705,7 @@ fun FloatingRestTimer(
                         Icon(
                             imageVector = if (isRunning) Icons.Default.Pause else Icons.Default.PlayArrow,
                             contentDescription = if (isRunning) "Pause" else "Resume",
-                            tint = TextWhite,
+                            tint = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.size(20.dp)
                         )
                     }
@@ -724,7 +717,7 @@ fun FloatingRestTimer(
                         Icon(
                             imageVector = Icons.Default.Close,
                             contentDescription = stringResource(R.string.rest_timer_skip),
-                            tint = GymRed,
+                            tint = MaterialTheme.colorScheme.error,
                             modifier = Modifier.size(20.dp)
                         )
                     }
@@ -739,8 +732,8 @@ fun FloatingRestTimer(
                     .fillMaxWidth()
                     .height(4.dp)
                     .clip(RoundedCornerShape(2.dp)),
-                color = GymNeonGreen,
-                trackColor = GymSurfaceVariant
+                color = MaterialTheme.colorScheme.primary,
+                trackColor = MaterialTheme.colorScheme.surfaceContainerHigh
             )
         }
     }
@@ -765,19 +758,19 @@ fun ActiveWorkoutTopBar(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .clip(RoundedCornerShape(20.dp))
-                    .background(GymSurfaceVariant)
+                    .background(MaterialTheme.colorScheme.surfaceContainerHigh)
                     .padding(horizontal = 12.dp, vertical = 6.dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.Timer,
                     contentDescription = null,
-                    tint = GymNeonGreen,
+                    tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(16.dp)
                 )
                 Spacer(modifier = Modifier.width(6.dp))
                 Text(
                     text = timeFormatted,
-                    color = TextWhite,
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold
                 )
@@ -789,22 +782,22 @@ fun ActiveWorkoutTopBar(
                     onClick = { menuExpanded = true },
                     modifier = Modifier.size(48.dp)
                 ) {
-                    Icon(Icons.Default.MoreVert, contentDescription = null, tint = TextMuted)
+                    Icon(Icons.Default.MoreVert, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 DropdownMenu(
                     expanded = menuExpanded,
                     onDismissRequest = { menuExpanded = false },
-                    modifier = Modifier.background(GymSurface)
+                    modifier = Modifier.background(MaterialTheme.colorScheme.surfaceContainer)
                 ) {
                     DropdownMenuItem(
-                        text = { Text(stringResource(R.string.action_save_as_routine), color = TextWhite) },
+                        text = { Text(stringResource(R.string.action_save_as_routine), color = MaterialTheme.colorScheme.onSurface) },
                         onClick = {
                             menuExpanded = false
                             onSaveAsRoutineClick()
                         }
                     )
                     DropdownMenuItem(
-                        text = { Text(stringResource(R.string.action_discard), color = GymRed) },
+                        text = { Text(stringResource(R.string.action_discard), color = MaterialTheme.colorScheme.error) },
                         onClick = {
                             menuExpanded = false
                             onCancelClick()
@@ -816,13 +809,13 @@ fun ActiveWorkoutTopBar(
             Spacer(modifier = Modifier.width(4.dp))
             Button(
                 onClick = onFinishClick,
-                colors = ButtonDefaults.buttonColors(containerColor = GymNeonGreen),
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                 shape = RoundedCornerShape(10.dp)
             ) {
-                Text(stringResource(R.string.action_finish), color = GymBlack, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.action_finish), color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Bold)
             }
         },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = GymBlack)
+        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
     )
 }
 
@@ -841,8 +834,8 @@ fun WorkoutExerciseCard(
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = GymSurface),
-        border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(GymBorder))
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+        border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)))
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             // Exercise Header
@@ -854,14 +847,14 @@ fun WorkoutExerciseCard(
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = workoutExercise.exercise.name,
-                        color = TextWhite,
+                        color = MaterialTheme.colorScheme.onSurface,
                         fontSize = 17.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.height(2.dp))
                     Text(
                         text = "${stringResource(workoutExercise.exercise.muscleGroup.nameRes)} • ${stringResource(workoutExercise.exercise.category.nameRes)}",
-                        color = GymNeonGreen,
+                        color = MaterialTheme.colorScheme.primary,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Medium
                     )
@@ -872,15 +865,15 @@ fun WorkoutExerciseCard(
                         onClick = { menuExpanded = true },
                         modifier = Modifier.size(48.dp)
                     ) {
-                        Icon(Icons.Default.MoreVert, contentDescription = null, tint = TextMuted)
+                        Icon(Icons.Default.MoreVert, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                     DropdownMenu(
                         expanded = menuExpanded,
                         onDismissRequest = { menuExpanded = false },
-                        modifier = Modifier.background(GymSurface)
+                        modifier = Modifier.background(MaterialTheme.colorScheme.surfaceContainer)
                     ) {
                         DropdownMenuItem(
-                            text = { Text(stringResource(R.string.menu_remove_exercise), color = GymRed) },
+                            text = { Text(stringResource(R.string.menu_remove_exercise), color = MaterialTheme.colorScheme.error) },
                             onClick = {
                                 menuExpanded = false
                                 onRemoveExercise()
@@ -897,10 +890,10 @@ fun WorkoutExerciseCard(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(stringResource(R.string.table_header_set), color = TextMuted, fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.width(48.dp), textAlign = TextAlign.Center)
-                Text(weightUnit.symbol.uppercase(), color = TextMuted, fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
-                Text(stringResource(R.string.table_header_reps), color = TextMuted, fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
-                Text(stringResource(R.string.table_header_complete), color = TextMuted, fontSize = 13.sp, fontWeight = FontWeight.Bold, modifier = Modifier.width(48.dp), textAlign = TextAlign.Center)
+                Text(stringResource(R.string.table_header_set), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.width(48.dp), textAlign = TextAlign.Center)
+                Text(weightUnit.symbol.uppercase(), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
+                Text(stringResource(R.string.table_header_reps), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
+                Text(stringResource(R.string.table_header_complete), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp, fontWeight = FontWeight.Bold, modifier = Modifier.width(48.dp), textAlign = TextAlign.Center)
             }
 
             Spacer(modifier = Modifier.height(6.dp))
@@ -924,8 +917,8 @@ fun WorkoutExerciseCard(
                 onClick = onAddSet,
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(10.dp),
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = TextWhite),
-                border = ButtonDefaults.outlinedButtonBorder(enabled = true).copy(brush = androidx.compose.ui.graphics.SolidColor(GymBorder))
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.primary),
+                border = ButtonDefaults.outlinedButtonBorder(enabled = true).copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)))
             ) {
                 Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(16.dp))
                 Spacer(modifier = Modifier.width(6.dp))
@@ -954,15 +947,15 @@ fun SetRowItem(
     var showSetTypePicker by remember { mutableStateOf(false) }
 
     val checkBgColor by animateColorAsState(
-        targetValue = if (set.isCompleted) GymNeonGreen else GymSurfaceVariant,
+        targetValue = if (set.isCompleted) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh,
         label = "checkColor"
     )
 
     val badgeColor = when (set.setType) {
-        SetType.NORMAL -> if (set.isCompleted) GymNeonGreen else TextMuted
+        SetType.NORMAL -> if (set.isCompleted) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
         SetType.WARMUP -> GymWarmupAmber
         SetType.DROP -> GymBlue
-        SetType.FAILURE -> GymRed
+        SetType.FAILURE -> MaterialTheme.colorScheme.error
     }
 
     val badgeLabel = when (set.setType) {
@@ -976,7 +969,7 @@ fun SetRowItem(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(8.dp))
-            .background(if (set.isCompleted) GymSurfaceVariant.copy(alpha = 0.4f) else Color.Transparent)
+            .background(if (set.isCompleted) MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.4f) else Color.Transparent)
             .padding(vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -999,7 +992,7 @@ fun SetRowItem(
             DropdownMenu(
                 expanded = showSetTypePicker,
                 onDismissRequest = { showSetTypePicker = false },
-                modifier = Modifier.background(GymSurface)
+                modifier = Modifier.background(MaterialTheme.colorScheme.surfaceContainer)
             ) {
                 SetType.entries.forEach { type ->
                     DropdownMenuItem(
@@ -1008,17 +1001,17 @@ fun SetRowItem(
                                 Text(
                                     text = type.shortLabel,
                                     color = when (type) {
-                                        SetType.NORMAL -> GymNeonGreen
+                                        SetType.NORMAL -> MaterialTheme.colorScheme.primary
                                         SetType.WARMUP -> GymWarmupAmber
                                         SetType.DROP -> GymBlue
-                                        SetType.FAILURE -> GymRed
+                                        SetType.FAILURE -> MaterialTheme.colorScheme.error
                                     },
                                     fontWeight = FontWeight.Bold,
                                     modifier = Modifier.width(28.dp)
                                 )
                                 Text(
                                     text = stringResource(type.nameRes),
-                                    color = TextWhite,
+                                    color = MaterialTheme.colorScheme.onSurface,
                                     fontSize = 14.sp
                                 )
                             }
@@ -1042,16 +1035,16 @@ fun SetRowItem(
                     val inKg = weightUnit.toKg(parsedDisplay)
                     onUpdateSet(set.copy(weightKg = inKg))
                 },
-                placeholder = { Text("0", color = TextMuted) },
+                placeholder = { Text("0", color = MaterialTheme.colorScheme.onSurfaceVariant) },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                textStyle = androidx.compose.ui.text.TextStyle(textAlign = TextAlign.Center, color = TextWhite, fontSize = 15.sp),
+                textStyle = androidx.compose.ui.text.TextStyle(textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onSurface, fontSize = 15.sp),
                 modifier = Modifier.fillMaxWidth().height(48.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = GymNeonGreen,
-                    unfocusedBorderColor = GymBorder,
-                    focusedContainerColor = GymSurfaceVariant,
-                    unfocusedContainerColor = GymSurfaceVariant
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                    focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh
                 ),
                 shape = RoundedCornerShape(8.dp)
             )
@@ -1066,16 +1059,16 @@ fun SetRowItem(
                     val parsed = input.toIntOrNull() ?: 0
                     onUpdateSet(set.copy(reps = parsed))
                 },
-                placeholder = { Text("0", color = TextMuted) },
+                placeholder = { Text("0", color = MaterialTheme.colorScheme.onSurfaceVariant) },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                textStyle = androidx.compose.ui.text.TextStyle(textAlign = TextAlign.Center, color = TextWhite, fontSize = 15.sp),
+                textStyle = androidx.compose.ui.text.TextStyle(textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onSurface, fontSize = 15.sp),
                 modifier = Modifier.fillMaxWidth().height(48.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = GymNeonGreen,
-                    unfocusedBorderColor = GymBorder,
-                    focusedContainerColor = GymSurfaceVariant,
-                    unfocusedContainerColor = GymSurfaceVariant
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                    focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh
                 ),
                 shape = RoundedCornerShape(8.dp)
             )
@@ -1102,7 +1095,7 @@ fun SetRowItem(
             Icon(
                 imageVector = Icons.Default.Check,
                 contentDescription = stringResource(R.string.desc_complete_set),
-                tint = if (set.isCompleted) GymBlack else TextMuted,
+                tint = if (set.isCompleted) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(24.dp)
             )
         }
@@ -1122,7 +1115,7 @@ fun ExercisePickerContent(
     ) {
         Text(
             text = stringResource(R.string.title_select_exercise),
-            color = TextWhite,
+            color = MaterialTheme.colorScheme.onSurface,
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 12.dp)
@@ -1137,7 +1130,7 @@ fun ExercisePickerContent(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(10.dp))
-                        .background(GymSurfaceVariant)
+                        .background(MaterialTheme.colorScheme.surfaceContainerHigh)
                         .clickable { onSelectExercise(exercise) }
                         .padding(14.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -1146,25 +1139,25 @@ fun ExercisePickerContent(
                     Column {
                         Text(
                             text = exercise.name,
-                            color = TextWhite,
+                            color = MaterialTheme.colorScheme.onSurface,
                             fontSize = 15.sp,
                             fontWeight = FontWeight.SemiBold
                         )
                         Spacer(modifier = Modifier.height(2.dp))
                         Text(
                             text = "${stringResource(exercise.muscleGroup.nameRes)} • ${stringResource(exercise.category.nameRes)}",
-                            color = GymNeonGreen,
+                            color = MaterialTheme.colorScheme.primary,
                             fontSize = 12.sp
                         )
                     }
                     if (exercise.isCustom) {
                         Text(
                             text = stringResource(R.string.badge_manual),
-                            color = GymNeonGreen,
+                            color = MaterialTheme.colorScheme.primary,
                             fontSize = 10.sp,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier
-                                .border(1.dp, GymNeonGreen, RoundedCornerShape(4.dp))
+                                .border(1.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(4.dp))
                                 .padding(horizontal = 6.dp, vertical = 2.dp)
                         )
                     }

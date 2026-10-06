@@ -56,13 +56,6 @@ import com.kveld9.trackgym.R
 import com.kveld9.trackgym.domain.model.Exercise
 import com.kveld9.trackgym.domain.model.ExerciseCategory
 import com.kveld9.trackgym.domain.model.MuscleGroup
-import com.kveld9.trackgym.ui.theme.GymBlack
-import com.kveld9.trackgym.ui.theme.GymBorder
-import com.kveld9.trackgym.ui.theme.GymNeonGreen
-import com.kveld9.trackgym.ui.theme.GymSurface
-import com.kveld9.trackgym.ui.theme.GymSurfaceVariant
-import com.kveld9.trackgym.ui.theme.TextMuted
-import com.kveld9.trackgym.ui.theme.TextWhite
 import com.kveld9.trackgym.ui.viewmodel.GymViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -196,13 +189,13 @@ fun MuscleChip(
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(20.dp))
-            .background(if (isSelected) GymNeonGreen else GymSurfaceVariant)
+            .background(if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh)
             .clickable { onClick() }
             .padding(horizontal = 14.dp, vertical = 8.dp)
     ) {
         Text(
             text = label,
-            color = if (isSelected) GymBlack else TextWhite,
+            color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
             fontSize = 13.sp
         )
@@ -215,8 +208,8 @@ fun ExerciseRowCard(exercise: Exercise) {
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
-            .background(GymSurface)
-            .border(1.dp, GymBorder, RoundedCornerShape(12.dp))
+            .background(MaterialTheme.colorScheme.surfaceContainer)
+            .border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f), RoundedCornerShape(12.dp))
             .padding(14.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
@@ -224,14 +217,14 @@ fun ExerciseRowCard(exercise: Exercise) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = exercise.name,
-                color = TextWhite,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 15.sp,
                 fontWeight = FontWeight.SemiBold
             )
             Spacer(modifier = Modifier.height(3.dp))
             Text(
                 text = "${stringResource(exercise.muscleGroup.nameRes)} • ${stringResource(exercise.category.nameRes)}",
-                color = GymNeonGreen,
+                color = MaterialTheme.colorScheme.primary,
                 fontSize = 12.sp
             )
         }
@@ -240,13 +233,13 @@ fun ExerciseRowCard(exercise: Exercise) {
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(6.dp))
-                    .background(GymNeonGreen.copy(alpha = 0.15f))
-                    .border(1.dp, GymNeonGreen, RoundedCornerShape(6.dp))
+                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f))
+                    .border(1.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(6.dp))
                     .padding(horizontal = 8.dp, vertical = 4.dp)
             ) {
                 Text(
                     text = stringResource(R.string.badge_manual),
-                    color = GymNeonGreen,
+                    color = MaterialTheme.colorScheme.primary,
                     fontSize = 10.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -271,9 +264,9 @@ fun CreateExerciseDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        containerColor = GymSurface,
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
         title = {
-            Text(stringResource(R.string.dialog_create_exercise_title), color = TextWhite, fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.dialog_create_exercise_title), color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold)
         },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -285,10 +278,10 @@ fun CreateExerciseDialog(
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = GymNeonGreen,
-                        unfocusedBorderColor = GymBorder,
-                        focusedTextColor = TextWhite,
-                        unfocusedTextColor = TextWhite
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                     )
                 )
 
@@ -305,10 +298,10 @@ fun CreateExerciseDialog(
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = groupExpanded) },
                         modifier = Modifier.menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable, enabled = true).fillMaxWidth(),
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = GymNeonGreen,
-                            unfocusedBorderColor = GymBorder,
-                            focusedTextColor = TextWhite,
-                            unfocusedTextColor = TextWhite
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                            unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                         )
                     )
                     ExposedDropdownMenu(
@@ -340,10 +333,10 @@ fun CreateExerciseDialog(
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = categoryExpanded) },
                         modifier = Modifier.menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable, enabled = true).fillMaxWidth(),
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = GymNeonGreen,
-                            unfocusedBorderColor = GymBorder,
-                            focusedTextColor = TextWhite,
-                            unfocusedTextColor = TextWhite
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                            unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                         )
                     )
                     ExposedDropdownMenu(
@@ -368,10 +361,10 @@ fun CreateExerciseDialog(
                     label = { Text(stringResource(R.string.label_notes_optional)) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = GymNeonGreen,
-                        unfocusedBorderColor = GymBorder,
-                        focusedTextColor = TextWhite,
-                        unfocusedTextColor = TextWhite
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                     )
                 )
             }
@@ -384,14 +377,14 @@ fun CreateExerciseDialog(
                     }
                 },
                 enabled = name.isNotBlank(),
-                colors = ButtonDefaults.buttonColors(containerColor = GymNeonGreen)
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {
-                Text(stringResource(R.string.action_save), color = GymBlack, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.action_save), color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Bold)
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text(stringResource(R.string.action_cancel), color = TextMuted)
+                Text(stringResource(R.string.action_cancel), color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
     )
