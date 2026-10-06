@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.widget.Toast
+import com.kveld9.trackgym.data.ThemePreferences
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
@@ -197,9 +198,9 @@ fun SettingsScreen(
 
                     // Segmented Button Row (Blanco, Oscuro normal, AMOLED)
                     val themeOptions = listOf(
-                        Triple("LIGHT", stringResource(R.string.theme_mode_light), Icons.Default.LightMode),
-                        Triple("DARK", stringResource(R.string.theme_mode_dark), Icons.Default.DarkMode),
-                        Triple("AMOLED", stringResource(R.string.theme_mode_amoled), Icons.Default.Contrast)
+                        Triple(ThemePreferences.MODE_LIGHT, stringResource(R.string.theme_mode_light), Icons.Default.LightMode),
+                        Triple(ThemePreferences.MODE_DARK, stringResource(R.string.theme_mode_dark), Icons.Default.DarkMode),
+                        Triple(ThemePreferences.MODE_AMOLED, stringResource(R.string.theme_mode_amoled), Icons.Default.Contrast)
                     )
 
                     SingleChoiceSegmentedButtonRow(

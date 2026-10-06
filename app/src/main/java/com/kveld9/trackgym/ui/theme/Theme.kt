@@ -14,15 +14,16 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import com.kveld9.trackgym.data.ThemePreferences
 
 @Composable
 fun TrackGymTheme(
-    themeMode: String = "AMOLED", // "LIGHT", "DARK", "AMOLED"
+    themeMode: String = ThemePreferences.MODE_AMOLED,
     content: @Composable () -> Unit
 ) {
     val context = LocalContext.current
-    val isLight = themeMode == "LIGHT"
-    val isAmoled = themeMode == "AMOLED"
+    val isLight = themeMode == ThemePreferences.MODE_LIGHT
+    val isAmoled = themeMode == ThemePreferences.MODE_AMOLED
 
     val baseColorScheme = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         if (isLight) dynamicLightColorScheme(context) else dynamicDarkColorScheme(context)

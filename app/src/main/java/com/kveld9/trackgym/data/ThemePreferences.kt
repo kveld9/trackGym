@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.map
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
 data class ThemeSettings(
-    val themeMode: String = "AMOLED", // "LIGHT", "DARK", "AMOLED"
+    val themeMode: String = ThemePreferences.MODE_AMOLED,
     val weightUnit: String = "KG", // "KG", "LB"
     val distanceUnit: String = "KM", // "KM", "MI"
     val autoRestTimer: Boolean = true,
@@ -27,6 +27,10 @@ class ThemePreferences(
     constructor(context: Context) : this(context.dataStore)
 
     companion object {
+        const val MODE_LIGHT = "LIGHT"
+        const val MODE_DARK = "DARK"
+        const val MODE_AMOLED = "AMOLED"
+
         val THEME_MODE_KEY = stringPreferencesKey("theme_mode")
         val WEIGHT_UNIT_KEY = stringPreferencesKey("weight_unit")
         val DISTANCE_UNIT_KEY = stringPreferencesKey("distance_unit")
@@ -52,11 +56,11 @@ class ThemePreferences(
         }
 
     private fun resolveThemeMode(rawMode: String?, legacyAmoled: Boolean): String = when {
-        rawMode == "AMOLED" -> "AMOLED"
-        rawMode == "LIGHT" -> "LIGHT"
-        rawMode == "DARK" -> "DARK"
-        legacyAmoled -> "AMOLED"
-        else -> "AMOLED"
+        rawMode == MODE_AMOLED -> MODE_AMOLED
+        rawMode == MODE_LIGHT -> MODE_LIGHT
+        rawMode == MODE_DARK -> MODE_DARK
+        legacyAmoled -> MODE_AMOLED
+        else -> MODE_AMOLED
     }
 
     suspend fun setThemeMode(mode: String) {
