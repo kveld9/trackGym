@@ -12,6 +12,7 @@ import com.kveld9.trackgym.domain.model.PersonalRecord
 import com.kveld9.trackgym.domain.model.Workout
 import com.kveld9.trackgym.domain.model.WorkoutComparison
 import com.kveld9.trackgym.domain.model.WorkoutSet
+import com.kveld9.trackgym.domain.model.SetType
 import com.kveld9.trackgym.data.ThemePreferences
 import com.kveld9.trackgym.domain.calculator.MuscleHeatmapEngine
 import com.kveld9.trackgym.domain.calculator.TrainingConsistencyEngine
@@ -249,6 +250,19 @@ class GymViewModel(
     fun addSet(workoutExerciseId: Long, weightKg: Double, reps: Int) {
         viewModelScope.launch {
             repository.addSetToExercise(workoutExerciseId, weightKg, reps)
+            setActiveWorkout(repository.getActiveWorkout())
+        }
+    }
+
+    fun duplicateLastSet(workoutExerciseId: Long) {
+        val current = _activeWorkout.value ?: return
+        val we = current.exercises.firstOrNull { it.id == workoutExerciseId } ?: return
+        val lastSet = we.sets.lastOrNull()
+        val weightKg = lastSet?.weightKg ?: 0.0
+        val reps = lastSet?.reps ?: 0
+        val setType = lastSet?.setType ?: SetType.NORMAL
+        viewModelScope.launch {
+            repository.addSetToExercise(workoutExerciseId, weightKg, reps, setType)
             setActiveWorkout(repository.getActiveWorkout())
         }
     }

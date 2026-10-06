@@ -35,6 +35,7 @@ import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Calculate
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Pause
@@ -215,10 +216,10 @@ fun ActiveWorkoutScreen(
                             weightUnit = weightUnit,
                             previousSets = previousSetsMap[we.exercise.id].orEmpty(),
                             onAddSet = {
-                                val lastSet = we.sets.lastOrNull()
-                                val weight = lastSet?.weightKg ?: 0.0
-                                val reps = lastSet?.reps ?: 0
-                                viewModel.addSet(we.id, weight, reps)
+                                viewModel.addSet(we.id, 0.0, 0)
+                            },
+                            onDuplicateSet = {
+                                viewModel.duplicateLastSet(we.id)
                             },
                             onUpdateSet = { set -> viewModel.updateSet(set) },
                             onToggleComplete = { set, weight, reps ->
@@ -913,6 +914,7 @@ fun WorkoutExerciseCard(
     weightUnit: WeightUnit = WeightUnit.KG,
     previousSets: List<WorkoutSet> = emptyList(),
     onAddSet: () -> Unit,
+    onDuplicateSet: () -> Unit = {},
     onUpdateSet: (WorkoutSet) -> Unit,
     onToggleComplete: (WorkoutSet, Double, Int) -> Unit,
     onDeleteSet: (Long) -> Unit,
@@ -1033,18 +1035,62 @@ fun WorkoutExerciseCard(
 
             Spacer(modifier = Modifier.height(6.dp))
 
-            // Add Set button
+            SetActionButtonsRow(
+                hasSets = workoutExercise.sets.isNotEmpty(),
+                onAddSet = onAddSet,
+                onDuplicateSet = onDuplicateSet
+            )
+        }
+    }
+}
+
+@Composable
+fun SetActionButtonsRow(
+    hasSets: Boolean,
+    onAddSet: () -> Unit,
+    onDuplicateSet: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    if (hasSets) {
+        Row(
+            modifier = modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
             OutlinedButton(
                 onClick = onAddSet,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.weight(1f),
                 shape = RoundedCornerShape(10.dp),
                 colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.primary),
                 border = ButtonDefaults.outlinedButtonBorder(enabled = true).copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)))
             ) {
                 Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(16.dp))
-                Spacer(modifier = Modifier.width(6.dp))
-                Text(stringResource(R.string.btn_add_set), fontSize = 13.sp)
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(stringResource(R.string.btn_add_set), fontSize = 12.sp)
             }
+
+            OutlinedButton(
+                onClick = onDuplicateSet,
+                modifier = Modifier.weight(1f),
+                shape = RoundedCornerShape(10.dp),
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.primary),
+                border = ButtonDefaults.outlinedButtonBorder(enabled = true).copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)))
+            ) {
+                Icon(Icons.Default.ContentCopy, contentDescription = null, modifier = Modifier.size(16.dp))
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(stringResource(R.string.btn_duplicate_set), fontSize = 12.sp)
+            }
+        }
+    } else {
+        OutlinedButton(
+            onClick = onAddSet,
+            modifier = modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(10.dp),
+            colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.primary),
+            border = ButtonDefaults.outlinedButtonBorder(enabled = true).copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)))
+        ) {
+            Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(16.dp))
+            Spacer(modifier = Modifier.width(6.dp))
+            Text(stringResource(R.string.btn_add_set), fontSize = 13.sp)
         }
     }
 }

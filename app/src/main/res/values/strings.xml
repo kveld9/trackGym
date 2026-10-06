@@ -23,6 +23,7 @@
     <string name="btn_start_empty_workout">Start Empty Workout</string>
     <string name="workout_default_title">Workout</string>
     <string name="btn_add_set">Add Set</string>
+    <string name="btn_duplicate_set">Duplicate Set</string>
     <string name="btn_add_exercise">Add Exercise</string>
     <string name="title_select_exercise">Select Exercise</string>
     <string name="dialog_finish_workout_title">Finish Workout</string>

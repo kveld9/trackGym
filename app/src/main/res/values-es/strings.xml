@@ -23,6 +23,7 @@
     <string name="btn_start_empty_workout">Iniciar Entrenamiento Vacío</string>
     <string name="workout_default_title">Entrenamiento</string>
     <string name="btn_add_set">Agregar Serie</string>
+    <string name="btn_duplicate_set">Duplicar Serie</string>
     <string name="btn_add_exercise">Agregar Ejercicio</string>
     <string name="title_select_exercise">Seleccionar Ejercicio</string>
     <string name="dialog_finish_workout_title">Finalizar Entrenamiento</string>
