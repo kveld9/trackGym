@@ -123,8 +123,8 @@
     <!-- Settings - Appearance -->
     <string name="section_appearance">Apariencia</string>
     <string name="setting_theme_title">Tema</string>
-    <string name="theme_mode_dark">Oscuro normal</string>
-    <string name="theme_mode_light">Blanco</string>
+    <string name="theme_mode_dark">Oscuro</string>
+    <string name="theme_mode_light">Claro</string>
     <string name="theme_mode_amoled">AMOLED</string>
 
     <!-- Settings - Units -->

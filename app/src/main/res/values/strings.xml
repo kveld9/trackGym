@@ -123,7 +123,7 @@
     <!-- Settings - Appearance -->
     <string name="section_appearance">Appearance</string>
     <string name="setting_theme_title">Theme</string>
-    <string name="theme_mode_dark">Dark normal</string>
+    <string name="theme_mode_dark">Dark</string>
     <string name="theme_mode_light">Light</string>
     <string name="theme_mode_amoled">AMOLED</string>
 
