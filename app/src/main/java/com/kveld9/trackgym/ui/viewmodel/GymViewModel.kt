@@ -92,15 +92,30 @@ class GymViewModel(
     private val _selectedMuscleFilter = MutableStateFlow<MuscleGroup?>(null)
     val selectedMuscleFilter: StateFlow<MuscleGroup?> = _selectedMuscleFilter.asStateFlow()
 
+    enum class ExerciseOriginFilter {
+        ALL,
+        PRELOADED,
+        CUSTOM
+    }
+
+    private val _selectedOriginFilter = MutableStateFlow(ExerciseOriginFilter.ALL)
+    val selectedOriginFilter: StateFlow<ExerciseOriginFilter> = _selectedOriginFilter.asStateFlow()
+
     val filteredExercises: StateFlow<List<Exercise>> = combine(
         _rawExercises,
         _searchQuery,
-        _selectedMuscleFilter
-    ) { exercises, query, filter ->
+        _selectedMuscleFilter,
+        _selectedOriginFilter
+    ) { exercises, query, muscleFilter, originFilter ->
         exercises.filter { ex ->
             val matchesQuery = query.isBlank() || ex.name.contains(query, ignoreCase = true)
-            val matchesFilter = filter == null || ex.muscleGroup == filter
-            matchesQuery && matchesFilter
+            val matchesMuscle = muscleFilter == null || ex.muscleGroup == muscleFilter
+            val matchesOrigin = when (originFilter) {
+                ExerciseOriginFilter.ALL -> true
+                ExerciseOriginFilter.PRELOADED -> !ex.isCustom
+                ExerciseOriginFilter.CUSTOM -> ex.isCustom
+            }
+            matchesQuery && matchesMuscle && matchesOrigin
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
@@ -430,6 +445,10 @@ class GymViewModel(
 
     fun setMuscleFilter(filter: MuscleGroup?) {
         _selectedMuscleFilter.value = filter
+    }
+
+    fun setOriginFilter(filter: ExerciseOriginFilter) {
+        _selectedOriginFilter.value = filter
     }
 
     fun setSearchQuery(query: String) {

@@ -39,6 +39,7 @@
     <string name="table_header_complete">✓</string>
     <string name="desc_complete_set">Complete set</string>
     <string name="badge_manual">MANUAL</string>
+    <string name="badge_preloaded">SYSTEM</string>
     <string name="action_plate_calculator">Plate Calculator</string>
     <string name="plate_calc_title">Plate Calculator</string>
     <string name="plate_calc_bar_weight">Barbell Weight</string>
@@ -78,6 +79,9 @@
     <string name="exercises_title">Exercises</string>
     <string name="search_exercise_placeholder">Search exercise...</string>
     <string name="chip_all_muscles">All</string>
+    <string name="chip_origin_all">All Origin</string>
+    <string name="chip_origin_preloaded">System</string>
+    <string name="chip_origin_custom">Custom</string>
     <string name="action_create_exercise">Create Exercise</string>
     <string name="dialog_create_exercise_title">Create Custom Exercise</string>
     <string name="label_exercise_name">Exercise name</string>

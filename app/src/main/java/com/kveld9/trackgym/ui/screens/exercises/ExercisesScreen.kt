@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -68,6 +69,7 @@ fun ExercisesScreen(
     val exercises by viewModel.filteredExercises.collectAsState()
     val searchQuery by viewModel.searchQuery.collectAsState()
     val selectedFilter by viewModel.selectedMuscleFilter.collectAsState()
+    val selectedOriginFilter by viewModel.selectedOriginFilter.collectAsState()
 
     var showCreateDialog by remember { mutableStateOf(false) }
 
@@ -126,7 +128,48 @@ fun ExercisesScreen(
                 )
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(10.dp))
+
+            // Origin Filter (All / Preloaded / Manual)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                val originFilters = listOf(
+                    GymViewModel.ExerciseOriginFilter.ALL to R.string.chip_origin_all,
+                    GymViewModel.ExerciseOriginFilter.PRELOADED to R.string.chip_origin_preloaded,
+                    GymViewModel.ExerciseOriginFilter.CUSTOM to R.string.chip_origin_custom
+                )
+                originFilters.forEach { (filterType, labelRes) ->
+                    val isSelected = selectedOriginFilter == filterType
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(
+                                if (isSelected) MaterialTheme.colorScheme.secondaryContainer
+                                else MaterialTheme.colorScheme.surfaceContainerHigh
+                            )
+                            .border(
+                                width = 1.dp,
+                                color = if (isSelected) MaterialTheme.colorScheme.secondary else Color.Transparent,
+                                shape = RoundedCornerShape(16.dp)
+                            )
+                            .clickable { viewModel.setOriginFilter(filterType) }
+                            .padding(horizontal = 12.dp, vertical = 6.dp)
+                    ) {
+                        Text(
+                            text = stringResource(labelRes),
+                            color = if (isSelected) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                            fontSize = 12.sp
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
 
             // Muscle Group Horizontal Scroll
             Row(
@@ -243,6 +286,21 @@ fun ExerciseRowCard(exercise: Exercise) {
                     color = MaterialTheme.colorScheme.primary,
                     fontSize = 10.sp,
                     fontWeight = FontWeight.Bold
+                )
+            }
+        } else {
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(6.dp))
+                    .background(MaterialTheme.colorScheme.surfaceContainerHighest)
+                    .border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f), RoundedCornerShape(6.dp))
+                    .padding(horizontal = 8.dp, vertical = 4.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.badge_preloaded),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Medium
                 )
             }
         }

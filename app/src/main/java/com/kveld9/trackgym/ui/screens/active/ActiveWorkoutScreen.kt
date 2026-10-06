@@ -1456,6 +1456,16 @@ fun ExercisePickerContent(
                                 .border(1.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(4.dp))
                                 .padding(horizontal = 6.dp, vertical = 2.dp)
                         )
+                    } else {
+                        Text(
+                            text = stringResource(R.string.badge_preloaded),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Medium,
+                            modifier = Modifier
+                                .border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f), RoundedCornerShape(4.dp))
+                                .padding(horizontal = 6.dp, vertical = 2.dp)
+                        )
                     }
                 }
             }

@@ -39,6 +39,7 @@
     <string name="table_header_complete">✓</string>
     <string name="desc_complete_set">Completar serie</string>
     <string name="badge_manual">MANUAL</string>
+    <string name="badge_preloaded">PRECARGADO</string>
     <string name="action_plate_calculator">Calculadora de Discos</string>
     <string name="plate_calc_title">Calculadora de Discos</string>
     <string name="plate_calc_bar_weight">Peso de la Barra</string>
@@ -78,6 +79,9 @@
     <string name="exercises_title">Ejercicios</string>
     <string name="search_exercise_placeholder">Buscar ejercicio...</string>
     <string name="chip_all_muscles">Todos</string>
+    <string name="chip_origin_all">Todos</string>
+    <string name="chip_origin_preloaded">Precargados</string>
+    <string name="chip_origin_custom">Manuales</string>
     <string name="action_create_exercise">Crear Ejercicio</string>
     <string name="dialog_create_exercise_title">Crear Ejercicio Manual</string>
     <string name="label_exercise_name">Nombre del ejercicio</string>
