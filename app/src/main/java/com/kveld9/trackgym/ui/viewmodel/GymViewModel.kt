@@ -12,8 +12,10 @@ import com.kveld9.trackgym.domain.model.Workout
 import com.kveld9.trackgym.domain.model.WorkoutComparison
 import com.kveld9.trackgym.domain.model.WorkoutSet
 import com.kveld9.trackgym.data.ThemePreferences
+import com.kveld9.trackgym.domain.calculator.MuscleHeatmapEngine
 import com.kveld9.trackgym.domain.calculator.TrainingConsistencyEngine
 import com.kveld9.trackgym.domain.calculator.TrainingConsistencyStats
+import com.kveld9.trackgym.domain.model.MuscleHeatmapState
 import com.kveld9.trackgym.domain.model.Routine
 import com.kveld9.trackgym.domain.model.RoutineFolder
 import com.kveld9.trackgym.domain.model.WeightUnit
@@ -77,6 +79,14 @@ class GymViewModel(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),
         TrainingConsistencyStats(0, 0, 0.0, emptyList())
+    )
+
+    val weeklyHeatmapState: StateFlow<MuscleHeatmapState> = completedWorkouts.map { workouts ->
+        MuscleHeatmapEngine.calculateWeekly(workouts)
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        MuscleHeatmapState()
     )
 
     val routines: StateFlow<List<Routine>> = repository.getAllRoutines()

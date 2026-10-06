@@ -7,6 +7,7 @@ import com.kveld9.trackgym.domain.model.MuscleGroupVolume
 import com.kveld9.trackgym.domain.model.MuscleHeatmapState
 import com.kveld9.trackgym.domain.model.Workout
 import com.kveld9.trackgym.domain.model.WorkoutExercise
+import java.util.Calendar
 
 object MuscleHeatmapEngine {
 
@@ -98,5 +99,33 @@ object MuscleHeatmapEngine {
         val completed = exercise.sets.count { it.isCompleted }
         if (completed > 0) return completed
         return exercise.sets.size
+    }
+
+    fun calculateWeekly(
+        workouts: List<Workout>,
+        referenceTimestamp: Long = System.currentTimeMillis()
+    ): MuscleHeatmapState {
+        val thisWeekWorkouts = filterCurrentWeekWorkouts(workouts, referenceTimestamp)
+        return calculate(thisWeekWorkouts)
+    }
+
+    fun filterCurrentWeekWorkouts(
+        workouts: List<Workout>,
+        referenceTimestamp: Long = System.currentTimeMillis()
+    ): List<Workout> {
+        val cal = Calendar.getInstance().apply {
+            timeInMillis = referenceTimestamp
+            firstDayOfWeek = Calendar.MONDAY
+            set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
+        val startOfWeek = cal.timeInMillis
+        return workouts.filter { workout ->
+            val time = workout.completedAt ?: workout.startedAt
+            time >= startOfWeek
+        }
     }
 }

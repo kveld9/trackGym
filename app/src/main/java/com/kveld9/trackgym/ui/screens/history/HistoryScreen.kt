@@ -62,6 +62,7 @@ import com.kveld9.trackgym.domain.calculator.DayActivity
 import com.kveld9.trackgym.domain.calculator.TrainingConsistencyStats
 import com.kveld9.trackgym.domain.model.WeightUnit
 import com.kveld9.trackgym.domain.model.Workout
+import com.kveld9.trackgym.ui.components.MuscleHeatmapCard
 import com.kveld9.trackgym.ui.viewmodel.GymViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -77,6 +78,7 @@ fun HistoryScreen(
 ) {
     val completedWorkouts by viewModel.completedWorkouts.collectAsState()
     val consistencyStats by viewModel.consistencyStats.collectAsState()
+    val weeklyHeatmap by viewModel.weeklyHeatmapState.collectAsState()
 
     var workoutToSaveAsRoutine by remember { mutableStateOf<Workout?>(null) }
     var routineNameInput by remember { mutableStateOf("") }
@@ -113,6 +115,20 @@ fun HistoryScreen(
                     TrainingConsistencyHeader(
                         stats = consistencyStats,
                         weightUnit = weightUnit
+                    )
+                }
+
+                // Weekly Muscle Split Heatmap
+                item {
+                    val weeklySubtitle = if (weeklyHeatmap.totalSets > 0) {
+                        stringResource(R.string.heatmap_subtitle_weekly, weeklyHeatmap.totalSets)
+                    } else null
+
+                    MuscleHeatmapCard(
+                        state = weeklyHeatmap,
+                        title = stringResource(R.string.heatmap_title_weekly),
+                        subtitle = weeklySubtitle,
+                        emptyMessage = stringResource(R.string.heatmap_no_muscles_weekly)
                     )
                 }
 
