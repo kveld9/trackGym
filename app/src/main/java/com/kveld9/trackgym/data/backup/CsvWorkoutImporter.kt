@@ -1,5 +1,7 @@
 package com.kveld9.trackgym.data.backup
 
+import com.kveld9.trackgym.domain.model.ExerciseCategory
+import com.kveld9.trackgym.domain.model.MuscleGroup
 import com.kveld9.trackgym.domain.model.SetType
 import java.io.BufferedReader
 import java.io.InputStream
@@ -151,8 +153,8 @@ object CsvWorkoutImporter {
         val exerciseDtos = exerciseSet.map { name ->
             ExerciseBackupDto(
                 name = name,
-                muscleGroup = "OTHER",
-                category = "BARBELL",
+                muscleGroup = MuscleGroup.OTHER.name,
+                category = ExerciseCategory.BARBELL.name,
                 isCustom = true
             )
         }
