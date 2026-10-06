@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="heatmap_title_session">Músculos trabajados</string>
+    <string name="heatmap_title_weekly">Músculos de la semana</string>
+    <string name="heatmap_subtitle_session">Zonas trabajadas en esta sesión</string>
+    <string name="heatmap_subtitle_weekly">%1$d series totales esta semana</string>
+    <string name="heatmap_no_muscles_session">No se registraron series en esta sesión</string>
+    <string name="heatmap_no_muscles_weekly">Aún no has completado entrenamientos esta semana</string>
+    <string name="heatmap_front_view">Frente</string>
+    <string name="heatmap_back_view">Espalda</string>
+    <string name="heatmap_sets_count">%1$d series</string>
+    <string name="heatmap_sets_single">1 serie</string>
+</resources>

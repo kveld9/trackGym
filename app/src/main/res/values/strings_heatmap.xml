@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="heatmap_title_session">Muscles Worked</string>
+    <string name="heatmap_title_weekly">Weekly Muscle Split</string>
+    <string name="heatmap_subtitle_session">Body parts engaged in this session</string>
+    <string name="heatmap_subtitle_weekly">%1$d total sets this week</string>
+    <string name="heatmap_no_muscles_session">No muscle sets recorded in this session</string>
+    <string name="heatmap_no_muscles_weekly">No workouts completed yet this week</string>
+    <string name="heatmap_front_view">Front</string>
+    <string name="heatmap_back_view">Back</string>
+    <string name="heatmap_sets_count">%1$d sets</string>
+    <string name="heatmap_sets_single">1 set</string>
+</resources>
