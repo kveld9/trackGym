@@ -30,8 +30,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.kveld9.trackgym.domain.calculator.MuscleHeatmapEngine
+import com.kveld9.trackgym.ui.components.MuscleHeatmapCard
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -58,6 +61,9 @@ fun WorkoutComparisonScreen(
 ) {
     val dateFormat = SimpleDateFormat("EEEE, d MMMM", Locale.getDefault())
     val dateString = dateFormat.format(Date(comparison.currentWorkout.completedAt ?: comparison.currentWorkout.startedAt)).replaceFirstChar { it.uppercase() }
+    val workoutHeatmap = remember(comparison.currentWorkout) {
+        MuscleHeatmapEngine.calculate(comparison.currentWorkout)
+    }
 
     Scaffold(
         topBar = {
@@ -100,6 +106,15 @@ fun WorkoutComparisonScreen(
                     totalVolumeKg = comparison.currentWorkout.totalVolume,
                     recordsCount = comparison.totalRecordsUnlocked.size,
                     weightUnit = weightUnit
+                )
+            }
+
+            item {
+                MuscleHeatmapCard(
+                    state = workoutHeatmap,
+                    title = stringResource(R.string.heatmap_title_session),
+                    subtitle = stringResource(R.string.heatmap_subtitle_session),
+                    emptyMessage = stringResource(R.string.heatmap_no_muscles_session)
                 )
             }
 
