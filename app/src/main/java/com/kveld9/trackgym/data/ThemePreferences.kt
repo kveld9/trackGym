@@ -18,7 +18,8 @@ data class ThemeSettings(
     val weightUnit: String = "KG", // "KG", "LB"
     val distanceUnit: String = "KM", // "KM", "MI"
     val autoRestTimer: Boolean = true,
-    val defaultRestSeconds: Int = 90
+    val defaultRestSeconds: Int = 90,
+    val exerciseLanguage: String = ThemePreferences.EXERCISE_LANG_SYSTEM // "SYSTEM", "ENGLISH"
 )
 
 class ThemePreferences(
@@ -31,11 +32,15 @@ class ThemePreferences(
         const val MODE_DARK = "DARK"
         const val MODE_AMOLED = "AMOLED"
 
+        const val EXERCISE_LANG_SYSTEM = "SYSTEM"
+        const val EXERCISE_LANG_ENGLISH = "ENGLISH"
+
         val THEME_MODE_KEY = stringPreferencesKey("theme_mode")
         val WEIGHT_UNIT_KEY = stringPreferencesKey("weight_unit")
         val DISTANCE_UNIT_KEY = stringPreferencesKey("distance_unit")
         val AUTO_REST_TIMER_KEY = booleanPreferencesKey("auto_rest_timer")
         val DEFAULT_REST_SECONDS_KEY = intPreferencesKey("default_rest_seconds")
+        val EXERCISE_LANGUAGE_KEY = stringPreferencesKey("exercise_language")
 
         private val LEGACY_AMOLED_KEY = booleanPreferencesKey("amoled_black")
     }
@@ -51,7 +56,8 @@ class ThemePreferences(
                 weightUnit = preferences[WEIGHT_UNIT_KEY] ?: "KG",
                 distanceUnit = preferences[DISTANCE_UNIT_KEY] ?: "KM",
                 autoRestTimer = preferences[AUTO_REST_TIMER_KEY] ?: true,
-                defaultRestSeconds = preferences[DEFAULT_REST_SECONDS_KEY] ?: 90
+                defaultRestSeconds = preferences[DEFAULT_REST_SECONDS_KEY] ?: 90,
+                exerciseLanguage = preferences[EXERCISE_LANGUAGE_KEY] ?: EXERCISE_LANG_SYSTEM
             )
         }
 
@@ -91,6 +97,12 @@ class ThemePreferences(
     suspend fun setDefaultRestSeconds(seconds: Int) {
         dataStore.edit { preferences ->
             preferences[DEFAULT_REST_SECONDS_KEY] = seconds
+        }
+    }
+
+    suspend fun setExerciseLanguage(language: String) {
+        dataStore.edit { preferences ->
+            preferences[EXERCISE_LANGUAGE_KEY] = language
         }
     }
 }
