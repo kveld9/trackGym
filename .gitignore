@@ -6,6 +6,7 @@ build/
 */build/
 .kotlin/
 .artifacts/
+artifacts/
 release/
 */release/
 app/release/
