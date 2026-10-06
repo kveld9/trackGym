@@ -20,7 +20,8 @@ data class ThemeSettings(
     val autoRestTimer: Boolean = true,
     val defaultRestSeconds: Int = 90,
     val exerciseLanguage: String = ThemePreferences.EXERCISE_LANG_SYSTEM, // "SYSTEM", "ENGLISH"
-    val ormFormula: String = "EPLEY"
+    val ormFormula: String = "EPLEY",
+    val doubleDumbbellVolume: Boolean = true
 )
 
 class ThemePreferences(
@@ -43,6 +44,7 @@ class ThemePreferences(
         val DEFAULT_REST_SECONDS_KEY = intPreferencesKey("default_rest_seconds")
         val EXERCISE_LANGUAGE_KEY = stringPreferencesKey("exercise_language")
         val ORM_FORMULA_KEY = stringPreferencesKey("orm_formula")
+        val DOUBLE_DUMBBELL_VOLUME_KEY = booleanPreferencesKey("double_dumbbell_volume")
 
         private val LEGACY_AMOLED_KEY = booleanPreferencesKey("amoled_black")
     }
@@ -60,7 +62,8 @@ class ThemePreferences(
                 autoRestTimer = preferences[AUTO_REST_TIMER_KEY] ?: true,
                 defaultRestSeconds = preferences[DEFAULT_REST_SECONDS_KEY] ?: 90,
                 exerciseLanguage = preferences[EXERCISE_LANGUAGE_KEY] ?: EXERCISE_LANG_SYSTEM,
-                ormFormula = preferences[ORM_FORMULA_KEY] ?: "EPLEY"
+                ormFormula = preferences[ORM_FORMULA_KEY] ?: "EPLEY",
+                doubleDumbbellVolume = preferences[DOUBLE_DUMBBELL_VOLUME_KEY] ?: true
             )
         }
 
@@ -112,6 +115,12 @@ class ThemePreferences(
     suspend fun setOrmFormula(formula: String) {
         dataStore.edit { preferences ->
             preferences[ORM_FORMULA_KEY] = formula
+        }
+    }
+
+    suspend fun setDoubleDumbbellVolume(enabled: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[DOUBLE_DUMBBELL_VOLUME_KEY] = enabled
         }
     }
 }

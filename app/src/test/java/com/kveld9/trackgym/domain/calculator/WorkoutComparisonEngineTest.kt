@@ -157,4 +157,25 @@ class WorkoutComparisonEngineTest {
             assertTrue(it.suggestedTarget.contains("+2.5 kg"))
         }
     }
+
+    @Test
+    fun `totalVolume doubles volume for dumbbell exercises when enabled`() {
+        val dumbbellExercise = Exercise(
+            id = 2,
+            name = "Mancuernas Press Inclinado",
+            muscleGroup = MuscleGroup.CHEST,
+            category = ExerciseCategory.DUMBBELL
+        )
+        val we = WorkoutExercise(
+            id = 1,
+            workoutId = 1,
+            exercise = dumbbellExercise,
+            sets = listOf(
+                WorkoutSet(id = 1, setNumber = 1, weightKg = 20.0, reps = 10, isCompleted = true)
+            )
+        )
+        // 20 kg x 10 reps = 200 kg raw. With 2x dumbbell multiplier = 400 kg.
+        assertEquals(400.0, we.totalVolume, 0.01)
+        assertEquals(200.0, we.calculateTotalVolume(doubleDumbbells = false), 0.01)
+    }
 }

@@ -102,6 +102,12 @@ class SettingsViewModel(
         }
     }
 
+    fun setDoubleDumbbellVolume(enabled: Boolean) {
+        viewModelScope.launch {
+            themePreferences.setDoubleDumbbellVolume(enabled)
+        }
+    }
+
     fun exportBackup(streamProvider: () -> OutputStream?) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
