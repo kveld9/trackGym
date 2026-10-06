@@ -75,4 +75,46 @@ class WorkoutComparisonEngineTest {
 
         assertTrue(comparison.isOverallImproved)
     }
+
+    @Test
+    fun `generateMarkdownPrompt contains markdown structure and exercise details`() {
+        val currentWe = WorkoutExercise(
+            id = 2,
+            workoutId = 2,
+            exercise = sampleExercise,
+            sets = listOf(
+                WorkoutSet(id = 3, setNumber = 1, weightKg = 80.0, reps = 10, isCompleted = true)
+            )
+        )
+        val workout = com.kveld9.trackgym.domain.model.Workout(
+            id = 2,
+            name = "Push Day A",
+            startedAt = 1700000000000L,
+            completedAt = 1700003600000L,
+            durationSeconds = 3600,
+            isCompleted = true,
+            exercises = listOf(currentWe)
+        )
+        val comparison = WorkoutComparisonEngine.compareExercise(
+            exercise = sampleExercise,
+            currentWorkoutExercise = currentWe,
+            previousWorkoutExercise = null,
+            previousWorkoutDate = null
+        )
+        val workoutComparison = com.kveld9.trackgym.domain.model.WorkoutComparison(
+            currentWorkout = workout,
+            previousWorkout = null,
+            exerciseComparisons = listOf(comparison),
+            totalRecordsUnlocked = emptyList(),
+            totalVolumeDeltaKg = 800.0
+        )
+
+        val prompt = LlmWorkoutPromptGenerator.generateMarkdownPrompt(workoutComparison)
+
+        assertTrue(prompt.contains("# Workout Session Analysis Request"))
+        assertTrue(prompt.contains("Push Day A"))
+        assertTrue(prompt.contains("Press de Banca Plano con Barra"))
+        assertTrue(prompt.contains("80.0 kg × 10 reps"))
+        assertTrue(prompt.contains("Coaching Questions"))
+    }
 }

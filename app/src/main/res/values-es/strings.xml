@@ -176,6 +176,11 @@
     <string name="toast_backup_export_error">Error al exportar respaldo: %1$s</string>
     <string name="toast_csv_exported_success">Historial de entrenamientos exportado a CSV correctamente</string>
     <string name="toast_csv_export_error">Error al exportar CSV: %1$s</string>
+    <string name="llm_export_title">Análisis de Sesión con IA</string>
+    <string name="llm_export_desc">Exporta el resumen estructurado en Markdown para recibir feedback de ChatGPT, Claude o DeepSeek</string>
+    <string name="action_copy_prompt">Copiar Prompt</string>
+    <string name="action_share_prompt">Compartir Prompt</string>
+    <string name="toast_prompt_copied">Prompt de análisis copiado al portapapeles</string>
     <string name="toast_backup_read_error">Error al leer el archivo: %1$s</string>
     <string name="toast_backup_invalid_data">El archivo no contiene registros válidos</string>
     <string name="toast_csv_import_empty">El archivo CSV no contiene registros de entrenamiento válidos</string>

@@ -176,6 +176,11 @@
     <string name="toast_backup_export_error">Error exporting backup: %1$s</string>
     <string name="toast_csv_exported_success">Workout history exported to CSV successfully</string>
     <string name="toast_csv_export_error">Error exporting CSV: %1$s</string>
+    <string name="llm_export_title">AI Coaching Analysis</string>
+    <string name="llm_export_desc">Export structured session markdown with progression deltas to analyze with ChatGPT, Claude, or DeepSeek</string>
+    <string name="action_copy_prompt">Copy Prompt</string>
+    <string name="action_share_prompt">Share Prompt</string>
+    <string name="toast_prompt_copied">AI analysis prompt copied to clipboard</string>
     <string name="toast_backup_read_error">Error reading file: %1$s</string>
     <string name="toast_backup_invalid_data">The backup file contains no valid records</string>
     <string name="toast_csv_import_empty">The CSV file contains no valid workout records</string>

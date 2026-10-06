@@ -29,10 +29,20 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import android.content.Intent
+import android.widget.Toast
+import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.material.icons.filled.Description
+import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.AnnotatedString
+import com.kveld9.trackgym.domain.calculator.LlmWorkoutPromptGenerator
 import com.kveld9.trackgym.domain.calculator.MuscleHeatmapEngine
 import com.kveld9.trackgym.ui.components.MuscleHeatmapCard
 import com.kveld9.trackgym.ui.util.displayName
@@ -86,6 +96,26 @@ fun WorkoutComparisonScreen(
                         )
                     }
                 },
+                actions = {
+                    val context = LocalContext.current
+                    IconButton(
+                        onClick = {
+                            val promptText = LlmWorkoutPromptGenerator.generateMarkdownPrompt(comparison, weightUnit)
+                            val sendIntent = Intent().apply {
+                                action = Intent.ACTION_SEND
+                                putExtra(Intent.EXTRA_TEXT, promptText)
+                                type = "text/plain"
+                            }
+                            context.startActivity(Intent.createChooser(sendIntent, null))
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Description,
+                            contentDescription = stringResource(R.string.action_share_prompt),
+                            tint = MaterialTheme.colorScheme.onBackground
+                        )
+                    }
+                },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
             )
         },
@@ -116,6 +146,13 @@ fun WorkoutComparisonScreen(
                     title = stringResource(R.string.heatmap_title_session),
                     subtitle = stringResource(R.string.heatmap_subtitle_session),
                     emptyMessage = stringResource(R.string.heatmap_no_muscles_session)
+                )
+            }
+
+            item {
+                LlmPromptExportCard(
+                    comparison = comparison,
+                    weightUnit = weightUnit
                 )
             }
 
@@ -426,5 +463,88 @@ private fun formatDuration(seconds: Long): String {
         "${h}h ${remM}m"
     } else {
         "${m}m ${s}s"
+    }
+}
+
+@Composable
+fun LlmPromptExportCard(
+    comparison: WorkoutComparison,
+    weightUnit: WeightUnit = WeightUnit.KG
+) {
+    val context = LocalContext.current
+    val clipboardManager = LocalClipboardManager.current
+    val promptText = remember(comparison, weightUnit) {
+        LlmWorkoutPromptGenerator.generateMarkdownPrompt(comparison, weightUnit)
+    }
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+        border = CardDefaults.outlinedCardBorder().copy(
+            brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.primary.copy(alpha = 0.5f))
+        )
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    imageVector = Icons.Default.Description,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(20.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = stringResource(R.string.llm_export_title),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
+
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = stringResource(R.string.llm_export_desc),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                OutlinedButton(
+                    onClick = {
+                        clipboardManager.setText(AnnotatedString(promptText))
+                        Toast.makeText(context, R.string.toast_prompt_copied, Toast.LENGTH_SHORT).show()
+                    },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ContentCopy,
+                        contentDescription = null,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(text = stringResource(R.string.action_copy_prompt), maxLines = 1)
+                }
+
+                Button(
+                    onClick = {
+                        val sendIntent = Intent().apply {
+                            action = Intent.ACTION_SEND
+                            putExtra(Intent.EXTRA_TEXT, promptText)
+                            type = "text/plain"
+                        }
+                        context.startActivity(Intent.createChooser(sendIntent, null))
+                    },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(text = stringResource(R.string.action_share_prompt), maxLines = 1)
+                }
+            }
+        }
     }
 }
