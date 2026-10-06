@@ -40,9 +40,10 @@
   - The agent / assistant MUST always respond to the user in Spanish during conversational turns.
 - **Localization (i18n) & PR Contribution Architecture**:
   - The application uses modular Android string resources (`@StringRes` / `stringResource(...)`) for zero-hardcoding UI localization.
-  - Base strings: `app/src/main/res/values/strings.xml` (English - default).
+  - Base strings: `app/src/main/res/values/strings.xml` (English - default). The base locale is declared in `app/src/main/res/resources.properties` (`unqualifiedResLocale=en`).
   - Supported translations: `app/src/main/res/values-es/strings.xml` (Spanish).
   - Open-source contributors can add new languages by submitting pull requests containing `app/src/main/res/values-<locale>/strings.xml` mirroring the keys defined in base English.
+  - The packaged locale set (`localeFilters`) and the per-app language `LocaleConfig` are derived in `app/build.gradle.kts` from those `values-<locale>/strings.xml` directories. Library translations for any other locale are stripped from the APK, so no build change is needed when adding a language.
 - **Third-Party Brand & Intellectual Property Isolation**:
   - Never include references, names, trademarks, or comparisons to third-party commercial fitness/gym applications in documentation, source code, comments, KDoc, commit messages, PRs, or repository metadata.
 

@@ -9,6 +9,18 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
 }
 
+// Locales packaged into the APK: the base locale declared in res/resources.properties plus
+// every values-<locale> directory that ships a strings.xml. Translations bundled by libraries
+// for any other locale are stripped, so adding a translation directory is the only step needed.
+val resDir = file("src/main/res")
+val baseLocale: String = Properties().apply {
+    resDir.resolve("resources.properties").inputStream().use { stream -> load(stream) }
+}.getProperty("unqualifiedResLocale")
+val localeDirPattern = Regex("values-([a-z]{2,3}(?:-r[A-Z]{2})?)")
+val translatedLocales: List<String> = resDir.listFiles().orEmpty()
+    .filter { dir -> dir.resolve("strings.xml").isFile }
+    .mapNotNull { dir -> localeDirPattern.matchEntire(dir.name)?.groupValues?.get(1) }
+
 android {
     namespace = "com.kveld9.trackgym"
     compileSdk = 37
@@ -73,6 +85,16 @@ android {
             )
             signingConfig = signingConfigs.getByName("release")
         }
+    }
+
+    androidResources {
+        localeFilters += listOf(baseLocale) + translatedLocales
+        generateLocaleConfig = true
+    }
+
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = false
     }
 
     buildFeatures {
