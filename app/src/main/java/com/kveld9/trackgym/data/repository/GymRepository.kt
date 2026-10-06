@@ -195,6 +195,10 @@ class GymRepository(private val database: GymDatabase) {
         workoutDao.deleteWorkoutSet(setId)
     }
 
+    suspend fun restoreSet(set: WorkoutSet) = withContext(Dispatchers.IO) {
+        workoutDao.insertWorkoutSet(WorkoutSetEntity.fromDomain(set, set.workoutExerciseId))
+    }
+
     suspend fun moveWorkoutExercise(workoutId: Long, fromIndex: Int, toIndex: Int) = withContext(Dispatchers.IO) {
         val exercises = workoutDao.getWorkoutExercises(workoutId).toMutableList()
         if (fromIndex !in exercises.indices || toIndex !in exercises.indices || fromIndex == toIndex) return@withContext

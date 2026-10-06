@@ -1,6 +1,7 @@
 package com.kveld9.trackgym.ui.screens.active
 
 import java.util.Locale
+import kotlinx.coroutines.launch
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.BorderStroke
@@ -37,6 +38,7 @@ import androidx.compose.material.icons.filled.Calculate
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Pause
@@ -61,18 +63,27 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -151,6 +162,11 @@ fun ActiveWorkoutScreen(
     var showSwapExercisePicker by remember { mutableStateOf(false) }
     var showSwapConfirmDialog by remember { mutableStateOf(false) }
 
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+    val setDeletedMsg = stringResource(R.string.snackbar_set_deleted)
+    val undoMsg = stringResource(R.string.action_undo)
+
     if (activeWorkout == null) {
         EmptyWorkoutDashboard(
             routines = routines,
@@ -162,6 +178,7 @@ fun ActiveWorkoutScreen(
         )
     } else {
         Scaffold(
+            snackbarHost = { SnackbarHost(snackbarHostState) },
             topBar = {
                 ActiveWorkoutTopBar(
                     timerSeconds = timerSeconds,
@@ -255,7 +272,20 @@ fun ActiveWorkoutScreen(
                                     viewModel.toggleCompleteSet(set, wo.id, we.exercise.id, weight, reps)
                                 }
                             },
-                            onDeleteSet = { setId -> viewModel.deleteSet(setId) },
+                            onDeleteSet = { set ->
+                                viewModel.deleteSet(set)
+                                coroutineScope.launch {
+                                    snackbarHostState.currentSnackbarData?.dismiss()
+                                    val result = snackbarHostState.showSnackbar(
+                                        message = setDeletedMsg,
+                                        actionLabel = undoMsg,
+                                        duration = SnackbarDuration.Short
+                                    )
+                                    if (result == SnackbarResult.ActionPerformed) {
+                                        viewModel.restoreRecentlyDeletedSet()
+                                    }
+                                }
+                            },
                             onRemoveExercise = { viewModel.removeExerciseFromActiveWorkout(we.id) },
                             onOpenPlateCalculator = { plateCalcExercise = we },
                             onAddWarmupSets = {
@@ -1027,7 +1057,7 @@ fun WorkoutExerciseCard(
     onUpdateSet: (WorkoutSet) -> Unit,
     onUpdateExerciseNotes: (String) -> Unit = {},
     onToggleComplete: (WorkoutSet, Double, Int) -> Unit,
-    onDeleteSet: (Long) -> Unit,
+    onDeleteSet: (WorkoutSet) -> Unit,
     onRemoveExercise: () -> Unit,
     onOpenPlateCalculator: () -> Unit = {},
     onAddWarmupSets: () -> Unit = {}
@@ -1165,15 +1195,17 @@ fun WorkoutExerciseCard(
             workoutExercise.sets.forEach { set ->
                 val prevSet = previousSets.firstOrNull { it.setNumber == set.setNumber }
                     ?: previousSets.getOrNull(set.setNumber - 1)
-                SetRowItem(
-                    set = set,
-                    weightUnit = weightUnit,
-                    previousSet = prevSet,
-                    onUpdateSet = onUpdateSet,
-                    onToggleComplete = { w, r -> onToggleComplete(set, w, r) },
-                    onDeleteSet = { onDeleteSet(set.id) }
-                )
-                Spacer(modifier = Modifier.height(6.dp))
+                key(set.id) {
+                    SwipeableSetRow(
+                        set = set,
+                        weightUnit = weightUnit,
+                        previousSet = prevSet,
+                        onUpdateSet = onUpdateSet,
+                        onToggleComplete = { w, r -> onToggleComplete(set, w, r) },
+                        onDeleteSet = { onDeleteSet(set) }
+                    )
+                    Spacer(modifier = Modifier.height(6.dp))
+                }
             }
 
             Spacer(modifier = Modifier.height(6.dp))
@@ -1235,6 +1267,66 @@ fun SetActionButtonsRow(
             Spacer(modifier = Modifier.width(6.dp))
             Text(stringResource(R.string.btn_add_set), fontSize = 13.sp)
         }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SwipeableSetRow(
+    set: WorkoutSet,
+    weightUnit: WeightUnit,
+    previousSet: WorkoutSet?,
+    onUpdateSet: (WorkoutSet) -> Unit,
+    onToggleComplete: (Double, Int) -> Unit,
+    onDeleteSet: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val dismissState = rememberSwipeToDismissBoxState(
+        confirmValueChange = { dismissValue ->
+            if (dismissValue == SwipeToDismissBoxValue.EndToStart) {
+                onDeleteSet()
+                true
+            } else {
+                false
+            }
+        }
+    )
+
+    SwipeToDismissBox(
+        state = dismissState,
+        enableDismissFromStartToEnd = false,
+        enableDismissFromEndToStart = true,
+        backgroundContent = {
+            val color = if (dismissState.dismissDirection == SwipeToDismissBoxValue.EndToStart) {
+                MaterialTheme.colorScheme.errorContainer
+            } else {
+                Color.Transparent
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(color)
+                    .padding(horizontal = 16.dp),
+                contentAlignment = Alignment.CenterEnd
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = stringResource(R.string.action_delete_set),
+                    tint = MaterialTheme.colorScheme.onErrorContainer
+                )
+            }
+        },
+        modifier = modifier
+    ) {
+        SetRowItem(
+            set = set,
+            weightUnit = weightUnit,
+            previousSet = previousSet,
+            onUpdateSet = onUpdateSet,
+            onToggleComplete = onToggleComplete,
+            onDeleteSet = onDeleteSet
+        )
     }
 }
 
@@ -1308,7 +1400,7 @@ fun SetRowItem(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(8.dp))
-            .background(if (set.isCompleted) MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.4f) else Color.Transparent)
+            .background(if (set.isCompleted) MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.5f) else MaterialTheme.colorScheme.surfaceContainer)
             .padding(vertical = 4.dp)
     ) {
         Row(

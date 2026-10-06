@@ -458,9 +458,34 @@ class GymViewModel(
         _recentlyUnlockedPr.value = null
     }
 
+    private var recentlyDeletedSet: WorkoutSet? = null
+
     fun deleteSet(setId: Long) {
+        val current = _activeWorkout.value
+        val set = current?.exercises?.flatMap { it.sets }?.firstOrNull { it.id == setId }
+        if (set != null) {
+            deleteSet(set)
+        } else {
+            viewModelScope.launch {
+                repository.deleteSet(setId)
+                setActiveWorkout(repository.getActiveWorkout())
+            }
+        }
+    }
+
+    fun deleteSet(set: WorkoutSet) {
+        recentlyDeletedSet = set
         viewModelScope.launch {
-            repository.deleteSet(setId)
+            repository.deleteSet(set.id)
+            setActiveWorkout(repository.getActiveWorkout())
+        }
+    }
+
+    fun restoreRecentlyDeletedSet() {
+        val set = recentlyDeletedSet ?: return
+        recentlyDeletedSet = null
+        viewModelScope.launch {
+            repository.restoreSet(set)
             setActiveWorkout(repository.getActiveWorkout())
         }
     }

@@ -208,6 +208,9 @@
     <string name="dialog_swap_msg">Do you want to keep the current sets and weights or start fresh with empty sets?</string>
     <string name="action_swap_keep_sets">Keep Sets</string>
     <string name="action_swap_reset_sets">Start Fresh</string>
+    <string name="snackbar_set_deleted">Set deleted</string>
+    <string name="action_undo">Undo</string>
+    <string name="action_delete_set">Delete Set</string>
 
     <!-- Rest Timer -->
     <string name="rest_timer_title">Rest Timer</string>

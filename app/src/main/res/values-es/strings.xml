@@ -208,6 +208,9 @@
     <string name="dialog_swap_msg">¿Deseas mantener las series y pesos actuales o reiniciar con series vacías?</string>
     <string name="action_swap_keep_sets">Mantener Series</string>
     <string name="action_swap_reset_sets">Reiniciar Series</string>
+    <string name="snackbar_set_deleted">Serie eliminada</string>
+    <string name="action_undo">Deshacer</string>
+    <string name="action_delete_set">Eliminar serie</string>
 
     <!-- Rest Timer -->
     <string name="rest_timer_title">Temporizador de descanso</string>
