@@ -144,6 +144,34 @@ class SettingsViewModel(
         }
     }
 
+    fun startImportCsv(inputStream: InputStream) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+            try {
+                val parsedBackup = withContext(ioDispatcher) {
+                    com.kveld9.trackgym.data.backup.CsvWorkoutImporter.parseCsvToBackupDto(inputStream)
+                }
+
+                if (parsedBackup.workouts.isEmpty()) {
+                    _uiEvent.emit(SettingsUiEvent.Error("El archivo CSV no contiene registros de entrenamiento válidos."))
+                    return@launch
+                }
+
+                val hasExisting = withContext(ioDispatcher) { repository.hasExistingData() }
+                if (hasExisting) {
+                    _uiState.update { it.copy(pendingImportBackup = parsedBackup) }
+                    _uiEvent.emit(SettingsUiEvent.ImportPromptDuplicate(parsedBackup))
+                } else {
+                    executeImport(parsedBackup, DuplicatePolicy.OVERWRITE_ALL)
+                }
+            } catch (e: Exception) {
+                _uiEvent.emit(SettingsUiEvent.Error(e.localizedMessage ?: "Error al procesar el archivo CSV."))
+            } finally {
+                _uiState.update { it.copy(isLoading = false) }
+            }
+        }
+    }
+
     fun applyImportPolicy(policy: DuplicatePolicy) {
         val pending = _uiState.value.pendingImportBackup ?: return
         _uiState.update { it.copy(pendingImportBackup = null) }

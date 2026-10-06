@@ -148,6 +148,8 @@
     <string name="setting_export_backup_desc">Generate a portable backup of your workouts, sets, exercises, and records</string>
     <string name="setting_import_backup_title">Import Backup (JSON)</string>
     <string name="setting_import_backup_desc">Restore your workout history and exercises from a JSON backup file</string>
+    <string name="setting_import_csv_title">Import Workout History (CSV)</string>
+    <string name="setting_import_csv_desc">Migrate workout logs from Strong, FitNotes, or standard CSV spreadsheets</string>
     <string name="toast_backup_exported_success">Backup exported successfully</string>
     <string name="toast_backup_export_error">Error exporting backup: %1$s</string>
     <string name="toast_backup_read_error">Error reading file: %1$s</string>
