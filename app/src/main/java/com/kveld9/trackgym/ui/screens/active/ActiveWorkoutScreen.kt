@@ -1047,11 +1047,20 @@ fun SetRowItem(
     onDeleteSet: () -> Unit
 ) {
     var weightText by remember(set.id) {
-        mutableStateOf(if (set.weightKg > 0.0) weightUnit.formatValue(set.weightKg) else "")
+        mutableStateOf(
+            if (set.weightKg > 0.0 || (set.isCompleted && set.weightKg == 0.0)) {
+                weightUnit.formatValue(set.weightKg)
+            } else ""
+        )
     }
     LaunchedEffect(set.weightKg, weightUnit) {
         val currentParsed = weightText.replace(',', '.').toDoubleOrNull()
-        val expected = if (set.weightKg > 0.0) weightUnit.formatValue(set.weightKg) else ""
+        if (set.weightKg == 0.0 && weightText.isNotBlank() && currentParsed == 0.0) {
+            return@LaunchedEffect
+        }
+        val expected = if (set.weightKg > 0.0 || (set.isCompleted && set.weightKg == 0.0)) {
+            weightUnit.formatValue(set.weightKg)
+        } else ""
         val expectedParsed = expected.toDoubleOrNull()
         if (currentParsed == null || expectedParsed == null || kotlin.math.abs(currentParsed - expectedParsed) > 0.001) {
             weightText = expected
@@ -1270,7 +1279,7 @@ fun SetRowItem(
                             0
                         }
 
-                        if (weightText.isBlank() && finalWeightKg > 0.0) {
+                        if (weightText.isBlank()) {
                             weightText = weightUnit.formatValue(finalWeightKg)
                         }
                         if (repsText.isBlank() && finalReps > 0) {
