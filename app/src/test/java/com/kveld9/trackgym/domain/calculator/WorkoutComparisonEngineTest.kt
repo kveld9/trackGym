@@ -141,4 +141,20 @@ class WorkoutComparisonEngineTest {
         assertEquals(MuscleGroup.CHEST, warnings[0].muscleGroup)
         assertEquals(13, warnings[0].effectiveSetsCount)
     }
+
+    @Test
+    fun `computeRecommendation suggests micro-load progression based on previous session`() {
+        val previousSets = listOf(
+            WorkoutSet(id = 1, setNumber = 1, weightKg = 80.0, reps = 10, isCompleted = true),
+            WorkoutSet(id = 2, setNumber = 2, weightKg = 80.0, reps = 10, isCompleted = true),
+            WorkoutSet(id = 3, setNumber = 3, weightKg = 80.0, reps = 10, isCompleted = true)
+        )
+        val rec = ProgressiveOverloadEngine.computeRecommendation(previousSets, com.kveld9.trackgym.domain.model.WeightUnit.KG)
+        org.junit.Assert.assertNotNull(rec)
+        rec?.let {
+            assertTrue(it.previousSummary.contains("3×10"))
+            assertTrue(it.suggestedTarget.contains("82.5 kg"))
+            assertTrue(it.suggestedTarget.contains("+2.5 kg"))
+        }
+    }
 }
