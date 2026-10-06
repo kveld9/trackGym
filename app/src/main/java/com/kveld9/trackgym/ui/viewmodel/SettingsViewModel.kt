@@ -89,6 +89,12 @@ class SettingsViewModel(
         }
     }
 
+    fun setExerciseLanguage(language: String) {
+        viewModelScope.launch {
+            themePreferences.setExerciseLanguage(language)
+        }
+    }
+
     fun exportBackup(streamProvider: () -> OutputStream?) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
