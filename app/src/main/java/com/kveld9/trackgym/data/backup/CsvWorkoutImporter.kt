@@ -77,9 +77,9 @@ object CsvWorkoutImporter {
             if (exerciseName.isBlank()) continue
 
             val setOrder = if (setOrderIdx != -1) cols.getOrNull(setOrderIdx)?.toIntOrNull() ?: 1 else 1
-            val rawWeight = if (weightIdx != -1) cols.getOrNull(weightIdx)?.toDoubleOrNull() ?: 0.0 else 0.0
-            val reps = if (repsIdx != -1) cols.getOrNull(repsIdx)?.toIntOrNull() ?: 0 else 0
-            val rpe = if (rpeIdx != -1) cols.getOrNull(rpeIdx)?.toDoubleOrNull() else null
+            val rawWeight = if (weightIdx != -1) cols.getOrNull(weightIdx)?.trim()?.replace(',', '.')?.toDoubleOrNull() ?: 0.0 else 0.0
+            val reps = if (repsIdx != -1) cols.getOrNull(repsIdx)?.trim()?.toIntOrNull() ?: 0 else 0
+            val rpe = if (rpeIdx != -1) cols.getOrNull(rpeIdx)?.trim()?.replace(',', '.')?.toDoubleOrNull() else null
             val notes = if (notesIdx != -1) cols.getOrNull(notesIdx)?.trim().orEmpty() else ""
 
             rows.add(
