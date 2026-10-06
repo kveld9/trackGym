@@ -35,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.kveld9.trackgym.domain.calculator.MuscleHeatmapEngine
 import com.kveld9.trackgym.ui.components.MuscleHeatmapCard
+import com.kveld9.trackgym.ui.util.displayName
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -250,7 +251,7 @@ fun ExerciseComparisonCard(
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = exerciseComparison.exercise.name,
+                        text = exerciseComparison.exercise.displayName(),
                         color = MaterialTheme.colorScheme.onSurface,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold

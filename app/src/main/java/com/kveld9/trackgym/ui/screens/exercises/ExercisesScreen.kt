@@ -58,6 +58,7 @@ import com.kveld9.trackgym.R
 import com.kveld9.trackgym.domain.model.Exercise
 import com.kveld9.trackgym.domain.model.ExerciseCategory
 import com.kveld9.trackgym.domain.model.MuscleGroup
+import com.kveld9.trackgym.ui.util.displayName
 import com.kveld9.trackgym.ui.viewmodel.GymViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -260,7 +261,7 @@ fun ExerciseRowCard(exercise: Exercise) {
     ) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = exercise.name,
+                text = exercise.displayName(),
                 color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 15.sp,
                 fontWeight = FontWeight.SemiBold

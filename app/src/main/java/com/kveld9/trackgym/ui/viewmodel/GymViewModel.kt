@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.kveld9.trackgym.data.repository.GymRepository
 import com.kveld9.trackgym.domain.model.Exercise
 import com.kveld9.trackgym.domain.model.ExerciseCategory
+import com.kveld9.trackgym.domain.model.ExerciseTranslationRegistry
 import com.kveld9.trackgym.domain.model.MuscleGroup
 import com.kveld9.trackgym.domain.model.PersonalRecord
 import com.kveld9.trackgym.domain.model.Workout
@@ -44,6 +45,15 @@ class GymViewModel(
         WeightUnit.fromString(it.weightUnit)
     } ?: flowOf(WeightUnit.KG))
         .stateIn(viewModelScope, SharingStarted.Eagerly, WeightUnit.KG)
+
+    val exerciseLanguage: StateFlow<String> = (themePreferences?.themeSettings?.map {
+        it.exerciseLanguage
+    } ?: flowOf(ThemePreferences.EXERCISE_LANG_SYSTEM))
+        .stateIn(viewModelScope, SharingStarted.Eagerly, ThemePreferences.EXERCISE_LANG_SYSTEM)
+
+    val keepExerciseNamesInEnglish: StateFlow<Boolean> = exerciseLanguage.map {
+        it == ThemePreferences.EXERCISE_LANG_ENGLISH
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
     private val _activeWorkout = MutableStateFlow<Workout?>(null)
     val activeWorkout: StateFlow<Workout?> = _activeWorkout.asStateFlow()
@@ -115,10 +125,13 @@ class GymViewModel(
         _rawExercises,
         _searchQuery,
         _selectedMuscleFilter,
-        _selectedOriginFilter
-    ) { exercises, query, muscleFilter, originFilter ->
+        _selectedOriginFilter,
+        keepExerciseNamesInEnglish
+    ) { exercises, query, muscleFilter, originFilter, keepEnglish ->
         exercises.filter { ex ->
-            val matchesQuery = query.isBlank() || ex.name.contains(query, ignoreCase = true)
+            val matchesQuery = query.isBlank() ||
+                ex.name.contains(query, ignoreCase = true) ||
+                (!keepEnglish && ExerciseTranslationRegistry.matchesQuery(ex.name, query))
             val matchesMuscle = muscleFilter == null || ex.muscleGroup == muscleFilter
             val matchesOrigin = when (originFilter) {
                 ExerciseOriginFilter.ALL -> true

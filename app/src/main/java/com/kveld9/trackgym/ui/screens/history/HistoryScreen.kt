@@ -58,11 +58,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kveld9.trackgym.R
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.platform.LocalContext
 import com.kveld9.trackgym.domain.calculator.DayActivity
 import com.kveld9.trackgym.domain.calculator.TrainingConsistencyStats
 import com.kveld9.trackgym.domain.model.WeightUnit
 import com.kveld9.trackgym.domain.model.Workout
 import com.kveld9.trackgym.ui.components.MuscleHeatmapCard
+import com.kveld9.trackgym.ui.util.LocalKeepEnglishExerciseNames
+import com.kveld9.trackgym.ui.util.displayName
 import com.kveld9.trackgym.ui.viewmodel.GymViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -458,9 +461,11 @@ fun WorkoutHistoryCard(
             }
 
             if (workout.exercises.isNotEmpty()) {
+                val context = LocalContext.current
+                val keepEnglish = LocalKeepEnglishExerciseNames.current
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(
-                    text = workout.exercises.joinToString(" • ") { "${it.exercise.name} (${it.sets.count { s -> s.isCompleted }}s)" },
+                    text = workout.exercises.joinToString(" • ") { "${it.exercise.displayName(context, keepEnglish)} (${it.sets.count { s -> s.isCompleted }}s)" },
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 12.sp,
                     maxLines = 2

@@ -31,6 +31,7 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -48,6 +49,7 @@ import com.kveld9.trackgym.ui.screens.exercises.ExercisesScreen
 import com.kveld9.trackgym.ui.screens.history.HistoryScreen
 import com.kveld9.trackgym.ui.screens.records.RecordsScreen
 import com.kveld9.trackgym.ui.screens.settings.SettingsScreen
+import com.kveld9.trackgym.ui.util.LocalKeepEnglishExerciseNames
 import com.kveld9.trackgym.ui.viewmodel.GymViewModel
 import com.kveld9.trackgym.ui.viewmodel.SettingsViewModel
 
@@ -76,110 +78,114 @@ fun MainScreen(
         }
     }
 
-    // If viewing comparison screen (either after finishing or tapped from history)
-    val activeComparison = selectedDetailComparison ?: lastFinishedComparison
-    if (activeComparison != null) {
-        WorkoutComparisonScreen(
-            comparison = activeComparison,
-            weightUnit = weightUnit,
-            onBackClick = {
-                if (selectedDetailComparison != null) {
-                    viewModel.clearSelectedDetailComparison()
-                } else {
-                    viewModel.clearLastFinishedComparison()
-                }
-            }
-        )
-        return
-    }
+    val keepExerciseNamesInEnglish by viewModel.keepExerciseNamesInEnglish.collectAsState()
 
-    Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0),
-        bottomBar = {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .navigationBarsPadding()
-                    .padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
-            ) {
-                Surface(
-                    shape = CircleShape,
-                    color = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.95f),
-                    tonalElevation = 6.dp,
-                    shadowElevation = 8.dp,
-                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.25f)),
-                    modifier = Modifier.fillMaxWidth()
+    CompositionLocalProvider(LocalKeepEnglishExerciseNames provides keepExerciseNamesInEnglish) {
+        // If viewing comparison screen (either after finishing or tapped from history)
+        val activeComparison = selectedDetailComparison ?: lastFinishedComparison
+        if (activeComparison != null) {
+            WorkoutComparisonScreen(
+                comparison = activeComparison,
+                weightUnit = weightUnit,
+                onBackClick = {
+                    if (selectedDetailComparison != null) {
+                        viewModel.clearSelectedDetailComparison()
+                    } else {
+                        viewModel.clearLastFinishedComparison()
+                    }
+                }
+            )
+            return@CompositionLocalProvider
+        }
+
+        Scaffold(
+            contentWindowInsets = WindowInsets(0, 0, 0, 0),
+            bottomBar = {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .navigationBarsPadding()
+                        .padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
                 ) {
-                    NavigationBar(
-                        containerColor = Color.Transparent,
-                        windowInsets = WindowInsets(0, 0, 0, 0),
-                        modifier = Modifier.height(64.dp)
+                    Surface(
+                        shape = CircleShape,
+                        color = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.95f),
+                        tonalElevation = 6.dp,
+                        shadowElevation = 8.dp,
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.25f)),
+                        modifier = Modifier.fillMaxWidth()
                     ) {
-                        NavTab.entries.forEachIndexed { index, tab ->
-                            val tabTitle = stringResource(tab.titleRes)
-                            NavigationBarItem(
-                                selected = selectedTab == index,
-                                onClick = { selectedTab = index },
-                                icon = {
-                                    Icon(
-                                        imageVector = tab.icon,
-                                        contentDescription = tabTitle
+                        NavigationBar(
+                            containerColor = Color.Transparent,
+                            windowInsets = WindowInsets(0, 0, 0, 0),
+                            modifier = Modifier.height(64.dp)
+                        ) {
+                            NavTab.entries.forEachIndexed { index, tab ->
+                                val tabTitle = stringResource(tab.titleRes)
+                                NavigationBarItem(
+                                    selected = selectedTab == index,
+                                    onClick = { selectedTab = index },
+                                    icon = {
+                                        Icon(
+                                            imageVector = tab.icon,
+                                            contentDescription = tabTitle
+                                        )
+                                    },
+                                    label = {
+                                        Text(
+                                            tabTitle,
+                                            fontSize = 10.sp,
+                                            fontWeight = if (selectedTab == index) FontWeight.Bold else FontWeight.Normal
+                                        )
+                                    },
+                                    colors = NavigationBarItemDefaults.colors(
+                                        selectedIconColor = MaterialTheme.colorScheme.primary,
+                                        selectedTextColor = MaterialTheme.colorScheme.primary,
+                                        unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        indicatorColor = MaterialTheme.colorScheme.surfaceContainerHighest
                                     )
-                                },
-                                label = {
-                                    Text(
-                                        tabTitle,
-                                        fontSize = 10.sp,
-                                        fontWeight = if (selectedTab == index) FontWeight.Bold else FontWeight.Normal
-                                    )
-                                },
-                                colors = NavigationBarItemDefaults.colors(
-                                    selectedIconColor = MaterialTheme.colorScheme.primary,
-                                    selectedTextColor = MaterialTheme.colorScheme.primary,
-                                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    indicatorColor = MaterialTheme.colorScheme.surfaceContainerHighest
                                 )
-                            )
+                            }
                         }
                     }
                 }
-            }
-        },
-        containerColor = MaterialTheme.colorScheme.background,
-        modifier = modifier
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .consumeWindowInsets(WindowInsets.navigationBars)
-                .background(MaterialTheme.colorScheme.background)
-        ) {
-            when (selectedTab) {
-                0 -> ActiveWorkoutScreen(
-                    viewModel = viewModel,
-                    onWorkoutFinished = {
-                        // Handled by activeComparison trigger
-                    }
-                )
-                1 -> HistoryScreen(
-                    viewModel = viewModel,
-                    weightUnit = weightUnit,
-                    onWorkoutClick = { workoutId ->
-                        viewModel.viewWorkoutDetail(workoutId)
-                    }
-                )
-                2 -> ExercisesScreen(
-                    viewModel = viewModel
-                )
-                3 -> RecordsScreen(
-                    viewModel = viewModel,
-                    weightUnit = weightUnit
-                )
-                4 -> SettingsScreen(
-                    viewModel = settingsViewModel
-                )
+            },
+            containerColor = MaterialTheme.colorScheme.background,
+            modifier = modifier
+        ) { paddingValues ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .consumeWindowInsets(WindowInsets.navigationBars)
+                    .background(MaterialTheme.colorScheme.background)
+            ) {
+                when (selectedTab) {
+                    0 -> ActiveWorkoutScreen(
+                        viewModel = viewModel,
+                        onWorkoutFinished = {
+                            // Handled by activeComparison trigger
+                        }
+                    )
+                    1 -> HistoryScreen(
+                        viewModel = viewModel,
+                        weightUnit = weightUnit,
+                        onWorkoutClick = { workoutId ->
+                            viewModel.viewWorkoutDetail(workoutId)
+                        }
+                    )
+                    2 -> ExercisesScreen(
+                        viewModel = viewModel
+                    )
+                    3 -> RecordsScreen(
+                        viewModel = viewModel,
+                        weightUnit = weightUnit
+                    )
+                    4 -> SettingsScreen(
+                        viewModel = settingsViewModel
+                    )
+                }
             }
         }
     }

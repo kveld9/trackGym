@@ -43,6 +43,7 @@ import com.kveld9.trackgym.domain.model.PersonalRecord
 import com.kveld9.trackgym.domain.model.RecordType
 import com.kveld9.trackgym.domain.model.WeightUnit
 import androidx.compose.material3.MaterialTheme
+import com.kveld9.trackgym.ui.util.displayName
 import com.kveld9.trackgym.ui.viewmodel.GymViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -102,7 +103,7 @@ fun RecordsScreen(
                     val exercise = exercisesMap[pr.exerciseId]
                     RecordItemCard(
                         record = pr,
-                        exerciseName = exercise?.name ?: "Exercise",
+                        exerciseName = exercise?.displayName() ?: "Exercise",
                         weightUnit = weightUnit
                     )
                 }

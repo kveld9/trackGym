@@ -93,9 +93,12 @@ import com.kveld9.trackgym.domain.model.WeightUnit
 import com.kveld9.trackgym.domain.model.WorkoutExercise
 import com.kveld9.trackgym.domain.model.WorkoutSet
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.platform.LocalContext
 import com.kveld9.trackgym.ui.components.PrCelebrationBanner
 import com.kveld9.trackgym.ui.theme.GymBlue
 import com.kveld9.trackgym.ui.theme.GymWarmupAmber
+import com.kveld9.trackgym.ui.util.LocalKeepEnglishExerciseNames
+import com.kveld9.trackgym.ui.util.displayName
 import com.kveld9.trackgym.ui.viewmodel.GymViewModel
 
 private const val DEFAULT_FALLBACK_WEIGHT_KG = 60.0
@@ -419,7 +422,7 @@ fun ActiveWorkoutScreen(
             ?: we.sets.firstOrNull { it.weightKg > 0.0 }?.weightKg
             ?: DEFAULT_FALLBACK_WEIGHT_KG
         PlateCalculatorDialog(
-            exerciseName = we.exercise.name,
+            exerciseName = we.exercise.displayName(),
             weightUnit = weightUnit,
             initialWeightKg = initialWeightKg,
             onDismiss = { plateCalcExercise = null }
@@ -646,7 +649,9 @@ fun RoutineCardItem(
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.height(4.dp))
-                val exerciseNames = routine.exercises.joinToString(", ") { it.exercise.name }
+                val context = LocalContext.current
+                val keepEnglish = LocalKeepEnglishExerciseNames.current
+                val exerciseNames = routine.exercises.joinToString(", ") { it.exercise.displayName(context, keepEnglish) }
                 Text(
                     text = if (exerciseNames.isNotBlank()) exerciseNames else stringResource(R.string.routine_exercises_count, routine.exercises.size),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -930,7 +935,7 @@ fun WorkoutExerciseCard(
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = workoutExercise.exercise.name,
+                        text = workoutExercise.exercise.displayName(),
                         color = MaterialTheme.colorScheme.onSurface,
                         fontSize = 17.sp,
                         fontWeight = FontWeight.Bold
@@ -1435,7 +1440,7 @@ fun ExercisePickerContent(
                 ) {
                     Column {
                         Text(
-                            text = exercise.name,
+                            text = exercise.displayName(),
                             color = MaterialTheme.colorScheme.onSurface,
                             fontSize = 15.sp,
                             fontWeight = FontWeight.SemiBold

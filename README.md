@@ -34,6 +34,7 @@
 - **Localization (i18n)**:
   - English as base/default language.
   - Full Spanish translation included out of the box.
+  - Configurable exercise naming: keep standard English names or translate to the system device language.
 
 ---
 
@@ -43,14 +44,16 @@ TrackGym is built to be easily localizable by the community. All UI text is stri
 
 ### How to contribute a new language
 
-1. Locate the default string resource file:
+1. Locate the default string resource files:
    ```
    app/src/main/res/values/strings.xml
+   app/src/main/res/values/strings_exercises.xml
    ```
 2. Create a new locale resource directory under `app/src/main/res/` named `values-<locale_code>/` (e.g., `values-fr/` for French, `values-pt/` for Portuguese, `values-de/` for German).
-3. Copy `strings.xml` into the new folder:
+3. Copy `strings.xml` and `strings_exercises.xml` into the new folder:
    ```
    app/src/main/res/values-<locale_code>/strings.xml
+   app/src/main/res/values-<locale_code>/strings_exercises.xml
    ```
 4. Translate each string value keeping the XML `name` keys unchanged:
    ```xml
