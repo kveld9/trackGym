@@ -153,4 +153,54 @@
     <string name="app_author_info">Desarrollado con ❤️ por %1$s</string>
     <string name="app_tagline">100% Offline • Sin Telemetría • Privacidad Total</string>
     <string name="view_on_github">Ver en GitHub (%1$s)</string>
+
+    <!-- Set Types -->
+    <string name="set_type_normal">Serie normal</string>
+    <string name="set_type_warmup">Calentamiento (W)</string>
+    <string name="set_type_drop">Drop Set (D)</string>
+    <string name="set_type_failure">Al fallo (F)</string>
+    <string name="set_type_dialog_title">Seleccionar tipo de serie</string>
+
+    <!-- Rest Timer -->
+    <string name="rest_timer_title">Temporizador de descanso</string>
+    <string name="rest_timer_skip">Saltar</string>
+    <string name="rest_timer_add_15">+15s</string>
+    <string name="rest_timer_minus_15">-15s</string>
+    <string name="rest_timer_completed">¡Descanso finalizado!</string>
+    <string name="setting_rest_timer_section">Temporizador de descanso</string>
+    <string name="setting_auto_rest_timer_title">Temporizador automático</string>
+    <string name="setting_auto_rest_timer_desc">Iniciar cuenta regresiva automáticamente al completar una serie</string>
+    <string name="setting_default_rest_duration_title">Duración por defecto</string>
+    <string name="setting_default_rest_duration_desc">Duración del intervalo de descanso entre series</string>
+    <string name="rest_duration_seconds">%1$ds</string>
+
+    <!-- Consistency & Calendar Heatmap -->
+    <string name="consistency_title">Constancia de entrenamiento</string>
+    <string name="consistency_streak_weeks">Racha de %1$d semanas</string>
+    <string name="consistency_streak_week_singular">Racha de 1 semana</string>
+    <string name="consistency_workouts_month">%1$d entrenamientos en los últimos 30 días</string>
+    <string name="consistency_volume_month">%1$s volumen total</string>
+    <string name="consistency_legend_less">Menos</string>
+    <string name="consistency_legend_more">Más</string>
+    <string name="consistency_no_streak">Sin racha activa</string>
+
+    <!-- Routines & Templates -->
+    <string name="routines_title">Rutinas y Plantillas</string>
+    <string name="routines_subtitle">Inicia sesiones desde plantillas personalizadas</string>
+    <string name="btn_new_routine">Nueva rutina</string>
+    <string name="btn_start_routine">Iniciar</string>
+    <string name="dialog_save_routine_title">Guardar como plantilla de rutina</string>
+    <string name="dialog_routine_name">Nombre de la rutina</string>
+    <string name="dialog_routine_folder">Carpeta (opcional)</string>
+    <string name="dialog_routine_notes">Notas (opcional)</string>
+    <string name="toast_routine_saved">Rutina guardada correctamente</string>
+    <string name="action_save_as_routine">Guardar como rutina</string>
+    <string name="routine_folder_all">Todas</string>
+    <string name="routine_exercises_count">%1$d ejercicios</string>
+    <string name="dialog_new_folder_title">Nueva carpeta de rutinas</string>
+    <string name="dialog_folder_name">Nombre de la carpeta</string>
+    <string name="btn_create_folder">Crear carpeta</string>
+    <string name="menu_delete_routine">Eliminar rutina</string>
+    <string name="routine_empty_title">No hay rutinas creadas</string>
+    <string name="routine_empty_desc">Guarda tus entrenamientos como plantillas o crea rutinas reutilizables aquí.</string>
 </resources>

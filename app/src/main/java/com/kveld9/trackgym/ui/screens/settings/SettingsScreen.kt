@@ -38,6 +38,7 @@ import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Straighten
+import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -439,6 +440,95 @@ fun SettingsScreen(
                                     )
                                 }
                             )
+                        }
+                    }
+                }
+            }
+
+            // Rest Timer Section
+            Text(
+                text = stringResource(R.string.setting_rest_timer_section),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary
+            )
+
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = MaterialTheme.shapes.large,
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    // Auto Rest Timer Row
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Timer,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                        Spacer(modifier = Modifier.width(16.dp))
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = stringResource(R.string.setting_auto_rest_timer_title),
+                                style = MaterialTheme.typography.bodyLarge,
+                                fontWeight = FontWeight.Medium
+                            )
+                            Text(
+                                text = stringResource(R.string.setting_auto_rest_timer_desc),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Switch(
+                            checked = themeSettings.autoRestTimer,
+                            onCheckedChange = { viewModel.setAutoRestTimer(it) }
+                        )
+                    }
+
+                    if (themeSettings.autoRestTimer) {
+                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
+
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Text(
+                                text = stringResource(R.string.setting_default_rest_duration_title),
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Medium
+                            )
+                            Text(
+                                text = stringResource(R.string.setting_default_rest_duration_desc),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+
+                            val restOptions = listOf(30, 60, 90, 120, 180)
+                            SingleChoiceSegmentedButtonRow(
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                restOptions.forEachIndexed { index, durationSec ->
+                                    val isSelected = themeSettings.defaultRestSeconds == durationSec
+                                    SegmentedButton(
+                                        selected = isSelected,
+                                        onClick = { viewModel.setDefaultRestSeconds(durationSec) },
+                                        shape = SegmentedButtonDefaults.itemShape(index = index, count = restOptions.size),
+                                        label = {
+                                            Text(
+                                                text = stringResource(R.string.rest_duration_seconds, durationSec),
+                                                style = MaterialTheme.typography.labelSmall,
+                                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                                            )
+                                        }
+                                    )
+                                }
+                            }
                         }
                     }
                 }
