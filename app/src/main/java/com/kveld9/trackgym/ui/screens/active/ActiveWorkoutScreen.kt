@@ -1151,7 +1151,7 @@ fun SetRowItem(
                     value = weightText,
                     onValueChange = { input ->
                         weightText = input
-                        val parsedDisplay = input.toDoubleOrNull() ?: 0.0
+                        val parsedDisplay = input.replace(',', '.').toDoubleOrNull() ?: 0.0
                         val inKg = weightUnit.toKg(parsedDisplay)
                         onUpdateSet(set.copy(weightKg = inKg))
                     },
@@ -1239,7 +1239,7 @@ fun SetRowItem(
                     .clip(RoundedCornerShape(8.dp))
                     .background(checkBgColor)
                     .clickable {
-                        val typedDisplay = weightText.toDoubleOrNull()
+                        val typedDisplay = weightText.replace(',', '.').toDoubleOrNull()
                         val finalWeightKg = if (typedDisplay != null) {
                             weightUnit.toKg(typedDisplay)
                         } else if (set.weightKg > 0.0) {
@@ -1284,8 +1284,8 @@ fun SetRowItem(
 
         // Quick-adjust Micro-load Chips
         AnimatedVisibility(visible = showQuickAdjust && !set.isCompleted) {
-            val currentDisplay = weightText.toDoubleOrNull()
-                ?: ghostWeightDisplay?.toDoubleOrNull()
+            val currentDisplay = weightText.replace(',', '.').toDoubleOrNull()
+                ?: ghostWeightDisplay?.replace(',', '.')?.toDoubleOrNull()
                 ?: 0.0
             MicroLoadChipsRow(
                 weightUnit = weightUnit,
@@ -1453,8 +1453,8 @@ fun PlateCalculatorDialog(
     val defaultBar = com.kveld9.trackgym.domain.calculator.PlateCalculator.defaultBarWeight(weightUnit)
     var barWeightInput by remember { mutableStateOf(if (defaultBar % 1.0 == 0.0) defaultBar.toInt().toString() else defaultBar.toString()) }
 
-    val currentTarget = targetWeightInput.toDoubleOrNull() ?: 0.0
-    val currentBar = barWeightInput.toDoubleOrNull() ?: defaultBar
+    val currentTarget = targetWeightInput.replace(',', '.').toDoubleOrNull() ?: 0.0
+    val currentBar = barWeightInput.replace(',', '.').toDoubleOrNull() ?: defaultBar
     val availablePlates = remember(weightUnit) {
         com.kveld9.trackgym.domain.calculator.PlateCalculator.defaultPlates(weightUnit)
     }
