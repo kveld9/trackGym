@@ -203,7 +203,9 @@ object CsvWorkoutImporter {
     private fun parseTimestamp(dateStr: String): Long {
         for (pattern in DATE_FORMATS) {
             try {
-                val sdf = SimpleDateFormat(pattern, Locale.US)
+                val sdf = SimpleDateFormat(pattern, Locale.US).apply {
+                    isLenient = false
+                }
                 val parsed = sdf.parse(dateStr)
                 if (parsed != null) {
                     return parsed.time
