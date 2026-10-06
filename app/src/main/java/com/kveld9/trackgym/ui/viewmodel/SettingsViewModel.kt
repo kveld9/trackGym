@@ -86,7 +86,7 @@ class SettingsViewModel(
         }
     }
 
-    fun exportBackup(outputStream: OutputStream) {
+    fun exportBackup(streamProvider: () -> OutputStream?) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             try {
@@ -100,9 +100,13 @@ class SettingsViewModel(
                         workouts = backupData.workouts,
                         personalRecords = backupData.personalRecords
                     )
-                    OutputStreamWriter(outputStream, Charsets.UTF_8).use { writer ->
-                        writer.write(json)
-                        writer.flush()
+                    val outputStream = streamProvider()
+                        ?: throw IllegalStateException("No se pudo abrir el archivo para exportar.")
+                    outputStream.use { stream ->
+                        OutputStreamWriter(stream, Charsets.UTF_8).use { writer ->
+                            writer.write(json)
+                            writer.flush()
+                        }
                     }
                 }
                 _uiEvent.emit(SettingsUiEvent.Success("Respaldo exportado correctamente."))
@@ -114,14 +118,20 @@ class SettingsViewModel(
         }
     }
 
-    fun startImport(inputStream: InputStream) {
+    fun exportBackup(outputStream: OutputStream) = exportBackup { outputStream }
+
+    fun startImport(streamProvider: () -> InputStream?) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             try {
                 val parsedBackup = withContext(ioDispatcher) {
-                    val content = backupManager.readBoundedStream(inputStream)
-                    val result = backupManager.parseAndValidateJson(content)
-                    result.getOrThrow()
+                    val inputStream = streamProvider()
+                        ?: throw IllegalStateException("No se pudo abrir el archivo de respaldo.")
+                    inputStream.use { stream ->
+                        val content = backupManager.readBoundedStream(stream)
+                        val result = backupManager.parseAndValidateJson(content)
+                        result.getOrThrow()
+                    }
                 }
 
                 if (parsedBackup.workouts.isEmpty() && parsedBackup.exercises.isEmpty()) {
@@ -144,12 +154,18 @@ class SettingsViewModel(
         }
     }
 
-    fun startImportCsv(inputStream: InputStream) {
+    fun startImport(inputStream: InputStream) = startImport { inputStream }
+
+    fun startImportCsv(streamProvider: () -> InputStream?) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             try {
                 val parsedBackup = withContext(ioDispatcher) {
-                    com.kveld9.trackgym.data.backup.CsvWorkoutImporter.parseCsvToBackupDto(inputStream)
+                    val inputStream = streamProvider()
+                        ?: throw IllegalStateException("No se pudo abrir el archivo CSV.")
+                    inputStream.use { stream ->
+                        com.kveld9.trackgym.data.backup.CsvWorkoutImporter.parseCsvToBackupDto(stream)
+                    }
                 }
 
                 if (parsedBackup.workouts.isEmpty()) {
@@ -171,6 +187,8 @@ class SettingsViewModel(
             }
         }
     }
+
+    fun startImportCsv(inputStream: InputStream) = startImportCsv { inputStream }
 
     fun applyImportPolicy(policy: DuplicatePolicy) {
         val pending = _uiState.value.pendingImportBackup ?: return

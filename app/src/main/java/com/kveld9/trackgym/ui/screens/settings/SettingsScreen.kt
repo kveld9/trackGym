@@ -102,17 +102,7 @@ fun SettingsScreen(
         contract = ActivityResultContracts.CreateDocument("application/json")
     ) { uri: Uri? ->
         if (uri != null) {
-            try {
-                context.contentResolver.openOutputStream(uri)?.use { outputStream ->
-                    viewModel.exportBackup(outputStream)
-                }
-            } catch (e: Exception) {
-                Toast.makeText(
-                    context,
-                    String.format(exportErrorFormat, e.localizedMessage.orEmpty()),
-                    Toast.LENGTH_LONG
-                ).show()
-            }
+            viewModel.exportBackup { context.contentResolver.openOutputStream(uri) }
         }
     }
 
@@ -120,17 +110,7 @@ fun SettingsScreen(
         contract = ActivityResultContracts.OpenDocument()
     ) { uri: Uri? ->
         if (uri != null) {
-            try {
-                context.contentResolver.openInputStream(uri)?.use { inputStream ->
-                    viewModel.startImport(inputStream)
-                }
-            } catch (e: Exception) {
-                Toast.makeText(
-                    context,
-                    String.format(readErrorFormat, e.localizedMessage.orEmpty()),
-                    Toast.LENGTH_LONG
-                ).show()
-            }
+            viewModel.startImport { context.contentResolver.openInputStream(uri) }
         }
     }
 
@@ -138,17 +118,7 @@ fun SettingsScreen(
         contract = ActivityResultContracts.OpenDocument()
     ) { uri: Uri? ->
         if (uri != null) {
-            try {
-                context.contentResolver.openInputStream(uri)?.use { inputStream ->
-                    viewModel.startImportCsv(inputStream)
-                }
-            } catch (e: Exception) {
-                Toast.makeText(
-                    context,
-                    String.format(readErrorFormat, e.localizedMessage.orEmpty()),
-                    Toast.LENGTH_LONG
-                ).show()
-            }
+            viewModel.startImportCsv { context.contentResolver.openInputStream(uri) }
         }
     }
 
