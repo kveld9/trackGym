@@ -38,6 +38,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.ui.window.DialogProperties
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -264,6 +265,7 @@ fun CreateExerciseDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
+        properties = DialogProperties(dismissOnClickOutside = false),
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
         title = {
             Text(stringResource(R.string.dialog_create_exercise_title), color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold)

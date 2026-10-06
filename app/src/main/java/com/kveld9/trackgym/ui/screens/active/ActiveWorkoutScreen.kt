@@ -42,6 +42,7 @@ import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.AlertDialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -277,6 +278,7 @@ fun ActiveWorkoutScreen(
     if (showSaveRoutineDialog) {
         AlertDialog(
             onDismissRequest = { showSaveRoutineDialog = false },
+            properties = DialogProperties(dismissOnClickOutside = false),
             containerColor = MaterialTheme.colorScheme.surfaceContainer,
             title = {
                 Text(
@@ -324,6 +326,7 @@ fun ActiveWorkoutScreen(
     if (showFinishDialog) {
         AlertDialog(
             onDismissRequest = { showFinishDialog = false },
+            properties = DialogProperties(dismissOnClickOutside = false),
             containerColor = MaterialTheme.colorScheme.surfaceContainer,
             title = { Text(stringResource(R.string.dialog_finish_workout_title), color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold) },
             text = {
@@ -368,6 +371,7 @@ fun ActiveWorkoutScreen(
     if (showDiscardDialog) {
         AlertDialog(
             onDismissRequest = { showDiscardDialog = false },
+            properties = DialogProperties(dismissOnClickOutside = false),
             containerColor = MaterialTheme.colorScheme.surfaceContainer,
             title = {
                 Text(
@@ -1487,6 +1491,7 @@ fun PlateCalculatorDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
+        properties = DialogProperties(dismissOnClickOutside = false),
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
         title = {
             Column {

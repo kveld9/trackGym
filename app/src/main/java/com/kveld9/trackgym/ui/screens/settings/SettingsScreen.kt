@@ -33,6 +33,7 @@ import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Straighten
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.AlertDialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -597,6 +598,7 @@ fun SettingsScreen(
     if (uiState.pendingImportBackup != null) {
         AlertDialog(
             onDismissRequest = { viewModel.dismissImportPrompt() },
+            properties = DialogProperties(dismissOnClickOutside = false),
             title = { Text(stringResource(R.string.duplicate_policy_title)) },
             text = {
                 Text(stringResource(R.string.duplicate_policy_prompt))
