@@ -412,11 +412,3 @@ private fun formatDuration(seconds: Long): String {
         "${m}m ${s}s"
     }
 }
-
-private fun formatKg(value: Double): String {
-    return if (value % 1.0 == 0.0) {
-        value.toInt().toString()
-    } else {
-        String.format(Locale.US, "%.1f", value)
-    }
-}
