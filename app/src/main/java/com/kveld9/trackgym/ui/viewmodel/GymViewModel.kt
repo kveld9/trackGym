@@ -247,6 +247,21 @@ class GymViewModel(
         }
     }
 
+    fun moveExercise(fromIndex: Int, toIndex: Int) {
+        val current = _activeWorkout.value ?: return
+        viewModelScope.launch {
+            repository.moveWorkoutExercise(current.id, fromIndex, toIndex)
+            setActiveWorkout(repository.getActiveWorkout())
+        }
+    }
+
+    fun swapExercise(workoutExerciseId: Long, newExerciseId: Long, resetSets: Boolean) {
+        viewModelScope.launch {
+            repository.swapExerciseInWorkout(workoutExerciseId, newExerciseId, resetSets)
+            setActiveWorkout(repository.getActiveWorkout())
+        }
+    }
+
     fun addSet(workoutExerciseId: Long, weightKg: Double, reps: Int) {
         viewModelScope.launch {
             repository.addSetToExercise(workoutExerciseId, weightKg, reps)

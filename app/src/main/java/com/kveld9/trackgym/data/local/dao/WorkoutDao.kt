@@ -63,6 +63,12 @@ interface WorkoutDao {
     @Query("DELETE FROM workout_exercises WHERE id = :id")
     suspend fun deleteWorkoutExercise(id: Long)
 
+    @Query("UPDATE workout_exercises SET orderIndex = :newOrderIndex WHERE id = :workoutExerciseId")
+    suspend fun updateExerciseOrder(workoutExerciseId: Long, newOrderIndex: Int)
+
+    @Query("UPDATE workout_exercises SET exerciseId = :newExerciseId WHERE id = :workoutExerciseId")
+    suspend fun swapExercise(workoutExerciseId: Long, newExerciseId: Long)
+
     // Workout Sets
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertWorkoutSet(workoutSet: WorkoutSetEntity): Long

@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -145,6 +146,10 @@ fun ActiveWorkoutScreen(
     var finishNotes by remember { mutableStateOf("") }
     var routineNameInput by remember { mutableStateOf("") }
     var plateCalcExercise by remember { mutableStateOf<WorkoutExercise?>(null) }
+    var exerciseToSwap by remember { mutableStateOf<WorkoutExercise?>(null) }
+    var pendingSwapTarget by remember { mutableStateOf<Exercise?>(null) }
+    var showSwapExercisePicker by remember { mutableStateOf(false) }
+    var showSwapConfirmDialog by remember { mutableStateOf(false) }
 
     if (activeWorkout == null) {
         EmptyWorkoutDashboard(
@@ -221,11 +226,20 @@ fun ActiveWorkoutScreen(
                         }
                     }
 
-                    items(activeWorkout?.exercises.orEmpty(), key = { it.id }) { we ->
+                    val exercisesList = activeWorkout?.exercises.orEmpty()
+                    itemsIndexed(exercisesList, key = { _, it -> it.id }) { index, we ->
                         WorkoutExerciseCard(
                             workoutExercise = we,
                             weightUnit = weightUnit,
                             previousSets = previousSetsMap[we.exercise.id].orEmpty(),
+                            canMoveUp = index > 0,
+                            canMoveDown = index < exercisesList.size - 1,
+                            onMoveUp = { viewModel.moveExercise(index, index - 1) },
+                            onMoveDown = { viewModel.moveExercise(index, index + 1) },
+                            onSwapExercise = {
+                                exerciseToSwap = we
+                                showSwapExercisePicker = true
+                            },
                             onAddSet = {
                                 viewModel.addSet(we.id, 0.0, 0)
                             },
@@ -294,6 +308,82 @@ fun ActiveWorkoutScreen(
                 }
             )
         }
+    }
+
+    if (showSwapExercisePicker) {
+        ModalBottomSheet(
+            onDismissRequest = {
+                showSwapExercisePicker = false
+                exerciseToSwap = null
+            },
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+            sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+        ) {
+            ExercisePickerContent(
+                exercises = allExercises,
+                onSelectExercise = { exercise ->
+                    pendingSwapTarget = exercise
+                    showSwapExercisePicker = false
+                    showSwapConfirmDialog = true
+                }
+            )
+        }
+    }
+
+    if (showSwapConfirmDialog && exerciseToSwap != null && pendingSwapTarget != null) {
+        AlertDialog(
+            onDismissRequest = {
+                showSwapConfirmDialog = false
+                exerciseToSwap = null
+                pendingSwapTarget = null
+            },
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+            title = {
+                Text(
+                    text = stringResource(R.string.dialog_swap_title),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            text = {
+                Text(
+                    text = stringResource(R.string.dialog_swap_msg),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        val currentEx = exerciseToSwap
+                        val targetEx = pendingSwapTarget
+                        if (currentEx != null && targetEx != null) {
+                            viewModel.swapExercise(currentEx.id, targetEx.id, resetSets = false)
+                        }
+                        showSwapConfirmDialog = false
+                        exerciseToSwap = null
+                        pendingSwapTarget = null
+                    }
+                ) {
+                    Text(stringResource(R.string.action_swap_keep_sets))
+                }
+            },
+            dismissButton = {
+                OutlinedButton(
+                    onClick = {
+                        val currentEx = exerciseToSwap
+                        val targetEx = pendingSwapTarget
+                        if (currentEx != null && targetEx != null) {
+                            viewModel.swapExercise(currentEx.id, targetEx.id, resetSets = true)
+                        }
+                        showSwapConfirmDialog = false
+                        exerciseToSwap = null
+                        pendingSwapTarget = null
+                    }
+                ) {
+                    Text(stringResource(R.string.action_swap_reset_sets))
+                }
+            }
+        )
     }
 
     if (showSaveRoutineDialog) {
@@ -927,6 +1017,11 @@ fun WorkoutExerciseCard(
     workoutExercise: WorkoutExercise,
     weightUnit: WeightUnit = WeightUnit.KG,
     previousSets: List<WorkoutSet> = emptyList(),
+    canMoveUp: Boolean = false,
+    canMoveDown: Boolean = false,
+    onMoveUp: () -> Unit = {},
+    onMoveDown: () -> Unit = {},
+    onSwapExercise: () -> Unit = {},
     onAddSet: () -> Unit,
     onDuplicateSet: () -> Unit = {},
     onUpdateSet: (WorkoutSet) -> Unit,
@@ -992,6 +1087,31 @@ fun WorkoutExerciseCard(
                             onDismissRequest = { menuExpanded = false },
                             modifier = Modifier.background(MaterialTheme.colorScheme.surfaceContainer)
                         ) {
+                            if (canMoveUp) {
+                                DropdownMenuItem(
+                                    text = { Text(stringResource(R.string.menu_move_up), color = MaterialTheme.colorScheme.onSurface) },
+                                    onClick = {
+                                        menuExpanded = false
+                                        onMoveUp()
+                                    }
+                                )
+                            }
+                            if (canMoveDown) {
+                                DropdownMenuItem(
+                                    text = { Text(stringResource(R.string.menu_move_down), color = MaterialTheme.colorScheme.onSurface) },
+                                    onClick = {
+                                        menuExpanded = false
+                                        onMoveDown()
+                                    }
+                                )
+                            }
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.menu_swap_exercise), color = MaterialTheme.colorScheme.onSurface) },
+                                onClick = {
+                                    menuExpanded = false
+                                    onSwapExercise()
+                                }
+                            )
                             DropdownMenuItem(
                                 text = { Text(stringResource(R.string.action_add_warmup_sets), color = MaterialTheme.colorScheme.onSurface) },
                                 onClick = {

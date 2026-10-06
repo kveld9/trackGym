@@ -195,6 +195,35 @@ class GymRepository(private val database: GymDatabase) {
         workoutDao.deleteWorkoutSet(setId)
     }
 
+    suspend fun moveWorkoutExercise(workoutId: Long, fromIndex: Int, toIndex: Int) = withContext(Dispatchers.IO) {
+        val exercises = workoutDao.getWorkoutExercises(workoutId).toMutableList()
+        if (fromIndex !in exercises.indices || toIndex !in exercises.indices || fromIndex == toIndex) return@withContext
+        val item = exercises.removeAt(fromIndex)
+        exercises.add(toIndex, item)
+        exercises.forEachIndexed { index, we ->
+            workoutDao.updateExerciseOrder(we.id, index)
+        }
+    }
+
+    suspend fun swapExerciseInWorkout(workoutExerciseId: Long, newExerciseId: Long, resetSets: Boolean = false) = withContext(Dispatchers.IO) {
+        workoutDao.swapExercise(workoutExerciseId, newExerciseId)
+        if (resetSets) {
+            val sets = workoutDao.getWorkoutSets(workoutExerciseId)
+            sets.forEach { set ->
+                workoutDao.deleteWorkoutSet(set.id)
+            }
+            val initial = WorkoutSetEntity(
+                workoutExerciseId = workoutExerciseId,
+                setNumber = 1,
+                setType = SetType.NORMAL.name,
+                weightKg = 0.0,
+                reps = 0,
+                isCompleted = false
+            )
+            workoutDao.insertWorkoutSet(initial)
+        }
+    }
+
     suspend fun insertWarmupSets(
         workoutExerciseId: Long,
         warmupSets: List<WorkoutSet>

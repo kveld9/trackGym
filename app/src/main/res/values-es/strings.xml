@@ -200,6 +200,15 @@
     <string name="pinned_exercise_notes">Ajuste de máquina / Notas fijadas</string>
     <string name="pinned_notes_placeholder">Ej. Asiento en posición 4, agarre ancho...</string>
 
+    <!-- Exercise Reordering and Swap -->
+    <string name="menu_move_up">Mover arriba</string>
+    <string name="menu_move_down">Mover abajo</string>
+    <string name="menu_swap_exercise">Sustituir ejercicio</string>
+    <string name="dialog_swap_title">Sustituir Ejercicio</string>
+    <string name="dialog_swap_msg">¿Deseas mantener las series y pesos actuales o reiniciar con series vacías?</string>
+    <string name="action_swap_keep_sets">Mantener Series</string>
+    <string name="action_swap_reset_sets">Reiniciar Series</string>
+
     <!-- Rest Timer -->
     <string name="rest_timer_title">Temporizador de descanso</string>
     <string name="rest_timer_skip">Saltar</string>

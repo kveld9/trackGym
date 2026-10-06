@@ -200,6 +200,15 @@
     <string name="pinned_exercise_notes">Machine setup / Pinned notes</string>
     <string name="pinned_notes_placeholder">e.g. Seat at pin 4, wide grip, neutral wrists...</string>
 
+    <!-- Exercise Reordering and Swap -->
+    <string name="menu_move_up">Move Up</string>
+    <string name="menu_move_down">Move Down</string>
+    <string name="menu_swap_exercise">Swap Exercise</string>
+    <string name="dialog_swap_title">Swap Exercise</string>
+    <string name="dialog_swap_msg">Do you want to keep the current sets and weights or start fresh with empty sets?</string>
+    <string name="action_swap_keep_sets">Keep Sets</string>
+    <string name="action_swap_reset_sets">Start Fresh</string>
+
     <!-- Rest Timer -->
     <string name="rest_timer_title">Rest Timer</string>
     <string name="rest_timer_skip">Skip</string>
