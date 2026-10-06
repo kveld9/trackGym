@@ -211,6 +211,19 @@ class GymViewModel(
         }
     }
 
+    fun addWarmupSets(workoutExerciseId: Long, targetWeightKg: Double) {
+        viewModelScope.launch {
+            val warmups = com.kveld9.trackgym.domain.calculator.WarmupGenerator.generateWarmupSets(
+                targetWeightKg = targetWeightKg,
+                workoutExerciseId = workoutExerciseId
+            )
+            if (warmups.isNotEmpty()) {
+                repository.insertWarmupSets(workoutExerciseId, warmups)
+                setActiveWorkout(repository.getActiveWorkout())
+            }
+        }
+    }
+
     fun updateSet(set: WorkoutSet) {
         viewModelScope.launch {
             repository.updateSet(set)

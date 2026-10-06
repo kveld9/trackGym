@@ -219,7 +219,13 @@ fun ActiveWorkoutScreen(
                             },
                             onDeleteSet = { setId -> viewModel.deleteSet(setId) },
                             onRemoveExercise = { viewModel.removeExerciseFromActiveWorkout(we.id) },
-                            onOpenPlateCalculator = { plateCalcExercise = we }
+                            onOpenPlateCalculator = { plateCalcExercise = we },
+                            onAddWarmupSets = {
+                                val workingWeight = we.sets.firstOrNull { it.weightKg > 0.0 && it.setType != SetType.WARMUP }?.weightKg
+                                    ?: we.sets.firstOrNull { it.weightKg > 0.0 }?.weightKg
+                                    ?: 60.0
+                                viewModel.addWarmupSets(we.id, workingWeight)
+                            }
                         )
                     }
 
@@ -896,7 +902,8 @@ fun WorkoutExerciseCard(
     onToggleComplete: (WorkoutSet, Double, Int) -> Unit,
     onDeleteSet: (Long) -> Unit,
     onRemoveExercise: () -> Unit,
-    onOpenPlateCalculator: () -> Unit = {}
+    onOpenPlateCalculator: () -> Unit = {},
+    onAddWarmupSets: () -> Unit = {}
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
 
@@ -953,6 +960,13 @@ fun WorkoutExerciseCard(
                             onDismissRequest = { menuExpanded = false },
                             modifier = Modifier.background(MaterialTheme.colorScheme.surfaceContainer)
                         ) {
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.action_add_warmup_sets), color = MaterialTheme.colorScheme.onSurface) },
+                                onClick = {
+                                    menuExpanded = false
+                                    onAddWarmupSets()
+                                }
+                            )
                             DropdownMenuItem(
                                 text = { Text(stringResource(R.string.action_plate_calculator), color = MaterialTheme.colorScheme.onSurface) },
                                 onClick = {

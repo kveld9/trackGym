@@ -187,6 +187,47 @@ class GymRepository(private val database: GymDatabase) {
         workoutDao.deleteWorkoutSet(setId)
     }
 
+    suspend fun insertWarmupSets(
+        workoutExerciseId: Long,
+        warmupSets: List<WorkoutSet>
+    ) = withContext(Dispatchers.IO) {
+        if (warmupSets.isEmpty()) return@withContext
+        val existingSets = workoutDao.getWorkoutSets(workoutExerciseId).map { it.toDomain() }
+        
+        // Remove existing sets temporarily or renumber
+        // We will insert warmup sets at the beginning, followed by existing non-warmup sets renumbered
+        val nonWarmupExisting = existingSets.filter { it.setType != SetType.WARMUP }
+        
+        // Delete all sets for this exercise and re-insert in order
+        workoutDao.deleteWorkoutSetsForExercise(workoutExerciseId)
+        
+        var currentSetNumber = 1
+        warmupSets.forEach { ws ->
+            val entity = WorkoutSetEntity(
+                workoutExerciseId = workoutExerciseId,
+                setNumber = currentSetNumber++,
+                setType = SetType.WARMUP.name,
+                weightKg = ws.weightKg,
+                reps = ws.reps,
+                isCompleted = false
+            )
+            workoutDao.insertWorkoutSet(entity)
+        }
+
+        nonWarmupExisting.forEach { set ->
+            val entity = WorkoutSetEntity(
+                workoutExerciseId = workoutExerciseId,
+                setNumber = currentSetNumber++,
+                setType = set.setType.name,
+                weightKg = set.weightKg,
+                reps = set.reps,
+                isCompleted = set.isCompleted,
+                completedAt = set.completedAt
+            )
+            workoutDao.insertWorkoutSet(entity)
+        }
+    }
+
     suspend fun completeSet(
         set: WorkoutSet,
         workoutId: Long,

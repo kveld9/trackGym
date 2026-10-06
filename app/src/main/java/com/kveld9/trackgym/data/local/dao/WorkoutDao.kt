@@ -70,6 +70,9 @@ interface WorkoutDao {
     @Query("DELETE FROM workout_sets WHERE id = :id")
     suspend fun deleteWorkoutSet(id: Long)
 
+    @Query("DELETE FROM workout_sets WHERE workoutExerciseId = :workoutExerciseId")
+    suspend fun deleteWorkoutSetsForExercise(workoutExerciseId: Long)
+
     @Query("SELECT * FROM workout_sets WHERE workoutExerciseId = :workoutExerciseId ORDER BY setNumber ASC")
     suspend fun getWorkoutSets(workoutExerciseId: Long): List<WorkoutSetEntity>
 
