@@ -1147,6 +1147,7 @@ fun SetRowItem(
         SetType.WARMUP -> GymWarmupAmber
         SetType.DROP -> GymBlue
         SetType.FAILURE -> MaterialTheme.colorScheme.error
+        SetType.MYO_REPS -> MaterialTheme.colorScheme.tertiary
     }
 
     val badgeLabel = when (set.setType) {
@@ -1154,6 +1155,7 @@ fun SetRowItem(
         SetType.WARMUP -> "W"
         SetType.DROP -> "D"
         SetType.FAILURE -> "F"
+        SetType.MYO_REPS -> "M"
     }
 
     var showQuickAdjust by remember { mutableStateOf(false) }
@@ -1202,6 +1204,7 @@ fun SetRowItem(
                                             SetType.WARMUP -> GymWarmupAmber
                                             SetType.DROP -> GymBlue
                                             SetType.FAILURE -> MaterialTheme.colorScheme.error
+                                            SetType.MYO_REPS -> MaterialTheme.colorScheme.tertiary
                                         },
                                         fontWeight = FontWeight.Bold,
                                         modifier = Modifier.width(28.dp)

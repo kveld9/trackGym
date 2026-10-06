@@ -175,6 +175,7 @@
     <string name="set_type_warmup">Calentamiento (W)</string>
     <string name="set_type_drop">Drop Set (D)</string>
     <string name="set_type_failure">Al fallo (F)</string>
+    <string name="set_type_myo_reps">Myo-Reps (M)</string>
     <string name="set_type_dialog_title">Seleccionar tipo de serie</string>
 
     <!-- RPE / RIR Selection -->
