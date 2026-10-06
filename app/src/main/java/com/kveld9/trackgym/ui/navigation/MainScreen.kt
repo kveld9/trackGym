@@ -33,7 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -68,9 +68,9 @@ fun MainScreen(
     modifier: Modifier = Modifier
 ) {
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
-    val lastFinishedComparison by viewModel.lastFinishedComparison.collectAsState()
-    val selectedDetailComparison by viewModel.selectedDetailComparison.collectAsState()
-    val weightUnit by viewModel.weightUnit.collectAsState()
+    val lastFinishedComparison by viewModel.lastFinishedComparison.collectAsStateWithLifecycle()
+    val selectedDetailComparison by viewModel.selectedDetailComparison.collectAsStateWithLifecycle()
+    val weightUnit by viewModel.weightUnit.collectAsStateWithLifecycle()
 
     LaunchedEffect(selectedTab) {
         if (selectedTab == 0) {
@@ -78,7 +78,7 @@ fun MainScreen(
         }
     }
 
-    val keepExerciseNamesInEnglish by viewModel.keepExerciseNamesInEnglish.collectAsState()
+    val keepExerciseNamesInEnglish by viewModel.keepExerciseNamesInEnglish.collectAsStateWithLifecycle()
 
     CompositionLocalProvider(LocalKeepEnglishExerciseNames provides keepExerciseNamesInEnglish) {
         // If viewing comparison screen (either after finishing or tapped from history)

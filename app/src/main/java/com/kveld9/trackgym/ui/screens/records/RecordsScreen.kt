@@ -28,7 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -56,8 +56,8 @@ fun RecordsScreen(
     modifier: Modifier = Modifier,
     weightUnit: WeightUnit = WeightUnit.KG
 ) {
-    val records by viewModel.allRecords.collectAsState()
-    val exercises by viewModel.filteredExercises.collectAsState()
+    val records by viewModel.allRecords.collectAsStateWithLifecycle()
+    val exercises by viewModel.filteredExercises.collectAsStateWithLifecycle()
 
     val exercisesMap = exercises.associateBy { it.id }
 

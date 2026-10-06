@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import com.kveld9.trackgym.ui.navigation.MainScreen
 import com.kveld9.trackgym.ui.theme.TrackGymTheme
@@ -28,7 +28,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContent {
-            val themeSettings by settingsViewModel.themeSettings.collectAsState()
+            val themeSettings by settingsViewModel.themeSettings.collectAsStateWithLifecycle()
 
             TrackGymTheme(
                 themeMode = themeSettings.themeMode

@@ -41,7 +41,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -67,10 +67,10 @@ fun ExercisesScreen(
     viewModel: GymViewModel,
     modifier: Modifier = Modifier
 ) {
-    val exercises by viewModel.filteredExercises.collectAsState()
-    val searchQuery by viewModel.searchQuery.collectAsState()
-    val selectedFilter by viewModel.selectedMuscleFilter.collectAsState()
-    val selectedOriginFilter by viewModel.selectedOriginFilter.collectAsState()
+    val exercises by viewModel.filteredExercises.collectAsStateWithLifecycle()
+    val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
+    val selectedFilter by viewModel.selectedMuscleFilter.collectAsStateWithLifecycle()
+    val selectedOriginFilter by viewModel.selectedOriginFilter.collectAsStateWithLifecycle()
 
     var showCreateDialog by remember { mutableStateOf(false) }
 

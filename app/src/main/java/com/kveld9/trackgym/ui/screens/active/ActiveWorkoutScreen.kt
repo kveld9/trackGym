@@ -78,7 +78,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
@@ -132,21 +132,21 @@ fun ActiveWorkoutScreen(
     onWorkoutFinished: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val activeWorkout by viewModel.activeWorkout.collectAsState()
-    val previousSetsMap by viewModel.previousSetsMap.collectAsState()
-    val timerSeconds by viewModel.timerSeconds.collectAsState()
-    val recentPr by viewModel.recentlyUnlockedPr.collectAsState()
-    val allExercises by viewModel.filteredExercises.collectAsState()
-    val weightUnit by viewModel.weightUnit.collectAsState()
+    val activeWorkout by viewModel.activeWorkout.collectAsStateWithLifecycle()
+    val previousSetsMap by viewModel.previousSetsMap.collectAsStateWithLifecycle()
+    val timerSeconds by viewModel.timerSeconds.collectAsStateWithLifecycle()
+    val recentPr by viewModel.recentlyUnlockedPr.collectAsStateWithLifecycle()
+    val allExercises by viewModel.filteredExercises.collectAsStateWithLifecycle()
+    val weightUnit by viewModel.weightUnit.collectAsStateWithLifecycle()
 
     // Rest Timer state
-    val restRemaining by viewModel.restTimerRemainingSeconds.collectAsState()
-    val restTotal by viewModel.restTimerTotalSeconds.collectAsState()
-    val restIsRunning by viewModel.restTimerIsRunning.collectAsState()
+    val restRemaining by viewModel.restTimerRemainingSeconds.collectAsStateWithLifecycle()
+    val restTotal by viewModel.restTimerTotalSeconds.collectAsStateWithLifecycle()
+    val restIsRunning by viewModel.restTimerIsRunning.collectAsStateWithLifecycle()
 
     // Routines state
-    val routines by viewModel.routines.collectAsState()
-    val folders by viewModel.folders.collectAsState()
+    val routines by viewModel.routines.collectAsStateWithLifecycle()
+    val folders by viewModel.folders.collectAsStateWithLifecycle()
 
     val haptic = LocalHapticFeedback.current
     LaunchedEffect(Unit) {

@@ -43,7 +43,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -79,9 +79,9 @@ fun HistoryScreen(
     modifier: Modifier = Modifier,
     weightUnit: WeightUnit = WeightUnit.KG
 ) {
-    val completedWorkouts by viewModel.completedWorkouts.collectAsState()
-    val consistencyStats by viewModel.consistencyStats.collectAsState()
-    val weeklyHeatmap by viewModel.weeklyHeatmapState.collectAsState()
+    val completedWorkouts by viewModel.completedWorkouts.collectAsStateWithLifecycle()
+    val consistencyStats by viewModel.consistencyStats.collectAsStateWithLifecycle()
+    val weeklyHeatmap by viewModel.weeklyHeatmapState.collectAsStateWithLifecycle()
 
     var workoutToSaveAsRoutine by remember { mutableStateOf<Workout?>(null) }
     var routineNameInput by remember { mutableStateOf("") }
