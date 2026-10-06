@@ -98,6 +98,8 @@ import com.kveld9.trackgym.ui.theme.GymBlue
 import com.kveld9.trackgym.ui.theme.GymWarmupAmber
 import com.kveld9.trackgym.ui.viewmodel.GymViewModel
 
+private const val DEFAULT_FALLBACK_WEIGHT_KG = 60.0
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ActiveWorkoutScreen(
@@ -225,7 +227,7 @@ fun ActiveWorkoutScreen(
                             onAddWarmupSets = {
                                 val workingWeight = we.sets.firstOrNull { it.weightKg > 0.0 && it.setType != SetType.WARMUP }?.weightKg
                                     ?: we.sets.firstOrNull { it.weightKg > 0.0 }?.weightKg
-                                    ?: 60.0
+                                    ?: DEFAULT_FALLBACK_WEIGHT_KG
                                 viewModel.addWarmupSets(we.id, workingWeight)
                             }
                         )
@@ -415,7 +417,7 @@ fun ActiveWorkoutScreen(
     plateCalcExercise?.let { we ->
         val initialWeightKg = we.sets.lastOrNull { it.weightKg > 0.0 }?.weightKg
             ?: we.sets.firstOrNull { it.weightKg > 0.0 }?.weightKg
-            ?: 60.0
+            ?: DEFAULT_FALLBACK_WEIGHT_KG
         PlateCalculatorDialog(
             exerciseName = we.exercise.name,
             weightUnit = weightUnit,
