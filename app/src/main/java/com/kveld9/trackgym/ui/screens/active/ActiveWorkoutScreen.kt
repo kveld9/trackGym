@@ -98,6 +98,7 @@ fun ActiveWorkoutScreen(
     modifier: Modifier = Modifier
 ) {
     val activeWorkout by viewModel.activeWorkout.collectAsState()
+    val previousSetsMap by viewModel.previousSetsMap.collectAsState()
     val timerSeconds by viewModel.timerSeconds.collectAsState()
     val recentPr by viewModel.recentlyUnlockedPr.collectAsState()
     val allExercises by viewModel.filteredExercises.collectAsState()
@@ -195,6 +196,7 @@ fun ActiveWorkoutScreen(
                         WorkoutExerciseCard(
                             workoutExercise = we,
                             weightUnit = weightUnit,
+                            previousSets = previousSetsMap[we.exercise.id].orEmpty(),
                             onAddSet = {
                                 val lastSet = we.sets.lastOrNull()
                                 val weight = lastSet?.weightKg ?: 0.0
@@ -823,6 +825,7 @@ fun ActiveWorkoutTopBar(
 fun WorkoutExerciseCard(
     workoutExercise: WorkoutExercise,
     weightUnit: WeightUnit = WeightUnit.KG,
+    previousSets: List<WorkoutSet> = emptyList(),
     onAddSet: () -> Unit,
     onUpdateSet: (WorkoutSet) -> Unit,
     onToggleComplete: (WorkoutSet, Double, Int) -> Unit,
@@ -900,9 +903,12 @@ fun WorkoutExerciseCard(
 
             // Sets rows
             workoutExercise.sets.forEach { set ->
+                val prevSet = previousSets.firstOrNull { it.setNumber == set.setNumber }
+                    ?: previousSets.getOrNull(set.setNumber - 1)
                 SetRowItem(
                     set = set,
                     weightUnit = weightUnit,
+                    previousSet = prevSet,
                     onUpdateSet = onUpdateSet,
                     onToggleComplete = { w, r -> onToggleComplete(set, w, r) },
                     onDeleteSet = { onDeleteSet(set.id) }
@@ -932,17 +938,25 @@ fun WorkoutExerciseCard(
 fun SetRowItem(
     set: WorkoutSet,
     weightUnit: WeightUnit = WeightUnit.KG,
+    previousSet: WorkoutSet? = null,
     onUpdateSet: (WorkoutSet) -> Unit,
     onToggleComplete: (Double, Int) -> Unit,
     onDeleteSet: () -> Unit
 ) {
     val initialDisplay = if (set.weightKg > 0.0) weightUnit.formatValue(set.weightKg) else ""
-    var weightText by remember(set.id, weightUnit) {
+    var weightText by remember(set.id, set.weightKg, weightUnit) {
         mutableStateOf(initialDisplay)
     }
-    var repsText by remember(set.reps) {
+    var repsText by remember(set.id, set.reps) {
         mutableStateOf(if (set.reps > 0) set.reps.toString() else "")
     }
+
+    val ghostWeightDisplay = if (previousSet != null && previousSet.weightKg > 0.0) {
+        weightUnit.formatValue(previousSet.weightKg)
+    } else null
+    val ghostRepsDisplay = if (previousSet != null && previousSet.reps > 0) {
+        previousSet.reps.toString()
+    } else null
 
     var showSetTypePicker by remember { mutableStateOf(false) }
 
@@ -1025,7 +1039,7 @@ fun SetRowItem(
             }
         }
 
-        // Weight Input
+        // Weight Input with Ghost Placeholder
         Box(modifier = Modifier.weight(1f).padding(horizontal = 4.dp)) {
             OutlinedTextField(
                 value = weightText,
@@ -1035,7 +1049,16 @@ fun SetRowItem(
                     val inKg = weightUnit.toKg(parsedDisplay)
                     onUpdateSet(set.copy(weightKg = inKg))
                 },
-                placeholder = { Text("0", color = MaterialTheme.colorScheme.onSurfaceVariant) },
+                placeholder = {
+                    Text(
+                        text = ghostWeightDisplay ?: "0",
+                        color = if (ghostWeightDisplay != null) {
+                            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)
+                        }
+                    )
+                },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                 textStyle = androidx.compose.ui.text.TextStyle(textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onSurface, fontSize = 15.sp),
@@ -1050,7 +1073,7 @@ fun SetRowItem(
             )
         }
 
-        // Reps Input
+        // Reps Input with Ghost Placeholder
         Box(modifier = Modifier.weight(1f).padding(horizontal = 4.dp)) {
             OutlinedTextField(
                 value = repsText,
@@ -1059,7 +1082,16 @@ fun SetRowItem(
                     val parsed = input.toIntOrNull() ?: 0
                     onUpdateSet(set.copy(reps = parsed))
                 },
-                placeholder = { Text("0", color = MaterialTheme.colorScheme.onSurfaceVariant) },
+                placeholder = {
+                    Text(
+                        text = ghostRepsDisplay ?: "0",
+                        color = if (ghostRepsDisplay != null) {
+                            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)
+                        }
+                    )
+                },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 textStyle = androidx.compose.ui.text.TextStyle(textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onSurface, fontSize = 15.sp),
@@ -1084,10 +1116,32 @@ fun SetRowItem(
                     val typedDisplay = weightText.toDoubleOrNull()
                     val finalWeightKg = if (typedDisplay != null) {
                         weightUnit.toKg(typedDisplay)
-                    } else {
+                    } else if (set.weightKg > 0.0) {
                         set.weightKg
+                    } else if (previousSet != null && previousSet.weightKg > 0.0) {
+                        previousSet.weightKg
+                    } else {
+                        0.0
                     }
-                    val finalReps = repsText.toIntOrNull() ?: set.reps
+
+                    val typedReps = repsText.toIntOrNull()
+                    val finalReps = if (typedReps != null) {
+                        typedReps
+                    } else if (set.reps > 0) {
+                        set.reps
+                    } else if (previousSet != null && previousSet.reps > 0) {
+                        previousSet.reps
+                    } else {
+                        0
+                    }
+
+                    if (weightText.isBlank() && finalWeightKg > 0.0) {
+                        weightText = weightUnit.formatValue(finalWeightKg)
+                    }
+                    if (repsText.isBlank() && finalReps > 0) {
+                        repsText = finalReps.toString()
+                    }
+
                     onToggleComplete(finalWeightKg, finalReps)
                 },
             contentAlignment = Alignment.Center

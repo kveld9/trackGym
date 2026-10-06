@@ -46,6 +46,9 @@ class GymViewModel(
     private val _activeWorkout = MutableStateFlow<Workout?>(null)
     val activeWorkout: StateFlow<Workout?> = _activeWorkout.asStateFlow()
 
+    private val _previousSetsMap = MutableStateFlow<Map<Long, List<WorkoutSet>>>(emptyMap())
+    val previousSetsMap: StateFlow<Map<Long, List<WorkoutSet>>> = _previousSetsMap.asStateFlow()
+
     private val _timerSeconds = MutableStateFlow(0L)
     val timerSeconds: StateFlow<Long> = _timerSeconds.asStateFlow()
     private var timerJob: Job? = null
@@ -120,9 +123,31 @@ class GymViewModel(
         }
     }
 
+    private suspend fun setActiveWorkout(workout: Workout?) {
+        _activeWorkout.value = workout
+        refreshPreviousSets(workout)
+    }
+
+    private suspend fun refreshPreviousSets(workout: Workout?) {
+        if (workout == null) {
+            _previousSetsMap.value = emptyMap()
+            return
+        }
+        val currentMap = _previousSetsMap.value.toMutableMap()
+        val workoutExerciseIds = workout.exercises.map { it.exercise.id }.toSet()
+        currentMap.keys.retainAll(workoutExerciseIds)
+        for (we in workout.exercises) {
+            if (!currentMap.containsKey(we.exercise.id)) {
+                val prev = repository.getPreviousSetsForExercise(we.exercise.id, workout.id)
+                currentMap[we.exercise.id] = prev
+            }
+        }
+        _previousSetsMap.value = currentMap
+    }
+
     private suspend fun loadActiveWorkout() {
         val active = repository.getActiveWorkout()
-        _activeWorkout.value = active
+        setActiveWorkout(active)
         if (active != null) {
             val elapsed = (System.currentTimeMillis() - active.startedAt) / 1000
             _timerSeconds.value = elapsed.coerceAtLeast(0)
@@ -148,7 +173,7 @@ class GymViewModel(
     fun startWorkout(title: String = "Entrenamiento") {
         viewModelScope.launch {
             val workout = repository.startNewWorkout(title)
-            _activeWorkout.value = workout
+            setActiveWorkout(workout)
             _timerSeconds.value = 0
             startTimer()
         }
@@ -158,28 +183,29 @@ class GymViewModel(
         val current = _activeWorkout.value ?: return
         viewModelScope.launch {
             repository.addExerciseToWorkout(current.id, exerciseId)
-            _activeWorkout.value = repository.getActiveWorkout()
+            setActiveWorkout(repository.getActiveWorkout())
         }
     }
 
     fun removeExerciseFromActiveWorkout(workoutExerciseId: Long) {
+        val current = _activeWorkout.value ?: return
         viewModelScope.launch {
             repository.removeExerciseFromWorkout(workoutExerciseId)
-            _activeWorkout.value = repository.getActiveWorkout()
+            setActiveWorkout(repository.getActiveWorkout())
         }
     }
 
     fun addSet(workoutExerciseId: Long, weightKg: Double, reps: Int) {
         viewModelScope.launch {
             repository.addSetToExercise(workoutExerciseId, weightKg, reps)
-            _activeWorkout.value = repository.getActiveWorkout()
+            setActiveWorkout(repository.getActiveWorkout())
         }
     }
 
     fun updateSet(set: WorkoutSet) {
         viewModelScope.launch {
             repository.updateSet(set)
-            _activeWorkout.value = repository.getActiveWorkout()
+            setActiveWorkout(repository.getActiveWorkout())
         }
     }
 
@@ -208,7 +234,7 @@ class GymViewModel(
                 }
                 triggerAutoRestTimer()
             }
-            _activeWorkout.value = repository.getActiveWorkout()
+            setActiveWorkout(repository.getActiveWorkout())
         }
     }
 
@@ -280,7 +306,7 @@ class GymViewModel(
         viewModelScope.launch {
             val workoutId = repository.startWorkoutFromRoutine(routineId)
             if (workoutId > 0) {
-                _activeWorkout.value = repository.getActiveWorkout()
+                setActiveWorkout(repository.getActiveWorkout())
                 startTimer()
             }
         }
@@ -327,7 +353,7 @@ class GymViewModel(
     fun deleteSet(setId: Long) {
         viewModelScope.launch {
             repository.deleteSet(setId)
-            _activeWorkout.value = repository.getActiveWorkout()
+            setActiveWorkout(repository.getActiveWorkout())
         }
     }
 
@@ -344,7 +370,7 @@ class GymViewModel(
                 weightUnit = activeUnit
             )
             _lastFinishedComparison.value = comparison
-            _activeWorkout.value = null
+            setActiveWorkout(null)
             _timerSeconds.value = 0
             onFinished()
         }
@@ -353,8 +379,10 @@ class GymViewModel(
     fun cancelActiveWorkout() {
         stopTimer()
         stopRestTimer()
-        _activeWorkout.value = null
-        _timerSeconds.value = 0
+        viewModelScope.launch {
+            setActiveWorkout(null)
+            _timerSeconds.value = 0
+        }
     }
 
     fun setMuscleFilter(filter: MuscleGroup?) {
