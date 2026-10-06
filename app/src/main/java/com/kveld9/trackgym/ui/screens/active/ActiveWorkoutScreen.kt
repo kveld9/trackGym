@@ -1,9 +1,13 @@
 package com.kveld9.trackgym.ui.screens.active
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.material.icons.filled.Tune
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -1024,178 +1028,293 @@ fun SetRowItem(
         SetType.FAILURE -> "F"
     }
 
-    Row(
+    var showQuickAdjust by remember { mutableStateOf(false) }
+
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(8.dp))
             .background(if (set.isCompleted) MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.4f) else Color.Transparent)
-            .padding(vertical = 4.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .padding(vertical = 4.dp)
     ) {
-        // Set number / SetType badge (Interactive with 48x48 dp touch target)
-        Box(
-            modifier = Modifier
-                .size(48.dp)
-                .clip(RoundedCornerShape(8.dp))
-                .background(if (set.setType != SetType.NORMAL) badgeColor.copy(alpha = 0.15f) else Color.Transparent)
-                .clickable { showSetTypePicker = true },
-            contentAlignment = Alignment.Center
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = badgeLabel,
-                color = badgeColor,
-                fontWeight = FontWeight.Bold,
-                fontSize = 14.sp
-            )
-
-            DropdownMenu(
-                expanded = showSetTypePicker,
-                onDismissRequest = { showSetTypePicker = false },
-                modifier = Modifier.background(MaterialTheme.colorScheme.surfaceContainer)
+            // Set number / SetType badge (Interactive with 48x48 dp touch target)
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(if (set.setType != SetType.NORMAL) badgeColor.copy(alpha = 0.15f) else Color.Transparent)
+                    .clickable { showSetTypePicker = true },
+                contentAlignment = Alignment.Center
             ) {
-                SetType.entries.forEach { type ->
-                    DropdownMenuItem(
-                        text = {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text(
-                                    text = type.shortLabel,
-                                    color = when (type) {
-                                        SetType.NORMAL -> MaterialTheme.colorScheme.primary
-                                        SetType.WARMUP -> GymWarmupAmber
-                                        SetType.DROP -> GymBlue
-                                        SetType.FAILURE -> MaterialTheme.colorScheme.error
-                                    },
-                                    fontWeight = FontWeight.Bold,
-                                    modifier = Modifier.width(28.dp)
-                                )
-                                Text(
-                                    text = stringResource(type.nameRes),
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                    fontSize = 14.sp
-                                )
+                Text(
+                    text = badgeLabel,
+                    color = badgeColor,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 14.sp
+                )
+
+                DropdownMenu(
+                    expanded = showSetTypePicker,
+                    onDismissRequest = { showSetTypePicker = false },
+                    modifier = Modifier.background(MaterialTheme.colorScheme.surfaceContainer)
+                ) {
+                    SetType.entries.forEach { type ->
+                        DropdownMenuItem(
+                            text = {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Text(
+                                        text = type.shortLabel,
+                                        color = when (type) {
+                                            SetType.NORMAL -> MaterialTheme.colorScheme.primary
+                                            SetType.WARMUP -> GymWarmupAmber
+                                            SetType.DROP -> GymBlue
+                                            SetType.FAILURE -> MaterialTheme.colorScheme.error
+                                        },
+                                        fontWeight = FontWeight.Bold,
+                                        modifier = Modifier.width(28.dp)
+                                    )
+                                    Text(
+                                        text = stringResource(type.nameRes),
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                        fontSize = 14.sp
+                                    )
+                                }
+                            },
+                            onClick = {
+                                showSetTypePicker = false
+                                onUpdateSet(set.copy(setType = type))
+                            }
+                        )
+                    }
+                }
+            }
+
+            // Weight Input with Ghost Placeholder & Micro-load Toggle
+            Box(modifier = Modifier.weight(1f).padding(horizontal = 4.dp)) {
+                OutlinedTextField(
+                    value = weightText,
+                    onValueChange = { input ->
+                        weightText = input
+                        val parsedDisplay = input.toDoubleOrNull() ?: 0.0
+                        val inKg = weightUnit.toKg(parsedDisplay)
+                        onUpdateSet(set.copy(weightKg = inKg))
+                    },
+                    placeholder = {
+                        Text(
+                            text = ghostWeightDisplay ?: "0",
+                            color = if (ghostWeightDisplay != null) {
+                                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                            } else {
+                                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)
+                            }
+                        )
+                    },
+                    trailingIcon = {
+                        IconButton(
+                            onClick = { showQuickAdjust = !showQuickAdjust },
+                            modifier = Modifier.size(32.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Tune,
+                                contentDescription = "Quick adjust",
+                                tint = if (showQuickAdjust) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
+                                modifier = Modifier.size(16.dp)
+                            )
+                        }
+                    },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                    textStyle = androidx.compose.ui.text.TextStyle(textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onSurface, fontSize = 15.sp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp)
+                        .onFocusChanged { focusState ->
+                            if (focusState.isFocused) {
+                                showQuickAdjust = true
                             }
                         },
-                        onClick = {
-                            showSetTypePicker = false
-                            onUpdateSet(set.copy(setType = type))
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                        focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                    ),
+                    shape = RoundedCornerShape(8.dp)
+                )
+            }
+
+            // Reps Input with Ghost Placeholder
+            Box(modifier = Modifier.weight(1f).padding(horizontal = 4.dp)) {
+                OutlinedTextField(
+                    value = repsText,
+                    onValueChange = { input ->
+                        repsText = input
+                        val parsed = input.toIntOrNull() ?: 0
+                        onUpdateSet(set.copy(reps = parsed))
+                    },
+                    placeholder = {
+                        Text(
+                            text = ghostRepsDisplay ?: "0",
+                            color = if (ghostRepsDisplay != null) {
+                                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                            } else {
+                                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)
+                            }
+                        )
+                    },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    textStyle = androidx.compose.ui.text.TextStyle(textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onSurface, fontSize = 15.sp),
+                    modifier = Modifier.fillMaxWidth().height(48.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                        focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                    ),
+                    shape = RoundedCornerShape(8.dp)
+                )
+            }
+
+            // Complete Checkbox Button (48x48 dp minimum touch target)
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(checkBgColor)
+                    .clickable {
+                        val typedDisplay = weightText.toDoubleOrNull()
+                        val finalWeightKg = if (typedDisplay != null) {
+                            weightUnit.toKg(typedDisplay)
+                        } else if (set.weightKg > 0.0) {
+                            set.weightKg
+                        } else if (previousSet != null && previousSet.weightKg > 0.0) {
+                            previousSet.weightKg
+                        } else {
+                            0.0
                         }
+
+                        val typedReps = repsText.toIntOrNull()
+                        val finalReps = if (typedReps != null) {
+                            typedReps
+                        } else if (set.reps > 0) {
+                            set.reps
+                        } else if (previousSet != null && previousSet.reps > 0) {
+                            previousSet.reps
+                        } else {
+                            0
+                        }
+
+                        if (weightText.isBlank() && finalWeightKg > 0.0) {
+                            weightText = weightUnit.formatValue(finalWeightKg)
+                        }
+                        if (repsText.isBlank() && finalReps > 0) {
+                            repsText = finalReps.toString()
+                        }
+
+                        showQuickAdjust = false
+                        onToggleComplete(finalWeightKg, finalReps)
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Check,
+                    contentDescription = stringResource(R.string.desc_complete_set),
+                    tint = if (set.isCompleted) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+        }
+
+        // Quick-adjust Micro-load Chips
+        AnimatedVisibility(visible = showQuickAdjust && !set.isCompleted) {
+            val currentDisplay = weightText.toDoubleOrNull()
+                ?: ghostWeightDisplay?.toDoubleOrNull()
+                ?: 0.0
+            MicroLoadChipsRow(
+                weightUnit = weightUnit,
+                currentWeight = currentDisplay,
+                onAdjust = { updatedDisplay ->
+                    weightText = weightUnit.formatValue(updatedDisplay)
+                    val inKg = weightUnit.toKg(updatedDisplay)
+                    onUpdateSet(set.copy(weightKg = inKg))
+                },
+                onClose = { showQuickAdjust = false }
+            )
+        }
+    }
+}
+
+@Composable
+fun MicroLoadChipsRow(
+    weightUnit: WeightUnit,
+    currentWeight: Double,
+    onAdjust: (Double) -> Unit,
+    onClose: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val deltas = when (weightUnit) {
+        WeightUnit.KG -> listOf(-5.0, -2.5, -1.25, 1.25, 2.5, 5.0)
+        WeightUnit.LB -> listOf(-10.0, -5.0, -2.5, 2.5, 5.0, 10.0)
+    }
+
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 4.dp, vertical = 4.dp)
+            .horizontalScroll(rememberScrollState()),
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        deltas.forEach { delta ->
+            val sign = if (delta > 0) "+" else ""
+            val deltaLabel = "$sign${if (delta % 1.0 == 0.0) delta.toInt().toString() else delta.toString()}"
+            val isPositive = delta > 0
+
+            Surface(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(8.dp))
+                    .clickable {
+                        val updated = (currentWeight + delta).coerceAtLeast(0.0)
+                        val rounded = kotlin.math.round(updated * 100.0) / 100.0
+                        onAdjust(rounded)
+                    },
+                shape = RoundedCornerShape(8.dp),
+                color = if (isPositive) MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
+                        else MaterialTheme.colorScheme.surfaceContainerHigh,
+                border = BorderStroke(
+                    1.dp,
+                    if (isPositive) MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
+                    else MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
+                )
+            ) {
+                Box(
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = deltaLabel,
+                        color = if (isPositive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 12.sp
                     )
                 }
             }
         }
 
-        // Weight Input with Ghost Placeholder
-        Box(modifier = Modifier.weight(1f).padding(horizontal = 4.dp)) {
-            OutlinedTextField(
-                value = weightText,
-                onValueChange = { input ->
-                    weightText = input
-                    val parsedDisplay = input.toDoubleOrNull() ?: 0.0
-                    val inKg = weightUnit.toKg(parsedDisplay)
-                    onUpdateSet(set.copy(weightKg = inKg))
-                },
-                placeholder = {
-                    Text(
-                        text = ghostWeightDisplay ?: "0",
-                        color = if (ghostWeightDisplay != null) {
-                            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
-                        } else {
-                            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)
-                        }
-                    )
-                },
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                textStyle = androidx.compose.ui.text.TextStyle(textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onSurface, fontSize = 15.sp),
-                modifier = Modifier.fillMaxWidth().height(48.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
-                    focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh
-                ),
-                shape = RoundedCornerShape(8.dp)
-            )
-        }
-
-        // Reps Input with Ghost Placeholder
-        Box(modifier = Modifier.weight(1f).padding(horizontal = 4.dp)) {
-            OutlinedTextField(
-                value = repsText,
-                onValueChange = { input ->
-                    repsText = input
-                    val parsed = input.toIntOrNull() ?: 0
-                    onUpdateSet(set.copy(reps = parsed))
-                },
-                placeholder = {
-                    Text(
-                        text = ghostRepsDisplay ?: "0",
-                        color = if (ghostRepsDisplay != null) {
-                            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
-                        } else {
-                            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)
-                        }
-                    )
-                },
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                textStyle = androidx.compose.ui.text.TextStyle(textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onSurface, fontSize = 15.sp),
-                modifier = Modifier.fillMaxWidth().height(48.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
-                    focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh
-                ),
-                shape = RoundedCornerShape(8.dp)
-            )
-        }
-
-        // Complete Checkbox Button (48x48 dp minimum touch target)
-        Box(
-            modifier = Modifier
-                .size(48.dp)
-                .clip(RoundedCornerShape(8.dp))
-                .background(checkBgColor)
-                .clickable {
-                    val typedDisplay = weightText.toDoubleOrNull()
-                    val finalWeightKg = if (typedDisplay != null) {
-                        weightUnit.toKg(typedDisplay)
-                    } else if (set.weightKg > 0.0) {
-                        set.weightKg
-                    } else if (previousSet != null && previousSet.weightKg > 0.0) {
-                        previousSet.weightKg
-                    } else {
-                        0.0
-                    }
-
-                    val typedReps = repsText.toIntOrNull()
-                    val finalReps = if (typedReps != null) {
-                        typedReps
-                    } else if (set.reps > 0) {
-                        set.reps
-                    } else if (previousSet != null && previousSet.reps > 0) {
-                        previousSet.reps
-                    } else {
-                        0
-                    }
-
-                    if (weightText.isBlank() && finalWeightKg > 0.0) {
-                        weightText = weightUnit.formatValue(finalWeightKg)
-                    }
-                    if (repsText.isBlank() && finalReps > 0) {
-                        repsText = finalReps.toString()
-                    }
-
-                    onToggleComplete(finalWeightKg, finalReps)
-                },
-            contentAlignment = Alignment.Center
+        IconButton(
+            onClick = onClose,
+            modifier = Modifier.size(32.dp)
         ) {
             Icon(
-                imageVector = Icons.Default.Check,
-                contentDescription = stringResource(R.string.desc_complete_set),
-                tint = if (set.isCompleted) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(24.dp)
+                imageVector = Icons.Default.Close,
+                contentDescription = "Close",
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(16.dp)
             )
         }
     }
