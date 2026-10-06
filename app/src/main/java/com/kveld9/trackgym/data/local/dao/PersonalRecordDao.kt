@@ -31,6 +31,9 @@ interface PersonalRecordDao {
     @Query("SELECT * FROM personal_records WHERE workoutId = :workoutId")
     suspend fun getRecordsForWorkout(workoutId: Long): List<PersonalRecordEntity>
 
+    @Query("DELETE FROM personal_records WHERE workoutId = :workoutId")
+    suspend fun deleteRecordsForWorkout(workoutId: Long)
+
     @Query("SELECT * FROM personal_records WHERE exerciseId = :exerciseId AND recordType = :recordType ORDER BY recordValue DESC LIMIT 1")
     suspend fun getBestRecord(exerciseId: Long, recordType: String): PersonalRecordEntity?
 }

@@ -304,7 +304,10 @@ class GymRepository(private val database: GymDatabase) {
     }
 
     suspend fun discardActiveWorkout(workoutId: Long) = withContext(Dispatchers.IO) {
-        workoutDao.deleteWorkoutById(workoutId)
+        database.withTransaction {
+            prDao.deleteRecordsForWorkout(workoutId)
+            workoutDao.deleteWorkoutById(workoutId)
+        }
     }
 
     suspend fun updateWorkoutDuration(workoutId: Long, durationSeconds: Long) = withContext(Dispatchers.IO) {
