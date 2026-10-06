@@ -34,7 +34,6 @@
     <string name="btn_save_and_summary">Save &amp; View Summary</string>
     <string name="menu_remove_exercise">Remove Exercise</string>
     <string name="table_header_set">SET</string>
-    <string name="table_header_kg">KG</string>
     <string name="table_header_reps">REPS</string>
     <string name="table_header_complete">✓</string>
     <string name="desc_complete_set">Complete set</string>
@@ -73,7 +72,6 @@
     <string name="history_empty_desc">Start a session in the \'Train\' tab to begin accumulating history and tracking progress.</string>
     <string name="history_stat_min">%1$d min</string>
     <string name="history_stat_sets">%1$d sets</string>
-    <string name="history_stat_kg">%1$d kg</string>
 
     <!-- Exercises Screen -->
     <string name="exercises_title">Exercises</string>
@@ -124,14 +122,9 @@
     <!-- Settings - Appearance -->
     <string name="section_appearance">Appearance</string>
     <string name="setting_theme_title">Theme</string>
-    <string name="theme_mode_system">System</string>
     <string name="theme_mode_dark">Dark normal</string>
     <string name="theme_mode_light">Light</string>
     <string name="theme_mode_amoled">AMOLED</string>
-    <string name="setting_dynamic_color_title">Dynamic Color (Monet)</string>
-    <string name="setting_dynamic_color_desc">Harmonize the interface with your wallpaper palette on Android 12+</string>
-    <string name="setting_amoled_title">Pure Black Mode (AMOLED)</string>
-    <string name="setting_amoled_desc">Absolute black background (#000000) in dark mode for maximum contrast and battery saving</string>
 
     <!-- Settings - Units -->
     <string name="section_units">Measurement Units</string>

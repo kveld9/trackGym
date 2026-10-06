@@ -34,7 +34,6 @@
     <string name="btn_save_and_summary">Guardar y Ver Resumen</string>
     <string name="menu_remove_exercise">Quitar Ejercicio</string>
     <string name="table_header_set">SERIE</string>
-    <string name="table_header_kg">KG</string>
     <string name="table_header_reps">REPS</string>
     <string name="table_header_complete">✓</string>
     <string name="desc_complete_set">Completar serie</string>
@@ -73,7 +72,6 @@
     <string name="history_empty_desc">Inicia un entrenamiento en la pestaña \'Entrenar\' para comenzar a acumular registros y comparar tu progreso.</string>
     <string name="history_stat_min">%1$d min</string>
     <string name="history_stat_sets">%1$d series</string>
-    <string name="history_stat_kg">%1$d kg</string>
 
     <!-- Exercises Screen -->
     <string name="exercises_title">Ejercicios</string>
@@ -124,14 +122,9 @@
     <!-- Settings - Appearance -->
     <string name="section_appearance">Apariencia</string>
     <string name="setting_theme_title">Tema</string>
-    <string name="theme_mode_system">Sistema</string>
     <string name="theme_mode_dark">Oscuro normal</string>
     <string name="theme_mode_light">Blanco</string>
     <string name="theme_mode_amoled">AMOLED</string>
-    <string name="setting_dynamic_color_title">Color Dinámico (Monet)</string>
-    <string name="setting_dynamic_color_desc">Armoniza la interfaz con la paleta de tu fondo de pantalla en Android 12+</string>
-    <string name="setting_amoled_title">Negro Puro (AMOLED)</string>
-    <string name="setting_amoled_desc">Fondo negro absoluto (#000000) en modo oscuro para máximo contraste y ahorro de batería</string>
 
     <!-- Settings - Units -->
     <string name="section_units">Unidades de Medida</string>
