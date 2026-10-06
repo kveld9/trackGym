@@ -153,4 +153,54 @@
     <string name="app_author_info">Developed with ❤️ by %1$s</string>
     <string name="app_tagline">100% Offline • No Telemetry • Complete Privacy</string>
     <string name="view_on_github">View on GitHub (%1$s)</string>
+
+    <!-- Set Types -->
+    <string name="set_type_normal">Normal Set</string>
+    <string name="set_type_warmup">Warm-up Set (W)</string>
+    <string name="set_type_drop">Drop Set (D)</string>
+    <string name="set_type_failure">Failure Set (F)</string>
+    <string name="set_type_dialog_title">Select Set Type</string>
+
+    <!-- Rest Timer -->
+    <string name="rest_timer_title">Rest Timer</string>
+    <string name="rest_timer_skip">Skip</string>
+    <string name="rest_timer_add_15">+15s</string>
+    <string name="rest_timer_minus_15">-15s</string>
+    <string name="rest_timer_completed">Rest finished!</string>
+    <string name="setting_rest_timer_section">Rest Timer</string>
+    <string name="setting_auto_rest_timer_title">Auto Rest Timer</string>
+    <string name="setting_auto_rest_timer_desc">Automatically start rest countdown when completing a set</string>
+    <string name="setting_default_rest_duration_title">Default Rest Duration</string>
+    <string name="setting_default_rest_duration_desc">Default interval duration for exercises</string>
+    <string name="rest_duration_seconds">%1$ds</string>
+
+    <!-- Consistency & Calendar Heatmap -->
+    <string name="consistency_title">Training Consistency</string>
+    <string name="consistency_streak_weeks">%1$d week streak</string>
+    <string name="consistency_streak_week_singular">1 week streak</string>
+    <string name="consistency_workouts_month">%1$d workouts in last 30 days</string>
+    <string name="consistency_volume_month">%1$s total volume</string>
+    <string name="consistency_legend_less">Less</string>
+    <string name="consistency_legend_more">More</string>
+    <string name="consistency_no_streak">No active streak</string>
+
+    <!-- Routines & Templates -->
+    <string name="routines_title">Routines &amp; Templates</string>
+    <string name="routines_subtitle">Start workouts from reusable routine templates</string>
+    <string name="btn_new_routine">New Routine</string>
+    <string name="btn_start_routine">Start</string>
+    <string name="dialog_save_routine_title">Save as Routine Template</string>
+    <string name="dialog_routine_name">Routine name</string>
+    <string name="dialog_routine_folder">Folder name (optional)</string>
+    <string name="dialog_routine_notes">Notes (optional)</string>
+    <string name="toast_routine_saved">Routine saved successfully</string>
+    <string name="action_save_as_routine">Save as Routine</string>
+    <string name="routine_folder_all">All</string>
+    <string name="routine_exercises_count">%1$d exercises</string>
+    <string name="dialog_new_folder_title">New Routine Folder</string>
+    <string name="dialog_folder_name">Folder name</string>
+    <string name="btn_create_folder">Create Folder</string>
+    <string name="menu_delete_routine">Delete Routine</string>
+    <string name="routine_empty_title">No routines yet</string>
+    <string name="routine_empty_desc">Save any workout as a template or create reusable routines here.</string>
 </resources>

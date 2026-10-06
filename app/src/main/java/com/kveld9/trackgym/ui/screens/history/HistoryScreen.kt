@@ -2,6 +2,7 @@ package com.kveld9.trackgym.ui.screens.history
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,25 +13,40 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,6 +56,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kveld9.trackgym.R
+import com.kveld9.trackgym.domain.calculator.DayActivity
+import com.kveld9.trackgym.domain.calculator.TrainingConsistencyStats
+import com.kveld9.trackgym.domain.model.WeightUnit
 import com.kveld9.trackgym.domain.model.Workout
 import com.kveld9.trackgym.ui.theme.GymBlack
 import com.kveld9.trackgym.ui.theme.GymBorder
@@ -53,8 +72,6 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-import com.kveld9.trackgym.domain.model.WeightUnit
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HistoryScreen(
@@ -64,6 +81,10 @@ fun HistoryScreen(
     weightUnit: WeightUnit = WeightUnit.KG
 ) {
     val completedWorkouts by viewModel.completedWorkouts.collectAsState()
+    val consistencyStats by viewModel.consistencyStats.collectAsState()
+
+    var workoutToSaveAsRoutine by remember { mutableStateOf<Workout?>(null) }
+    var routineNameInput by remember { mutableStateOf("") }
 
     Scaffold(
         topBar = {
@@ -92,6 +113,14 @@ fun HistoryScreen(
                     .padding(horizontal = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(14.dp)
             ) {
+                // Training Consistency & Heatmap
+                item {
+                    TrainingConsistencyHeader(
+                        stats = consistencyStats,
+                        weightUnit = weightUnit
+                    )
+                }
+
                 items(completedWorkouts, key = { it.id }) { workout ->
                     WorkoutHistoryCard(
                         workout = workout,
@@ -99,6 +128,10 @@ fun HistoryScreen(
                         onClick = {
                             viewModel.viewWorkoutDetail(workout.id)
                             onWorkoutClick(workout.id)
+                        },
+                        onSaveAsRoutine = {
+                            routineNameInput = workout.name
+                            workoutToSaveAsRoutine = workout
                         }
                     )
                 }
@@ -109,14 +142,212 @@ fun HistoryScreen(
             }
         }
     }
+
+    if (workoutToSaveAsRoutine != null) {
+        AlertDialog(
+            onDismissRequest = { workoutToSaveAsRoutine = null },
+            containerColor = GymSurface,
+            title = {
+                Text(
+                    text = stringResource(R.string.dialog_save_routine_title),
+                    color = TextWhite,
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            text = {
+                Column {
+                    OutlinedTextField(
+                        value = routineNameInput,
+                        onValueChange = { routineNameInput = it },
+                        label = { Text(stringResource(R.string.dialog_routine_name)) },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = GymNeonGreen,
+                            unfocusedBorderColor = GymBorder,
+                            focusedTextColor = TextWhite,
+                            unfocusedTextColor = TextWhite
+                        )
+                    )
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        val target = workoutToSaveAsRoutine
+                        if (target != null) {
+                            viewModel.saveCompletedWorkoutAsRoutine(target.id, routineNameInput)
+                        }
+                        workoutToSaveAsRoutine = null
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = GymNeonGreen)
+                ) {
+                    Text(stringResource(R.string.action_save), color = GymBlack, fontWeight = FontWeight.Bold)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { workoutToSaveAsRoutine = null }) {
+                    Text(stringResource(R.string.action_cancel), color = TextMuted)
+                }
+            }
+        )
+    }
+}
+
+@Composable
+fun TrainingConsistencyHeader(
+    stats: TrainingConsistencyStats,
+    weightUnit: WeightUnit = WeightUnit.KG,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = GymSurface),
+        border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(GymBorder))
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            // Header: Title and Streak Badge
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = stringResource(R.string.consistency_title),
+                    color = TextWhite,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
+                )
+
+                val streakText = if (stats.currentStreakWeeks > 0) {
+                    if (stats.currentStreakWeeks == 1) {
+                        stringResource(R.string.consistency_streak_week_singular)
+                    } else {
+                        stringResource(R.string.consistency_streak_weeks, stats.currentStreakWeeks)
+                    }
+                } else {
+                    stringResource(R.string.consistency_no_streak)
+                }
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(if (stats.currentStreakWeeks > 0) GymNeonGreen.copy(alpha = 0.15f) else GymSurfaceVariant)
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                ) {
+                    Text(
+                        text = if (stats.currentStreakWeeks > 0) "🔥 $streakText" else streakText,
+                        color = if (stats.currentStreakWeeks > 0) GymNeonGreen else TextMuted,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Subtitle: 30-day stats
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = stringResource(R.string.consistency_workouts_month, stats.totalWorkoutsLast30Days),
+                    color = TextMuted,
+                    fontSize = 12.sp
+                )
+                Text(
+                    text = stringResource(R.string.consistency_volume_month, weightUnit.format(stats.totalVolumeLast30Days)),
+                    color = TextMuted,
+                    fontSize = 12.sp
+                )
+            }
+
+            Spacer(modifier = Modifier.height(14.dp))
+
+            // Activity Heatmap Grid
+            ActivityHeatmapGrid(days = stats.recentDays)
+        }
+    }
+}
+
+@Composable
+fun ActivityHeatmapGrid(days: List<DayActivity>) {
+    val weeks = days.chunked(7)
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            weeks.forEach { week ->
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    week.forEach { day ->
+                        val cellColor = when (day.intensityLevel) {
+                            1 -> GymNeonGreen.copy(alpha = 0.35f)
+                            2 -> GymNeonGreen.copy(alpha = 0.70f)
+                            3 -> GymNeonGreen
+                            else -> GymSurfaceVariant
+                        }
+                        Box(
+                            modifier = Modifier
+                                .size(14.dp)
+                                .clip(RoundedCornerShape(3.dp))
+                                .background(cellColor)
+                        )
+                    }
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Heatmap Legend
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = stringResource(R.string.consistency_legend_less),
+                color = TextMuted,
+                fontSize = 10.sp
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+            listOf(
+                GymSurfaceVariant,
+                GymNeonGreen.copy(alpha = 0.35f),
+                GymNeonGreen.copy(alpha = 0.70f),
+                GymNeonGreen
+            ).forEach { color ->
+                Box(
+                    modifier = Modifier
+                        .size(10.dp)
+                        .clip(RoundedCornerShape(2.dp))
+                        .background(color)
+                )
+                Spacer(modifier = Modifier.width(3.dp))
+            }
+            Text(
+                text = stringResource(R.string.consistency_legend_more),
+                color = TextMuted,
+                fontSize = 10.sp
+            )
+        }
+    }
 }
 
 @Composable
 fun WorkoutHistoryCard(
     workout: Workout,
     weightUnit: WeightUnit = WeightUnit.KG,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onSaveAsRoutine: () -> Unit
 ) {
+    var menuExpanded by remember { mutableStateOf(false) }
     val dateFormat = SimpleDateFormat("EEEE, d MMMM", Locale.getDefault())
     val dateString = dateFormat.format(Date(workout.completedAt ?: workout.startedAt)).replaceFirstChar { it.uppercase() }
     val durationMin = workout.durationSeconds / 60
@@ -151,12 +382,36 @@ fun WorkoutHistoryCard(
                     )
                 }
 
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                    contentDescription = null,
-                    tint = GymNeonGreen,
-                    modifier = Modifier.size(20.dp)
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box {
+                        IconButton(
+                            onClick = { menuExpanded = true },
+                            modifier = Modifier.size(48.dp)
+                        ) {
+                            Icon(Icons.Default.MoreVert, contentDescription = null, tint = TextMuted)
+                        }
+                        DropdownMenu(
+                            expanded = menuExpanded,
+                            onDismissRequest = { menuExpanded = false },
+                            modifier = Modifier.background(GymSurface)
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.action_save_as_routine), color = TextWhite) },
+                                onClick = {
+                                    menuExpanded = false
+                                    onSaveAsRoutine()
+                                }
+                            )
+                        }
+                    }
+
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                        contentDescription = null,
+                        tint = GymNeonGreen,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(14.dp))
