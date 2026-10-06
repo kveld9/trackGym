@@ -279,7 +279,8 @@ class GymRepository(private val database: GymDatabase) {
     suspend fun completeSet(
         set: WorkoutSet,
         workoutId: Long,
-        exerciseId: Long
+        exerciseId: Long,
+        formula: com.kveld9.trackgym.domain.calculator.OneRepMaxFormula = com.kveld9.trackgym.domain.calculator.OneRepMaxFormula.EPLEY
     ): List<PersonalRecord> = withContext(Dispatchers.IO) {
         val completedSet = set.copy(
             isCompleted = true,
@@ -293,7 +294,8 @@ class GymRepository(private val database: GymDatabase) {
             exerciseId = exerciseId,
             workoutId = workoutId,
             currentSet = completedSet,
-            historicalSets = historicalSets
+            historicalSets = historicalSets,
+            formula = formula
         )
 
         if (unlockedPrs.isNotEmpty()) {

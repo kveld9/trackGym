@@ -142,6 +142,18 @@
     <string name="unit_kilometers">Kilometers (km)</string>
     <string name="unit_miles">Miles (mi)</string>
 
+    <!-- Settings - 1RM Calculation Models -->
+    <string name="section_orm_models">1RM Calculation Models</string>
+    <string name="setting_orm_formula_title">1RM Formula</string>
+    <string name="setting_orm_formula_desc">Mathematical model used to estimate One Rep Max and PR thresholds</string>
+    <string name="orm_formula_epley">Epley</string>
+    <string name="orm_formula_brzycki">Brzycki</string>
+    <string name="orm_formula_wathan">Wathan</string>
+    <string name="orm_formula_lander">Lander</string>
+    <string name="orm_formula_lombardi">Lombardi</string>
+    <string name="orm_formula_mayhew">Mayhew</string>
+    <string name="orm_formula_oconner">O’Conner</string>
+
     <!-- Settings - Backup -->
     <string name="section_backup">Backup &amp; Portability</string>
     <string name="setting_export_backup_title">Export Data (JSON)</string>

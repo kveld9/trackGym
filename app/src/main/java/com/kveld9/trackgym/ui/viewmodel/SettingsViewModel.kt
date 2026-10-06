@@ -95,6 +95,12 @@ class SettingsViewModel(
         }
     }
 
+    fun setOrmFormula(formula: String) {
+        viewModelScope.launch {
+            themePreferences.setOrmFormula(formula)
+        }
+    }
+
     fun exportBackup(streamProvider: () -> OutputStream?) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }

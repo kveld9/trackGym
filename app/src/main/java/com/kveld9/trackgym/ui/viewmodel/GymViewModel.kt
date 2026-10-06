@@ -56,6 +56,12 @@ class GymViewModel(
         it == ThemePreferences.EXERCISE_LANG_ENGLISH
     }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
+    val ormFormula: StateFlow<com.kveld9.trackgym.domain.calculator.OneRepMaxFormula> = (themePreferences?.themeSettings?.map {
+        runCatching { com.kveld9.trackgym.domain.calculator.OneRepMaxFormula.valueOf(it.ormFormula) }
+            .getOrDefault(com.kveld9.trackgym.domain.calculator.OneRepMaxFormula.EPLEY)
+    } ?: flowOf(com.kveld9.trackgym.domain.calculator.OneRepMaxFormula.EPLEY))
+        .stateIn(viewModelScope, SharingStarted.Eagerly, com.kveld9.trackgym.domain.calculator.OneRepMaxFormula.EPLEY)
+
     private val _activeWorkout = MutableStateFlow<Workout?>(null)
     val activeWorkout: StateFlow<Workout?> = _activeWorkout.asStateFlow()
 
@@ -336,7 +342,7 @@ class GymViewModel(
                 // Uncomplete
                 repository.updateSet(targetSet.copy(isCompleted = false, completedAt = null))
             } else {
-                val newPrs = repository.completeSet(targetSet, workoutId, exerciseId)
+                val newPrs = repository.completeSet(targetSet, workoutId, exerciseId, ormFormula.value)
                 if (newPrs.isNotEmpty()) {
                     _recentlyUnlockedPr.value = newPrs.first()
                 }

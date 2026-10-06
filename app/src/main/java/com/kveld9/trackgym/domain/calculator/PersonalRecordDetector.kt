@@ -16,7 +16,8 @@ object PersonalRecordDetector {
         workoutId: Long,
         currentSet: WorkoutSet,
         historicalSets: List<WorkoutSet>,
-        timestamp: Long = System.currentTimeMillis()
+        timestamp: Long = System.currentTimeMillis(),
+        formula: OneRepMaxFormula = OneRepMaxFormula.EPLEY
     ): List<PersonalRecord> {
         if (!currentSet.isCompleted || currentSet.weightKg <= 0.0 || currentSet.reps <= 0 || currentSet.setType == SetType.WARMUP) {
             return emptyList()
@@ -33,7 +34,7 @@ object PersonalRecordDetector {
             newRecords.add(it)
         }
 
-        checkEstimated1RM(exerciseId, workoutId, currentSet, completedHistory, timestamp)?.let {
+        checkEstimated1RM(exerciseId, workoutId, currentSet, completedHistory, timestamp, formula)?.let {
             newRecords.add(it)
         }
 
@@ -99,10 +100,11 @@ object PersonalRecordDetector {
         workoutId: Long,
         currentSet: WorkoutSet,
         history: List<WorkoutSet>,
-        timestamp: Long
+        timestamp: Long,
+        formula: OneRepMaxFormula
     ): PersonalRecord? {
-        val current1RM = OneRepMaxCalculator.calculate1RM(currentSet.weightKg, currentSet.reps)
-        val prevMax1RM = history.map { OneRepMaxCalculator.calculate1RM(it.weightKg, it.reps) }.maxOfOrNull { it }
+        val current1RM = OneRepMaxCalculator.calculate1RM(currentSet.weightKg, currentSet.reps, formula)
+        val prevMax1RM = history.map { OneRepMaxCalculator.calculate1RM(it.weightKg, it.reps, formula) }.maxOfOrNull { it }
 
         val isRecord = prevMax1RM == null || current1RM > prevMax1RM
         if (!isRecord) return null

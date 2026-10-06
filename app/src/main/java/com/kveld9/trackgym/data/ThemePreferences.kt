@@ -19,7 +19,8 @@ data class ThemeSettings(
     val distanceUnit: String = "KM", // "KM", "MI"
     val autoRestTimer: Boolean = true,
     val defaultRestSeconds: Int = 90,
-    val exerciseLanguage: String = ThemePreferences.EXERCISE_LANG_SYSTEM // "SYSTEM", "ENGLISH"
+    val exerciseLanguage: String = ThemePreferences.EXERCISE_LANG_SYSTEM, // "SYSTEM", "ENGLISH"
+    val ormFormula: String = "EPLEY"
 )
 
 class ThemePreferences(
@@ -41,6 +42,7 @@ class ThemePreferences(
         val AUTO_REST_TIMER_KEY = booleanPreferencesKey("auto_rest_timer")
         val DEFAULT_REST_SECONDS_KEY = intPreferencesKey("default_rest_seconds")
         val EXERCISE_LANGUAGE_KEY = stringPreferencesKey("exercise_language")
+        val ORM_FORMULA_KEY = stringPreferencesKey("orm_formula")
 
         private val LEGACY_AMOLED_KEY = booleanPreferencesKey("amoled_black")
     }
@@ -57,7 +59,8 @@ class ThemePreferences(
                 distanceUnit = preferences[DISTANCE_UNIT_KEY] ?: "KM",
                 autoRestTimer = preferences[AUTO_REST_TIMER_KEY] ?: true,
                 defaultRestSeconds = preferences[DEFAULT_REST_SECONDS_KEY] ?: 90,
-                exerciseLanguage = preferences[EXERCISE_LANGUAGE_KEY] ?: EXERCISE_LANG_SYSTEM
+                exerciseLanguage = preferences[EXERCISE_LANGUAGE_KEY] ?: EXERCISE_LANG_SYSTEM,
+                ormFormula = preferences[ORM_FORMULA_KEY] ?: "EPLEY"
             )
         }
 
@@ -103,6 +106,12 @@ class ThemePreferences(
     suspend fun setExerciseLanguage(language: String) {
         dataStore.edit { preferences ->
             preferences[EXERCISE_LANGUAGE_KEY] = language
+        }
+    }
+
+    suspend fun setOrmFormula(formula: String) {
+        dataStore.edit { preferences ->
+            preferences[ORM_FORMULA_KEY] = formula
         }
     }
 }
