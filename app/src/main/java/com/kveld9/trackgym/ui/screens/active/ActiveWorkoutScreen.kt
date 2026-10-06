@@ -107,7 +107,10 @@ import com.kveld9.trackgym.domain.model.WorkoutExercise
 import com.kveld9.trackgym.domain.model.WorkoutSet
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.saveable.rememberSaveable
+import com.kveld9.trackgym.domain.calculator.OvertrainingDetector
 import com.kveld9.trackgym.domain.model.RpeScale
+import com.kveld9.trackgym.ui.components.OvertrainingWarningBanner
 import com.kveld9.trackgym.ui.components.PinnedExerciseNotesCard
 import com.kveld9.trackgym.ui.components.PrCelebrationBanner
 import com.kveld9.trackgym.ui.components.RpeSelectionDialog
@@ -167,6 +170,16 @@ fun ActiveWorkoutScreen(
     val setDeletedMsg = stringResource(R.string.snackbar_set_deleted)
     val undoMsg = stringResource(R.string.action_undo)
 
+    var dismissedOvertrainingWarning by rememberSaveable { mutableStateOf(false) }
+    val currentWorkout = activeWorkout
+    val overtrainingWarnings = remember(currentWorkout, dismissedOvertrainingWarning) {
+        if (currentWorkout != null && !dismissedOvertrainingWarning) {
+            OvertrainingDetector.detectExcessiveVolume(currentWorkout)
+        } else {
+            emptyList()
+        }
+    }
+
     if (activeWorkout == null) {
         EmptyWorkoutDashboard(
             routines = routines,
@@ -216,6 +229,12 @@ fun ActiveWorkoutScreen(
                 PrCelebrationBanner(
                     record = recentPr,
                     onDismiss = { viewModel.clearRecentPrAlert() }
+                )
+
+                // Real-time Excessive Volume / Overtraining warning banner
+                OvertrainingWarningBanner(
+                    warnings = overtrainingWarnings,
+                    onDismiss = { dismissedOvertrainingWarning = true }
                 )
 
                 LazyColumn(

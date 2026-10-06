@@ -117,4 +117,28 @@ class WorkoutComparisonEngineTest {
         assertTrue(prompt.contains("80.0 kg × 10 reps"))
         assertTrue(prompt.contains("Coaching Questions"))
     }
+
+    @Test
+    fun `detectExcessiveVolume flags muscle groups exceeding threshold while ignoring warmups`() {
+        val warmupSet = WorkoutSet(id = 1, setNumber = 1, weightKg = 40.0, reps = 15, isCompleted = true, setType = com.kveld9.trackgym.domain.model.SetType.WARMUP)
+        val normalSets = (2..14).map {
+            WorkoutSet(id = it.toLong(), setNumber = it, weightKg = 80.0, reps = 10, isCompleted = true)
+        }
+        val we = WorkoutExercise(
+            id = 1,
+            workoutId = 1,
+            exercise = sampleExercise,
+            sets = listOf(warmupSet) + normalSets
+        )
+        val workout = com.kveld9.trackgym.domain.model.Workout(
+            id = 1,
+            name = "Chest Heavy Day",
+            exercises = listOf(we)
+        )
+
+        val warnings = OvertrainingDetector.detectExcessiveVolume(workout, threshold = 12)
+        assertEquals(1, warnings.size)
+        assertEquals(MuscleGroup.CHEST, warnings[0].muscleGroup)
+        assertEquals(13, warnings[0].effectiveSetsCount)
+    }
 }

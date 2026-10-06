@@ -181,6 +181,8 @@
     <string name="action_copy_prompt">Copy Prompt</string>
     <string name="action_share_prompt">Share Prompt</string>
     <string name="toast_prompt_copied">AI analysis prompt copied to clipboard</string>
+    <string name="overtraining_warning_title">Excessive Volume Warning</string>
+    <string name="overtraining_warning_message">You have logged %1$d effective sets for %2$s in this session. Exceeding 12 sets per muscle group may cause junk volume and excessive fatigue without additional hypertrophic stimulus.</string>
     <string name="toast_backup_read_error">Error reading file: %1$s</string>
     <string name="toast_backup_invalid_data">The backup file contains no valid records</string>
     <string name="toast_csv_import_empty">The CSV file contains no valid workout records</string>

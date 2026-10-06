@@ -181,6 +181,8 @@
     <string name="action_copy_prompt">Copiar Prompt</string>
     <string name="action_share_prompt">Compartir Prompt</string>
     <string name="toast_prompt_copied">Prompt de análisis copiado al portapapeles</string>
+    <string name="overtraining_warning_title">Alerta de Volumen Excesivo</string>
+    <string name="overtraining_warning_message">Has registrado %1$d series efectivas para %2$s en esta sesión. Superar 12 series por músculo puede generar fatiga chatarra (junk volume) sin ganancia hipertrófica adicional.</string>
     <string name="toast_backup_read_error">Error al leer el archivo: %1$s</string>
     <string name="toast_backup_invalid_data">El archivo no contiene registros válidos</string>
     <string name="toast_csv_import_empty">El archivo CSV no contiene registros de entrenamiento válidos</string>
