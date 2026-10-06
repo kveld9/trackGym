@@ -39,6 +39,12 @@
     <string name="table_header_complete">✓</string>
     <string name="desc_complete_set">Completar serie</string>
     <string name="badge_manual">MANUAL</string>
+    <string name="action_plate_calculator">Calculadora de Discos</string>
+    <string name="plate_calc_title">Calculadora de Discos</string>
+    <string name="plate_calc_bar_weight">Peso de la Barra</string>
+    <string name="plate_calc_each_side">POR CADA LADO</string>
+    <string name="plate_calc_remainder">Restante: %1$s</string>
+    <string name="plate_calc_target_weight">Peso Objetivo</string>
 
     <!-- PR Celebration Banner -->
     <string name="pr_banner_title">¡NUEVO RÉCORD PERSONAL!</string>
@@ -112,8 +118,9 @@
     <string name="section_appearance">Apariencia</string>
     <string name="setting_theme_title">Tema</string>
     <string name="theme_mode_system">Sistema</string>
-    <string name="theme_mode_dark">Oscuro</string>
-    <string name="theme_mode_light">Claro</string>
+    <string name="theme_mode_dark">Oscuro normal</string>
+    <string name="theme_mode_light">Blanco</string>
+    <string name="theme_mode_amoled">AMOLED</string>
     <string name="setting_dynamic_color_title">Color Dinámico (Monet)</string>
     <string name="setting_dynamic_color_desc">Armoniza la interfaz con la paleta de tu fondo de pantalla en Android 12+</string>
     <string name="setting_amoled_title">Negro Puro (AMOLED)</string>

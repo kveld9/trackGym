@@ -39,6 +39,12 @@
     <string name="table_header_complete">✓</string>
     <string name="desc_complete_set">Complete set</string>
     <string name="badge_manual">MANUAL</string>
+    <string name="action_plate_calculator">Plate Calculator</string>
+    <string name="plate_calc_title">Plate Calculator</string>
+    <string name="plate_calc_bar_weight">Barbell Weight</string>
+    <string name="plate_calc_each_side">EACH SIDE</string>
+    <string name="plate_calc_remainder">Remaining: %1$s</string>
+    <string name="plate_calc_target_weight">Target Weight</string>
 
     <!-- PR Celebration Banner -->
     <string name="pr_banner_title">NEW PERSONAL RECORD!</string>
@@ -112,8 +118,9 @@
     <string name="section_appearance">Appearance</string>
     <string name="setting_theme_title">Theme</string>
     <string name="theme_mode_system">System</string>
-    <string name="theme_mode_dark">Dark</string>
+    <string name="theme_mode_dark">Dark normal</string>
     <string name="theme_mode_light">Light</string>
+    <string name="theme_mode_amoled">AMOLED</string>
     <string name="setting_dynamic_color_title">Dynamic Color (Monet)</string>
     <string name="setting_dynamic_color_desc">Harmonize the interface with your wallpaper palette on Android 12+</string>
     <string name="setting_amoled_title">Pure Black Mode (AMOLED)</string>

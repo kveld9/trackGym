@@ -7,6 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.material.icons.filled.Calculate
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -30,6 +31,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.Calculate
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.FitnessCenter
@@ -130,6 +132,7 @@ fun ActiveWorkoutScreen(
     var showSaveRoutineDialog by remember { mutableStateOf(false) }
     var finishNotes by remember { mutableStateOf("") }
     var routineNameInput by remember { mutableStateOf("") }
+    var plateCalcExercise by remember { mutableStateOf<WorkoutExercise?>(null) }
 
     if (activeWorkout == null) {
         EmptyWorkoutDashboard(
@@ -215,7 +218,8 @@ fun ActiveWorkoutScreen(
                                 }
                             },
                             onDeleteSet = { setId -> viewModel.deleteSet(setId) },
-                            onRemoveExercise = { viewModel.removeExerciseFromActiveWorkout(we.id) }
+                            onRemoveExercise = { viewModel.removeExerciseFromActiveWorkout(we.id) },
+                            onOpenPlateCalculator = { plateCalcExercise = we }
                         )
                     }
 
@@ -394,6 +398,18 @@ fun ActiveWorkoutScreen(
                     )
                 }
             }
+        )
+    }
+
+    plateCalcExercise?.let { we ->
+        val initialWeightKg = we.sets.lastOrNull { it.weightKg > 0.0 }?.weightKg
+            ?: we.sets.firstOrNull { it.weightKg > 0.0 }?.weightKg
+            ?: 60.0
+        PlateCalculatorDialog(
+            exerciseName = we.exercise.name,
+            weightUnit = weightUnit,
+            initialWeightKg = initialWeightKg,
+            onDismiss = { plateCalcExercise = null }
         )
     }
 }
@@ -879,7 +895,8 @@ fun WorkoutExerciseCard(
     onUpdateSet: (WorkoutSet) -> Unit,
     onToggleComplete: (WorkoutSet, Double, Int) -> Unit,
     onDeleteSet: (Long) -> Unit,
-    onRemoveExercise: () -> Unit
+    onRemoveExercise: () -> Unit,
+    onOpenPlateCalculator: () -> Unit = {}
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
 
@@ -912,25 +929,45 @@ fun WorkoutExerciseCard(
                     )
                 }
 
-                Box {
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     IconButton(
-                        onClick = { menuExpanded = true },
+                        onClick = onOpenPlateCalculator,
                         modifier = Modifier.size(48.dp)
                     ) {
-                        Icon(Icons.Default.MoreVert, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
-                    }
-                    DropdownMenu(
-                        expanded = menuExpanded,
-                        onDismissRequest = { menuExpanded = false },
-                        modifier = Modifier.background(MaterialTheme.colorScheme.surfaceContainer)
-                    ) {
-                        DropdownMenuItem(
-                            text = { Text(stringResource(R.string.menu_remove_exercise), color = MaterialTheme.colorScheme.error) },
-                            onClick = {
-                                menuExpanded = false
-                                onRemoveExercise()
-                            }
+                        Icon(
+                            imageVector = Icons.Default.Calculate,
+                            contentDescription = stringResource(R.string.action_plate_calculator),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
+                    }
+
+                    Box {
+                        IconButton(
+                            onClick = { menuExpanded = true },
+                            modifier = Modifier.size(48.dp)
+                        ) {
+                            Icon(Icons.Default.MoreVert, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
+                        DropdownMenu(
+                            expanded = menuExpanded,
+                            onDismissRequest = { menuExpanded = false },
+                            modifier = Modifier.background(MaterialTheme.colorScheme.surfaceContainer)
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.action_plate_calculator), color = MaterialTheme.colorScheme.onSurface) },
+                                onClick = {
+                                    menuExpanded = false
+                                    onOpenPlateCalculator()
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.menu_remove_exercise), color = MaterialTheme.colorScheme.error) },
+                                onClick = {
+                                    menuExpanded = false
+                                    onRemoveExercise()
+                                }
+                            )
+                        }
                     }
                 }
             }
@@ -1383,4 +1420,220 @@ fun ExercisePickerContent(
             }
         }
     }
+}
+
+@Composable
+fun PlateCalculatorDialog(
+    exerciseName: String,
+    weightUnit: WeightUnit,
+    initialWeightKg: Double,
+    onDismiss: () -> Unit
+) {
+    val initialDisplay = weightUnit.formatValue(initialWeightKg)
+    var targetWeightInput by remember { mutableStateOf(initialDisplay) }
+    val defaultBar = com.kveld9.trackgym.domain.calculator.PlateCalculator.defaultBarWeight(weightUnit)
+    var barWeightInput by remember { mutableStateOf(if (defaultBar % 1.0 == 0.0) defaultBar.toInt().toString() else defaultBar.toString()) }
+
+    val currentTarget = targetWeightInput.toDoubleOrNull() ?: 0.0
+    val currentBar = barWeightInput.toDoubleOrNull() ?: defaultBar
+    val availablePlates = remember(weightUnit) {
+        com.kveld9.trackgym.domain.calculator.PlateCalculator.defaultPlates(weightUnit)
+    }
+
+    val calcResult = remember(currentTarget, currentBar, weightUnit) {
+        com.kveld9.trackgym.domain.calculator.PlateCalculator.calculatePlates(
+            targetWeight = currentTarget,
+            barWeight = currentBar,
+            availablePlates = availablePlates
+        )
+    }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        title = {
+            Column {
+                Text(
+                    text = stringResource(R.string.plate_calc_title),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp
+                )
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(
+                    text = exerciseName,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+        },
+        text = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(14.dp)
+            ) {
+                // Target and Bar Inputs
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    OutlinedTextField(
+                        value = targetWeightInput,
+                        onValueChange = { targetWeightInput = it },
+                        label = { Text("${stringResource(R.string.plate_calc_target_weight)} (${weightUnit.symbol})", fontSize = 11.sp) },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        modifier = Modifier.weight(1f),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                            focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                        ),
+                        shape = RoundedCornerShape(10.dp)
+                    )
+
+                    OutlinedTextField(
+                        value = barWeightInput,
+                        onValueChange = { barWeightInput = it },
+                        label = { Text("${stringResource(R.string.plate_calc_bar_weight)} (${weightUnit.symbol})", fontSize = 11.sp) },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        modifier = Modifier.weight(1f),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                            focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                        ),
+                        shape = RoundedCornerShape(10.dp)
+                    )
+                }
+
+                // Summary banner
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                    shape = RoundedCornerShape(12.dp),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(14.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column {
+                            Text(
+                                text = stringResource(R.string.plate_calc_each_side),
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(modifier = Modifier.height(2.dp))
+                            val weightPerSideText = if (calcResult.weightPerSide % 1.0 == 0.0) {
+                                "${calcResult.weightPerSide.toInt()} ${weightUnit.symbol}"
+                            } else {
+                                String.format(java.util.Locale.US, "%.2f %s", calcResult.weightPerSide, weightUnit.symbol)
+                            }
+                            Text(
+                                text = weightPerSideText,
+                                color = MaterialTheme.colorScheme.primary,
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Black
+                            )
+                        }
+
+                        if (calcResult.remainderPerSide > 0.0) {
+                            val remText = String.format(java.util.Locale.US, "%.2f %s", calcResult.remainderPerSide, weightUnit.symbol)
+                            Text(
+                                text = stringResource(R.string.plate_calc_remainder, remText),
+                                color = MaterialTheme.colorScheme.error,
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
+                    }
+                }
+
+                // Visual Plate Breakdown
+                if (calcResult.platesPerSide.isEmpty()) {
+                    Text(
+                        text = if (currentTarget <= currentBar) "Weight is less than or equal to bar weight" else "No matching plates",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 13.sp,
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
+                } else {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        calcResult.platesPerSide.forEach { item ->
+                            val plateLabel = if (item.weight % 1.0 == 0.0) "${item.weight.toInt()} ${weightUnit.symbol}" else "${item.weight} ${weightUnit.symbol}"
+                            Surface(
+                                modifier = Modifier.fillMaxWidth(),
+                                shape = RoundedCornerShape(10.dp),
+                                color = MaterialTheme.colorScheme.surfaceContainerHighest,
+                                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.25f))
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 14.dp, vertical = 10.dp),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Surface(
+                                            modifier = Modifier.size(12.dp),
+                                            shape = CircleShape,
+                                            color = MaterialTheme.colorScheme.primary
+                                        ) {}
+                                        Spacer(modifier = Modifier.width(10.dp))
+                                        Text(
+                                            text = plateLabel,
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                            fontWeight = FontWeight.Bold,
+                                            fontSize = 15.sp
+                                        )
+                                    }
+
+                                    Surface(
+                                        shape = RoundedCornerShape(6.dp),
+                                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
+                                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.35f))
+                                    ) {
+                                        Text(
+                                            text = "${item.count}x",
+                                            color = MaterialTheme.colorScheme.primary,
+                                            fontWeight = FontWeight.Black,
+                                            fontSize = 14.sp,
+                                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = onDismiss,
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+            ) {
+                Text(
+                    text = stringResource(R.string.action_close),
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+    )
 }
