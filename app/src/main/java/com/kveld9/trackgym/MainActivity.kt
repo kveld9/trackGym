@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.kveld9.trackgym.ui.navigation.MainScreen
@@ -28,18 +27,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val themeSettings by settingsViewModel.themeSettings.collectAsState()
-            val systemDark = isSystemInDarkTheme()
-            val darkTheme = when (themeSettings.themeMode) {
-                "SYSTEM" -> systemDark
-                "LIGHT" -> false
-                "DARK" -> true
-                else -> systemDark
-            }
 
             TrackGymTheme(
-                darkTheme = darkTheme,
-                dynamicColor = themeSettings.dynamicColor,
-                amoledBlack = themeSettings.amoledBlack
+                themeMode = themeSettings.themeMode
             ) {
                 MainScreen(
                     viewModel = viewModel,

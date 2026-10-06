@@ -14,9 +14,7 @@ import kotlinx.coroutines.flow.map
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
 data class ThemeSettings(
-    val dynamicColor: Boolean = true,
-    val themeMode: String = "SYSTEM", // "SYSTEM", "DARK", "LIGHT"
-    val amoledBlack: Boolean = false,
+    val themeMode: String = "AMOLED", // "LIGHT", "DARK", "AMOLED"
     val weightUnit: String = "KG", // "KG", "LB"
     val distanceUnit: String = "KM", // "KM", "MI"
     val autoRestTimer: Boolean = true,
@@ -29,21 +27,23 @@ class ThemePreferences(
     constructor(context: Context) : this(context.dataStore)
 
     companion object {
-        val DYNAMIC_COLOR_KEY = booleanPreferencesKey("dynamic_color")
         val THEME_MODE_KEY = stringPreferencesKey("theme_mode")
-        val AMOLED_BLACK_KEY = booleanPreferencesKey("amoled_black")
         val WEIGHT_UNIT_KEY = stringPreferencesKey("weight_unit")
         val DISTANCE_UNIT_KEY = stringPreferencesKey("distance_unit")
         val AUTO_REST_TIMER_KEY = booleanPreferencesKey("auto_rest_timer")
         val DEFAULT_REST_SECONDS_KEY = intPreferencesKey("default_rest_seconds")
+
+        private val LEGACY_AMOLED_KEY = booleanPreferencesKey("amoled_black")
     }
 
     val themeSettings: Flow<ThemeSettings> = dataStore.data
         .map { preferences ->
+            val rawMode = preferences[THEME_MODE_KEY]
+            val legacyAmoled = preferences[LEGACY_AMOLED_KEY] ?: false
+            val resolvedMode = resolveThemeMode(rawMode, legacyAmoled)
+
             ThemeSettings(
-                dynamicColor = preferences[DYNAMIC_COLOR_KEY] ?: true,
-                themeMode = preferences[THEME_MODE_KEY] ?: "SYSTEM",
-                amoledBlack = preferences[AMOLED_BLACK_KEY] ?: false,
+                themeMode = resolvedMode,
                 weightUnit = preferences[WEIGHT_UNIT_KEY] ?: "KG",
                 distanceUnit = preferences[DISTANCE_UNIT_KEY] ?: "KM",
                 autoRestTimer = preferences[AUTO_REST_TIMER_KEY] ?: true,
@@ -51,21 +51,18 @@ class ThemePreferences(
             )
         }
 
-    suspend fun setDynamicColor(enabled: Boolean) {
-        dataStore.edit { preferences ->
-            preferences[DYNAMIC_COLOR_KEY] = enabled
-        }
+    private fun resolveThemeMode(rawMode: String?, legacyAmoled: Boolean): String = when {
+        rawMode == "AMOLED" -> "AMOLED"
+        rawMode == "LIGHT" -> "LIGHT"
+        rawMode == "DARK" && legacyAmoled -> "AMOLED"
+        rawMode == "DARK" -> "DARK"
+        legacyAmoled -> "AMOLED"
+        else -> "AMOLED"
     }
 
     suspend fun setThemeMode(mode: String) {
         dataStore.edit { preferences ->
             preferences[THEME_MODE_KEY] = mode
-        }
-    }
-
-    suspend fun setAmoledBlack(enabled: Boolean) {
-        dataStore.edit { preferences ->
-            preferences[AMOLED_BLACK_KEY] = enabled
         }
     }
 

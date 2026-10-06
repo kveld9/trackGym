@@ -6,13 +6,7 @@ import android.os.Build
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,7 +22,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
-import androidx.compose.material.icons.filled.BrightnessAuto
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.Contrast
 import androidx.compose.material.icons.filled.DarkMode
@@ -203,11 +196,11 @@ fun SettingsScreen(
                         )
                     }
 
-                    // Segmented Button Row (System, Light, Dark)
+                    // Segmented Button Row (Blanco, Oscuro normal, AMOLED)
                     val themeOptions = listOf(
-                        Triple("SYSTEM", stringResource(R.string.theme_mode_system), Icons.Default.BrightnessAuto),
                         Triple("LIGHT", stringResource(R.string.theme_mode_light), Icons.Default.LightMode),
-                        Triple("DARK", stringResource(R.string.theme_mode_dark), Icons.Default.DarkMode)
+                        Triple("DARK", stringResource(R.string.theme_mode_dark), Icons.Default.DarkMode),
+                        Triple("AMOLED", stringResource(R.string.theme_mode_amoled), Icons.Default.Contrast)
                     )
 
                     SingleChoiceSegmentedButtonRow(
@@ -235,89 +228,6 @@ fun SettingsScreen(
                                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
                                     )
                                 }
-                            )
-                        }
-                    }
-
-                    val isDarkThemeActive = when (themeSettings.themeMode) {
-                        "SYSTEM" -> isSystemInDarkTheme()
-                        "LIGHT" -> false
-                        "DARK" -> true
-                        else -> isSystemInDarkTheme()
-                    }
-
-                    AnimatedVisibility(
-                        visible = isDarkThemeActive,
-                        enter = expandVertically() + fadeIn(),
-                        exit = shrinkVertically() + fadeOut()
-                    ) {
-                        Column(
-                            verticalArrangement = Arrangement.spacedBy(16.dp)
-                        ) {
-                            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
-
-                            // AMOLED Black Mode Row
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Contrast,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.primary
-                                )
-                                Spacer(modifier = Modifier.width(16.dp))
-                                Column(modifier = Modifier.weight(1f)) {
-                                    Text(
-                                        text = stringResource(R.string.setting_amoled_title),
-                                        style = MaterialTheme.typography.bodyLarge,
-                                        fontWeight = FontWeight.Medium
-                                    )
-                                    Text(
-                                        text = stringResource(R.string.setting_amoled_desc),
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                }
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Switch(
-                                    checked = themeSettings.amoledBlack,
-                                    onCheckedChange = { viewModel.setAmoledBlack(it) }
-                                )
-                            }
-                        }
-                    }
-
-                    // Monet Dynamic Color Toggle (Android 12+)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
-
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Palette,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primary
-                            )
-                            Spacer(modifier = Modifier.width(16.dp))
-                            Column(modifier = Modifier.weight(1f)) {
-                                Text(
-                                    text = stringResource(R.string.setting_dynamic_color_title),
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    fontWeight = FontWeight.Medium
-                                )
-                                Text(
-                                    text = stringResource(R.string.setting_dynamic_color_desc),
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Switch(
-                                checked = themeSettings.dynamicColor,
-                                onCheckedChange = { viewModel.setDynamicColor(it) }
                             )
                         }
                     }

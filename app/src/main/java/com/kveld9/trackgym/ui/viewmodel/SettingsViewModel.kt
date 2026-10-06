@@ -62,18 +62,6 @@ class SettingsViewModel(
         }
     }
 
-    fun setDynamicColor(enabled: Boolean) {
-        viewModelScope.launch {
-            themePreferences.setDynamicColor(enabled)
-        }
-    }
-
-    fun setAmoledBlack(enabled: Boolean) {
-        viewModelScope.launch {
-            themePreferences.setAmoledBlack(enabled)
-        }
-    }
-
     fun setWeightUnit(unit: String) {
         viewModelScope.launch {
             themePreferences.setWeightUnit(unit)
