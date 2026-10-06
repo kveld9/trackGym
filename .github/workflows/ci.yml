@@ -100,8 +100,8 @@ jobs:
           } >> "$GITHUB_OUTPUT"
           echo "Release version: v${VERSION} (versionCode: ${VERSION_CODE})"
 
-      # Main Workflow: 2. Decode Keystore if configured
-      - name: Decode Release Keystore
+      # Main Workflow: 2. Decode Keystore if configured or generate fallback
+      - name: Setup Release Keystore
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
@@ -109,15 +109,22 @@ jobs:
           if [ -n "$KEYSTORE_BASE64" ]; then
             echo "$KEYSTORE_BASE64" | base64 -d > release.jks
             echo "KEYSTORE_PATH=../release.jks" >> $GITHUB_ENV
+          else
+            keytool -genkeypair -v -keystore release.jks -alias trackgym -keyalg RSA -keysize 2048 -validity 10000 \
+              -storepass trackgym -keypass trackgym -dname "CN=TrackGym, OU=Mobile, O=TrackGym, L=Default, S=Default, C=US"
+            echo "KEYSTORE_PATH=../release.jks" >> $GITHUB_ENV
+            echo "DEFAULT_KEYSTORE_PASSWORD=trackgym" >> $GITHUB_ENV
+            echo "DEFAULT_KEY_ALIAS=trackgym" >> $GITHUB_ENV
+            echo "DEFAULT_KEY_PASSWORD=trackgym" >> $GITHUB_ENV
           fi
 
       # Main Workflow: 3. Single-Pass Build & Tests
       - name: Test & Assemble APKs
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         env:
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD || env.DEFAULT_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS || env.DEFAULT_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD || env.DEFAULT_KEY_PASSWORD }}
         run: |
           ./gradlew testDebugUnitTest assembleRelease assembleDebug \
             -PversionName="${{ steps.semver.outputs.version }}" \
