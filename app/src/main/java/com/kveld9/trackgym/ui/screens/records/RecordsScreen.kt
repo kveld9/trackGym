@@ -42,12 +42,7 @@ import com.kveld9.trackgym.R
 import com.kveld9.trackgym.domain.model.PersonalRecord
 import com.kveld9.trackgym.domain.model.RecordType
 import com.kveld9.trackgym.domain.model.WeightUnit
-import com.kveld9.trackgym.ui.theme.GymBlack
-import com.kveld9.trackgym.ui.theme.GymGold
-import com.kveld9.trackgym.ui.theme.GymSurface
-import com.kveld9.trackgym.ui.theme.GymSurfaceVariant
-import com.kveld9.trackgym.ui.theme.TextMuted
-import com.kveld9.trackgym.ui.theme.TextWhite
+import androidx.compose.material3.MaterialTheme
 import com.kveld9.trackgym.ui.viewmodel.GymViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -71,15 +66,15 @@ fun RecordsScreen(
                 title = {
                     Text(
                         text = stringResource(R.string.records_title),
-                        color = TextWhite,
+                        color = MaterialTheme.colorScheme.onBackground,
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp
                     )
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = GymBlack)
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
             )
         },
-        containerColor = GymBlack,
+        containerColor = MaterialTheme.colorScheme.background,
         modifier = modifier
     ) { paddingValues ->
         if (records.isEmpty()) {
@@ -95,7 +90,7 @@ fun RecordsScreen(
                 item {
                     Text(
                         text = stringResource(R.string.records_history_section, records.size),
-                        color = GymGold,
+                        color = MaterialTheme.colorScheme.tertiary,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
                         letterSpacing = 1.sp,
@@ -132,8 +127,8 @@ fun RecordItemCard(
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(14.dp),
-        colors = CardDefaults.cardColors(containerColor = GymSurface),
-        border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(GymGold.copy(alpha = 0.5f)))
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+        border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5f)))
     ) {
         Row(
             modifier = Modifier.padding(14.dp),
@@ -143,13 +138,13 @@ fun RecordItemCard(
                 modifier = Modifier
                     .size(44.dp)
                     .clip(CircleShape)
-                    .background(GymGold.copy(alpha = 0.15f)),
+                    .background(MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f)),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = Icons.Default.EmojiEvents,
                     contentDescription = null,
-                    tint = GymGold,
+                    tint = MaterialTheme.colorScheme.tertiary,
                     modifier = Modifier.size(24.dp)
                 )
             }
@@ -164,13 +159,13 @@ fun RecordItemCard(
                 ) {
                     Text(
                         text = exerciseName,
-                        color = TextWhite,
+                        color = MaterialTheme.colorScheme.onSurface,
                         fontSize = 15.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
                         text = dateStr,
-                        color = TextMuted,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 12.sp
                     )
                 }
@@ -179,7 +174,7 @@ fun RecordItemCard(
 
                 Text(
                     text = stringResource(record.recordType.nameRes),
-                    color = GymGold,
+                    color = MaterialTheme.colorScheme.tertiary,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.SemiBold
                 )
@@ -195,7 +190,7 @@ fun RecordItemCard(
 
                 Text(
                     text = recordDescription,
-                    color = TextMuted,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 13.sp
                 )
             }
@@ -215,13 +210,13 @@ fun EmptyRecordsView(modifier: Modifier = Modifier) {
         Surface(
             modifier = Modifier.size(80.dp),
             shape = CircleShape,
-            color = GymSurfaceVariant
+            color = MaterialTheme.colorScheme.surfaceContainerHigh
         ) {
             Box(contentAlignment = Alignment.Center) {
                 Icon(
                     imageVector = Icons.Default.EmojiEvents,
                     contentDescription = null,
-                    tint = TextMuted,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(40.dp)
                 )
             }
@@ -229,14 +224,14 @@ fun EmptyRecordsView(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(20.dp))
         Text(
             text = stringResource(R.string.records_empty_title),
-            color = TextWhite,
+            color = MaterialTheme.colorScheme.onBackground,
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = stringResource(R.string.records_empty_desc),
-            color = TextMuted,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             fontSize = 14.sp,
             textAlign = TextAlign.Center
         )
