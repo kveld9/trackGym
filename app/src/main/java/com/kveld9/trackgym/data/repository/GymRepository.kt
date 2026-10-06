@@ -247,6 +247,15 @@ class GymRepository(private val database: GymDatabase) {
         buildFullWorkout(entity)
     }
 
+    suspend fun discardActiveWorkout(workoutId: Long) = withContext(Dispatchers.IO) {
+        workoutDao.deleteWorkoutById(workoutId)
+    }
+
+    suspend fun updateWorkoutDuration(workoutId: Long, durationSeconds: Long) = withContext(Dispatchers.IO) {
+        val entity = workoutDao.getWorkoutById(workoutId) ?: return@withContext
+        workoutDao.updateWorkout(entity.copy(durationSeconds = durationSeconds))
+    }
+
     suspend fun getPreviousSetsForExercise(exerciseId: Long, currentWorkoutId: Long): List<WorkoutSet> = withContext(Dispatchers.IO) {
         val prevWe = workoutDao.getLastCompletedWorkoutExercise(exerciseId, currentWorkoutId) ?: return@withContext emptyList()
         workoutDao.getWorkoutSets(prevWe.id).map { it.toDomain() }

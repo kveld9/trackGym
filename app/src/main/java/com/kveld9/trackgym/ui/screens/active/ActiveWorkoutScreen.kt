@@ -122,6 +122,7 @@ fun ActiveWorkoutScreen(
 
     var showExercisePicker by remember { mutableStateOf(false) }
     var showFinishDialog by remember { mutableStateOf(false) }
+    var showDiscardDialog by remember { mutableStateOf(false) }
     var showSaveRoutineDialog by remember { mutableStateOf(false) }
     var finishNotes by remember { mutableStateOf("") }
     var routineNameInput by remember { mutableStateOf("") }
@@ -141,7 +142,7 @@ fun ActiveWorkoutScreen(
                 ActiveWorkoutTopBar(
                     timerSeconds = timerSeconds,
                     onFinishClick = { showFinishDialog = true },
-                    onCancelClick = { viewModel.cancelActiveWorkout() },
+                    onCancelClick = { showDiscardDialog = true },
                     onSaveAsRoutineClick = {
                         routineNameInput = activeWorkout?.name.orEmpty()
                         showSaveRoutineDialog = true
@@ -343,6 +344,50 @@ fun ActiveWorkoutScreen(
             dismissButton = {
                 TextButton(onClick = { showFinishDialog = false }) {
                     Text(stringResource(R.string.action_cancel), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+            }
+        )
+    }
+
+    if (showDiscardDialog) {
+        AlertDialog(
+            onDismissRequest = { showDiscardDialog = false },
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+            title = {
+                Text(
+                    text = stringResource(R.string.dialog_discard_workout_title),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            text = {
+                Text(
+                    text = stringResource(R.string.dialog_discard_workout_msg),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showDiscardDialog = false
+                        viewModel.cancelActiveWorkout()
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+                ) {
+                    Text(
+                        text = stringResource(R.string.action_discard),
+                        color = MaterialTheme.colorScheme.onError,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDiscardDialog = false }) {
+                    Text(
+                        text = stringResource(R.string.action_continue_workout),
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.SemiBold
+                    )
                 }
             }
         )

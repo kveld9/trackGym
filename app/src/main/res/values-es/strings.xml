@@ -27,6 +27,9 @@
     <string name="title_select_exercise">Seleccionar Ejercicio</string>
     <string name="dialog_finish_workout_title">Finalizar Entrenamiento</string>
     <string name="dialog_finish_workout_msg">¡Excelente sesión! Añade notas sobre cómo te sentiste:</string>
+    <string name="dialog_discard_workout_title">¿Descartar entrenamiento?</string>
+    <string name="dialog_discard_workout_msg">¿Estás seguro de que deseas descartar esta sesión? Todo el progreso acumulado se perderá.</string>
+    <string name="action_continue_workout">Continuar entrenando</string>
     <string name="notes_placeholder">Notas de la sesión...</string>
     <string name="btn_save_and_summary">Guardar y Ver Resumen</string>
     <string name="menu_remove_exercise">Quitar Ejercicio</string>

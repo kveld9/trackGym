@@ -27,6 +27,9 @@
     <string name="title_select_exercise">Select Exercise</string>
     <string name="dialog_finish_workout_title">Finish Workout</string>
     <string name="dialog_finish_workout_msg">Great session! Add optional notes on how you felt:</string>
+    <string name="dialog_discard_workout_title">Discard Workout?</string>
+    <string name="dialog_discard_workout_msg">Are you sure you want to discard this workout? All progress from this session will be lost.</string>
+    <string name="action_continue_workout">Keep Training</string>
     <string name="notes_placeholder">Workout notes...</string>
     <string name="btn_save_and_summary">Save &amp; View Summary</string>
     <string name="menu_remove_exercise">Remove Exercise</string>
