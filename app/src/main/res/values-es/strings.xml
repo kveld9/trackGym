@@ -341,4 +341,11 @@
     <string name="menu_archive_routine">Archivar rutina</string>
     <string name="menu_unarchive_routine">Desarchivar rutina</string>
     <string name="routine_archived_badge">Archivada</string>
+    <string name="menu_share_routine">Compartir rutina</string>
+    <string name="btn_import_routine">Importar</string>
+    <string name="dialog_import_routine_title">Importar rutina</string>
+    <string name="dialog_import_routine_desc">Pega el texto o código de la rutina compartida a continuación:</string>
+    <string name="dialog_import_routine_placeholder">Pega la rutina de TrackGym aquí...</string>
+    <string name="toast_routine_imported">Rutina importada con éxito</string>
+    <string name="toast_routine_import_invalid">Formato de rutina no válido</string>
 </resources>

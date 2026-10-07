@@ -573,6 +573,18 @@ class GymViewModel(
         }
     }
 
+    fun importRoutineFromText(rawText: String, onResult: (Boolean) -> Unit) {
+        val dto = com.kveld9.trackgym.domain.util.RoutineShareCodec.decodeFromText(rawText)
+        if (dto == null) {
+            onResult(false)
+            return
+        }
+        viewModelScope.launch {
+            repository.importRoutineFromShareDto(dto)
+            onResult(true)
+        }
+    }
+
     fun moveRoutineUp(routineId: Long, currentList: List<Routine>) {
         val index = currentList.indexOfFirst { it.id == routineId }
         if (index > 0) {

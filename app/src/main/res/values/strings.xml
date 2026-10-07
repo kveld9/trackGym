@@ -341,4 +341,11 @@
     <string name="menu_archive_routine">Archive Routine</string>
     <string name="menu_unarchive_routine">Unarchive Routine</string>
     <string name="routine_archived_badge">Archived</string>
+    <string name="menu_share_routine">Share Routine</string>
+    <string name="btn_import_routine">Import</string>
+    <string name="dialog_import_routine_title">Import Routine</string>
+    <string name="dialog_import_routine_desc">Paste the shared routine text or code below:</string>
+    <string name="dialog_import_routine_placeholder">Paste TrackGym routine here...</string>
+    <string name="toast_routine_imported">Routine imported successfully</string>
+    <string name="toast_routine_import_invalid">Invalid routine format</string>
 </resources>

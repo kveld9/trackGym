@@ -1,5 +1,8 @@
 package com.kveld9.trackgym.ui.screens.active
 
+import android.content.Intent
+import android.widget.Toast
+import com.kveld9.trackgym.domain.util.RoutineShareCodec
 import java.util.Locale
 import kotlinx.coroutines.launch
 import androidx.compose.animation.AnimatedVisibility
@@ -41,12 +44,14 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.FileUpload
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.AlertDialog
 import androidx.compose.ui.window.DialogProperties
@@ -251,6 +256,7 @@ fun ActiveWorkoutScreen(
             onDeleteRoutine = { routineId -> viewModel.deleteRoutine(routineId) },
             onDuplicateRoutine = { routineId -> viewModel.duplicateRoutine(routineId, copySuffix) },
             onToggleArchive = { routineId, isArchived -> viewModel.toggleRoutineArchived(routineId, isArchived) },
+            onImportRoutine = { rawText, onResult -> viewModel.importRoutineFromText(rawText, onResult) },
             onMoveRoutineUp = { routineId -> viewModel.moveRoutineUp(routineId, routines) },
             onMoveRoutineDown = { routineId -> viewModel.moveRoutineDown(routineId, routines) },
             onMoveFolderUp = { folderId -> viewModel.moveFolderUp(folderId, folders) },
@@ -697,6 +703,7 @@ fun EmptyWorkoutDashboard(
     onDeleteRoutine: (Long) -> Unit,
     onDuplicateRoutine: ((Long) -> Unit)? = null,
     onToggleArchive: ((Long, Boolean) -> Unit)? = null,
+    onImportRoutine: ((String, (Boolean) -> Unit) -> Unit)? = null,
     onMoveRoutineUp: ((Long) -> Unit)? = null,
     onMoveRoutineDown: ((Long) -> Unit)? = null,
     onMoveFolderUp: ((Long) -> Unit)? = null,
@@ -706,6 +713,7 @@ fun EmptyWorkoutDashboard(
     var selectedFolderId by remember { mutableStateOf<Long?>(null) }
     var showArchived by remember { mutableStateOf(false) }
     var showReorderFoldersDialog by remember { mutableStateOf(false) }
+    var showImportRoutineDialog by remember { mutableStateOf(false) }
     val baseRoutines = if (showArchived) {
         routines.filter { it.isArchived }
     } else {
@@ -786,7 +794,7 @@ fun EmptyWorkoutDashboard(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Column {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = stringResource(R.string.routines_title),
                     color = MaterialTheme.colorScheme.onBackground,
@@ -798,6 +806,25 @@ fun EmptyWorkoutDashboard(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 12.sp
                 )
+            }
+            if (onImportRoutine != null) {
+                OutlinedButton(
+                    onClick = { showImportRoutineDialog = true },
+                    contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 12.dp, vertical = 6.dp),
+                    shape = RoundedCornerShape(10.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.FileUpload,
+                        contentDescription = null,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = stringResource(R.string.btn_import_routine),
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
             }
         }
 
@@ -912,6 +939,7 @@ fun EmptyWorkoutDashboard(
                 }
             }
         } else {
+            val context = LocalContext.current
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
@@ -923,6 +951,16 @@ fun EmptyWorkoutDashboard(
                         onDelete = { onDeleteRoutine(routine.id) },
                         onDuplicate = { onDuplicateRoutine?.invoke(routine.id) },
                         onToggleArchive = { onToggleArchive?.invoke(routine.id, !routine.isArchived) },
+                        onShare = {
+                            val shareText = RoutineShareCodec.encodeToShareText(routine)
+                            val sendIntent = Intent().apply {
+                                action = Intent.ACTION_SEND
+                                putExtra(Intent.EXTRA_TEXT, shareText)
+                                type = "text/plain"
+                            }
+                            val shareIntent = Intent.createChooser(sendIntent, routine.name)
+                            context.startActivity(shareIntent)
+                        },
                         canMoveUp = index > 0,
                         canMoveDown = index < filteredRoutines.size - 1,
                         onMoveUp = { onMoveRoutineUp?.invoke(routine.id) },
@@ -943,6 +981,13 @@ fun EmptyWorkoutDashboard(
             onDismiss = { showReorderFoldersDialog = false }
         )
     }
+
+    if (showImportRoutineDialog && onImportRoutine != null) {
+        ImportRoutineDialog(
+            onDismiss = { showImportRoutineDialog = false },
+            onImport = onImportRoutine
+        )
+    }
 }
 
 @Composable
@@ -952,6 +997,7 @@ fun RoutineCardItem(
     onDelete: () -> Unit,
     onDuplicate: (() -> Unit)? = null,
     onToggleArchive: (() -> Unit)? = null,
+    onShare: (() -> Unit)? = null,
     canMoveUp: Boolean = false,
     canMoveDown: Boolean = false,
     onMoveUp: (() -> Unit)? = null,
@@ -1065,6 +1111,16 @@ fun RoutineCardItem(
                                 }
                             )
                         }
+                        if (onShare != null) {
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.menu_share_routine)) },
+                                leadingIcon = { Icon(Icons.Default.Share, contentDescription = null) },
+                                onClick = {
+                                    menuExpanded = false
+                                    onShare()
+                                }
+                            )
+                        }
                         if (onToggleArchive != null) {
                             DropdownMenuItem(
                                 text = {
@@ -1146,6 +1202,88 @@ private fun ReorderFoldersDialog(
         confirmButton = {
             TextButton(onClick = onDismiss) {
                 Text(stringResource(android.R.string.ok))
+            }
+        }
+    )
+}
+
+@Composable
+private fun ImportRoutineDialog(
+    onDismiss: () -> Unit,
+    onImport: (String, (Boolean) -> Unit) -> Unit
+) {
+    var shareText by remember { mutableStateOf("") }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+    var isImporting by remember { mutableStateOf(false) }
+    val invalidTokenMessage = stringResource(R.string.toast_routine_import_invalid)
+
+    AlertDialog(
+        onDismissRequest = { if (!isImporting) onDismiss() },
+        title = {
+            Text(
+                text = stringResource(R.string.dialog_import_routine_title),
+                fontWeight = FontWeight.Bold
+            )
+        },
+        text = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.dialog_import_routine_desc),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                OutlinedTextField(
+                    value = shareText,
+                    onValueChange = {
+                        shareText = it
+                        errorMessage = null
+                    },
+                    placeholder = {
+                        Text(
+                            stringResource(R.string.dialog_import_routine_placeholder),
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(140.dp),
+                    isError = errorMessage != null,
+                    supportingText = {
+                        if (errorMessage != null) {
+                            Text(errorMessage ?: "", color = MaterialTheme.colorScheme.error)
+                        }
+                    }
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    if (shareText.isBlank()) return@Button
+                    isImporting = true
+                    onImport(shareText) { success ->
+                        isImporting = false
+                        if (success) {
+                            onDismiss()
+                        } else {
+                            errorMessage = invalidTokenMessage
+                        }
+                    }
+                },
+                enabled = shareText.isNotBlank() && !isImporting
+            ) {
+                Text(stringResource(R.string.btn_import_routine))
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = onDismiss,
+                enabled = !isImporting
+            ) {
+                Text(stringResource(R.string.action_cancel))
             }
         }
     )

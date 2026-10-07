@@ -33,6 +33,7 @@ import com.kveld9.trackgym.domain.model.Workout
 import com.kveld9.trackgym.domain.model.WorkoutComparison
 import com.kveld9.trackgym.domain.model.WorkoutExercise
 import com.kveld9.trackgym.domain.model.WorkoutSet
+import com.kveld9.trackgym.domain.util.RoutineShareDto
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -820,6 +821,49 @@ class GymRepository(private val database: GymDatabase) {
 
     suspend fun setRoutineArchived(routineId: Long, isArchived: Boolean) = withContext(Dispatchers.IO) {
         routineDao.updateRoutineArchived(routineId, isArchived)
+    }
+
+    suspend fun importRoutineFromShareDto(dto: RoutineShareDto): Long = withContext(Dispatchers.IO) {
+        val routineEntity = RoutineEntity(
+            name = dto.name.ifBlank { "Imported Routine" },
+            notes = dto.notes
+        )
+        val routineId = routineDao.insertRoutine(routineEntity)
+        val existingExercises = exerciseDao.getAllExercisesSync()
+        val existingByName = existingExercises.associateBy { it.name.lowercase().trim() }
+
+        val routineExercises = dto.exercises.mapIndexed { index, exDto ->
+            var exerciseId = existingByName[exDto.name.lowercase().trim()]?.id
+            if (exerciseId == null) {
+                val group = try {
+                    MuscleGroup.valueOf(exDto.muscleGroup.uppercase())
+                } catch (_: Exception) {
+                    MuscleGroup.OTHER
+                }
+                val cat = try {
+                    ExerciseCategory.valueOf(exDto.category.uppercase())
+                } catch (_: Exception) {
+                    ExerciseCategory.OTHER
+                }
+                val newEntity = ExerciseEntity(
+                    name = exDto.name.trim(),
+                    muscleGroup = group.name,
+                    category = cat.name,
+                    isCustom = true
+                )
+                exerciseId = exerciseDao.insertExercise(newEntity)
+            }
+            RoutineExerciseEntity(
+                routineId = routineId,
+                exerciseId = exerciseId,
+                orderIndex = index,
+                targetSets = exDto.targetSets.coerceAtLeast(1),
+                defaultWeightKg = exDto.defaultWeightKg,
+                defaultReps = exDto.defaultReps
+            )
+        }
+        routineDao.insertRoutineExercises(routineExercises)
+        routineId
     }
 
     suspend fun deleteRoutine(routineId: Long) = withContext(Dispatchers.IO) {
