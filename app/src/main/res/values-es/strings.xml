@@ -399,4 +399,21 @@
     <string name="rpe_calc_exact_load">Teórico: %1$s</string>
     <string name="rpe_calc_action_apply">Aplicar a la serie</string>
     <string name="action_rpe_target_calculator">Calcular según RPE</string>
+    <string name="menu_configure_warmup_ramp">Personalizar calentamiento</string>
+    <string name="warmup_ramp_dialog_title">Rampa de calentamiento</string>
+    <string name="warmup_ramp_working_weight">Peso de trabajo: %1$s</string>
+    <string name="warmup_ramp_presets_label">Preajustes</string>
+    <string name="warmup_ramp_preset_standard">Estándar</string>
+    <string name="warmup_ramp_preset_pyramid">Pirámide</string>
+    <string name="warmup_ramp_preset_volume">Volumen</string>
+    <string name="warmup_ramp_preset_express">Rápido</string>
+    <string name="warmup_ramp_set_number">Calentamiento #%1$d</string>
+    <string name="warmup_ramp_bar_only_checkbox">Barra sola</string>
+    <string name="warmup_ramp_reps_format">%1$d reps</string>
+    <string name="warmup_ramp_pct_format">%1$d%%</string>
+    <string name="warmup_ramp_add_step">Agregar escalón</string>
+    <string name="warmup_ramp_action_save">Guardar rampa</string>
+    <string name="warmup_ramp_action_apply">Agregar a la sesión</string>
+    <string name="warmup_ramp_reset">Restablecer</string>
+    <string name="badge_custom_warmup">Rampa</string>
 </resources>

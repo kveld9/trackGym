@@ -19,6 +19,7 @@ data class ExerciseEntity(
     val category: String,
     val notes: String = "",
     val restDurationSeconds: Int? = null,
+    val warmupRampProtocol: String? = null,
     val isCustom: Boolean = false,
     val createdAt: Long = System.currentTimeMillis()
 ) {
@@ -30,6 +31,7 @@ data class ExerciseEntity(
             category = ExerciseCategory.fromString(category),
             notes = notes,
             restDurationSeconds = restDurationSeconds,
+            warmupRampProtocol = warmupRampProtocol,
             isCustom = isCustom,
             createdAt = createdAt
         )
@@ -44,6 +46,7 @@ data class ExerciseEntity(
                 category = domain.category.name,
                 notes = domain.notes,
                 restDurationSeconds = domain.restDurationSeconds,
+                warmupRampProtocol = domain.warmupRampProtocol,
                 isCustom = domain.isCustom,
                 createdAt = domain.createdAt
             )

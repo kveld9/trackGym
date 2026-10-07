@@ -330,11 +330,21 @@ class GymViewModel(
         }
     }
 
-    fun addWarmupSets(workoutExerciseId: Long, targetWeightKg: Double) {
+    fun addWarmupSets(
+        workoutExerciseId: Long,
+        targetWeightKg: Double,
+        customProtocol: List<com.kveld9.trackgym.domain.calculator.WarmupSetConfig>? = null
+    ) {
         viewModelScope.launch {
+            val we = _activeWorkout.value?.exercises?.find { it.id == workoutExerciseId }
+            val protocol = customProtocol
+                ?: com.kveld9.trackgym.domain.calculator.WarmupGenerator.decodeProtocol(we?.exercise?.warmupRampProtocol)
+                ?: com.kveld9.trackgym.domain.calculator.WarmupGenerator.DEFAULT_WARMUP_PROTOCOL
+
             val warmups = com.kveld9.trackgym.domain.calculator.WarmupGenerator.generateWarmupSets(
                 targetWeightKg = targetWeightKg,
-                workoutExerciseId = workoutExerciseId
+                workoutExerciseId = workoutExerciseId,
+                protocol = protocol
             )
             if (warmups.isNotEmpty()) {
                 repository.insertWarmupSets(workoutExerciseId, warmups)
@@ -454,6 +464,19 @@ class GymViewModel(
             val updatedExercises = current.exercises.map { we ->
                 if (we.exercise.id == exerciseId) {
                     we.copy(exercise = we.exercise.copy(restDurationSeconds = restSeconds))
+                } else we
+            }
+            _activeWorkout.value = current.copy(exercises = updatedExercises)
+        }
+    }
+
+    fun updateExerciseWarmupProtocol(exerciseId: Long, protocol: String?) {
+        viewModelScope.launch {
+            repository.updateExerciseWarmupProtocol(exerciseId, protocol)
+            val current = _activeWorkout.value ?: return@launch
+            val updatedExercises = current.exercises.map { we ->
+                if (we.exercise.id == exerciseId) {
+                    we.copy(exercise = we.exercise.copy(warmupRampProtocol = protocol))
                 } else we
             }
             _activeWorkout.value = current.copy(exercises = updatedExercises)

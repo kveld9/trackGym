@@ -7,6 +7,7 @@ data class Exercise(
     val category: ExerciseCategory = ExerciseCategory.BARBELL,
     val notes: String = "",
     val restDurationSeconds: Int? = null,
+    val warmupRampProtocol: String? = null,
     val isCustom: Boolean = false,
     val createdAt: Long = System.currentTimeMillis()
 )

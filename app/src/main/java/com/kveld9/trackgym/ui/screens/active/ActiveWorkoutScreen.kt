@@ -131,8 +131,11 @@ import com.kveld9.trackgym.domain.model.RecordType
 import com.kveld9.trackgym.ui.components.OvertrainingWarningBanner
 import com.kveld9.trackgym.ui.components.PinnedExerciseNotesCard
 import com.kveld9.trackgym.ui.components.PrCelebrationBanner
+import com.kveld9.trackgym.domain.calculator.WarmupGenerator
+import com.kveld9.trackgym.domain.calculator.WarmupSetConfig
 import com.kveld9.trackgym.ui.components.RpeSelectionDialog
 import com.kveld9.trackgym.ui.components.RpeTargetWeightDialog
+import com.kveld9.trackgym.ui.components.WarmupRampDialog
 import com.kveld9.trackgym.ui.components.WorkoutSessionNotesCard
 import com.kveld9.trackgym.ui.theme.GymBlue
 import com.kveld9.trackgym.ui.theme.GymWarmupAmber
@@ -245,6 +248,7 @@ fun ActiveWorkoutScreen(
     var rpeCalcExercise by remember { mutableStateOf<WorkoutExercise?>(null) }
     var rpeCalcSet by remember { mutableStateOf<WorkoutSet?>(null) }
     var restConfigExercise by remember { mutableStateOf<WorkoutExercise?>(null) }
+    var warmupRampExercise by remember { mutableStateOf<WorkoutExercise?>(null) }
     var supersetConfigExercise by remember { mutableStateOf<WorkoutExercise?>(null) }
     var exerciseToSwap by remember { mutableStateOf<WorkoutExercise?>(null) }
     var pendingSwapTarget by remember { mutableStateOf<Exercise?>(null) }
@@ -429,7 +433,8 @@ fun ActiveWorkoutScreen(
                                     ?: we.sets.firstOrNull { it.weightKg > 0.0 }?.weightKg
                                     ?: DEFAULT_FALLBACK_WEIGHT_KG
                                 viewModel.addWarmupSets(we.id, workingWeight)
-                            }
+                            },
+                            onConfigureWarmupRamp = { warmupRampExercise = we }
                         )
                     }
 
@@ -961,6 +966,32 @@ fun ActiveWorkoutScreen(
                 supersetConfigExercise = null
             },
             onDismiss = { supersetConfigExercise = null }
+        )
+    }
+
+    warmupRampExercise?.let { we ->
+        val workingWeight = we.sets.firstOrNull { it.weightKg > 0.0 && it.setType != SetType.WARMUP }?.weightKg
+            ?: we.sets.firstOrNull { it.weightKg > 0.0 }?.weightKg
+            ?: DEFAULT_FALLBACK_WEIGHT_KG
+        val currentProtocol = WarmupGenerator.decodeProtocol(we.exercise.warmupRampProtocol)
+
+        WarmupRampDialog(
+            exerciseName = we.exercise.displayName(),
+            workingWeightKg = workingWeight,
+            currentProtocol = currentProtocol,
+            weightUnit = weightUnit,
+            onSaveProtocol = { newProtocol ->
+                val encoded = newProtocol?.let { WarmupGenerator.encodeProtocol(it) }
+                viewModel.updateExerciseWarmupProtocol(we.exercise.id, encoded)
+                warmupRampExercise = null
+            },
+            onApplyAndAddSets = { protocolToApply ->
+                val encoded = WarmupGenerator.encodeProtocol(protocolToApply)
+                viewModel.updateExerciseWarmupProtocol(we.exercise.id, encoded)
+                viewModel.addWarmupSets(we.id, workingWeight, protocolToApply)
+                warmupRampExercise = null
+            },
+            onDismiss = { warmupRampExercise = null }
         )
     }
 }
@@ -1788,6 +1819,7 @@ fun WorkoutExerciseCard(
     onOpenPlateCalculatorForWeight: (Double) -> Unit = {},
     onOpenRpeCalculator: (WorkoutSet?) -> Unit = {},
     onAddWarmupSets: () -> Unit = {},
+    onConfigureWarmupRamp: () -> Unit = {},
     onSetRestDuration: () -> Unit = {},
     onSetSupersetGroup: () -> Unit = {}
 ) {
@@ -1843,6 +1875,23 @@ fun WorkoutExerciseCard(
                                 Text(
                                     text = stringResource(R.string.exercise_rest_badge, restSec),
                                     color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                    fontSize = 10.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                                )
+                            }
+                        }
+                        workoutExercise.exercise.warmupRampProtocol?.let {
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Surface(
+                                shape = RoundedCornerShape(4.dp),
+                                color = GymWarmupAmber.copy(alpha = 0.2f),
+                                border = BorderStroke(1.dp, GymWarmupAmber),
+                                modifier = Modifier.clickable { onConfigureWarmupRamp() }
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.badge_custom_warmup),
+                                    color = GymWarmupAmber,
                                     fontSize = 10.sp,
                                     fontWeight = FontWeight.Bold,
                                     modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
@@ -1924,6 +1973,13 @@ fun WorkoutExerciseCard(
                                 onClick = {
                                     menuExpanded = false
                                     onAddWarmupSets()
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.menu_configure_warmup_ramp), color = MaterialTheme.colorScheme.onSurface) },
+                                onClick = {
+                                    menuExpanded = false
+                                    onConfigureWarmupRamp()
                                 }
                             )
                             DropdownMenuItem(

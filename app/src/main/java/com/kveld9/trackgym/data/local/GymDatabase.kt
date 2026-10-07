@@ -28,7 +28,7 @@ import com.kveld9.trackgym.data.local.entity.WorkoutSetEntity
         RoutineEntity::class,
         RoutineExerciseEntity::class
     ],
-    version = 9,
+    version = 10,
     exportSchema = false
 )
 abstract class GymDatabase : RoomDatabase() {

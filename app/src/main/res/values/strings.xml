@@ -399,4 +399,21 @@
     <string name="rpe_calc_exact_load">Theoretical: %1$s</string>
     <string name="rpe_calc_action_apply">Apply to Set</string>
     <string name="action_rpe_target_calculator">Calculate from RPE</string>
+    <string name="menu_configure_warmup_ramp">Configure Warmup Ramp</string>
+    <string name="warmup_ramp_dialog_title">Warmup Ramp</string>
+    <string name="warmup_ramp_working_weight">Working Weight: %1$s</string>
+    <string name="warmup_ramp_presets_label">Presets</string>
+    <string name="warmup_ramp_preset_standard">Standard</string>
+    <string name="warmup_ramp_preset_pyramid">Pyramid</string>
+    <string name="warmup_ramp_preset_volume">Volume</string>
+    <string name="warmup_ramp_preset_express">Express</string>
+    <string name="warmup_ramp_set_number">Warmup #%1$d</string>
+    <string name="warmup_ramp_bar_only_checkbox">Empty Bar</string>
+    <string name="warmup_ramp_reps_format">%1$d reps</string>
+    <string name="warmup_ramp_pct_format">%1$d%%</string>
+    <string name="warmup_ramp_add_step">Add Step</string>
+    <string name="warmup_ramp_action_save">Save Ramp</string>
+    <string name="warmup_ramp_action_apply">Add to Workout</string>
+    <string name="warmup_ramp_reset">Reset to Default</string>
+    <string name="badge_custom_warmup">Ramp</string>
 </resources>

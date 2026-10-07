@@ -100,6 +100,10 @@ class GymRepository(private val database: GymDatabase) {
         exerciseDao.updateExerciseRestDuration(exerciseId, restSeconds)
     }
 
+    suspend fun updateExerciseWarmupProtocol(exerciseId: Long, protocol: String?) = withContext(Dispatchers.IO) {
+        exerciseDao.updateExerciseWarmupProtocol(exerciseId, protocol)
+    }
+
     suspend fun updateWorkoutNotes(workoutId: Long, notes: String) = withContext(Dispatchers.IO) {
         workoutDao.updateWorkoutNotes(workoutId, notes.trim())
     }
