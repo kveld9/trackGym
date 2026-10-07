@@ -122,4 +122,34 @@ class JsonBackupManagerTest {
             assertTrue(e.message?.contains("tamaño máximo") == true)
         }
     }
+
+    @Test
+    fun parseAndValidateJson_legacyBackupWithoutMechanics_defaultsToEmptyString() {
+        val legacyJson = """
+            {
+                "version": 1,
+                "exportedAt": "2026-10-06T00:00:00Z",
+                "app": "TrackGym",
+                "exercises": [
+                    {
+                        "id": 1,
+                        "name": "Bicep Curl",
+                        "muscleGroup": "ARMS",
+                        "category": "DUMBBELL",
+                        "notes": "",
+                        "isCustom": true,
+                        "createdAt": 1700000000000
+                    }
+                ],
+                "workouts": [],
+                "personalRecords": []
+            }
+        """.trimIndent()
+
+        val result = backupManager.parseAndValidateJson(legacyJson)
+        assertTrue(result.isSuccess)
+        val dto = result.getOrNull()
+        assertNotNull(dto)
+        assertEquals("", dto!!.exercises[0].mechanics)
+    }
 }

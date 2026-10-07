@@ -668,7 +668,8 @@ class GymRepository(private val database: GymDatabase) {
                             name = weDto.exerciseName.trim(),
                             muscleGroup = MuscleGroup.OTHER.name,
                             category = ExerciseCategory.BARBELL.name,
-                            isCustom = true
+                            isCustom = true,
+                            mechanics = MechanicsClassifier.classify(weDto.exerciseName).name
                         )
                         exId = exerciseDao.insertExercise(newEx)
                         exerciseNameToIdMap[exKey] = exId
