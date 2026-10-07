@@ -537,7 +537,6 @@
     <string name="label_breathing_cue">Estrategia de Respiración</string>
     <string name="label_tempo_cue">Cadencia y Tempo</string>
     <string name="action_technique_guide">Guía de Técnica</string>
-    <string name="action_view_technique">Ver Técnica</string>
 
     <!-- General Breathing & Tempo -->
     <string name="guide_breathing_valsalva">Inhala hacia el abdomen para compactar el core antes de bajar; exhala al superar el punto de estancamiento.</string>

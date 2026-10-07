@@ -537,7 +537,6 @@
     <string name="label_breathing_cue">Breathing Strategy</string>
     <string name="label_tempo_cue">Cadence &amp; Tempo</string>
     <string name="action_technique_guide">Technique Guide</string>
-    <string name="action_view_technique">View Technique</string>
 
     <!-- General Breathing & Tempo -->
     <string name="guide_breathing_valsalva">Inhale into the abdomen to brace core before descending; exhale past sticking point.</string>
