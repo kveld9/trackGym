@@ -149,6 +149,7 @@ import com.kveld9.trackgym.domain.calculator.AutoProgressionEngine
 import com.kveld9.trackgym.domain.calculator.AutoProgressionResult
 import com.kveld9.trackgym.domain.calculator.ProgressionDecisionType
 import com.kveld9.trackgym.ui.components.AutoProgressionDialog
+import com.kveld9.trackgym.ui.components.ExerciseHistoryDialog
 import com.kveld9.trackgym.ui.components.ExerciseTechniqueDialog
 import com.kveld9.trackgym.ui.components.RpeSelectionDialog
 import com.kveld9.trackgym.ui.components.RpeTargetWeightDialog
@@ -181,6 +182,7 @@ fun ActiveWorkoutScreen(
     val userBodyWeight by viewModel.userBodyWeight.collectAsStateWithLifecycle()
     val showInlinePlates by viewModel.showInlinePlates.collectAsStateWithLifecycle()
     val allRecords by viewModel.allRecords.collectAsStateWithLifecycle()
+    val completedWorkouts by viewModel.completedWorkouts.collectAsStateWithLifecycle()
 
     // Rest Timer state
     val restRemaining by viewModel.restTimerRemainingSeconds.collectAsStateWithLifecycle()
@@ -270,6 +272,7 @@ fun ActiveWorkoutScreen(
     var supersetConfigExercise by remember { mutableStateOf<WorkoutExercise?>(null) }
     var exerciseToSwap by remember { mutableStateOf<WorkoutExercise?>(null) }
     var exerciseForTechniqueGuide by remember { mutableStateOf<Exercise?>(null) }
+    var exerciseForHistory by remember { mutableStateOf<Exercise?>(null) }
     var pendingSwapTarget by remember { mutableStateOf<Exercise?>(null) }
     var showSwapExercisePicker by remember { mutableStateOf(false) }
     var showSwapConfirmDialog by remember { mutableStateOf(false) }
@@ -460,7 +463,8 @@ fun ActiveWorkoutScreen(
                             },
                             onConfigureWarmupRamp = { warmupRampExercise = we },
                             onConfigureAutoProgression = { autoProgressionExercise = we },
-                            onOpenTechniqueGuide = { exerciseForTechniqueGuide = we.exercise }
+                            onOpenTechniqueGuide = { exerciseForTechniqueGuide = we.exercise },
+                            onOpenExerciseHistory = { exerciseForHistory = we.exercise }
                         )
                     }
 
@@ -1042,6 +1046,16 @@ fun ActiveWorkoutScreen(
         ExerciseTechniqueDialog(
             exercise = exercise,
             onDismiss = { exerciseForTechniqueGuide = null }
+        )
+    }
+
+    exerciseForHistory?.let { exercise ->
+        ExerciseHistoryDialog(
+            exercise = exercise,
+            completedWorkouts = completedWorkouts,
+            weightUnit = weightUnit,
+            userBodyWeightKg = userBodyWeight,
+            onDismiss = { exerciseForHistory = null }
         )
     }
 }
@@ -2022,7 +2036,8 @@ fun WorkoutExerciseCard(
     onConfigureAutoProgression: () -> Unit = {},
     onSetRestDuration: () -> Unit = {},
     onSetSupersetGroup: () -> Unit = {},
-    onOpenTechniqueGuide: () -> Unit = {}
+    onOpenTechniqueGuide: () -> Unit = {},
+    onOpenExerciseHistory: () -> Unit = {}
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
 
@@ -2248,6 +2263,13 @@ fun WorkoutExerciseCard(
                                 onClick = {
                                     menuExpanded = false
                                     onOpenTechniqueGuide()
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.action_exercise_history), color = MaterialTheme.colorScheme.onSurface) },
+                                onClick = {
+                                    menuExpanded = false
+                                    onOpenExerciseHistory()
                                 }
                             )
                             DropdownMenuItem(

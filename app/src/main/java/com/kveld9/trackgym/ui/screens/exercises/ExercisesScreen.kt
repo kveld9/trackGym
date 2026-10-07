@@ -23,11 +23,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Description
+import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.OutlinedButton
 import com.kveld9.trackgym.domain.calculator.ExerciseSubstitutionEngine
+import com.kveld9.trackgym.ui.components.ExerciseHistoryDialog
 import com.kveld9.trackgym.ui.components.ExerciseTechniqueDialog
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -88,8 +90,12 @@ fun ExercisesScreen(
     val selectedEquipmentFilter by viewModel.selectedEquipmentFilter.collectAsStateWithLifecycle()
     val selectedMechanicsFilter by viewModel.selectedMechanicsFilter.collectAsStateWithLifecycle()
     val allExercises by viewModel.allExercises.collectAsStateWithLifecycle()
+    val completedWorkouts by viewModel.completedWorkouts.collectAsStateWithLifecycle()
+    val weightUnit by viewModel.weightUnit.collectAsStateWithLifecycle()
+    val userBodyWeight by viewModel.userBodyWeight.collectAsStateWithLifecycle()
 
     var showCreateDialog by remember { mutableStateOf(false) }
+    var selectedExerciseForHistory by remember { mutableStateOf<Exercise?>(null) }
 
     Scaffold(
         topBar = {
@@ -293,7 +299,11 @@ fun ExercisesScreen(
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 items(exercises, key = { it.id }) { exercise ->
-                    ExerciseRowCard(exercise = exercise, allExercises = allExercises)
+                    ExerciseRowCard(
+                        exercise = exercise,
+                        allExercises = allExercises,
+                        onOpenHistory = { selectedExerciseForHistory = exercise }
+                    )
                 }
 
                 item {
@@ -310,6 +320,16 @@ fun ExercisesScreen(
                 viewModel.createCustomExercise(name, group, category, notes, primaryMuscle, secondaryMuscles, mechanics)
                 showCreateDialog = false
             }
+        )
+    }
+
+    selectedExerciseForHistory?.let { exercise ->
+        ExerciseHistoryDialog(
+            exercise = exercise,
+            completedWorkouts = completedWorkouts,
+            weightUnit = weightUnit,
+            userBodyWeightKg = userBodyWeight,
+            onDismiss = { selectedExerciseForHistory = null }
         )
     }
 }
@@ -339,7 +359,8 @@ fun MuscleChip(
 @Composable
 fun ExerciseRowCard(
     exercise: Exercise,
-    allExercises: List<Exercise> = emptyList()
+    allExercises: List<Exercise> = emptyList(),
+    onOpenHistory: () -> Unit = {}
 ) {
     var expanded by remember { mutableStateOf(false) }
     var showAlternatives by remember { mutableStateOf(false) }
@@ -628,25 +649,51 @@ fun ExerciseRowCard(
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
             Spacer(modifier = Modifier.height(8.dp))
 
-            OutlinedButton(
-                onClick = { showTechniqueDialog = true },
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.outlinedButtonColors(
-                    contentColor = MaterialTheme.colorScheme.primary
-                )
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Icon(
-                    imageVector = Icons.Default.Description,
-                    contentDescription = null,
-                    modifier = Modifier.size(16.dp)
-                )
-                Spacer(modifier = Modifier.width(6.dp))
-                Text(
-                    text = stringResource(R.string.action_technique_guide),
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.SemiBold
-                )
+                OutlinedButton(
+                    onClick = { showTechniqueDialog = true },
+                    modifier = Modifier.weight(1f),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = MaterialTheme.colorScheme.primary
+                    )
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Description,
+                        contentDescription = null,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = stringResource(R.string.action_technique_guide),
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+
+                OutlinedButton(
+                    onClick = onOpenHistory,
+                    modifier = Modifier.weight(1f),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = MaterialTheme.colorScheme.primary
+                    )
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.History,
+                        contentDescription = null,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = stringResource(R.string.action_exercise_history),
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
             }
         }
     }

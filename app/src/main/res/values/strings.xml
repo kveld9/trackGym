@@ -647,4 +647,18 @@
     <string name="guide_leg_isolation_exec_2">Pause for 1 second at peak contraction and resist the negative return.</string>
     <string name="guide_leg_isolation_mistake_1">Allowing hips or lower back to lift off the seat/bench during reps.</string>
     <string name="guide_leg_isolation_mistake_2">Using ballistic momentum or hyperextending knees violently at lockout.</string>
+
+    <!-- Exercise History Tab & Dialog -->
+    <string name="action_exercise_history">Exercise History</string>
+    <string name="dialog_exercise_history_title">Exercise History</string>
+    <string name="label_lifetime_stats">Lifetime Stats</string>
+    <string name="label_max_weight">Max Weight</string>
+    <string name="label_best_1rm">Best 1RM</string>
+    <string name="label_total_volume">Total Volume</string>
+    <string name="label_total_sessions">Sessions</string>
+    <string name="label_history_sessions">Logged Sessions</string>
+    <string name="empty_exercise_history_title">No Workout History</string>
+    <string name="empty_exercise_history_desc">Complete a workout with this exercise to view historical performance, 1RM progression, and total volume.</string>
+    <string name="exercise_history_sets_count">%1$d completed sets</string>
+    <string name="exercise_history_set_row">Set %1$d</string>
 </resources>
