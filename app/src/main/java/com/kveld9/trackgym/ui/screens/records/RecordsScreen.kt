@@ -57,7 +57,7 @@ fun RecordsScreen(
     weightUnit: WeightUnit = WeightUnit.KG
 ) {
     val records by viewModel.allRecords.collectAsStateWithLifecycle()
-    val exercises by viewModel.filteredExercises.collectAsStateWithLifecycle()
+    val exercises by viewModel.allExercises.collectAsStateWithLifecycle()
 
     val exercisesMap = exercises.associateBy { it.id }
 

@@ -56,6 +56,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Timer
 import com.kveld9.trackgym.domain.calculator.ProgramRecommendation
 import com.kveld9.trackgym.domain.model.PeriodizedCycle
@@ -171,7 +172,7 @@ fun ActiveWorkoutScreen(
     val previousSetsMap by viewModel.previousSetsMap.collectAsStateWithLifecycle()
     val timerSeconds by viewModel.timerSeconds.collectAsStateWithLifecycle()
     val recentPr by viewModel.recentlyUnlockedPr.collectAsStateWithLifecycle()
-    val allExercises by viewModel.filteredExercises.collectAsStateWithLifecycle()
+    val allExercises by viewModel.allExercises.collectAsStateWithLifecycle()
     val weightUnit by viewModel.weightUnit.collectAsStateWithLifecycle()
     val distanceUnit by viewModel.distanceUnit.collectAsStateWithLifecycle()
     val userBodyWeight by viewModel.userBodyWeight.collectAsStateWithLifecycle()
@@ -3244,10 +3245,24 @@ fun ExercisePickerContent(
     exercises: List<Exercise>,
     onSelectExercise: (Exercise) -> Unit
 ) {
+    val context = LocalContext.current
+    val keepEnglish = LocalKeepEnglishExerciseNames.current
+    var searchQuery by remember { mutableStateOf("") }
+    val filteredList = remember(exercises, searchQuery, keepEnglish) {
+        if (searchQuery.isBlank()) exercises
+        else {
+            val q = searchQuery.trim().lowercase()
+            exercises.filter {
+                it.displayName(context, keepEnglish).lowercase().contains(q) ||
+                it.name.lowercase().contains(q)
+            }
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(500.dp)
+            .height(520.dp)
             .padding(16.dp)
     ) {
         Text(
@@ -3255,14 +3270,36 @@ fun ExercisePickerContent(
             color = MaterialTheme.colorScheme.onSurface,
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 12.dp)
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+
+        OutlinedTextField(
+            value = searchQuery,
+            onValueChange = { searchQuery = it },
+            placeholder = { Text(stringResource(R.string.search_exercise_placeholder), color = MaterialTheme.colorScheme.onSurfaceVariant) },
+            leadingIcon = {
+                Icon(Icons.Default.Search, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+            },
+            singleLine = true,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 12.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                focusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                unfocusedTextColor = MaterialTheme.colorScheme.onSurface
+            )
         )
 
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(exercises, key = { it.id }) { exercise ->
+            items(filteredList, key = { it.id }) { exercise ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()

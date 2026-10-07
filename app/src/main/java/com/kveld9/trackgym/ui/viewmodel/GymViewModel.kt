@@ -156,6 +156,8 @@ class GymViewModel(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     private val _rawExercises = repository.getAllExercises()
+    val allExercises: StateFlow<List<Exercise>> = _rawExercises
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
 

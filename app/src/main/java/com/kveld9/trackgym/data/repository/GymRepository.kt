@@ -14,6 +14,7 @@ import com.kveld9.trackgym.data.local.entity.PersonalRecordEntity
 import com.kveld9.trackgym.data.local.entity.WorkoutEntity
 import com.kveld9.trackgym.data.local.entity.WorkoutExerciseEntity
 import com.kveld9.trackgym.data.local.entity.WorkoutSetEntity
+import com.kveld9.trackgym.domain.calculator.MechanicsClassifier
 import com.kveld9.trackgym.domain.calculator.PersonalRecordDetector
 import com.kveld9.trackgym.domain.calculator.WorkoutComparisonEngine
 import com.kveld9.trackgym.domain.model.DefaultExercises
@@ -520,7 +521,8 @@ class GymRepository(private val database: GymDatabase) {
                 category = it.category,
                 notes = it.notes,
                 isCustom = it.isCustom,
-                createdAt = it.createdAt
+                createdAt = it.createdAt,
+                mechanics = it.mechanics
             )
         }
 
@@ -614,7 +616,8 @@ class GymRepository(private val database: GymDatabase) {
                         category = exDto.category,
                         notes = exDto.notes,
                         isCustom = exDto.isCustom,
-                        createdAt = if (exDto.createdAt > 0) exDto.createdAt else System.currentTimeMillis()
+                        createdAt = if (exDto.createdAt > 0) exDto.createdAt else System.currentTimeMillis(),
+                        mechanics = if (exDto.mechanics.isNotBlank()) exDto.mechanics else MechanicsClassifier.classify(exDto.name).name
                     )
                     val newId = exerciseDao.insertExercise(newEntity)
                     exerciseNameToIdMap[key] = newId
@@ -628,7 +631,8 @@ class GymRepository(private val database: GymDatabase) {
                         category = exDto.category,
                         notes = exDto.notes,
                         isCustom = exDto.isCustom,
-                        createdAt = exDto.createdAt
+                        createdAt = exDto.createdAt,
+                        mechanics = if (exDto.mechanics.isNotBlank()) exDto.mechanics else MechanicsClassifier.classify(exDto.name).name
                     )
                     exerciseDao.insertExercise(updated)
                 }

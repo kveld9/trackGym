@@ -1,5 +1,6 @@
 package com.kveld9.trackgym.data.backup
 
+import com.kveld9.trackgym.domain.calculator.MechanicsClassifier
 import com.kveld9.trackgym.domain.model.ExerciseCategory
 import com.kveld9.trackgym.domain.model.MuscleGroup
 import com.kveld9.trackgym.domain.model.SetType
@@ -155,7 +156,8 @@ object CsvWorkoutImporter {
                 name = name,
                 muscleGroup = MuscleGroup.OTHER.name,
                 category = ExerciseCategory.BARBELL.name,
-                isCustom = true
+                isCustom = true,
+                mechanics = MechanicsClassifier.classify(name).name
             )
         }
 
