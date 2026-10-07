@@ -29,6 +29,8 @@ data class WorkoutSetEntity(
     val weightKg: Double = 0.0,
     val reps: Int = 0,
     val durationSeconds: Int? = null,
+    val distanceKm: Double? = null,
+    val caloriesBurned: Int? = null,
     val rpe: Double? = null,
     val isCompleted: Boolean = false,
     val completedAt: Long? = null
@@ -42,6 +44,8 @@ data class WorkoutSetEntity(
             weightKg = weightKg,
             reps = reps,
             durationSeconds = durationSeconds,
+            distanceKm = distanceKm,
+            caloriesBurned = caloriesBurned,
             rpe = rpe,
             isCompleted = isCompleted,
             completedAt = completedAt
@@ -58,6 +62,8 @@ data class WorkoutSetEntity(
                 weightKg = domain.weightKg,
                 reps = domain.reps,
                 durationSeconds = domain.durationSeconds,
+                distanceKm = domain.distanceKm,
+                caloriesBurned = domain.caloriesBurned,
                 rpe = domain.rpe,
                 isCompleted = domain.isCompleted,
                 completedAt = domain.completedAt

@@ -218,12 +218,18 @@
     <string name="set_type_bodyweight_load">Weighted (+kg) (B+)</string>
     <string name="set_type_bodyweight_assisted">Assisted (-kg) (B-)</string>
     <string name="set_type_amrap">AMRAP (Max Reps) (A+)</string>
+    <string name="set_type_cardio">Cardio / Aerobic (C)</string>
     <string name="set_type_dialog_title">Select Set Type</string>
     <string name="action_start_stopwatch">Start stopwatch</string>
     <string name="action_stop_stopwatch">Stop stopwatch</string>
     <string name="settings_user_bodyweight_title">User Body Weight</string>
     <string name="settings_user_bodyweight_desc">Used to calculate real tonnage for bodyweight and calisthenics exercises</string>
     <string name="record_max_amrap_reps">AMRAP Rep Record</string>
+    <string name="cardio_time_label">Time</string>
+    <string name="cardio_distance_label">Distance</string>
+    <string name="cardio_pace_format">Pace: %1$s</string>
+    <string name="cardio_calories_format">%1$d kcal</string>
+    <string name="table_header_cardio">DIST / TIME</string>
 
     <!-- RPE / RIR Selection -->
     <string name="rpe_dialog_title">Select RPE / RIR</string>

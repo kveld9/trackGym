@@ -110,6 +110,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kveld9.trackgym.R
 import com.kveld9.trackgym.domain.model.Exercise
+import com.kveld9.trackgym.domain.model.ExerciseCategory
 import com.kveld9.trackgym.domain.model.Routine
 import com.kveld9.trackgym.domain.model.RoutineFolder
 import com.kveld9.trackgym.domain.model.SetType
@@ -119,9 +120,11 @@ import com.kveld9.trackgym.domain.model.WorkoutSet
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.runtime.saveable.rememberSaveable
+import com.kveld9.trackgym.domain.calculator.CardioCalculator
 import com.kveld9.trackgym.domain.calculator.OvertrainingDetector
 import com.kveld9.trackgym.domain.calculator.ProgressiveOverloadEngine
 import com.kveld9.trackgym.domain.calculator.ProgressiveOverloadRecommendation
+import com.kveld9.trackgym.domain.model.DistanceUnit
 import com.kveld9.trackgym.domain.model.RpeScale
 import com.kveld9.trackgym.ui.components.OvertrainingWarningBanner
 import com.kveld9.trackgym.ui.components.PinnedExerciseNotesCard
@@ -131,6 +134,7 @@ import com.kveld9.trackgym.ui.components.WorkoutSessionNotesCard
 import com.kveld9.trackgym.ui.theme.GymBlue
 import com.kveld9.trackgym.ui.theme.GymWarmupAmber
 import com.kveld9.trackgym.ui.theme.GymAmrapCrimson
+import com.kveld9.trackgym.ui.theme.GymCardioTeal
 import com.kveld9.trackgym.ui.util.LocalKeepEnglishExerciseNames
 import com.kveld9.trackgym.ui.util.displayName
 import com.kveld9.trackgym.ui.viewmodel.GymViewModel
@@ -150,6 +154,8 @@ fun ActiveWorkoutScreen(
     val recentPr by viewModel.recentlyUnlockedPr.collectAsStateWithLifecycle()
     val allExercises by viewModel.filteredExercises.collectAsStateWithLifecycle()
     val weightUnit by viewModel.weightUnit.collectAsStateWithLifecycle()
+    val distanceUnit by viewModel.distanceUnit.collectAsStateWithLifecycle()
+    val userBodyWeight by viewModel.userBodyWeight.collectAsStateWithLifecycle()
 
     // Rest Timer state
     val restRemaining by viewModel.restTimerRemainingSeconds.collectAsStateWithLifecycle()
@@ -348,6 +354,8 @@ fun ActiveWorkoutScreen(
                         WorkoutExerciseCard(
                             workoutExercise = we,
                             weightUnit = weightUnit,
+                            distanceUnit = distanceUnit,
+                            userBodyWeightKg = userBodyWeight,
                             previousSets = previousSetsMap[we.exercise.id].orEmpty(),
                             canMoveUp = index > 0,
                             canMoveDown = index < exercisesList.size - 1,
@@ -1698,6 +1706,8 @@ fun ActiveWorkoutTopBar(
 fun WorkoutExerciseCard(
     workoutExercise: WorkoutExercise,
     weightUnit: WeightUnit = WeightUnit.KG,
+    distanceUnit: DistanceUnit = DistanceUnit.KM,
+    userBodyWeightKg: Double = 70.0,
     previousSets: List<WorkoutSet> = emptyList(),
     canMoveUp: Boolean = false,
     canMoveDown: Boolean = false,
@@ -1911,15 +1921,23 @@ fun WorkoutExerciseCard(
             Spacer(modifier = Modifier.height(10.dp))
 
             // Sets Table Header
+            val isCardioExercise = workoutExercise.exercise.category == ExerciseCategory.CARDIO ||
+                workoutExercise.sets.any { it.setType == SetType.CARDIO }
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(stringResource(R.string.table_header_set), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.width(48.dp), textAlign = TextAlign.Center)
-                Text(weightUnit.symbol.uppercase(), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
+                val col1Header = if (isCardioExercise) distanceUnit.symbol.uppercase() else weightUnit.symbol.uppercase()
+                Text(col1Header, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
                 val hasDurationSets = workoutExercise.sets.any { it.setType == SetType.DURATION }
+                val col2Header = when {
+                    isCardioExercise -> stringResource(R.string.cardio_time_label).uppercase()
+                    hasDurationSets -> stringResource(R.string.table_header_reps_or_time)
+                    else -> stringResource(R.string.table_header_reps)
+                }
                 Text(
-                    text = if (hasDurationSets) stringResource(R.string.table_header_reps_or_time) else stringResource(R.string.table_header_reps),
+                    text = col2Header,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 11.sp,
                     fontWeight = FontWeight.Bold,
@@ -1939,6 +1957,8 @@ fun WorkoutExerciseCard(
                     SwipeableSetRow(
                         set = set,
                         weightUnit = weightUnit,
+                        distanceUnit = distanceUnit,
+                        userBodyWeightKg = userBodyWeightKg,
                         previousSet = prevSet,
                         onUpdateSet = onUpdateSet,
                         onToggleComplete = { w, r -> onToggleComplete(set, w, r) },
@@ -2051,6 +2071,8 @@ fun ProgressiveOverloadHintBadge(
 fun SwipeableSetRow(
     set: WorkoutSet,
     weightUnit: WeightUnit,
+    distanceUnit: DistanceUnit = DistanceUnit.KM,
+    userBodyWeightKg: Double = 70.0,
     previousSet: WorkoutSet?,
     onUpdateSet: (WorkoutSet) -> Unit,
     onToggleComplete: (Double, Int) -> Unit,
@@ -2098,6 +2120,8 @@ fun SwipeableSetRow(
         SetRowItem(
             set = set,
             weightUnit = weightUnit,
+            distanceUnit = distanceUnit,
+            userBodyWeightKg = userBodyWeightKg,
             previousSet = previousSet,
             onUpdateSet = onUpdateSet,
             onToggleComplete = onToggleComplete,
@@ -2110,6 +2134,8 @@ fun SwipeableSetRow(
 fun SetRowItem(
     set: WorkoutSet,
     weightUnit: WeightUnit = WeightUnit.KG,
+    distanceUnit: DistanceUnit = DistanceUnit.KM,
+    userBodyWeightKg: Double = 70.0,
     previousSet: WorkoutSet? = null,
     onUpdateSet: (WorkoutSet) -> Unit,
     onToggleComplete: (Double, Int) -> Unit,
@@ -2136,14 +2162,27 @@ fun SetRowItem(
         }
     }
     val isDuration = set.setType == SetType.DURATION
+    val isCardio = set.setType == SetType.CARDIO
     var isStopwatchRunning by remember { mutableStateOf(false) }
+
+    var distanceText by remember(set.id, set.distanceKm) {
+        mutableStateOf(
+            if (set.distanceKm != null && set.distanceKm > 0.0) {
+                val distDisplay = distanceUnit.fromKm(set.distanceKm)
+                if (distDisplay % 1.0 == 0.0) distDisplay.toInt().toString()
+                else String.format(Locale.US, "%.2f", distDisplay)
+            } else ""
+        )
+    }
 
     LaunchedEffect(isStopwatchRunning) {
         if (isStopwatchRunning) {
             while (isStopwatchRunning) {
                 kotlinx.coroutines.delay(1000)
                 val current = (set.durationSeconds ?: set.reps) + 1
-                onUpdateSet(set.copy(durationSeconds = current, reps = current))
+                val distKm = set.distanceKm ?: 0.0
+                val cal = CardioCalculator.calculateCaloriesBurned(current, userBodyWeightKg)
+                onUpdateSet(set.copy(durationSeconds = current, reps = current, caloriesBurned = if (isCardio) cal else set.caloriesBurned))
             }
         }
     }
@@ -2151,14 +2190,19 @@ fun SetRowItem(
     val ghostWeightDisplay = if (previousSet != null && previousSet.weightKg > 0.0) {
         weightUnit.formatValue(previousSet.weightKg)
     } else null
+    val ghostDistanceDisplay = if (previousSet != null && previousSet.distanceKm != null && previousSet.distanceKm > 0.0) {
+        val distDisplay = distanceUnit.fromKm(previousSet.distanceKm)
+        if (distDisplay % 1.0 == 0.0) distDisplay.toInt().toString()
+        else String.format(Locale.US, "%.2f", distDisplay)
+    } else null
     val ghostRepsDisplay = if (previousSet != null && previousSet.reps > 0) {
-        if (isDuration) com.kveld9.trackgym.domain.util.DurationFormatter.formatSecondsToMmSs(previousSet.durationSeconds ?: previousSet.reps)
+        if (isDuration || isCardio) com.kveld9.trackgym.domain.util.DurationFormatter.formatSecondsToMmSs(previousSet.durationSeconds ?: previousSet.reps)
         else previousSet.reps.toString()
     } else null
 
-    var repsText by remember(set.id, set.reps, set.durationSeconds, isDuration) {
+    var repsText by remember(set.id, set.reps, set.durationSeconds, isDuration, isCardio) {
         mutableStateOf(
-            if (isDuration) {
+            if (isDuration || isCardio) {
                 val sec = set.durationSeconds ?: set.reps
                 if (sec > 0) com.kveld9.trackgym.domain.util.DurationFormatter.formatSecondsToMmSs(sec) else ""
             } else {
@@ -2184,6 +2228,7 @@ fun SetRowItem(
         SetType.BODYWEIGHT_LOAD -> GymWarmupAmber
         SetType.BODYWEIGHT_ASSISTED -> MaterialTheme.colorScheme.tertiary
         SetType.AMRAP -> GymAmrapCrimson
+        SetType.CARDIO -> GymCardioTeal
     }
 
     val badgeLabel = when (set.setType) {
@@ -2196,6 +2241,7 @@ fun SetRowItem(
         SetType.BODYWEIGHT_LOAD -> "B+"
         SetType.BODYWEIGHT_ASSISTED -> "B-"
         SetType.AMRAP -> "${set.setNumber}+"
+        SetType.CARDIO -> "C"
     }
 
     var showQuickAdjust by remember { mutableStateOf(false) }
@@ -2249,6 +2295,7 @@ fun SetRowItem(
                                             SetType.BODYWEIGHT_LOAD -> GymWarmupAmber
                                             SetType.BODYWEIGHT_ASSISTED -> MaterialTheme.colorScheme.tertiary
                                             SetType.AMRAP -> GymAmrapCrimson
+                                            SetType.CARDIO -> GymCardioTeal
                                         },
                                         fontWeight = FontWeight.Bold,
                                         modifier = Modifier.width(28.dp)
@@ -2272,74 +2319,111 @@ fun SetRowItem(
                 }
             }
 
-            // Weight Input with Ghost Placeholder & Micro-load Toggle
+            // Weight / Distance Input with Ghost Placeholder & Micro-load Toggle
             Box(modifier = Modifier.weight(1f).padding(horizontal = 4.dp)) {
-                OutlinedTextField(
-                    value = weightText,
-                    onValueChange = { input ->
-                        weightText = input
-                        val parsedDisplay = input.replace(',', '.').toDoubleOrNull() ?: 0.0
-                        val inKg = weightUnit.toKg(parsedDisplay)
-                        onUpdateSet(set.copy(weightKg = inKg))
-                    },
-                    placeholder = {
-                        val weightPlaceholder = when (set.setType) {
-                            SetType.BODYWEIGHT_LOAD -> ghostWeightDisplay ?: "+0"
-                            SetType.BODYWEIGHT_ASSISTED -> ghostWeightDisplay ?: "-0"
-                            else -> ghostWeightDisplay ?: "0"
-                        }
-                        Text(
-                            text = weightPlaceholder,
-                            color = if (ghostWeightDisplay != null) {
-                                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
-                            } else {
-                                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)
-                            }
-                        )
-                    },
-                    trailingIcon = {
-                        IconButton(
-                            onClick = { showQuickAdjust = !showQuickAdjust },
-                            modifier = Modifier.size(32.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Tune,
-                                contentDescription = "Quick adjust",
-                                tint = if (showQuickAdjust) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
-                                modifier = Modifier.size(16.dp)
+                if (isCardio) {
+                    OutlinedTextField(
+                        value = distanceText,
+                        onValueChange = { input ->
+                            distanceText = input
+                            val parsedDist = input.replace(',', '.').toDoubleOrNull()
+                            val distKm = parsedDist?.let { distanceUnit.toKm(it) }
+                            val durSec = set.durationSeconds ?: set.reps
+                            val cal = CardioCalculator.calculateCaloriesBurned(durSec, userBodyWeightKg)
+                            onUpdateSet(set.copy(distanceKm = distKm, caloriesBurned = cal))
+                        },
+                        placeholder = {
+                            Text(
+                                text = ghostDistanceDisplay ?: "0.0",
+                                color = if (ghostDistanceDisplay != null) {
+                                    MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                                } else {
+                                    MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)
+                                }
                             )
-                        }
-                    },
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                    textStyle = androidx.compose.ui.text.TextStyle(textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onSurface, fontSize = 15.sp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(48.dp)
-                        .onFocusChanged { focusState ->
-                            if (focusState.isFocused) {
-                                showQuickAdjust = true
+                        },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                        textStyle = androidx.compose.ui.text.TextStyle(textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onSurface, fontSize = 15.sp),
+                        modifier = Modifier.fillMaxWidth().height(48.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                            focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                        ),
+                        shape = RoundedCornerShape(8.dp)
+                    )
+                } else {
+                    OutlinedTextField(
+                        value = weightText,
+                        onValueChange = { input ->
+                            weightText = input
+                            val parsedDisplay = input.replace(',', '.').toDoubleOrNull() ?: 0.0
+                            val inKg = weightUnit.toKg(parsedDisplay)
+                            onUpdateSet(set.copy(weightKg = inKg))
+                        },
+                        placeholder = {
+                            val weightPlaceholder = when (set.setType) {
+                                SetType.BODYWEIGHT_LOAD -> ghostWeightDisplay ?: "+0"
+                                SetType.BODYWEIGHT_ASSISTED -> ghostWeightDisplay ?: "-0"
+                                else -> ghostWeightDisplay ?: "0"
+                            }
+                            Text(
+                                text = weightPlaceholder,
+                                color = if (ghostWeightDisplay != null) {
+                                    MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                                } else {
+                                    MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)
+                                }
+                            )
+                        },
+                        trailingIcon = {
+                            IconButton(
+                                onClick = { showQuickAdjust = !showQuickAdjust },
+                                modifier = Modifier.size(32.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Tune,
+                                    contentDescription = "Quick adjust",
+                                    tint = if (showQuickAdjust) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
+                                    modifier = Modifier.size(16.dp)
+                                )
                             }
                         },
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = MaterialTheme.colorScheme.primary,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
-                        focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh
-                    ),
-                    shape = RoundedCornerShape(8.dp)
-                )
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                        textStyle = androidx.compose.ui.text.TextStyle(textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onSurface, fontSize = 15.sp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp)
+                            .onFocusChanged { focusState ->
+                                if (focusState.isFocused) {
+                                    showQuickAdjust = true
+                                }
+                            },
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                            focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                        ),
+                        shape = RoundedCornerShape(8.dp)
+                    )
+                }
             }
 
-            // Reps Input with Ghost Placeholder & In-set Stopwatch
+            // Reps / Time Input with Ghost Placeholder & In-set Stopwatch
             Box(modifier = Modifier.weight(1f).padding(horizontal = 4.dp)) {
                 OutlinedTextField(
                     value = repsText,
                     onValueChange = { input ->
                         repsText = input
-                        if (isDuration) {
+                        if (isDuration || isCardio) {
                             val parsedSec = com.kveld9.trackgym.domain.util.DurationFormatter.parseInputToSeconds(input)
-                            onUpdateSet(set.copy(durationSeconds = parsedSec, reps = parsedSec))
+                            val distKm = set.distanceKm ?: 0.0
+                            val cal = if (isCardio) CardioCalculator.calculateCaloriesBurned(parsedSec, userBodyWeightKg) else set.caloriesBurned
+                            onUpdateSet(set.copy(durationSeconds = parsedSec, reps = parsedSec, caloriesBurned = cal))
                         } else {
                             val parsed = input.toIntOrNull() ?: 0
                             onUpdateSet(set.copy(reps = parsed))
@@ -2347,20 +2431,20 @@ fun SetRowItem(
                     },
                     placeholder = {
                         val repsPlaceholder = when {
-                            isDuration -> "00:00"
+                            isDuration || isCardio -> "00:00"
                             set.setType == SetType.AMRAP -> (ghostRepsDisplay?.let { "$it+" } ?: "0+")
                             else -> ghostRepsDisplay ?: "0"
                         }
                         Text(
                             text = repsPlaceholder,
-                            color = if (ghostRepsDisplay != null || isDuration) {
+                            color = if (ghostRepsDisplay != null || isDuration || isCardio) {
                                 MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
                             } else {
                                 MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)
                             }
                         )
                     },
-                    trailingIcon = if (isDuration) {
+                    trailingIcon = if (isDuration || isCardio) {
                         {
                             IconButton(
                                 onClick = { isStopwatchRunning = !isStopwatchRunning },
@@ -2397,18 +2481,22 @@ fun SetRowItem(
                     .background(checkBgColor)
                     .clickable {
                         isStopwatchRunning = false
-                        val typedDisplay = weightText.replace(',', '.').toDoubleOrNull()
-                        val finalWeightKg = if (typedDisplay != null) {
-                            weightUnit.toKg(typedDisplay)
-                        } else if (set.weightKg > 0.0) {
-                            set.weightKg
-                        } else if (previousSet != null && previousSet.weightKg > 0.0) {
-                            previousSet.weightKg
-                        } else {
+                        val finalWeightKg = if (isCardio) {
                             0.0
+                        } else {
+                            val typedDisplay = weightText.replace(',', '.').toDoubleOrNull()
+                            if (typedDisplay != null) {
+                                weightUnit.toKg(typedDisplay)
+                            } else if (set.weightKg > 0.0) {
+                                set.weightKg
+                            } else if (previousSet != null && previousSet.weightKg > 0.0) {
+                                previousSet.weightKg
+                            } else {
+                                0.0
+                            }
                         }
 
-                        val finalReps = if (isDuration) {
+                        val finalReps = if (isDuration || isCardio) {
                             val parsedSec = com.kveld9.trackgym.domain.util.DurationFormatter.parseInputToSeconds(repsText)
                             if (parsedSec > 0) parsedSec
                             else (set.durationSeconds ?: set.reps)
@@ -2425,11 +2513,20 @@ fun SetRowItem(
                             }
                         }
 
-                        if (weightText.isBlank()) {
-                            weightText = weightUnit.formatValue(finalWeightKg)
+                        if (isCardio) {
+                            val parsedDist = distanceText.replace(',', '.').toDoubleOrNull()
+                                ?: ghostDistanceDisplay?.replace(',', '.')?.toDoubleOrNull()
+                            val distKm = parsedDist?.let { distanceUnit.toKm(it) }
+                            val cal = CardioCalculator.calculateCaloriesBurned(finalReps, userBodyWeightKg)
+                            onUpdateSet(set.copy(distanceKm = distKm, caloriesBurned = cal))
+                        } else {
+                            if (weightText.isBlank()) {
+                                weightText = weightUnit.formatValue(finalWeightKg)
+                            }
                         }
+
                         if (repsText.isBlank() && finalReps > 0) {
-                            repsText = if (isDuration) {
+                            repsText = if (isDuration || isCardio) {
                                 com.kveld9.trackgym.domain.util.DurationFormatter.formatSecondsToMmSs(finalReps)
                             } else {
                                 finalReps.toString()
@@ -2454,12 +2551,50 @@ fun SetRowItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 4.dp, vertical = 2.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             SetRpeChip(
                 rpe = set.rpe,
                 onClick = { showRpePicker = true }
             )
+
+            if (isCardio) {
+                val distanceVal = set.distanceKm ?: distanceText.replace(',', '.').toDoubleOrNull()?.let { distanceUnit.toKm(it) } ?: 0.0
+                val durationSec = if (set.durationSeconds != null && set.durationSeconds > 0) set.durationSeconds else com.kveld9.trackgym.domain.util.DurationFormatter.parseInputToSeconds(repsText)
+                if (distanceVal > 0.0 && durationSec > 0) {
+                    val paceFormatted = CardioCalculator.formatPace(distanceVal, durationSec, distanceUnit)
+                    Surface(
+                        shape = RoundedCornerShape(12.dp),
+                        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                        modifier = Modifier.padding(vertical = 2.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.cardio_pace_format, paceFormatted),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                }
+                val calories = set.caloriesBurned ?: if (durationSec > 0) CardioCalculator.calculateCaloriesBurned(durationSec, userBodyWeightKg) else 0
+                if (calories > 0) {
+                    Surface(
+                        shape = RoundedCornerShape(12.dp),
+                        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                        modifier = Modifier.padding(vertical = 2.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.cardio_calories_format, calories),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
+                }
+            }
         }
 
         // Quick-adjust Micro-load Chips

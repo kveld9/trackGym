@@ -88,6 +88,11 @@ class GymViewModel(
     } ?: flowOf(com.kveld9.trackgym.domain.model.RoutineUpdateMode.ASK))
         .stateIn(viewModelScope, SharingStarted.Eagerly, com.kveld9.trackgym.domain.model.RoutineUpdateMode.ASK)
 
+    val distanceUnit: StateFlow<com.kveld9.trackgym.domain.model.DistanceUnit> = (themePreferences?.themeSettings?.map {
+        com.kveld9.trackgym.domain.model.DistanceUnit.fromString(it.distanceUnit)
+    } ?: flowOf(com.kveld9.trackgym.domain.model.DistanceUnit.KM))
+        .stateIn(viewModelScope, SharingStarted.Eagerly, com.kveld9.trackgym.domain.model.DistanceUnit.KM)
+
     private val _activeWorkout = MutableStateFlow<Workout?>(null)
     val activeWorkout: StateFlow<Workout?> = _activeWorkout.asStateFlow()
 

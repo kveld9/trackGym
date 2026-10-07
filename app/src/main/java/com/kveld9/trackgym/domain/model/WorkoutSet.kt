@@ -8,6 +8,8 @@ data class WorkoutSet(
     val weightKg: Double = 0.0,
     val reps: Int = 0,
     val durationSeconds: Int? = null,
+    val distanceKm: Double? = null,
+    val caloriesBurned: Int? = null,
     val rpe: Double? = null,
     val isCompleted: Boolean = false,
     val completedAt: Long? = null
