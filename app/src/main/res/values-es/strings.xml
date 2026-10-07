@@ -528,4 +528,116 @@
     <string name="substitute_reason_secondary">Músculo sinergista / secundario</string>
     <string name="substitute_no_alternatives">No se encontraron ejercicios alternativos para el equipamiento seleccionado.</string>
     <string name="chip_filter_all_equipment">Todo el equipo</string>
+
+    <!-- Exercise Technique & Execution Guides -->
+    <string name="dialog_technique_guide_title">Guía de Técnica y Ejecución</string>
+    <string name="label_setup_steps">Preparación y Postura</string>
+    <string name="label_execution_steps">Pautas de Ejecución</string>
+    <string name="label_common_mistakes">Errores Comunes a Evitar</string>
+    <string name="label_breathing_cue">Estrategia de Respiración</string>
+    <string name="label_tempo_cue">Cadencia y Tempo</string>
+    <string name="action_technique_guide">Guía de Técnica</string>
+    <string name="action_view_technique">Ver Técnica</string>
+
+    <!-- General Breathing & Tempo -->
+    <string name="guide_breathing_valsalva">Inhala hacia el abdomen para compactar el core antes de bajar; exhala al superar el punto de estancamiento.</string>
+    <string name="guide_breathing_standard">Inhala durante la fase excéntrica (bajada); exhala de forma fluida durante el esfuerzo concéntrico.</string>
+    <string name="guide_breathing_continuous">Mantén respiración rítmica y constante; evita bloquear la respiración bajo tensión prolongada.</string>
+    <string name="guide_tempo_controlled">Tempo: 2-3s excéntrica controlada, pausa breve, concéntrica explosiva.</string>
+    <string name="guide_tempo_constant">Tempo: 2s excéntrica y 2s concéntrica fluidas con tensión muscular continua.</string>
+    <string name="guide_tempo_isometric">Tempo: Mantenimiento estático sosteniendo máxima rigidez estructural.</string>
+
+    <!-- Bench Press -->
+    <string name="guide_bench_press_setup_1">Túmbate con los ojos bajo la barra; apoya los pies firmes y planos en el suelo.</string>
+    <string name="guide_bench_press_setup_2">Retrae y desciende las escápulas clavándolas en el banco; agarre ligeramente más ancho que los hombros.</string>
+    <string name="guide_bench_press_exec_1">Baja la barra con control hacia la parte baja del esternón, codos a 45-70 grados del torso.</string>
+    <string name="guide_bench_press_exec_2">Empuja con fuerza hacia arriba y ligeramente hacia atrás hacia la cara hasta bloquear codos.</string>
+    <string name="guide_bench_press_mistake_1">Apertura excesiva de codos a 90 grados, sobrecargando la cápsula anterior del hombro.</string>
+    <string name="guide_bench_press_mistake_2">Rebotar la barra en el pecho o despegar los glúteos del banco.</string>
+
+    <!-- Squat -->
+    <string name="guide_squat_setup_1">Apoya la barra sobre los trapecios o deltoides posteriores; pies al ancho de hombros, puntas levemente hacia afuera.</string>
+    <string name="guide_squat_setup_2">Inhala y compacta el abdomen en 360 grados; aprieta la barra con fuerza para fijar la espalda alta.</string>
+    <string name="guide_squat_exec_1">Flexiona cadera y rodillas a la vez; desciende hasta que el pliegue de la cadera supere la parte superior de la rodilla.</string>
+    <string name="guide_squat_exec_2">Empuja con todo el pie manteniendo las rodillas alineadas con las puntas sin colapso en valgo.</string>
+    <string name="guide_squat_mistake_1">Colapso de rodillas hacia adentro (valgo) durante el empuje concéntrico.</string>
+    <string name="guide_squat_mistake_2">Redondear la zona lumbar abajo (retroversión pélvica) o despegar los talones del suelo.</string>
+
+    <!-- Deadlift -->
+    <string name="guide_deadlift_setup_1">Colócate con la mitad del pie bajo la barra; separación al ancho de caderas.</string>
+    <string name="guide_deadlift_setup_2">Bisagra de cadera, toma la barra por fuera de las espinillas, quita la holgura de la barra y fija los dorsales.</string>
+    <string name="guide_deadlift_exec_1">Empuja el suelo con talones y mediopié hasta que la barra sobrepase las rodillas.</string>
+    <string name="guide_deadlift_exec_2">Extiende caderas hacia adelante para erguirte; bloquea rodillas y cadera sin hiperextender la columna.</string>
+    <string name="guide_deadlift_mistake_1">Curvar la columna lumbar bajo carga; mantén la espalda en alineación neutra.</string>
+    <string name="guide_deadlift_mistake_2">Pegar tirones bruscos a la barra antes de generar tensión y quitar la holgura inicial.</string>
+
+    <!-- Overhead Press -->
+    <string name="guide_ohp_setup_1">Agarra la barra justo por fuera de hombros con muñecas alineadas; barra apoyada sobre deltoides anteriores.</string>
+    <string name="guide_ohp_setup_2">Aprieta glúteos, abdomen firme y retira la barbilla ligeramente para dejar paso a la barra.</string>
+    <string name="guide_ohp_exec_1">Empuja la barra verticalmente en línea recta pasando cerca de la nariz.</string>
+    <string name="guide_ohp_exec_2">Asoma la cabeza hacia adelante al superar la frente; bloquea los brazos sobre la cabeza.</string>
+    <string name="guide_ohp_mistake_1">Hiperextensión lumbar excesiva (inclinarse atrás) convirtiéndolo en un press inclinado.</string>
+    <string name="guide_ohp_mistake_2">Empujar la barra en trayectoria curva hacia adelante en lugar de vertical recta.</string>
+
+    <!-- Pull-up / Lat Pulldown -->
+    <string name="guide_pull_setup_1">Agarre más ancho que hombros; cuelga con hombros alejados de las orejas (depresión escapular).</string>
+    <string name="guide_pull_setup_2">Inicia el tirón activando los dorsales y traccionando las escápulas hacia abajo.</string>
+    <string name="guide_pull_exec_1">Dirige los codos hacia los costados y lleva el pecho hacia la barra.</string>
+    <string name="guide_pull_exec_2">Aprieta dorsales en la contracción y desciende con control total hasta el estiramiento completo.</string>
+    <string name="guide_pull_mistake_1">Balanceo excesivo o uso de inercia/kipping en lugar de fuerza dorsal estricta.</string>
+    <string name="guide_pull_mistake_2">Encoger los hombros hacia las orejas en la parte alta del movimiento.</string>
+
+    <!-- Rows -->
+    <string name="guide_row_setup_1">Bisagra de cadera con columna neutra; rodillas semiflexionadas y torso a 45-70 grados.</string>
+    <string name="guide_row_setup_2">Sujeta el peso con brazos extendidos; abdomen firme y cuello alineado con la columna.</string>
+    <string name="guide_row_exec_1">Tracciona los codos hacia los bolsillos del pantalón, juntando escápulas al final.</string>
+    <string name="guide_row_exec_2">Baja el peso con control hasta estirar dorsales sin redondear la espalda alta.</string>
+    <string name="guide_row_mistake_1">Impulsarse con el torso o piernas dando tirones violentos.</string>
+    <string name="guide_row_mistake_2">Abrir excesivamente los codos tirando con trapecios superiores en vez de espalda media.</string>
+
+    <!-- Arms: Curls -->
+    <string name="guide_bicep_setup_1">Ponte erguido con hombros atrás; codos pegados a los costados del torso.</string>
+    <string name="guide_bicep_setup_2">Sujeta barra o mancuernas con agarre supino o neutro sin flexionar muñecas.</string>
+    <string name="guide_bicep_exec_1">Flexiona los codos levantando la carga manteniendo los brazos superiores completamente inmóviles.</string>
+    <string name="guide_bicep_exec_2">Aprieta el bíceps 1 segundo en el pico y desciende en 3 segundos controlados.</string>
+    <string name="guide_bicep_mistake_1">Balancear la cadera o tirar los hombros atrás para ganar inercia.</string>
+    <string name="guide_bicep_mistake_2">Adelantar los codos más allá de las costillas acortando la curva de tensión.</string>
+
+    <!-- Arms: Triceps -->
+    <string name="guide_tricep_setup_1">Hombros encajados y codos fijados firmemente a los costados del torso.</string>
+    <string name="guide_tricep_setup_2">Ligera inclinación del torso hacia adelante para liberar el recorrido del cable o barra.</string>
+    <string name="guide_tricep_exec_1">Extiende los antebrazos hacia abajo hasta la contracción completa del tríceps.</string>
+    <string name="guide_tricep_exec_2">Controla el retorno hasta superar la paralela sin que los codos se muevan.</string>
+    <string name="guide_tricep_mistake_1">Abrir codos hacia afuera o moverlos adelante y atrás durante las repeticiones.</string>
+    <string name="guide_tricep_mistake_2">Utilizar el peso corporal dejándose caer encima en vez de aislar el codo.</string>
+
+    <!-- Lateral Raise -->
+    <string name="guide_lateral_setup_1">Ponte erguido con leve inclinación al frente; pesos a los lados con codos suaves.</string>
+    <string name="guide_lateral_setup_2">Enfócate en empujar las cargas hacia las paredes laterales con deltoides laterales.</string>
+    <string name="guide_lateral_exec_1">Eleva los brazos en el plano escapular (levemente adelantados al torso) hasta altura de hombros.</string>
+    <string name="guide_lateral_exec_2">Controla el descenso excéntrico evitando dejar caer las mancuernas contra las piernas.</string>
+    <string name="guide_lateral_mistake_1">Encoger los trapecios superiores hacia arriba para lanzar el peso con inercia.</string>
+    <string name="guide_lateral_mistake_2">Elevar los brazos a 90 grados exactos en el plano frontal provocando pinzamiento.</string>
+
+    <!-- Core -->
+    <string name="guide_core_setup_1">Columna y pelvis en alineación neutra; pared abdominal firmemente compactada.</string>
+    <string name="guide_core_setup_2">Glúteos apretados para estabilizar caderas y evitar anteversión pélvica excesiva.</string>
+    <string name="guide_core_exec_1">Realiza flexión controlada o mantén postura estática anti-extensión rígida.</string>
+    <string name="guide_core_exec_2">Sostén tensión continua en recto abdominal y oblicuos durante toda la serie.</string>
+    <string name="guide_core_mistake_1">Dejar caer la zona lumbar en hiperextensión cargando la columna baja.</string>
+    <string name="guide_core_mistake_2">Tirar violentamente del cuello con las manos o contener la respiración.</string>
+
+    <!-- Generic Fallbacks -->
+    <string name="guide_generic_push_setup">Establece una base de apoyo firme; retrae escápulas y compacta el abdomen.</string>
+    <string name="guide_generic_push_exec">Empuja la carga con los músculos diana manteniendo control articular total.</string>
+    <string name="guide_generic_push_mistake">Evita bloquear articulaciones con violencia o perder la estabilidad escapular.</string>
+    <string name="guide_generic_pull_setup">Asegura el agarre; desciende los hombros y activa la pared abdominal.</string>
+    <string name="guide_generic_pull_exec">Lidera el movimiento con los codos hacia el plano diana retrayendo escápulas.</string>
+    <string name="guide_generic_pull_mistake">Evita redondear la zona lumbar o usar tirones bruscos de inercia.</string>
+    <string name="guide_generic_legs_setup">Coloca los pies firmes en plataforma o suelo; alinea rodillas con las puntas.</string>
+    <string name="guide_generic_legs_exec">Muévete en un rango cómodo y completo con tensión muscular constante en piernas.</string>
+    <string name="guide_generic_legs_mistake">Evita el colapso de rodillas hacia adentro o despegar los talones del suelo.</string>
+    <string name="guide_generic_isolation_setup">Aísla el músculo objetivo inmovilizando completamente las articulaciones adyacentes.</string>
+    <string name="guide_generic_isolation_exec">Enfócate en la conexión mente-músculo, tempo estricto y pico de contracción.</string>
+    <string name="guide_generic_isolation_mistake">Evita balanceos o reclutar grupos musculares secundarios para mover la carga.</string>
 </resources>

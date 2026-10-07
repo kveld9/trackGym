@@ -17,14 +17,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.OutlinedButton
 import com.kveld9.trackgym.domain.calculator.ExerciseSubstitutionEngine
+import com.kveld9.trackgym.ui.components.ExerciseTechniqueDialog
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -339,6 +343,7 @@ fun ExerciseRowCard(
 ) {
     var expanded by remember { mutableStateOf(false) }
     var showAlternatives by remember { mutableStateOf(false) }
+    var showTechniqueDialog by remember { mutableStateOf(false) }
     val involvements = remember(exercise) { MuscleAnatomyRegistry.getInvolvementsForExercise(exercise) }
     val primary = remember(involvements) { involvements.firstOrNull { it.isPrimary } ?: involvements.firstOrNull() }
     val secondaries = remember(involvements) { involvements.filter { !it.isPrimary } }
@@ -617,7 +622,40 @@ fun ExerciseRowCard(
                     }
                 }
             }
+
+            // Technique & Execution Guide Button
+            Spacer(modifier = Modifier.height(10.dp))
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
+            Spacer(modifier = Modifier.height(8.dp))
+
+            OutlinedButton(
+                onClick = { showTechniqueDialog = true },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(8.dp),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    contentColor = MaterialTheme.colorScheme.primary
+                )
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Description,
+                    contentDescription = null,
+                    modifier = Modifier.size(16.dp)
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                    text = stringResource(R.string.action_technique_guide),
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
         }
+    }
+
+    if (showTechniqueDialog) {
+        ExerciseTechniqueDialog(
+            exercise = exercise,
+            onDismiss = { showTechniqueDialog = false }
+        )
     }
 }
 

@@ -149,6 +149,7 @@ import com.kveld9.trackgym.domain.calculator.AutoProgressionEngine
 import com.kveld9.trackgym.domain.calculator.AutoProgressionResult
 import com.kveld9.trackgym.domain.calculator.ProgressionDecisionType
 import com.kveld9.trackgym.ui.components.AutoProgressionDialog
+import com.kveld9.trackgym.ui.components.ExerciseTechniqueDialog
 import com.kveld9.trackgym.ui.components.RpeSelectionDialog
 import com.kveld9.trackgym.ui.components.RpeTargetWeightDialog
 import com.kveld9.trackgym.ui.components.WarmupRampDialog
@@ -268,6 +269,7 @@ fun ActiveWorkoutScreen(
     var autoProgressionExercise by remember { mutableStateOf<WorkoutExercise?>(null) }
     var supersetConfigExercise by remember { mutableStateOf<WorkoutExercise?>(null) }
     var exerciseToSwap by remember { mutableStateOf<WorkoutExercise?>(null) }
+    var exerciseForTechniqueGuide by remember { mutableStateOf<Exercise?>(null) }
     var pendingSwapTarget by remember { mutableStateOf<Exercise?>(null) }
     var showSwapExercisePicker by remember { mutableStateOf(false) }
     var showSwapConfirmDialog by remember { mutableStateOf(false) }
@@ -457,7 +459,8 @@ fun ActiveWorkoutScreen(
                                 viewModel.addWarmupSets(we.id, workingWeight)
                             },
                             onConfigureWarmupRamp = { warmupRampExercise = we },
-                            onConfigureAutoProgression = { autoProgressionExercise = we }
+                            onConfigureAutoProgression = { autoProgressionExercise = we },
+                            onOpenTechniqueGuide = { exerciseForTechniqueGuide = we.exercise }
                         )
                     }
 
@@ -1032,6 +1035,13 @@ fun ActiveWorkoutScreen(
                 autoProgressionExercise = null
             },
             onDismiss = { autoProgressionExercise = null }
+        )
+    }
+
+    exerciseForTechniqueGuide?.let { exercise ->
+        ExerciseTechniqueDialog(
+            exercise = exercise,
+            onDismiss = { exerciseForTechniqueGuide = null }
         )
     }
 }
@@ -2011,7 +2021,8 @@ fun WorkoutExerciseCard(
     onConfigureWarmupRamp: () -> Unit = {},
     onConfigureAutoProgression: () -> Unit = {},
     onSetRestDuration: () -> Unit = {},
-    onSetSupersetGroup: () -> Unit = {}
+    onSetSupersetGroup: () -> Unit = {},
+    onOpenTechniqueGuide: () -> Unit = {}
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
 
@@ -2230,6 +2241,13 @@ fun WorkoutExerciseCard(
                                 onClick = {
                                     menuExpanded = false
                                     onOpenRpeCalculator(null)
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.action_technique_guide), color = MaterialTheme.colorScheme.onSurface) },
+                                onClick = {
+                                    menuExpanded = false
+                                    onOpenTechniqueGuide()
                                 }
                             )
                             DropdownMenuItem(

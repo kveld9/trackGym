@@ -528,4 +528,116 @@
     <string name="substitute_reason_secondary">Synergist / secondary muscle</string>
     <string name="substitute_no_alternatives">No alternative exercises found for the selected equipment.</string>
     <string name="chip_filter_all_equipment">All Equipment</string>
+
+    <!-- Exercise Technique & Execution Guides -->
+    <string name="dialog_technique_guide_title">Technique &amp; Execution Guide</string>
+    <string name="label_setup_steps">Setup &amp; Posture</string>
+    <string name="label_execution_steps">Execution Cues</string>
+    <string name="label_common_mistakes">Common Mistakes to Avoid</string>
+    <string name="label_breathing_cue">Breathing Strategy</string>
+    <string name="label_tempo_cue">Cadence &amp; Tempo</string>
+    <string name="action_technique_guide">Technique Guide</string>
+    <string name="action_view_technique">View Technique</string>
+
+    <!-- General Breathing & Tempo -->
+    <string name="guide_breathing_valsalva">Inhale into the abdomen to brace core before descending; exhale past sticking point.</string>
+    <string name="guide_breathing_standard">Inhale on the eccentric (lowering) phase; exhale smoothly on concentric effort.</string>
+    <string name="guide_breathing_continuous">Maintain steady rhythmic breathing; avoid holding breath under tension.</string>
+    <string name="guide_tempo_controlled">Tempo: 2-3s controlled eccentric, brief pause, explosive concentric.</string>
+    <string name="guide_tempo_constant">Tempo: Smooth 2s eccentric and 2s concentric with constant muscular tension.</string>
+    <string name="guide_tempo_isometric">Tempo: Static hold maintaining maximum structural rigidity.</string>
+
+    <!-- Bench Press -->
+    <string name="guide_bench_press_setup_1">Lie with eyes under the barbell; plant feet flat on the floor.</string>
+    <string name="guide_bench_press_setup_2">Retract and depress scapulae into the bench; grip slightly wider than shoulder-width.</string>
+    <string name="guide_bench_press_exec_1">Lower bar under control to lower sternum, keeping elbows tucked at 45 to 70 degrees.</string>
+    <string name="guide_bench_press_exec_2">Press explosively upward and slightly back toward the face to full lockout.</string>
+    <string name="guide_bench_press_mistake_1">Excessive elbow flaring at 90 degrees, stressing anterior shoulder capsules.</string>
+    <string name="guide_bench_press_mistake_2">Bouncing barbell off the ribcage or lifting hips off the bench.</string>
+
+    <!-- Squat -->
+    <string name="guide_squat_setup_1">Place bar across upper traps or rear delts; feet shoulder-width apart, toes slightly out.</string>
+    <string name="guide_squat_setup_2">Brace abdomen 360 degrees and grip bar firmly to lock upper back tight.</string>
+    <string name="guide_squat_exec_1">Break at hips and knees simultaneously; descend until hip crease is below top of knees.</string>
+    <string name="guide_squat_exec_2">Drive through whole foot while keeping knees tracking over toes without valgus collapse.</string>
+    <string name="guide_squat_mistake_1">Knees caving inward (valgus collapse) during the concentric drive.</string>
+    <string name="guide_squat_mistake_2">Lumbar rounding (butt wink) at the bottom or shifting balance onto toes.</string>
+
+    <!-- Deadlift -->
+    <string name="guide_deadlift_setup_1">Stand with mid-foot directly under the bar; feet hip-width apart.</string>
+    <string name="guide_deadlift_setup_2">Hinge at hips, grip bar outside shins, pull slack out of bar and lock lats tight.</string>
+    <string name="guide_deadlift_exec_1">Push floor away through heels and mid-foot until bar passes knees.</string>
+    <string name="guide_deadlift_exec_2">Drive hips forward to stand tall; lock out knees and hips without hyperextending spine.</string>
+    <string name="guide_deadlift_mistake_1">Rounding lower spine under load; keep back in neutral lordosis.</string>
+    <string name="guide_deadlift_mistake_2">Jerking the bar off the floor before setting tension and pulling out bar slack.</string>
+
+    <!-- Overhead Press -->
+    <string name="guide_ohp_setup_1">Grip bar just outside shoulders with wrists stacked; bar resting on front deltoids.</string>
+    <string name="guide_ohp_setup_2">Squeeze glutes, brace abs, and pull chin slightly back to clear bar path.</string>
+    <string name="guide_ohp_exec_1">Press bar vertically in a straight line close to the nose.</string>
+    <string name="guide_ohp_exec_2">Push head through the window once bar clears forehead; lock out overhead.</string>
+    <string name="guide_ohp_mistake_1">Excessive lumbar hyperextension (leaning back) to turn it into an incline press.</string>
+    <string name="guide_ohp_mistake_2">Pressing bar forward in an arc instead of straight vertical trajectory.</string>
+
+    <!-- Pull-up / Lat Pulldown -->
+    <string name="guide_pull_setup_1">Grip bar wider than shoulders; hang with shoulders depressed down away from ears.</string>
+    <string name="guide_pull_setup_2">Initiate movement by engaging lats and driving scapulae downward.</string>
+    <string name="guide_pull_exec_1">Drive elbows down toward waist and pull chest up toward the bar.</string>
+    <string name="guide_pull_exec_2">Squeeze lats at contraction, then lower under full control to a dead hang stretch.</string>
+    <string name="guide_pull_mistake_1">Excessive swinging or using kipping momentum instead of lat contraction.</string>
+    <string name="guide_pull_mistake_2">Shrugging shoulders into ears at the top of the movement.</string>
+
+    <!-- Rows -->
+    <string name="guide_row_setup_1">Hinge at hips with neutral spine; knees slightly bent and torso at 45 to 70 degrees.</string>
+    <string name="guide_row_setup_2">Hold weight with arms fully extended; keep core braced and neck neutral.</string>
+    <string name="guide_row_exec_1">Pull elbows back toward hip pocket, retracting shoulder blades at the peak.</string>
+    <string name="guide_row_exec_2">Lower weight with control to full stretch without rounding upper back.</string>
+    <string name="guide_row_mistake_1">Using torso jerk and leg momentum to throw the weight upward.</string>
+    <string name="guide_row_mistake_2">Flaring elbows wide and pulling with upper traps instead of mid-back and lats.</string>
+
+    <!-- Arms: Curls -->
+    <string name="guide_bicep_setup_1">Stand tall with shoulders back; elbows pinned close to ribcage.</string>
+    <string name="guide_bicep_setup_2">Grip bar or dumbbells with supinated or neutral grip without wrist flexion.</string>
+    <string name="guide_bicep_exec_1">Curl weight up by flexing elbows while keeping upper arms completely stationary.</string>
+    <string name="guide_bicep_exec_2">Squeeze biceps peak for 1 second, then lower under controlled 3-second descent.</string>
+    <string name="guide_bicep_mistake_1">Swinging hips or throwing shoulders back to gain momentum.</string>
+    <string name="guide_bicep_mistake_2">Drifting elbows forward past the ribcage to shorten the resistance curve.</string>
+
+    <!-- Arms: Triceps -->
+    <string name="guide_tricep_setup_1">Keep shoulders packed and elbows fixed tightly in place at the sides.</string>
+    <string name="guide_tricep_setup_2">Maintain slight forward lean at the hips for comfortable clearance.</string>
+    <string name="guide_tricep_exec_1">Extend forearms downward until triceps are fully contracted.</string>
+    <string name="guide_tricep_exec_2">Control return path until forearms pass parallel; do not let elbows wander.</string>
+    <string name="guide_tricep_mistake_1">Letting elbows flare outward or move forward/backward during reps.</string>
+    <string name="guide_tricep_mistake_2">Using body weight to press downward instead of isolated elbow extension.</string>
+
+    <!-- Lateral Raise -->
+    <string name="guide_lateral_setup_1">Stand tall with slight forward lean; hold weights at sides with soft elbows.</string>
+    <string name="guide_lateral_setup_2">Engage lateral deltoids by thinking of pushing weights out toward the walls.</string>
+    <string name="guide_lateral_exec_1">Raise arms in the scapular plane (slightly forward of torso) to shoulder height.</string>
+    <string name="guide_lateral_exec_2">Control the eccentric descent; avoid letting weights crash back to hips.</string>
+    <string name="guide_lateral_mistake_1">Shrugging upper traps upward to heave weights into the air.</string>
+    <string name="guide_lateral_mistake_2">Raising arms directly out to 90 degrees in frontal plane causing impingement.</string>
+
+    <!-- Core -->
+    <string name="guide_core_setup_1">Set spine and pelvis in neutral alignment; brace abdominal wall firmly.</string>
+    <string name="guide_core_setup_2">Keep glutes contracted to stabilize hips and prevent anterior pelvic tilt.</string>
+    <string name="guide_core_exec_1">Execute controlled flexion or hold rigid anti-extension posture.</string>
+    <string name="guide_core_exec_2">Maintain constant tension on rectus abdominis and obliques throughout set.</string>
+    <string name="guide_core_mistake_1">Sagging lower back into hyperextension, transferring load to lumbar spine.</string>
+    <string name="guide_core_mistake_2">Yanking on neck or holding breath during abdominal contractions.</string>
+
+    <!-- Generic Fallbacks -->
+    <string name="guide_generic_push_setup">Set a stable base of support; retract scapulae and brace core.</string>
+    <string name="guide_generic_push_exec">Drive weight through target pressing muscles with full joint control.</string>
+    <string name="guide_generic_push_mistake">Avoid locking joints violently or losing scapular stability.</string>
+    <string name="guide_generic_pull_setup">Establish grip; set shoulders down and engage abdominal wall.</string>
+    <string name="guide_generic_pull_exec">Lead with elbows, pulling toward target plane while retracting scapulae.</string>
+    <string name="guide_generic_pull_mistake">Avoid rounding lumbar spine or using jerky momentum.</string>
+    <string name="guide_generic_legs_setup">Position feet firmly on platform or floor; align knees with toes.</string>
+    <string name="guide_generic_legs_exec">Move through full comfortable range of motion with continuous quad/glute tension.</string>
+    <string name="guide_generic_legs_mistake">Avoid knee valgus (inward collapse) or lifting heels off the floor.</string>
+    <string name="guide_generic_isolation_setup">Isolate the target muscle by stabilizing adjacent joints completely.</string>
+    <string name="guide_generic_isolation_exec">Focus on mind-muscle connection, strict tempo, and peak contraction.</string>
+    <string name="guide_generic_isolation_mistake">Avoid swinging or recruiting synergist muscle groups to move load.</string>
 </resources>
