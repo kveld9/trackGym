@@ -20,6 +20,7 @@ data class ExerciseEntity(
     val notes: String = "",
     val restDurationSeconds: Int? = null,
     val warmupRampProtocol: String? = null,
+    val autoProgressionRule: String? = null,
     val isCustom: Boolean = false,
     val createdAt: Long = System.currentTimeMillis()
 ) {
@@ -32,6 +33,7 @@ data class ExerciseEntity(
             notes = notes,
             restDurationSeconds = restDurationSeconds,
             warmupRampProtocol = warmupRampProtocol,
+            autoProgressionRule = autoProgressionRule,
             isCustom = isCustom,
             createdAt = createdAt
         )
@@ -47,6 +49,7 @@ data class ExerciseEntity(
                 notes = domain.notes,
                 restDurationSeconds = domain.restDurationSeconds,
                 warmupRampProtocol = domain.warmupRampProtocol,
+                autoProgressionRule = domain.autoProgressionRule,
                 isCustom = domain.isCustom,
                 createdAt = domain.createdAt
             )

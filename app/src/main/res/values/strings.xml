@@ -416,4 +416,20 @@
     <string name="warmup_ramp_action_apply">Add to Workout</string>
     <string name="warmup_ramp_reset">Reset to Default</string>
     <string name="badge_custom_warmup">Ramp</string>
+    <string name="progression_maintain_no_history">Maintain current weight. Not enough session history.</string>
+    <string name="progression_success_increment">Target reps reached in previous workout! Progression suggested.</string>
+    <string name="progression_deload_triggered">Failure threshold reached in consecutive workouts. Deload recommended.</string>
+    <string name="progression_retry_attempt">Missed target reps in previous session. Retry current weight.</string>
+    <string name="menu_auto_progression_rules">Auto-Progression &amp; Deload Rules</string>
+    <string name="auto_progression_dialog_title">Auto-Progression Rules</string>
+    <string name="auto_progression_enable_toggle">Enable Automated Progression</string>
+    <string name="auto_progression_enable_desc">Automatically evaluate past sessions to recommend load increments or deloads.</string>
+    <string name="auto_progression_target_reps">Target Reps per Set</string>
+    <string name="auto_progression_increment_load">Weight Increment (+)</string>
+    <string name="auto_progression_failure_threshold">Deload Trigger (Failures)</string>
+    <string name="auto_progression_deload_percentage">Deload Reduction (-)</string>
+    <string name="auto_progression_badge_progression">Auto-Progression: +%1$s</string>
+    <string name="auto_progression_badge_deload">Auto-Deload: -%1$s</string>
+    <string name="auto_progression_action_apply_load">Apply Target Weight</string>
+    <string name="auto_progression_rule_saved">Auto-progression rule updated</string>
 </resources>

@@ -483,6 +483,38 @@ class GymViewModel(
         }
     }
 
+    fun updateExerciseAutoProgressionRule(exerciseId: Long, rule: String?) {
+        viewModelScope.launch {
+            repository.updateExerciseAutoProgressionRule(exerciseId, rule)
+            val current = _activeWorkout.value ?: return@launch
+            val updatedExercises = current.exercises.map { we ->
+                if (we.exercise.id == exerciseId) {
+                    we.copy(exercise = we.exercise.copy(autoProgressionRule = rule))
+                } else we
+            }
+            _activeWorkout.value = current.copy(exercises = updatedExercises)
+        }
+    }
+
+    suspend fun evaluateAutoProgression(
+        exerciseId: Long,
+        currentWorkoutId: Long,
+        workingWeightKg: Double
+    ): com.kveld9.trackgym.domain.calculator.AutoProgressionResult? {
+        val exercise = _activeWorkout.value?.exercises?.find { it.exercise.id == exerciseId }?.exercise
+            ?: repository.getExerciseById(exerciseId) ?: return null
+        val rule = com.kveld9.trackgym.domain.calculator.AutoProgressionEngine.decode(exercise.autoProgressionRule)
+            ?: return null
+        if (!rule.enabled) return null
+
+        val recentSessions = repository.getRecentSessionsSetsForExercise(exerciseId, currentWorkoutId, 5)
+        return com.kveld9.trackgym.domain.calculator.AutoProgressionEngine.evaluate(
+            rule = rule,
+            recentSessionsSets = recentSessions,
+            currentWeightKg = workingWeightKg
+        )
+    }
+
     fun startRestTimer(seconds: Int? = null) {
         val duration = seconds ?: _restTimerTotalSeconds.value
         _restTimerTotalSeconds.value = duration

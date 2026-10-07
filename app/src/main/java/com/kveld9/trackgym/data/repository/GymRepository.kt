@@ -104,6 +104,21 @@ class GymRepository(private val database: GymDatabase) {
         exerciseDao.updateExerciseWarmupProtocol(exerciseId, protocol)
     }
 
+    suspend fun updateExerciseAutoProgressionRule(exerciseId: Long, rule: String?) = withContext(Dispatchers.IO) {
+        exerciseDao.updateExerciseAutoProgressionRule(exerciseId, rule)
+    }
+
+    suspend fun getRecentSessionsSetsForExercise(
+        exerciseId: Long,
+        currentWorkoutId: Long,
+        limit: Int = 5
+    ): List<List<WorkoutSet>> = withContext(Dispatchers.IO) {
+        val recentEntities = workoutDao.getRecentCompletedWorkoutExercises(exerciseId, currentWorkoutId, limit)
+        recentEntities.map { we ->
+            workoutDao.getWorkoutSets(we.id).map { it.toDomain() }
+        }
+    }
+
     suspend fun updateWorkoutNotes(workoutId: Long, notes: String) = withContext(Dispatchers.IO) {
         workoutDao.updateWorkoutNotes(workoutId, notes.trim())
     }

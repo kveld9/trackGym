@@ -416,4 +416,20 @@
     <string name="warmup_ramp_action_apply">Agregar a la sesión</string>
     <string name="warmup_ramp_reset">Restablecer</string>
     <string name="badge_custom_warmup">Rampa</string>
+    <string name="progression_maintain_no_history">Mantener peso actual. Sin historial suficiente de sesiones.</string>
+    <string name="progression_success_increment">¡Reps objetivo alcanzadas en la sesión anterior! Sobrecarga sugerida.</string>
+    <string name="progression_deload_triggered">Umbral de fallos consecutivos alcanzado. Descarga sugerida.</string>
+    <string name="progression_retry_attempt">Reps objetivo no alcanzadas en la última sesión. Reintentar peso actual.</string>
+    <string name="menu_auto_progression_rules">Reglas de sobrecarga y descarga</string>
+    <string name="auto_progression_dialog_title">Reglas de sobrecarga progresiva</string>
+    <string name="auto_progression_enable_toggle">Activar sobrecarga automatizada</string>
+    <string name="auto_progression_enable_desc">Evalúa sesiones previas para sugerir incrementos de carga o descargas automáticamente.</string>
+    <string name="auto_progression_target_reps">Reps objetivo por serie</string>
+    <string name="auto_progression_increment_load">Incremento de peso (+)</string>
+    <string name="auto_progression_failure_threshold">Disparador de descarga (Fallos)</string>
+    <string name="auto_progression_deload_percentage">Reducción de descarga (-)</string>
+    <string name="auto_progression_badge_progression">Sobrecarga: +%1$s</string>
+    <string name="auto_progression_badge_deload">Descarga: -%1$s</string>
+    <string name="auto_progression_action_apply_load">Aplicar peso objetivo</string>
+    <string name="auto_progression_rule_saved">Regla de sobrecarga actualizada</string>
 </resources>

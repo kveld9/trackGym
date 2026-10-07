@@ -133,6 +133,10 @@ import com.kveld9.trackgym.ui.components.PinnedExerciseNotesCard
 import com.kveld9.trackgym.ui.components.PrCelebrationBanner
 import com.kveld9.trackgym.domain.calculator.WarmupGenerator
 import com.kveld9.trackgym.domain.calculator.WarmupSetConfig
+import com.kveld9.trackgym.domain.calculator.AutoProgressionEngine
+import com.kveld9.trackgym.domain.calculator.AutoProgressionResult
+import com.kveld9.trackgym.domain.calculator.ProgressionDecisionType
+import com.kveld9.trackgym.ui.components.AutoProgressionDialog
 import com.kveld9.trackgym.ui.components.RpeSelectionDialog
 import com.kveld9.trackgym.ui.components.RpeTargetWeightDialog
 import com.kveld9.trackgym.ui.components.WarmupRampDialog
@@ -249,6 +253,7 @@ fun ActiveWorkoutScreen(
     var rpeCalcSet by remember { mutableStateOf<WorkoutSet?>(null) }
     var restConfigExercise by remember { mutableStateOf<WorkoutExercise?>(null) }
     var warmupRampExercise by remember { mutableStateOf<WorkoutExercise?>(null) }
+    var autoProgressionExercise by remember { mutableStateOf<WorkoutExercise?>(null) }
     var supersetConfigExercise by remember { mutableStateOf<WorkoutExercise?>(null) }
     var exerciseToSwap by remember { mutableStateOf<WorkoutExercise?>(null) }
     var pendingSwapTarget by remember { mutableStateOf<Exercise?>(null) }
@@ -434,7 +439,8 @@ fun ActiveWorkoutScreen(
                                     ?: DEFAULT_FALLBACK_WEIGHT_KG
                                 viewModel.addWarmupSets(we.id, workingWeight)
                             },
-                            onConfigureWarmupRamp = { warmupRampExercise = we }
+                            onConfigureWarmupRamp = { warmupRampExercise = we },
+                            onConfigureAutoProgression = { autoProgressionExercise = we }
                         )
                     }
 
@@ -992,6 +998,21 @@ fun ActiveWorkoutScreen(
                 warmupRampExercise = null
             },
             onDismiss = { warmupRampExercise = null }
+        )
+    }
+
+    autoProgressionExercise?.let { we ->
+        val currentRule = AutoProgressionEngine.decode(we.exercise.autoProgressionRule)
+        AutoProgressionDialog(
+            exerciseName = we.exercise.displayName(),
+            currentRule = currentRule,
+            weightUnit = weightUnit,
+            onSaveRule = { rule ->
+                val encoded = rule?.let { AutoProgressionEngine.encode(it) }
+                viewModel.updateExerciseAutoProgressionRule(we.exercise.id, encoded)
+                autoProgressionExercise = null
+            },
+            onDismiss = { autoProgressionExercise = null }
         )
     }
 }
@@ -1820,6 +1841,7 @@ fun WorkoutExerciseCard(
     onOpenRpeCalculator: (WorkoutSet?) -> Unit = {},
     onAddWarmupSets: () -> Unit = {},
     onConfigureWarmupRamp: () -> Unit = {},
+    onConfigureAutoProgression: () -> Unit = {},
     onSetRestDuration: () -> Unit = {},
     onSetSupersetGroup: () -> Unit = {}
 ) {
@@ -1892,6 +1914,23 @@ fun WorkoutExerciseCard(
                                 Text(
                                     text = stringResource(R.string.badge_custom_warmup),
                                     color = GymWarmupAmber,
+                                    fontSize = 10.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                                )
+                            }
+                        }
+                        workoutExercise.exercise.autoProgressionRule?.let {
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Surface(
+                                shape = RoundedCornerShape(4.dp),
+                                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f),
+                                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
+                                modifier = Modifier.clickable { onConfigureAutoProgression() }
+                            ) {
+                                Text(
+                                    text = "Auto",
+                                    color = MaterialTheme.colorScheme.primary,
                                     fontSize = 10.sp,
                                     fontWeight = FontWeight.Bold,
                                     modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
@@ -1983,6 +2022,13 @@ fun WorkoutExerciseCard(
                                 }
                             )
                             DropdownMenuItem(
+                                text = { Text(stringResource(R.string.menu_auto_progression_rules), color = MaterialTheme.colorScheme.onSurface) },
+                                onClick = {
+                                    menuExpanded = false
+                                    onConfigureAutoProgression()
+                                }
+                            )
+                            DropdownMenuItem(
                                 text = { Text(stringResource(R.string.menu_set_rest_duration), color = MaterialTheme.colorScheme.onSurface) },
                                 onClick = {
                                     menuExpanded = false
@@ -2038,12 +2084,41 @@ fun WorkoutExerciseCard(
                 onNotesChange = onUpdateExerciseNotes
             )
 
-            val overloadRec = remember(previousSets, weightUnit) {
-                ProgressiveOverloadEngine.computeRecommendation(previousSets, weightUnit)
+            val autoProgressionRule = remember(workoutExercise.exercise.autoProgressionRule) {
+                AutoProgressionEngine.decode(workoutExercise.exercise.autoProgressionRule)
             }
-            if (overloadRec != null) {
+            val autoProgressionResult = remember(autoProgressionRule, previousSets, workoutExercise.sets) {
+                if (autoProgressionRule != null && autoProgressionRule.enabled) {
+                    val workingWeight = workoutExercise.sets.firstOrNull { it.weightKg > 0.0 && it.setType != SetType.WARMUP }?.weightKg
+                        ?: workoutExercise.sets.firstOrNull { it.weightKg > 0.0 }?.weightKg
+                        ?: previousSets.firstOrNull { it.weightKg > 0.0 && it.setType != SetType.WARMUP }?.weightKg
+                        ?: 0.0
+                    val historySessions = if (previousSets.isNotEmpty()) listOf(previousSets) else emptyList()
+                    AutoProgressionEngine.evaluate(autoProgressionRule, historySessions, workingWeight)
+                } else null
+            }
+
+            if (autoProgressionResult != null && autoProgressionResult.type != ProgressionDecisionType.MAINTAIN) {
                 Spacer(modifier = Modifier.height(8.dp))
-                ProgressiveOverloadHintBadge(recommendation = overloadRec)
+                AutoProgressionBadge(
+                    result = autoProgressionResult,
+                    weightUnit = weightUnit,
+                    onApplyLoad = { targetKg ->
+                        workoutExercise.sets.forEach { set ->
+                            if (set.setType != SetType.WARMUP && !set.isCompleted) {
+                                onUpdateSet(set.copy(weightKg = targetKg))
+                            }
+                        }
+                    }
+                )
+            } else {
+                val overloadRec = remember(previousSets, weightUnit) {
+                    ProgressiveOverloadEngine.computeRecommendation(previousSets, weightUnit)
+                }
+                if (overloadRec != null) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    ProgressiveOverloadHintBadge(recommendation = overloadRec)
+                }
             }
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -2194,6 +2269,81 @@ fun ProgressiveOverloadHintBadge(
             lineHeight = 15.sp,
             fontWeight = FontWeight.Medium
         )
+    }
+}
+
+@Composable
+fun AutoProgressionBadge(
+    result: AutoProgressionResult,
+    weightUnit: WeightUnit,
+    onApplyLoad: (Double) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val isProgression = result.type == ProgressionDecisionType.PROGRESSION
+    val badgeColor = if (isProgression) MaterialTheme.colorScheme.primary else GymWarmupAmber
+    val icon = if (isProgression) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown
+    val title = if (isProgression) {
+        stringResource(R.string.auto_progression_badge_progression, weightUnit.format(result.recommendedWeightKg))
+    } else {
+        stringResource(R.string.auto_progression_badge_deload, weightUnit.format(result.recommendedWeightKg))
+    }
+
+    Surface(
+        shape = RoundedCornerShape(8.dp),
+        color = badgeColor.copy(alpha = 0.12f),
+        border = BorderStroke(1.dp, badgeColor.copy(alpha = 0.5f)),
+        modifier = modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(horizontal = 10.dp, vertical = 6.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Row(
+                modifier = Modifier.weight(1f),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = badgeColor,
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Column {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.labelSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = badgeColor
+                    )
+                    Text(
+                        text = stringResource(result.explanationRes),
+                        style = MaterialTheme.typography.bodySmall,
+                        fontSize = 11.sp,
+                        lineHeight = 14.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.width(8.dp))
+            Surface(
+                shape = RoundedCornerShape(6.dp),
+                color = badgeColor,
+                modifier = Modifier.clickable { onApplyLoad(result.recommendedWeightKg) }
+            ) {
+                Text(
+                    text = stringResource(R.string.auto_progression_action_apply_load),
+                    style = MaterialTheme.typography.labelSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = if (isProgression) MaterialTheme.colorScheme.onPrimary else Color.Black,
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                )
+            }
+        }
     }
 }
 

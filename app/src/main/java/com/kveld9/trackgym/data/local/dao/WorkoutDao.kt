@@ -104,4 +104,13 @@ interface WorkoutDao {
         LIMIT 1
     """)
     suspend fun getLastCompletedWorkoutExercise(exerciseId: Long, currentWorkoutId: Long): WorkoutExerciseEntity?
+
+    @Query("""
+        SELECT we.* FROM workout_exercises we
+        INNER JOIN workouts w ON we.workoutId = w.id
+        WHERE we.exerciseId = :exerciseId AND w.isCompleted = 1 AND w.id != :currentWorkoutId
+        ORDER BY w.completedAt DESC
+        LIMIT :limit
+    """)
+    suspend fun getRecentCompletedWorkoutExercises(exerciseId: Long, currentWorkoutId: Long, limit: Int = 5): List<WorkoutExerciseEntity>
 }
