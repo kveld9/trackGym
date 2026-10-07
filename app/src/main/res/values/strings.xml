@@ -377,7 +377,6 @@
     <string name="btn_select_time">Select Time</string>
     <string name="dialog_select_date_title">Completion Date</string>
     <string name="dialog_select_time_title">Completion Time</string>
-</resources>
     <string name="action_share_image">Export Workout Image</string>
     <string name="preview_dialog_title">Workout Summary Preview</string>
     <string name="action_save_gallery">Save to Gallery</string>
@@ -391,3 +390,13 @@
     <string name="share_chooser_title">Share Workout Summary</string>
     <string name="setting_inline_plates_title">Inline Plate Indicator</string>
     <string name="setting_inline_plates_desc">Show compact plate breakdown per side under target weight in workout sets</string>
+    <string name="rpe_calc_title">RPE Target Load Assistant</string>
+    <string name="rpe_calc_exercise_1rm_label">Estimated 1RM (%1$s)</string>
+    <string name="rpe_calc_target_reps_label">Target Reps</string>
+    <string name="rpe_calc_target_rpe_label">Target RPE</string>
+    <string name="rpe_calc_pct_1rm_format">%1$.1f%% of 1RM</string>
+    <string name="rpe_calc_suggested_load">Suggested Weight: %1$s</string>
+    <string name="rpe_calc_exact_load">Theoretical: %1$s</string>
+    <string name="rpe_calc_action_apply">Apply to Set</string>
+    <string name="action_rpe_target_calculator">Calculate from RPE</string>
+</resources>

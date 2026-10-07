@@ -377,7 +377,6 @@
     <string name="btn_select_time">Elegir hora</string>
     <string name="dialog_select_date_title">Fecha de finalización</string>
     <string name="dialog_select_time_title">Hora de finalización</string>
-</resources>
     <string name="action_share_image">Exportar imagen del entrenamiento</string>
     <string name="preview_dialog_title">Vista previa del entrenamiento</string>
     <string name="action_save_gallery">Guardar en galería</string>
@@ -391,3 +390,13 @@
     <string name="share_chooser_title">Compartir resumen del entrenamiento</string>
     <string name="setting_inline_plates_title">Desglose compacto de discos</string>
     <string name="setting_inline_plates_desc">Mostrar combinación de discos por lado bajo el peso en cada serie</string>
+    <string name="rpe_calc_title">Asistente de carga por RPE</string>
+    <string name="rpe_calc_exercise_1rm_label">1RM estimado (%1$s)</string>
+    <string name="rpe_calc_target_reps_label">Reps objetivo</string>
+    <string name="rpe_calc_target_rpe_label">RPE objetivo</string>
+    <string name="rpe_calc_pct_1rm_format">%1$.1f%% del 1RM</string>
+    <string name="rpe_calc_suggested_load">Peso sugerido: %1$s</string>
+    <string name="rpe_calc_exact_load">Teórico: %1$s</string>
+    <string name="rpe_calc_action_apply">Aplicar a la serie</string>
+    <string name="action_rpe_target_calculator">Calcular según RPE</string>
+</resources>

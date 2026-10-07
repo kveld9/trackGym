@@ -35,6 +35,7 @@ import com.kveld9.trackgym.domain.model.RpeScale
 fun RpeSelectionDialog(
     currentRpe: Double?,
     onSelectRpe: (Double?) -> Unit,
+    onOpenTargetCalculator: (() -> Unit)? = null,
     onDismiss: () -> Unit
 ) {
     AlertDialog(
@@ -139,7 +140,22 @@ fun RpeSelectionDialog(
                 }
             }
         },
-        confirmButton = {},
+        confirmButton = {
+            if (onOpenTargetCalculator != null) {
+                TextButton(
+                    onClick = {
+                        onDismiss()
+                        onOpenTargetCalculator()
+                    }
+                ) {
+                    Text(
+                        text = stringResource(R.string.action_rpe_target_calculator),
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+            }
+        },
         dismissButton = {
             TextButton(onClick = onDismiss) {
                 Text(

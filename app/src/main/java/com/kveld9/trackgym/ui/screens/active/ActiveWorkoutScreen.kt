@@ -126,10 +126,13 @@ import com.kveld9.trackgym.domain.calculator.ProgressiveOverloadEngine
 import com.kveld9.trackgym.domain.calculator.ProgressiveOverloadRecommendation
 import com.kveld9.trackgym.domain.model.DistanceUnit
 import com.kveld9.trackgym.domain.model.RpeScale
+import com.kveld9.trackgym.domain.calculator.OneRepMaxCalculator
+import com.kveld9.trackgym.domain.model.RecordType
 import com.kveld9.trackgym.ui.components.OvertrainingWarningBanner
 import com.kveld9.trackgym.ui.components.PinnedExerciseNotesCard
 import com.kveld9.trackgym.ui.components.PrCelebrationBanner
 import com.kveld9.trackgym.ui.components.RpeSelectionDialog
+import com.kveld9.trackgym.ui.components.RpeTargetWeightDialog
 import com.kveld9.trackgym.ui.components.WorkoutSessionNotesCard
 import com.kveld9.trackgym.ui.theme.GymBlue
 import com.kveld9.trackgym.ui.theme.GymWarmupAmber
@@ -157,6 +160,7 @@ fun ActiveWorkoutScreen(
     val distanceUnit by viewModel.distanceUnit.collectAsStateWithLifecycle()
     val userBodyWeight by viewModel.userBodyWeight.collectAsStateWithLifecycle()
     val showInlinePlates by viewModel.showInlinePlates.collectAsStateWithLifecycle()
+    val allRecords by viewModel.allRecords.collectAsStateWithLifecycle()
 
     // Rest Timer state
     val restRemaining by viewModel.restTimerRemainingSeconds.collectAsStateWithLifecycle()
@@ -238,6 +242,8 @@ fun ActiveWorkoutScreen(
     var routineNameInput by remember { mutableStateOf("") }
     var plateCalcExercise by remember { mutableStateOf<WorkoutExercise?>(null) }
     var plateCalcInitialWeightKg by remember { mutableStateOf<Double?>(null) }
+    var rpeCalcExercise by remember { mutableStateOf<WorkoutExercise?>(null) }
+    var rpeCalcSet by remember { mutableStateOf<WorkoutSet?>(null) }
     var restConfigExercise by remember { mutableStateOf<WorkoutExercise?>(null) }
     var supersetConfigExercise by remember { mutableStateOf<WorkoutExercise?>(null) }
     var exerciseToSwap by remember { mutableStateOf<WorkoutExercise?>(null) }
@@ -411,6 +417,10 @@ fun ActiveWorkoutScreen(
                             onOpenPlateCalculatorForWeight = { targetKg ->
                                 plateCalcExercise = we
                                 plateCalcInitialWeightKg = targetKg
+                            },
+                            onOpenRpeCalculator = { targetSet ->
+                                rpeCalcExercise = we
+                                rpeCalcSet = targetSet
                             },
                             onSetRestDuration = { restConfigExercise = we },
                             onSetSupersetGroup = { supersetConfigExercise = we },
@@ -887,6 +897,44 @@ fun ActiveWorkoutScreen(
             onDismiss = {
                 plateCalcExercise = null
                 plateCalcInitialWeightKg = null
+            }
+        )
+    }
+
+    rpeCalcExercise?.let { we ->
+        val best1RmRecord = allRecords
+            .filter { it.exerciseId == we.exercise.id && it.recordType == RecordType.ESTIMATED_1RM }
+            .maxOfOrNull { it.recordValue }
+
+        val previousSets = previousSetsMap[we.exercise.id] ?: emptyList()
+        val bestFromSets = (we.sets + previousSets)
+            .filter { it.weightKg > 0.0 && it.reps > 0 }
+            .maxOfOrNull { OneRepMaxCalculator.calculate1RM(it.weightKg, it.reps) }
+
+        val resolved1Rm = best1RmRecord ?: bestFromSets ?: we.sets.firstOrNull { it.weightKg > 0.0 }?.weightKg ?: 0.0
+
+        val targetSet = rpeCalcSet ?: we.sets.firstOrNull { !it.isCompleted } ?: we.sets.lastOrNull()
+        val initialReps = targetSet?.reps?.takeIf { it > 0 } ?: 5
+        val initialRpe = targetSet?.rpe ?: 8.0
+
+        RpeTargetWeightDialog(
+            exerciseName = we.exercise.displayName(),
+            initial1RmKg = resolved1Rm,
+            initialReps = initialReps,
+            initialRpe = initialRpe,
+            weightUnit = weightUnit,
+            onApplyTargetWeight = { suggestedKg, reps, rpe ->
+                if (targetSet != null) {
+                    viewModel.updateSet(targetSet.copy(weightKg = suggestedKg, reps = reps, rpe = rpe))
+                } else {
+                    viewModel.addSet(we.id, suggestedKg, reps)
+                }
+                rpeCalcExercise = null
+                rpeCalcSet = null
+            },
+            onDismiss = {
+                rpeCalcExercise = null
+                rpeCalcSet = null
             }
         )
     }
@@ -1738,6 +1786,7 @@ fun WorkoutExerciseCard(
     showInlinePlates: Boolean = true,
     onOpenPlateCalculator: () -> Unit = {},
     onOpenPlateCalculatorForWeight: (Double) -> Unit = {},
+    onOpenRpeCalculator: (WorkoutSet?) -> Unit = {},
     onAddWarmupSets: () -> Unit = {},
     onSetRestDuration: () -> Unit = {},
     onSetSupersetGroup: () -> Unit = {}
@@ -1907,6 +1956,13 @@ fun WorkoutExerciseCard(
                                 }
                             )
                             DropdownMenuItem(
+                                text = { Text(stringResource(R.string.action_rpe_target_calculator), color = MaterialTheme.colorScheme.onSurface) },
+                                onClick = {
+                                    menuExpanded = false
+                                    onOpenRpeCalculator(null)
+                                }
+                            )
+                            DropdownMenuItem(
                                 text = { Text(stringResource(R.string.menu_remove_exercise), color = MaterialTheme.colorScheme.error) },
                                 onClick = {
                                     menuExpanded = false
@@ -1978,6 +2034,7 @@ fun WorkoutExerciseCard(
                         previousSet = prevSet,
                         showInlinePlates = showInlinePlates,
                         onOpenPlateCalculator = { targetKg -> onOpenPlateCalculatorForWeight(targetKg) },
+                        onOpenRpeCalculator = { onOpenRpeCalculator(set) },
                         onUpdateSet = onUpdateSet,
                         onToggleComplete = { w, r -> onToggleComplete(set, w, r) },
                         onDeleteSet = { onDeleteSet(set) }
@@ -2094,6 +2151,7 @@ fun SwipeableSetRow(
     previousSet: WorkoutSet?,
     showInlinePlates: Boolean = true,
     onOpenPlateCalculator: (Double) -> Unit = {},
+    onOpenRpeCalculator: () -> Unit = {},
     onUpdateSet: (WorkoutSet) -> Unit,
     onToggleComplete: (Double, Int) -> Unit,
     onDeleteSet: () -> Unit,
@@ -2145,6 +2203,7 @@ fun SwipeableSetRow(
             previousSet = previousSet,
             showInlinePlates = showInlinePlates,
             onOpenPlateCalculator = onOpenPlateCalculator,
+            onOpenRpeCalculator = onOpenRpeCalculator,
             onUpdateSet = onUpdateSet,
             onToggleComplete = onToggleComplete,
             onDeleteSet = onDeleteSet
@@ -2161,6 +2220,7 @@ fun SetRowItem(
     previousSet: WorkoutSet? = null,
     showInlinePlates: Boolean = true,
     onOpenPlateCalculator: (Double) -> Unit = {},
+    onOpenRpeCalculator: () -> Unit = {},
     onUpdateSet: (WorkoutSet) -> Unit,
     onToggleComplete: (Double, Int) -> Unit,
     onDeleteSet: () -> Unit
@@ -2699,6 +2759,7 @@ fun SetRowItem(
             onSelectRpe = { selectedRpe ->
                 onUpdateSet(set.copy(rpe = selectedRpe))
             },
+            onOpenTargetCalculator = onOpenRpeCalculator,
             onDismiss = { showRpePicker = false }
         )
     }
