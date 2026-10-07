@@ -138,6 +138,12 @@ class SettingsViewModel(
         }
     }
 
+    fun setRoutineUpdateMode(mode: String) {
+        viewModelScope.launch {
+            themePreferences.setRoutineUpdateMode(mode)
+        }
+    }
+
     fun exportBackup(streamProvider: () -> OutputStream?) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }

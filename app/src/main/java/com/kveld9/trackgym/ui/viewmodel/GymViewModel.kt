@@ -83,6 +83,11 @@ class GymViewModel(
     } ?: flowOf(75.0))
         .stateIn(viewModelScope, SharingStarted.Eagerly, 75.0)
 
+    val routineUpdateMode: StateFlow<com.kveld9.trackgym.domain.model.RoutineUpdateMode> = (themePreferences?.themeSettings?.map {
+        com.kveld9.trackgym.domain.model.RoutineUpdateMode.fromString(it.routineUpdateMode)
+    } ?: flowOf(com.kveld9.trackgym.domain.model.RoutineUpdateMode.ASK))
+        .stateIn(viewModelScope, SharingStarted.Eagerly, com.kveld9.trackgym.domain.model.RoutineUpdateMode.ASK)
+
     private val _activeWorkout = MutableStateFlow<Workout?>(null)
     val activeWorkout: StateFlow<Workout?> = _activeWorkout.asStateFlow()
 
@@ -671,13 +676,16 @@ class GymViewModel(
         }
     }
 
-    fun finishWorkout(notes: String = "", onFinished: () -> Unit) {
+    fun finishWorkout(notes: String = "", syncRoutine: Boolean = false, onFinished: () -> Unit) {
         val current = _activeWorkout.value ?: return
         val activeUnit = weightUnit.value
         viewModelScope.launch {
             stopTimer()
             stopRestTimer()
             try {
+                if (syncRoutine && current.routineId != null) {
+                    repository.syncRoutineWithWorkoutValues(current.routineId, current)
+                }
                 val comparison = repository.finishWorkout(
                     workoutId = current.id,
                     durationSeconds = _timerSeconds.value,

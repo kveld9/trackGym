@@ -8,7 +8,8 @@ data class Workout(
     val durationSeconds: Long = 0,
     val isCompleted: Boolean = false,
     val notes: String = "",
-    val exercises: List<WorkoutExercise> = emptyList()
+    val exercises: List<WorkoutExercise> = emptyList(),
+    val routineId: Long? = null
 ) {
     fun calculateTotalVolume(
         doubleDumbbells: Boolean = true,

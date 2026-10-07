@@ -40,6 +40,7 @@ import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Palette
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Straighten
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.AlertDialog
@@ -722,6 +723,63 @@ fun SettingsScreen(
                             checked = themeSettings.excludeWarmupFromVolume,
                             onCheckedChange = { viewModel.setExcludeWarmupFromVolume(it) }
                         )
+                    }
+
+                    HorizontalDivider()
+
+                    // Routine Auto-Sync Mode
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Refresh,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                            Spacer(modifier = Modifier.width(16.dp))
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = stringResource(R.string.setting_routine_update_mode_title),
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    fontWeight = FontWeight.Medium
+                                )
+                                Text(
+                                    text = stringResource(R.string.setting_routine_update_mode_desc),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        }
+
+                        val routineModes = listOf(
+                            "ALWAYS" to stringResource(R.string.routine_update_mode_always_title),
+                            "ASK" to stringResource(R.string.routine_update_mode_ask_title),
+                            "NEVER" to stringResource(R.string.routine_update_mode_never_title)
+                        )
+
+                        SingleChoiceSegmentedButtonRow(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            routineModes.forEachIndexed { index, (mode, label) ->
+                                val isSelected = themeSettings.routineUpdateMode.equals(mode, ignoreCase = true)
+                                SegmentedButton(
+                                    selected = isSelected,
+                                    onClick = { viewModel.setRoutineUpdateMode(mode) },
+                                    shape = SegmentedButtonDefaults.itemShape(index = index, count = routineModes.size),
+                                    label = {
+                                        Text(
+                                            text = label,
+                                            style = MaterialTheme.typography.labelMedium,
+                                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                                        )
+                                    }
+                                )
+                            }
+                        }
                     }
                 }
             }

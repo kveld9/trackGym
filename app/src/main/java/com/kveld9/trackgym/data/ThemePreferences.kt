@@ -27,7 +27,8 @@ data class ThemeSettings(
     val timerSound: String = "DIGITAL_BEEP",
     val timerSoundCountdown: Boolean = true,
     val soundFeedbackOnComplete: Boolean = true,
-    val userBodyWeightKg: Double = 75.0
+    val userBodyWeightKg: Double = 75.0,
+    val routineUpdateMode: String = "ASK" // "ALWAYS", "ASK", "NEVER"
 )
 
 class ThemePreferences(
@@ -56,6 +57,7 @@ class ThemePreferences(
         val TIMER_SOUND_COUNTDOWN_KEY = booleanPreferencesKey("timer_sound_countdown")
         val SOUND_FEEDBACK_ON_COMPLETE_KEY = booleanPreferencesKey("sound_feedback_on_complete")
         val USER_BODY_WEIGHT_KEY = doublePreferencesKey("user_body_weight")
+        val ROUTINE_UPDATE_MODE_KEY = stringPreferencesKey("routine_update_mode")
 
         private val LEGACY_AMOLED_KEY = booleanPreferencesKey("amoled_black")
     }
@@ -79,7 +81,8 @@ class ThemePreferences(
                 timerSound = preferences[TIMER_SOUND_KEY] ?: "DIGITAL_BEEP",
                 timerSoundCountdown = preferences[TIMER_SOUND_COUNTDOWN_KEY] ?: true,
                 soundFeedbackOnComplete = preferences[SOUND_FEEDBACK_ON_COMPLETE_KEY] ?: true,
-                userBodyWeightKg = preferences[USER_BODY_WEIGHT_KEY] ?: 75.0
+                userBodyWeightKg = preferences[USER_BODY_WEIGHT_KEY] ?: 75.0,
+                routineUpdateMode = preferences[ROUTINE_UPDATE_MODE_KEY] ?: "ASK"
             )
         }
 
@@ -167,6 +170,12 @@ class ThemePreferences(
     suspend fun setUserBodyWeight(weightKg: Double) {
         dataStore.edit { preferences ->
             preferences[USER_BODY_WEIGHT_KEY] = weightKg
+        }
+    }
+
+    suspend fun setRoutineUpdateMode(mode: String) {
+        dataStore.edit { preferences ->
+            preferences[ROUTINE_UPDATE_MODE_KEY] = mode
         }
     }
 }

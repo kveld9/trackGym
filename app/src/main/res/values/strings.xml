@@ -348,4 +348,17 @@
     <string name="dialog_import_routine_placeholder">Paste TrackGym routine here...</string>
     <string name="toast_routine_imported">Routine imported successfully</string>
     <string name="toast_routine_import_invalid">Invalid routine format</string>
+    <string name="setting_routine_update_mode_title">Routine Auto-Sync</string>
+    <string name="setting_routine_update_mode_desc">Update base routine template with completed workout weights &amp; reps</string>
+    <string name="routine_update_mode_always_title">Always</string>
+    <string name="routine_update_mode_always_desc">Always update template automatically</string>
+    <string name="routine_update_mode_ask_title">Ask</string>
+    <string name="routine_update_mode_ask_desc">Prompt when completing a routine session</string>
+    <string name="routine_update_mode_never_title">Never</string>
+    <string name="routine_update_mode_never_desc">Keep template values unchanged</string>
+    <string name="dialog_sync_routine_title">Update Routine Template?</string>
+    <string name="dialog_sync_routine_msg">Would you like to update \"%1$s\" with the new weights and reps completed in this session?</string>
+    <string name="action_update_routine">Update Template</string>
+    <string name="action_keep_original">Keep Original</string>
+    <string name="toast_routine_synced">Routine template updated</string>
 </resources>

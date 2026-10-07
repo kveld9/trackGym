@@ -450,7 +450,8 @@ class GymRepository(private val database: GymDatabase) {
             durationSeconds = entity.durationSeconds,
             isCompleted = entity.isCompleted,
             notes = entity.notes,
-            exercises = workoutExercises
+            exercises = workoutExercises,
+            routineId = entity.routineId
         )
     }
 
@@ -764,7 +765,8 @@ class GymRepository(private val database: GymDatabase) {
             title = routine.name,
             startedAt = System.currentTimeMillis(),
             notes = routine.notes,
-            isCompleted = false
+            isCompleted = false,
+            routineId = routineId
         )
         val workoutId = workoutDao.insertWorkout(workoutEntity)
         val routineExercises = routineDao.getExercisesForRoutine(routineId)
@@ -864,6 +866,38 @@ class GymRepository(private val database: GymDatabase) {
         }
         routineDao.insertRoutineExercises(routineExercises)
         routineId
+    }
+
+    suspend fun syncRoutineWithWorkoutValues(routineId: Long, workout: Workout) = withContext(Dispatchers.IO) {
+        val routine = routineDao.getRoutineById(routineId) ?: return@withContext
+        val existingExercises = routineDao.getExercisesForRoutine(routineId)
+        val exerciseMap = existingExercises.associateBy { it.exerciseId }
+
+        val updatedRoutineExercises = mutableListOf<RoutineExerciseEntity>()
+        workout.exercises.forEachIndexed { index, we ->
+            val existingRe = exerciseMap[we.exercise.id]
+            val completedSets = we.sets.filter { it.isCompleted && it.setType != SetType.WARMUP }
+            val effectiveSet = completedSets.lastOrNull() ?: we.sets.lastOrNull()
+            val newDefaultWeight = effectiveSet?.weightKg ?: existingRe?.defaultWeightKg ?: 0.0
+            val newDefaultReps = effectiveSet?.reps ?: existingRe?.defaultReps ?: 10
+            val targetCount = if (completedSets.isNotEmpty()) completedSets.size else (existingRe?.targetSets ?: we.sets.size.coerceAtLeast(1))
+
+            updatedRoutineExercises.add(
+                RoutineExerciseEntity(
+                    routineId = routineId,
+                    exerciseId = we.exercise.id,
+                    orderIndex = index,
+                    targetSets = targetCount.coerceAtLeast(1),
+                    defaultWeightKg = newDefaultWeight,
+                    defaultReps = newDefaultReps
+                )
+            )
+        }
+
+        database.withTransaction {
+            routineDao.deleteExercisesForRoutine(routineId)
+            routineDao.insertRoutineExercises(updatedRoutineExercises)
+        }
     }
 
     suspend fun deleteRoutine(routineId: Long) = withContext(Dispatchers.IO) {

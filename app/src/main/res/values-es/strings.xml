@@ -348,4 +348,17 @@
     <string name="dialog_import_routine_placeholder">Pega la rutina de TrackGym aquí...</string>
     <string name="toast_routine_imported">Rutina importada con éxito</string>
     <string name="toast_routine_import_invalid">Formato de rutina no válido</string>
+    <string name="setting_routine_update_mode_title">Sincronización de rutinas</string>
+    <string name="setting_routine_update_mode_desc">Actualizar la plantilla base con los nuevos pesos y repeticiones al finalizar</string>
+    <string name="routine_update_mode_always_title">Siempre</string>
+    <string name="routine_update_mode_always_desc">Actualizar siempre la plantilla automáticamente</string>
+    <string name="routine_update_mode_ask_title">Preguntar</string>
+    <string name="routine_update_mode_ask_desc">Preguntar al finalizar un entrenamiento de rutina</string>
+    <string name="routine_update_mode_never_title">Nunca</string>
+    <string name="routine_update_mode_never_desc">Mantener intactos los valores de la plantilla</string>
+    <string name="dialog_sync_routine_title">¿Actualizar plantilla de rutina?</string>
+    <string name="dialog_sync_routine_msg">¿Deseas actualizar «%1$s» con las cargas y repeticiones completadas en esta sesión?</string>
+    <string name="action_update_routine">Actualizar rutina</string>
+    <string name="action_keep_original">Mantener original</string>
+    <string name="toast_routine_synced">Plantilla de rutina actualizada</string>
 </resources>

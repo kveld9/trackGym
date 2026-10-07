@@ -11,5 +11,6 @@ data class WorkoutEntity(
     val completedAt: Long? = null,
     val durationSeconds: Long = 0,
     val isCompleted: Boolean = false,
-    val notes: String = ""
+    val notes: String = "",
+    val routineId: Long? = null
 )

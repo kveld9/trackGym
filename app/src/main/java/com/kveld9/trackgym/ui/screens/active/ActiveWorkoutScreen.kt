@@ -157,6 +157,7 @@ fun ActiveWorkoutScreen(
     // Routines state
     val routines by viewModel.routines.collectAsStateWithLifecycle()
     val folders by viewModel.folders.collectAsStateWithLifecycle()
+    val routineUpdateMode by viewModel.routineUpdateMode.collectAsStateWithLifecycle()
 
     val haptic = LocalHapticFeedback.current
     val context = LocalContext.current
@@ -219,6 +220,7 @@ fun ActiveWorkoutScreen(
 
     var showExercisePicker by remember { mutableStateOf(false) }
     var showFinishDialog by remember { mutableStateOf(false) }
+    var showRoutineSyncPrompt by remember { mutableStateOf(false) }
     var showDiscardDialog by remember { mutableStateOf(false) }
     var showSaveRoutineDialog by remember { mutableStateOf(false) }
     var finishNotes by remember { mutableStateOf("") }
@@ -594,8 +596,27 @@ fun ActiveWorkoutScreen(
                 Button(
                     onClick = {
                         showFinishDialog = false
-                        viewModel.finishWorkout(finishNotes) {
-                            onWorkoutFinished()
+                        val linkedRoutineId = activeWorkout?.routineId
+                        if (linkedRoutineId != null) {
+                            when (routineUpdateMode) {
+                                com.kveld9.trackgym.domain.model.RoutineUpdateMode.ALWAYS -> {
+                                    viewModel.finishWorkout(finishNotes, syncRoutine = true) {
+                                        onWorkoutFinished()
+                                    }
+                                }
+                                com.kveld9.trackgym.domain.model.RoutineUpdateMode.NEVER -> {
+                                    viewModel.finishWorkout(finishNotes, syncRoutine = false) {
+                                        onWorkoutFinished()
+                                    }
+                                }
+                                com.kveld9.trackgym.domain.model.RoutineUpdateMode.ASK -> {
+                                    showRoutineSyncPrompt = true
+                                }
+                            }
+                        } else {
+                            viewModel.finishWorkout(finishNotes, syncRoutine = false) {
+                                onWorkoutFinished()
+                            }
                         }
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
@@ -606,6 +627,57 @@ fun ActiveWorkoutScreen(
             dismissButton = {
                 TextButton(onClick = { showFinishDialog = false }) {
                     Text(stringResource(R.string.action_cancel), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+            }
+        )
+    }
+
+    if (showRoutineSyncPrompt) {
+        val routineName = activeWorkout?.name.orEmpty()
+        AlertDialog(
+            onDismissRequest = {
+                showRoutineSyncPrompt = false
+                viewModel.finishWorkout(finishNotes, syncRoutine = false) {
+                    onWorkoutFinished()
+                }
+            },
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+            title = {
+                Text(
+                    text = stringResource(R.string.dialog_sync_routine_title),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            text = {
+                Text(
+                    text = stringResource(R.string.dialog_sync_routine_msg, routineName),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showRoutineSyncPrompt = false
+                        viewModel.finishWorkout(finishNotes, syncRoutine = true) {
+                            onWorkoutFinished()
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                ) {
+                    Text(stringResource(R.string.action_update_routine), color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Bold)
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        showRoutineSyncPrompt = false
+                        viewModel.finishWorkout(finishNotes, syncRoutine = false) {
+                            onWorkoutFinished()
+                        }
+                    }
+                ) {
+                    Text(stringResource(R.string.action_keep_original), color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
         )
