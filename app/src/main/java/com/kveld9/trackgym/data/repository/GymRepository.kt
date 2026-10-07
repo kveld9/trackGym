@@ -790,6 +790,34 @@ class GymRepository(private val database: GymDatabase) {
         workoutId
     }
 
+    suspend fun duplicateRoutine(routineId: Long, copySuffix: String = "(Copy)"): Long = withContext(Dispatchers.IO) {
+        val original = routineDao.getRoutineById(routineId) ?: return@withContext -1L
+        val originalExercises = routineDao.getExercisesForRoutine(routineId)
+
+        val newRoutine = RoutineEntity(
+            folderId = original.folderId,
+            name = "${original.name} $copySuffix".trim(),
+            notes = original.notes,
+            orderIndex = original.orderIndex + 1,
+            isArchived = original.isArchived,
+            createdAt = System.currentTimeMillis()
+        )
+        val newRoutineId = routineDao.insertRoutine(newRoutine)
+
+        val duplicatedExercises = originalExercises.map { re ->
+            RoutineExerciseEntity(
+                routineId = newRoutineId,
+                exerciseId = re.exerciseId,
+                orderIndex = re.orderIndex,
+                targetSets = re.targetSets,
+                defaultWeightKg = re.defaultWeightKg,
+                defaultReps = re.defaultReps
+            )
+        }
+        routineDao.insertRoutineExercises(duplicatedExercises)
+        newRoutineId
+    }
+
     suspend fun deleteRoutine(routineId: Long) = withContext(Dispatchers.IO) {
         routineDao.deleteRoutine(routineId)
     }

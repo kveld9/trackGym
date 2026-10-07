@@ -242,12 +242,14 @@ fun ActiveWorkoutScreen(
     }
 
     if (activeWorkout == null) {
+        val copySuffix = stringResource(R.string.routine_copy_suffix)
         EmptyWorkoutDashboard(
             routines = routines,
             folders = folders,
             onStartWorkout = { viewModel.startWorkout() },
             onStartRoutine = { routineId -> viewModel.startWorkoutFromRoutine(routineId) },
             onDeleteRoutine = { routineId -> viewModel.deleteRoutine(routineId) },
+            onDuplicateRoutine = { routineId -> viewModel.duplicateRoutine(routineId, copySuffix) },
             onMoveRoutineUp = { routineId -> viewModel.moveRoutineUp(routineId, routines) },
             onMoveRoutineDown = { routineId -> viewModel.moveRoutineDown(routineId, routines) },
             onMoveFolderUp = { folderId -> viewModel.moveFolderUp(folderId, folders) },
@@ -692,6 +694,7 @@ fun EmptyWorkoutDashboard(
     onStartWorkout: () -> Unit,
     onStartRoutine: (Long) -> Unit,
     onDeleteRoutine: (Long) -> Unit,
+    onDuplicateRoutine: ((Long) -> Unit)? = null,
     onMoveRoutineUp: ((Long) -> Unit)? = null,
     onMoveRoutineDown: ((Long) -> Unit)? = null,
     onMoveFolderUp: ((Long) -> Unit)? = null,
@@ -888,6 +891,7 @@ fun EmptyWorkoutDashboard(
                         routine = routine,
                         onStart = { onStartRoutine(routine.id) },
                         onDelete = { onDeleteRoutine(routine.id) },
+                        onDuplicate = { onDuplicateRoutine?.invoke(routine.id) },
                         canMoveUp = index > 0,
                         canMoveDown = index < filteredRoutines.size - 1,
                         onMoveUp = { onMoveRoutineUp?.invoke(routine.id) },
@@ -915,6 +919,7 @@ fun RoutineCardItem(
     routine: Routine,
     onStart: () -> Unit,
     onDelete: () -> Unit,
+    onDuplicate: (() -> Unit)? = null,
     canMoveUp: Boolean = false,
     canMoveDown: Boolean = false,
     onMoveUp: (() -> Unit)? = null,
@@ -998,6 +1003,16 @@ fun RoutineCardItem(
                                 onClick = {
                                     menuExpanded = false
                                     onMoveDown()
+                                }
+                            )
+                        }
+                        if (onDuplicate != null) {
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.menu_duplicate_routine)) },
+                                leadingIcon = { Icon(Icons.Default.ContentCopy, contentDescription = null) },
+                                onClick = {
+                                    menuExpanded = false
+                                    onDuplicate()
                                 }
                             )
                         }

@@ -561,6 +561,12 @@ class GymViewModel(
         }
     }
 
+    fun duplicateRoutine(routineId: Long, copySuffix: String = "(Copy)") {
+        viewModelScope.launch {
+            repository.duplicateRoutine(routineId, copySuffix)
+        }
+    }
+
     fun moveRoutineUp(routineId: Long, currentList: List<Routine>) {
         val index = currentList.indexOfFirst { it.id == routineId }
         if (index > 0) {
