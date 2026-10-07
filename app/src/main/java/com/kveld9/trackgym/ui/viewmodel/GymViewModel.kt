@@ -454,6 +454,21 @@ class GymViewModel(
         _restTimerRemainingSeconds.value = null
     }
 
+    fun completeFirstPendingSet() {
+        val active = _activeWorkout.value ?: return
+        for (we in active.exercises) {
+            val pending = we.sets.firstOrNull { !it.isCompleted }
+            if (pending != null) {
+                toggleCompleteSet(
+                    set = pending,
+                    workoutId = active.id,
+                    exerciseId = we.exercise.id
+                )
+                break
+            }
+        }
+    }
+
     fun startWorkoutFromRoutine(routineId: Long) {
         viewModelScope.launch {
             val workoutId = repository.startWorkoutFromRoutine(routineId)

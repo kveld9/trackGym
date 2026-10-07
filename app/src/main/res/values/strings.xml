@@ -254,7 +254,15 @@
     <string name="rest_timer_skip">Skip</string>
     <string name="rest_timer_add_15">+15s</string>
     <string name="rest_timer_minus_15">-15s</string>
+    <string name="rest_timer_add_30">+30s</string>
     <string name="rest_timer_completed">Rest finished!</string>
+    <string name="notif_channel_timer_name">Rest Timer</string>
+    <string name="notif_channel_timer_desc">Live countdown and controls for rest intervals</string>
+    <string name="notif_timer_running">%1$d seconds remaining</string>
+    <string name="notif_timer_finished">Rest period complete, start your next set!</string>
+    <string name="notif_action_add_30">+30s</string>
+    <string name="notif_action_skip">Skip</string>
+    <string name="notif_action_complete_set">Complete Set</string>
     <string name="setting_rest_timer_section">Rest Timer</string>
     <string name="setting_auto_rest_timer_title">Auto Rest Timer</string>
     <string name="setting_auto_rest_timer_desc">Automatically start rest countdown when completing a set</string>

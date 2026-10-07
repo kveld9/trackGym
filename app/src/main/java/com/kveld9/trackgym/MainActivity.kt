@@ -24,9 +24,38 @@ class MainActivity : ComponentActivity() {
         SettingsViewModel.Factory(app.themePreferences, app.repository)
     }
 
+    private val timerActionReceiver = object : android.content.BroadcastReceiver() {
+        override fun onReceive(context: android.content.Context?, intent: android.content.Intent?) {
+            when (intent?.action) {
+                com.kveld9.trackgym.service.RestTimerNotificationManager.ACTION_ADD_30 -> {
+                    viewModel.addRestSeconds(30)
+                }
+                com.kveld9.trackgym.service.RestTimerNotificationManager.ACTION_SKIP -> {
+                    viewModel.stopRestTimer()
+                }
+                com.kveld9.trackgym.service.RestTimerNotificationManager.ACTION_COMPLETE_CURRENT_SET -> {
+                    viewModel.completeFirstPendingSet()
+                }
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        com.kveld9.trackgym.service.RestTimerNotificationManager.createNotificationChannel(this)
+
+        val intentFilter = android.content.IntentFilter().apply {
+            addAction(com.kveld9.trackgym.service.RestTimerNotificationManager.ACTION_ADD_30)
+            addAction(com.kveld9.trackgym.service.RestTimerNotificationManager.ACTION_SKIP)
+            addAction(com.kveld9.trackgym.service.RestTimerNotificationManager.ACTION_COMPLETE_CURRENT_SET)
+        }
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(timerActionReceiver, intentFilter, RECEIVER_NOT_EXPORTED)
+        } else {
+            registerReceiver(timerActionReceiver, intentFilter)
+        }
+
         setContent {
             val themeSettings by settingsViewModel.themeSettings.collectAsStateWithLifecycle()
 
@@ -39,5 +68,10 @@ class MainActivity : ComponentActivity() {
                 )
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(timerActionReceiver)
     }
 }

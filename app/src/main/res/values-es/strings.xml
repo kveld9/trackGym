@@ -254,7 +254,15 @@
     <string name="rest_timer_skip">Saltar</string>
     <string name="rest_timer_add_15">+15s</string>
     <string name="rest_timer_minus_15">-15s</string>
+    <string name="rest_timer_add_30">+30s</string>
     <string name="rest_timer_completed">¡Descanso finalizado!</string>
+    <string name="notif_channel_timer_name">Temporizador de descanso</string>
+    <string name="notif_channel_timer_desc">Cuenta regresiva en vivo y controles para intervalos de descanso</string>
+    <string name="notif_timer_running">%1$d segundos restantes</string>
+    <string name="notif_timer_finished">¡Descanso terminado! Inicia tu siguiente serie</string>
+    <string name="notif_action_add_30">+30s</string>
+    <string name="notif_action_skip">Saltar</string>
+    <string name="notif_action_complete_set">Completar serie</string>
     <string name="setting_rest_timer_section">Temporizador de descanso</string>
     <string name="setting_auto_rest_timer_title">Temporizador automático</string>
     <string name="setting_auto_rest_timer_desc">Iniciar cuenta regresiva automáticamente al completar una serie</string>

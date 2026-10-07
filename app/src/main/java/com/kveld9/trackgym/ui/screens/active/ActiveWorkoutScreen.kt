@@ -176,6 +176,24 @@ fun ActiveWorkoutScreen(
             }.getOrDefault(com.kveld9.trackgym.ui.audio.TimerSound.DIGITAL_BEEP)
             audioCuePlayer.playFinishedSound(sound)
             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+            com.kveld9.trackgym.service.RestTimerNotificationManager.showTimerNotification(
+                context = context,
+                remainingSeconds = 0,
+                totalSeconds = restTotal
+            )
+        }
+    }
+
+    LaunchedEffect(restRemaining, restTotal) {
+        val remaining = restRemaining
+        if (remaining != null && remaining > 0) {
+            com.kveld9.trackgym.service.RestTimerNotificationManager.showTimerNotification(
+                context = context,
+                remainingSeconds = remaining,
+                totalSeconds = restTotal
+            )
+        } else if (remaining == null) {
+            com.kveld9.trackgym.service.RestTimerNotificationManager.dismissNotification(context)
         }
     }
 
