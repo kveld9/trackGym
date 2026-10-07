@@ -45,6 +45,11 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+      - name: Verify Harness Synchronization (Drift Check)
+        run: |
+          ./gradlew syncHarness
+          git diff --exit-code AGENTS.md || (echo "Harness is out of sync with dependencies! Run ./gradlew syncHarness before committing." && exit 1)
+
       # PR Workflow: Fast Unit Tests
       - name: Run Unit Tests (PR)
         if: github.event_name == 'pull_request'
@@ -173,6 +178,23 @@ jobs:
           done
 
           cd "${STAGE}"
+          CHECKSUM_FILE="checksums-v${VERSION}.txt"
+          echo "==================================================" > "$CHECKSUM_FILE"
+          echo " TrackGym v${VERSION} — Integrity Hashes" >> "$CHECKSUM_FILE"
+          echo "==================================================" >> "$CHECKSUM_FILE"
+          echo "" >> "$CHECKSUM_FILE"
+
+          echo "## SHA-256" >> "$CHECKSUM_FILE"
+          sha256sum trackGym-*.apk >> "$CHECKSUM_FILE"
+          echo "" >> "$CHECKSUM_FILE"
+
+          echo "## SHA-512" >> "$CHECKSUM_FILE"
+          sha512sum trackGym-*.apk >> "$CHECKSUM_FILE"
+          echo "" >> "$CHECKSUM_FILE"
+
+          echo "## MD5" >> "$CHECKSUM_FILE"
+          md5sum trackGym-*.apk >> "$CHECKSUM_FILE"
+
           sha256sum trackGym-*.apk > SHA256SUMS.txt
           cd ..
 
@@ -194,7 +216,8 @@ jobs:
             |------|-------------|
             | `trackGym-${{ steps.semver.outputs.version }}-release.apk` | Production Release Build |
             | `trackGym-${{ steps.semver.outputs.version }}-debug.apk` | Debug Build |
-            | `SHA256SUMS.txt` | SHA-256 Checksum Verification |
+            | `checksums-v${{ steps.semver.outputs.version }}.txt` | Multi-hash Integrity Verification (SHA-256, SHA-512, MD5) |
+            | `SHA256SUMS.txt` | Standard SHA-256 Checksum (`sha256sum -c`) |
           files: artifacts/*
           fail_on_unmatched_files: true
           generate_release_notes: false

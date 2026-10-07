@@ -57,7 +57,7 @@
   1. Computes Semantic Versioning from Conventional Commits (`feat!:`, `BREAKING CHANGE` -> Major, `feat:` -> Minor, `fix:`/other -> Patch).
   2. Bumps and passes `versionName` and `versionCode` via Gradle `-P` properties (`-PversionName=... -PversionCode=...`).
   3. Single Gradle execution builds release & debug APKs.
-  4. Packages APKs into `trackGym-${VERSION}-release.apk` and `trackGym-${VERSION}-debug.apk` with `SHA256SUMS.txt`.
+  4. Packages APKs into `trackGym-${VERSION}-release.apk` and `trackGym-${VERSION}-debug.apk` with multi-hash integrity file (`checksums-v${VERSION}.txt`) and `SHA256SUMS.txt`.
   5. Automatically creates Git tag `v${VERSION}` and publishes a GitHub Release with changelog and downloads.
 - **Keystore Configuration**:
   - Release builds sign with official keystore if GitHub secrets `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD` are set.
