@@ -561,6 +561,50 @@ class GymViewModel(
         }
     }
 
+    fun moveRoutineUp(routineId: Long, currentList: List<Routine>) {
+        val index = currentList.indexOfFirst { it.id == routineId }
+        if (index > 0) {
+            val mutable = currentList.toMutableList()
+            java.util.Collections.swap(mutable, index, index - 1)
+            viewModelScope.launch {
+                repository.updateRoutinesOrder(mutable.map { it.id })
+            }
+        }
+    }
+
+    fun moveRoutineDown(routineId: Long, currentList: List<Routine>) {
+        val index = currentList.indexOfFirst { it.id == routineId }
+        if (index >= 0 && index < currentList.size - 1) {
+            val mutable = currentList.toMutableList()
+            java.util.Collections.swap(mutable, index, index + 1)
+            viewModelScope.launch {
+                repository.updateRoutinesOrder(mutable.map { it.id })
+            }
+        }
+    }
+
+    fun moveFolderUp(folderId: Long, currentList: List<RoutineFolder>) {
+        val index = currentList.indexOfFirst { it.id == folderId }
+        if (index > 0) {
+            val mutable = currentList.toMutableList()
+            java.util.Collections.swap(mutable, index, index - 1)
+            viewModelScope.launch {
+                repository.updateFoldersOrder(mutable.map { it.id })
+            }
+        }
+    }
+
+    fun moveFolderDown(folderId: Long, currentList: List<RoutineFolder>) {
+        val index = currentList.indexOfFirst { it.id == folderId }
+        if (index >= 0 && index < currentList.size - 1) {
+            val mutable = currentList.toMutableList()
+            java.util.Collections.swap(mutable, index, index + 1)
+            viewModelScope.launch {
+                repository.updateFoldersOrder(mutable.map { it.id })
+            }
+        }
+    }
+
     fun clearRecentPrAlert() {
         _recentlyUnlockedPr.value = null
     }

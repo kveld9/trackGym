@@ -702,10 +702,24 @@ class GymRepository(private val database: GymDatabase) {
                     name = entity.name,
                     notes = entity.notes,
                     exercises = mappedExercises,
+                    orderIndex = entity.orderIndex,
+                    isArchived = entity.isArchived,
                     createdAt = entity.createdAt
                 )
             }
         }.flowOn(Dispatchers.IO)
+    }
+
+    suspend fun updateRoutinesOrder(orderedRoutineIds: List<Long>) = withContext(Dispatchers.IO) {
+        orderedRoutineIds.forEachIndexed { index, id ->
+            routineDao.updateRoutineOrder(id, index)
+        }
+    }
+
+    suspend fun updateFoldersOrder(orderedFolderIds: List<Long>) = withContext(Dispatchers.IO) {
+        orderedFolderIds.forEachIndexed { index, id ->
+            routineDao.updateFolderOrder(id, index)
+        }
     }
 
     suspend fun saveWorkoutAsRoutine(

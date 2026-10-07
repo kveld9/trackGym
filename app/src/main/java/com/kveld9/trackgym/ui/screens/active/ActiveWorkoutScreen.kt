@@ -40,7 +40,10 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.FitnessCenter
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
@@ -245,6 +248,10 @@ fun ActiveWorkoutScreen(
             onStartWorkout = { viewModel.startWorkout() },
             onStartRoutine = { routineId -> viewModel.startWorkoutFromRoutine(routineId) },
             onDeleteRoutine = { routineId -> viewModel.deleteRoutine(routineId) },
+            onMoveRoutineUp = { routineId -> viewModel.moveRoutineUp(routineId, routines) },
+            onMoveRoutineDown = { routineId -> viewModel.moveRoutineDown(routineId, routines) },
+            onMoveFolderUp = { folderId -> viewModel.moveFolderUp(folderId, folders) },
+            onMoveFolderDown = { folderId -> viewModel.moveFolderDown(folderId, folders) },
             modifier = modifier
         )
     } else {
@@ -685,9 +692,14 @@ fun EmptyWorkoutDashboard(
     onStartWorkout: () -> Unit,
     onStartRoutine: (Long) -> Unit,
     onDeleteRoutine: (Long) -> Unit,
+    onMoveRoutineUp: ((Long) -> Unit)? = null,
+    onMoveRoutineDown: ((Long) -> Unit)? = null,
+    onMoveFolderUp: ((Long) -> Unit)? = null,
+    onMoveFolderDown: ((Long) -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     var selectedFolderId by remember { mutableStateOf<Long?>(null) }
+    var showReorderFoldersDialog by remember { mutableStateOf(false) }
     val filteredRoutines = if (selectedFolderId == null) {
         routines
     } else {
@@ -783,27 +795,19 @@ fun EmptyWorkoutDashboard(
         // Folder Chips
         if (folders.isNotEmpty()) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState()),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                FilterChip(
-                    selected = selectedFolderId == null,
-                    onClick = { selectedFolderId = null },
-                    label = { Text(stringResource(R.string.routine_folder_all)) },
-                    colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = MaterialTheme.colorScheme.primary,
-                        selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                        labelColor = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                )
-                folders.forEach { folder ->
+                Row(
+                    modifier = Modifier
+                        .weight(1f)
+                        .horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
                     FilterChip(
-                        selected = selectedFolderId == folder.id,
-                        onClick = { selectedFolderId = folder.id },
-                        label = { Text(folder.name) },
+                        selected = selectedFolderId == null,
+                        onClick = { selectedFolderId = null },
+                        label = { Text(stringResource(R.string.routine_folder_all)) },
                         colors = FilterChipDefaults.filterChipColors(
                             selectedContainerColor = MaterialTheme.colorScheme.primary,
                             selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
@@ -811,6 +815,31 @@ fun EmptyWorkoutDashboard(
                             labelColor = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     )
+                    folders.forEach { folder ->
+                        FilterChip(
+                            selected = selectedFolderId == folder.id,
+                            onClick = { selectedFolderId = folder.id },
+                            label = { Text(folder.name) },
+                            colors = FilterChipDefaults.filterChipColors(
+                                selectedContainerColor = MaterialTheme.colorScheme.primary,
+                                selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                                labelColor = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        )
+                    }
+                }
+                if (folders.size > 1 && (onMoveFolderUp != null || onMoveFolderDown != null)) {
+                    IconButton(
+                        onClick = { showReorderFoldersDialog = true },
+                        modifier = Modifier.size(36.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = stringResource(R.string.action_reorder_folders),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 }
             }
             Spacer(modifier = Modifier.height(12.dp))
@@ -854,11 +883,15 @@ fun EmptyWorkoutDashboard(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                filteredRoutines.forEach { routine ->
+                filteredRoutines.forEachIndexed { index, routine ->
                     RoutineCardItem(
                         routine = routine,
                         onStart = { onStartRoutine(routine.id) },
-                        onDelete = { onDeleteRoutine(routine.id) }
+                        onDelete = { onDeleteRoutine(routine.id) },
+                        canMoveUp = index > 0,
+                        canMoveDown = index < filteredRoutines.size - 1,
+                        onMoveUp = { onMoveRoutineUp?.invoke(routine.id) },
+                        onMoveDown = { onMoveRoutineDown?.invoke(routine.id) }
                     )
                 }
             }
@@ -866,13 +899,26 @@ fun EmptyWorkoutDashboard(
 
         Spacer(modifier = Modifier.height(88.dp))
     }
+
+    if (showReorderFoldersDialog && (onMoveFolderUp != null || onMoveFolderDown != null)) {
+        ReorderFoldersDialog(
+            folders = folders,
+            onMoveFolderUp = { onMoveFolderUp?.invoke(it) },
+            onMoveFolderDown = { onMoveFolderDown?.invoke(it) },
+            onDismiss = { showReorderFoldersDialog = false }
+        )
+    }
 }
 
 @Composable
 fun RoutineCardItem(
     routine: Routine,
     onStart: () -> Unit,
-    onDelete: () -> Unit
+    onDelete: () -> Unit,
+    canMoveUp: Boolean = false,
+    canMoveDown: Boolean = false,
+    onMoveUp: (() -> Unit)? = null,
+    onMoveDown: (() -> Unit)? = null
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
 
@@ -935,6 +981,26 @@ fun RoutineCardItem(
                         onDismissRequest = { menuExpanded = false },
                         modifier = Modifier.background(MaterialTheme.colorScheme.surfaceContainer)
                     ) {
+                        if (canMoveUp && onMoveUp != null) {
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.menu_move_up)) },
+                                leadingIcon = { Icon(Icons.Default.KeyboardArrowUp, contentDescription = null) },
+                                onClick = {
+                                    menuExpanded = false
+                                    onMoveUp()
+                                }
+                            )
+                        }
+                        if (canMoveDown && onMoveDown != null) {
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.menu_move_down)) },
+                                leadingIcon = { Icon(Icons.Default.KeyboardArrowDown, contentDescription = null) },
+                                onClick = {
+                                    menuExpanded = false
+                                    onMoveDown()
+                                }
+                            )
+                        }
                         DropdownMenuItem(
                             text = { Text(stringResource(R.string.menu_delete_routine), color = MaterialTheme.colorScheme.error) },
                             onClick = {
@@ -947,6 +1013,63 @@ fun RoutineCardItem(
             }
         }
     }
+}
+
+@Composable
+private fun ReorderFoldersDialog(
+    folders: List<RoutineFolder>,
+    onMoveFolderUp: (Long) -> Unit,
+    onMoveFolderDown: (Long) -> Unit,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.dialog_reorder_folders_title)) },
+        text = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                folders.forEachIndexed { index, folder ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = folder.name,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Medium,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Row {
+                            IconButton(
+                                onClick = { onMoveFolderUp(folder.id) },
+                                enabled = index > 0,
+                                modifier = Modifier.size(36.dp)
+                            ) {
+                                Icon(Icons.Default.KeyboardArrowUp, contentDescription = null)
+                            }
+                            IconButton(
+                                onClick = { onMoveFolderDown(folder.id) },
+                                enabled = index < folders.size - 1,
+                                modifier = Modifier.size(36.dp)
+                            ) {
+                                Icon(Icons.Default.KeyboardArrowDown, contentDescription = null)
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(android.R.string.ok))
+            }
+        }
+    )
 }
 
 @Composable

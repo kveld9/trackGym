@@ -17,7 +17,7 @@ interface RoutineDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertFolder(folder: RoutineFolderEntity): Long
 
-    @Query("SELECT * FROM routine_folders ORDER BY name ASC")
+    @Query("SELECT * FROM routine_folders ORDER BY orderIndex ASC, name ASC")
     fun getAllFolders(): Flow<List<RoutineFolderEntity>>
 
     @Query("SELECT * FROM routine_folders WHERE id = :id")
@@ -26,6 +26,9 @@ interface RoutineDao {
     @Query("DELETE FROM routine_folders WHERE id = :id")
     suspend fun deleteFolder(id: Long)
 
+    @Query("UPDATE routine_folders SET orderIndex = :orderIndex WHERE id = :id")
+    suspend fun updateFolderOrder(id: Long, orderIndex: Int)
+
     // Routines
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRoutine(routine: RoutineEntity): Long
@@ -33,7 +36,7 @@ interface RoutineDao {
     @Update
     suspend fun updateRoutine(routine: RoutineEntity)
 
-    @Query("SELECT * FROM routines ORDER BY createdAt DESC")
+    @Query("SELECT * FROM routines ORDER BY orderIndex ASC, createdAt DESC")
     fun getAllRoutines(): Flow<List<RoutineEntity>>
 
     @Query("SELECT * FROM routines WHERE id = :id")
@@ -41,6 +44,9 @@ interface RoutineDao {
 
     @Query("DELETE FROM routines WHERE id = :id")
     suspend fun deleteRoutine(id: Long)
+
+    @Query("UPDATE routines SET orderIndex = :orderIndex WHERE id = :id")
+    suspend fun updateRoutineOrder(id: Long, orderIndex: Int)
 
     // Routine Exercises
     @Insert(onConflict = OnConflictStrategy.REPLACE)

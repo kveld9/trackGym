@@ -7,5 +7,7 @@ data class Routine(
     val name: String,
     val notes: String = "",
     val exercises: List<RoutineExercise> = emptyList(),
+    val orderIndex: Int = 0,
+    val isArchived: Boolean = false,
     val createdAt: Long = System.currentTimeMillis()
 )

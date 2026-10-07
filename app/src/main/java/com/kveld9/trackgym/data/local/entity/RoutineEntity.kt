@@ -23,5 +23,7 @@ data class RoutineEntity(
     val folderId: Long? = null,
     val name: String,
     val notes: String = "",
+    val orderIndex: Int = 0,
+    val isArchived: Boolean = false,
     val createdAt: Long = System.currentTimeMillis()
 )

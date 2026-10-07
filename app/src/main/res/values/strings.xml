@@ -333,4 +333,6 @@
     <string name="menu_delete_routine">Delete Routine</string>
     <string name="routine_empty_title">No routines yet</string>
     <string name="routine_empty_desc">Save any workout as a template or create reusable routines here.</string>
+    <string name="action_reorder_folders">Reorder Folders</string>
+    <string name="dialog_reorder_folders_title">Reorder Folders</string>
 </resources>

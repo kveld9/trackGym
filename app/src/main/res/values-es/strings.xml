@@ -333,4 +333,6 @@
     <string name="menu_delete_routine">Eliminar rutina</string>
     <string name="routine_empty_title">No hay rutinas creadas</string>
     <string name="routine_empty_desc">Guarda tus entrenamientos como plantillas o crea rutinas reutilizables aquí.</string>
+    <string name="action_reorder_folders">Reordenar carpetas</string>
+    <string name="dialog_reorder_folders_title">Reordenar carpetas</string>
 </resources>
