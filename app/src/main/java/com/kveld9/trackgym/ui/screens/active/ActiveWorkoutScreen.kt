@@ -56,8 +56,10 @@ import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Timer
+import com.kveld9.trackgym.domain.calculator.ProgramRecommendation
 import com.kveld9.trackgym.domain.model.PeriodizedCycle
 import com.kveld9.trackgym.ui.components.PeriodizedCycleDialog
+import com.kveld9.trackgym.ui.components.ProgramFinderDialog
 import androidx.compose.material3.AlertDialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.material3.Button
@@ -298,6 +300,7 @@ fun ActiveWorkoutScreen(
             onUpdatePeriodization = { routineId, isPeriodized, cycle -> viewModel.updateRoutinePeriodization(routineId, isPeriodized, cycle) },
             onAdvanceCycleWeek = { routineId -> viewModel.advanceRoutineCycleWeek(routineId) },
             onPreviousCycleWeek = { routineId -> viewModel.previousRoutineCycleWeek(routineId) },
+            onInstantiateProgram = { program -> viewModel.instantiateProgram(program) },
             modifier = modifier
         )
     } else {
@@ -1042,12 +1045,14 @@ fun EmptyWorkoutDashboard(
     onUpdatePeriodization: ((Long, Boolean, PeriodizedCycle?) -> Unit)? = null,
     onAdvanceCycleWeek: ((Long) -> Unit)? = null,
     onPreviousCycleWeek: ((Long) -> Unit)? = null,
+    onInstantiateProgram: ((ProgramRecommendation) -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     var selectedFolderId by remember { mutableStateOf<Long?>(null) }
     var showArchived by remember { mutableStateOf(false) }
     var showReorderFoldersDialog by remember { mutableStateOf(false) }
     var showImportRoutineDialog by remember { mutableStateOf(false) }
+    var showProgramFinderDialog by remember { mutableStateOf(false) }
     var routineToConfigurePeriodization by remember { mutableStateOf<Routine?>(null) }
     val baseRoutines = if (showArchived) {
         routines.filter { it.isArchived }
@@ -1142,23 +1147,47 @@ fun EmptyWorkoutDashboard(
                     fontSize = 12.sp
                 )
             }
-            if (onImportRoutine != null) {
-                OutlinedButton(
-                    onClick = { showImportRoutineDialog = true },
-                    contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 12.dp, vertical = 6.dp),
-                    shape = RoundedCornerShape(10.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.FileUpload,
-                        contentDescription = null,
-                        modifier = Modifier.size(16.dp)
-                    )
-                    Spacer(modifier = Modifier.width(6.dp))
-                    Text(
-                        text = stringResource(R.string.btn_import_routine),
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.SemiBold
-                    )
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                if (onInstantiateProgram != null) {
+                    OutlinedButton(
+                        onClick = { showProgramFinderDialog = true },
+                        contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 10.dp, vertical = 6.dp),
+                        shape = RoundedCornerShape(10.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.FitnessCenter,
+                            contentDescription = null,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = stringResource(R.string.btn_program_wizard),
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                }
+                if (onImportRoutine != null) {
+                    OutlinedButton(
+                        onClick = { showImportRoutineDialog = true },
+                        contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 10.dp, vertical = 6.dp),
+                        shape = RoundedCornerShape(10.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.FileUpload,
+                            contentDescription = null,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = stringResource(R.string.btn_import_routine),
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
                 }
             }
         }
@@ -1338,6 +1367,16 @@ fun EmptyWorkoutDashboard(
         ImportRoutineDialog(
             onDismiss = { showImportRoutineDialog = false },
             onImport = onImportRoutine
+        )
+    }
+
+    if (showProgramFinderDialog && onInstantiateProgram != null) {
+        ProgramFinderDialog(
+            onImportProgram = { program ->
+                onInstantiateProgram(program)
+                showProgramFinderDialog = false
+            },
+            onDismiss = { showProgramFinderDialog = false }
         )
     }
 }

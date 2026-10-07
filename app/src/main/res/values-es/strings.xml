@@ -453,4 +453,25 @@
     <string name="menu_advance_cycle_week">Avanzar semana (+1)</string>
     <string name="menu_previous_cycle_week">Semana anterior (-1)</string>
     <string name="badge_periodized_block">Bloque: S%1$d/%2$d</string>
+    <string name="program_finder_title">Asistente de Rutinas</string>
+    <string name="program_finder_subtitle">Encuentra tu rutina ideal según tus días disponibles, tiempo, nivel y objetivo.</string>
+    <string name="program_finder_frequency_label">Frecuencia semanal</string>
+    <string name="program_finder_frequency_days">%1$d Días</string>
+    <string name="program_finder_duration_label">Duración por sesión</string>
+    <string name="program_finder_duration_express">30-45 min (Rápido)</string>
+    <string name="program_finder_duration_standard">45-60 min (Estándar)</string>
+    <string name="program_finder_duration_long">60-90 min (Alto volumen)</string>
+    <string name="program_finder_experience_label">Nivel de experiencia</string>
+    <string name="program_finder_exp_beginner">&lt; 3 meses</string>
+    <string name="program_finder_exp_intermediate">3 - 12 meses</string>
+    <string name="program_finder_exp_advanced">&gt; 1 año</string>
+    <string name="program_finder_goal_label">Objetivo principal</string>
+    <string name="program_finder_goal_strength">Fuerza</string>
+    <string name="program_finder_goal_hypertrophy">Hipertrofia</string>
+    <string name="program_finder_goal_hybrid">Fuerza e Hipertrofia</string>
+    <string name="program_finder_recommended_badge">RECOMENDADO</string>
+    <string name="program_finder_action_import">Generar rutina</string>
+    <string name="program_finder_routines_included">Sesiones incluidas (%1$d):</string>
+    <string name="program_finder_exercises_count">%1$d ejercicios</string>
+    <string name="btn_program_wizard">Asistente</string>
 </resources>

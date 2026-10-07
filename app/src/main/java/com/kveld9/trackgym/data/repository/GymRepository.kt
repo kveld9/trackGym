@@ -918,6 +918,52 @@ class GymRepository(private val database: GymDatabase) {
         routineDao.updateRoutineArchived(routineId, isArchived)
     }
 
+    suspend fun instantiateProgram(program: com.kveld9.trackgym.domain.calculator.ProgramRecommendation): Long = withContext(Dispatchers.IO) {
+        val folderEntity = RoutineFolderEntity(name = program.name)
+        val folderId = routineDao.insertFolder(folderEntity)
+
+        val existingExercises = exerciseDao.getAllExercisesSync()
+        val existingByName = existingExercises.associateBy { it.name.lowercase().trim() }
+        val defaultByName = DefaultExercises.list.associateBy { it.name.lowercase().trim() }
+
+        program.routines.forEachIndexed { rIndex, routineTmpl ->
+            val routineEntity = RoutineEntity(
+                folderId = folderId,
+                name = routineTmpl.name,
+                orderIndex = rIndex,
+                createdAt = System.currentTimeMillis()
+            )
+            val routineId = routineDao.insertRoutine(routineEntity)
+
+            val routineExercises = routineTmpl.exercises.mapIndexed { eIndex, exTmpl ->
+                val nameLower = exTmpl.exerciseName.lowercase().trim()
+                var exerciseId = existingByName[nameLower]?.id
+
+                if (exerciseId == null) {
+                    val defaultEx = defaultByName[nameLower]
+                    val newEntity = ExerciseEntity(
+                        name = exTmpl.exerciseName.trim(),
+                        muscleGroup = defaultEx?.muscleGroup?.name ?: MuscleGroup.OTHER.name,
+                        category = defaultEx?.category?.name ?: ExerciseCategory.OTHER.name,
+                        isCustom = defaultEx == null
+                    )
+                    exerciseId = exerciseDao.insertExercise(newEntity)
+                }
+
+                RoutineExerciseEntity(
+                    routineId = routineId,
+                    exerciseId = exerciseId,
+                    orderIndex = eIndex,
+                    targetSets = exTmpl.targetSets,
+                    defaultWeightKg = exTmpl.defaultWeightKg,
+                    defaultReps = exTmpl.defaultReps
+                )
+            }
+            routineDao.insertRoutineExercises(routineExercises)
+        }
+        folderId
+    }
+
     suspend fun importRoutineFromShareDto(dto: RoutineShareDto): Long = withContext(Dispatchers.IO) {
         val routineEntity = RoutineEntity(
             name = dto.name.ifBlank { "Imported Routine" },

@@ -667,6 +667,13 @@ class GymViewModel(
         }
     }
 
+    fun instantiateProgram(program: com.kveld9.trackgym.domain.calculator.ProgramRecommendation, onCompleted: (() -> Unit)? = null) {
+        viewModelScope.launch {
+            repository.instantiateProgram(program)
+            onCompleted?.invoke()
+        }
+    }
+
     fun importRoutineFromText(rawText: String, onResult: (Boolean) -> Unit) {
         val dto = com.kveld9.trackgym.domain.util.RoutineShareCodec.decodeFromText(rawText)
         if (dto == null) {

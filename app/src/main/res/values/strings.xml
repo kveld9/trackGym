@@ -453,4 +453,25 @@
     <string name="menu_advance_cycle_week">Advance Week (+1)</string>
     <string name="menu_previous_cycle_week">Previous Week (-1)</string>
     <string name="badge_periodized_block">Block: W%1$d/%2$d</string>
+    <string name="program_finder_title">Program Finder Wizard</string>
+    <string name="program_finder_subtitle">Find your optimal routine based on your schedule, experience, and goals.</string>
+    <string name="program_finder_frequency_label">Weekly Frequency</string>
+    <string name="program_finder_frequency_days">%1$d Days</string>
+    <string name="program_finder_duration_label">Session Duration</string>
+    <string name="program_finder_duration_express">30-45 min (Express)</string>
+    <string name="program_finder_duration_standard">45-60 min (Standard)</string>
+    <string name="program_finder_duration_long">60-90 min (High Volume)</string>
+    <string name="program_finder_experience_label">Experience Level</string>
+    <string name="program_finder_exp_beginner">&lt; 3 months</string>
+    <string name="program_finder_exp_intermediate">3 - 12 months</string>
+    <string name="program_finder_exp_advanced">&gt; 1 year</string>
+    <string name="program_finder_goal_label">Primary Goal</string>
+    <string name="program_finder_goal_strength">Strength</string>
+    <string name="program_finder_goal_hypertrophy">Hypertrophy</string>
+    <string name="program_finder_goal_hybrid">Strength &amp; Size</string>
+    <string name="program_finder_recommended_badge">RECOMMENDED</string>
+    <string name="program_finder_action_import">Generate Program</string>
+    <string name="program_finder_routines_included">Included Routines (%1$d):</string>
+    <string name="program_finder_exercises_count">%1$d exercises</string>
+    <string name="btn_program_wizard">Program Wizard</string>
 </resources>
