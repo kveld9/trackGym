@@ -19,6 +19,7 @@
   - Reusable workout routines organized in folders.
 - **Custom Exercise Creation**:
   - Pre-seeded base library with 25+ standard exercises categorized by muscle group (*Chest, Back, Legs, Shoulders, Arms, Core*).
+  - Typo-tolerant fuzzy exercise search with Spanish diacritic normalization, acronym matching, and score ranking.
   - Manual creation of custom exercises with customizable muscle group, equipment type (*Barbell, Dumbbell, Machine, Cable, Bodyweight*), and notes.
 - **Before vs After Workout Comparison**:
   - Direct comparison between the current session and the previous session for the same exercise.

@@ -2,6 +2,7 @@ package com.kveld9.trackgym.ui.screens.active
 
 import android.content.Intent
 import android.widget.Toast
+import com.kveld9.trackgym.domain.calculator.FuzzyExerciseSearchEngine
 import com.kveld9.trackgym.domain.util.RoutineShareCodec
 import java.util.Locale
 import kotlinx.coroutines.launch
@@ -3308,11 +3309,11 @@ fun ExercisePickerContent(
     val filteredList = remember(exercises, searchQuery, keepEnglish) {
         if (searchQuery.isBlank()) exercises
         else {
-            val q = searchQuery.trim().lowercase()
-            exercises.filter {
-                it.displayName(context, keepEnglish).lowercase().contains(q) ||
-                it.name.lowercase().contains(q)
-            }
+            FuzzyExerciseSearchEngine.filterAndRank(
+                query = searchQuery,
+                exercises = exercises,
+                keepEnglish = keepEnglish
+            )
         }
     }
 

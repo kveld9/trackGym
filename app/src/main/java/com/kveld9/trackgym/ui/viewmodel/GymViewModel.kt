@@ -4,9 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.kveld9.trackgym.data.repository.GymRepository
+import com.kveld9.trackgym.domain.calculator.FuzzyExerciseSearchEngine
 import com.kveld9.trackgym.domain.model.Exercise
 import com.kveld9.trackgym.domain.model.ExerciseCategory
-import com.kveld9.trackgym.domain.model.ExerciseTranslationRegistry
 import com.kveld9.trackgym.domain.model.MechanicsType
 import com.kveld9.trackgym.domain.model.MuscleGroup
 import com.kveld9.trackgym.domain.model.PersonalRecord
@@ -199,10 +199,7 @@ class GymViewModel(
         val mechanicsFilter = array[5] as MechanicsType?
         val keepEnglish = array[6] as Boolean
 
-        exercises.filter { ex ->
-            val matchesQuery = query.isBlank() ||
-                ex.name.contains(query, ignoreCase = true) ||
-                (!keepEnglish && ExerciseTranslationRegistry.matchesQuery(ex.name, query))
+        val preFiltered = exercises.filter { ex ->
             val matchesMuscle = muscleFilter == null || ex.muscleGroup == muscleFilter
             val matchesOrigin = when (originFilter) {
                 ExerciseOriginFilter.ALL -> true
@@ -212,7 +209,17 @@ class GymViewModel(
             val matchesEquipment = equipmentFilter == null || ex.category == equipmentFilter
             val matchesMechanics = mechanicsFilter == null || ex.mechanics == mechanicsFilter
 
-            matchesQuery && matchesMuscle && matchesOrigin && matchesEquipment && matchesMechanics
+            matchesMuscle && matchesOrigin && matchesEquipment && matchesMechanics
+        }
+
+        if (query.isBlank()) {
+            preFiltered
+        } else {
+            FuzzyExerciseSearchEngine.filterAndRank(
+                query = query,
+                exercises = preFiltered,
+                keepEnglish = keepEnglish
+            )
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
