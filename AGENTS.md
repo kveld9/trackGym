@@ -77,4 +77,13 @@
   - **Zero-Emoji Policy**: Emojis are strictly prohibited throughout the application (source code, Jetpack Compose layouts, badges, headers, labels, and Android string resources). Use formal typography, vector iconography (`androidx.compose.material.icons`), or dedicated design tokens instead.
   - **Release Optimization**: Always maintain `isMinifyEnabled = true` and `isShrinkResources = true` with R8 in release builds to enforce sub-5MB APK sizes.
 
+---
 
+## 6. MANDATORY UNIT TEST POLICY
+
+- **Universal Test Coverage Requirement**:
+  - Every calculation, engine, algorithm, parser, converter, and business logic component residing in `domain/` or `data/` MUST have dedicated unit tests in `app/src/test/java/`.
+  - When introducing or modifying any engine, calculator, business rule, format parser, or state transformation:
+    1. The agent MUST create or update the corresponding unit test suite in the exact same atomic commit.
+    2. Tests must be fast, deterministic, offline, and executable via `./gradlew testDebugUnitTest`.
+    3. No feature containing business logic may be considered complete or committed without its corresponding unit test suite passing.
