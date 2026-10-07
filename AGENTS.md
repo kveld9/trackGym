@@ -17,6 +17,7 @@
   - `data`: Repositories and Room local persistence (`GymRepository.kt`, entities, DAOs).
   - `ui`: Jetpack Compose screens (`ActiveWorkoutScreen`, `WorkoutComparisonScreen`, `HistoryScreen`, `ExercisesScreen`, `RecordsScreen`), theme, and `GymViewModel.kt`.
 - **Build System**: Gradle 9.5 (AGP `9.3.1`, Kotlin DSL: `build.gradle.kts`, `app/build.gradle.kts`, `gradle/libs.versions.toml`).
+- **Performance**: AndroidX Baseline Profiles (`:baselineprofile`).
 
 ---
 

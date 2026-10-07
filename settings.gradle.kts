@@ -24,3 +24,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "TrackGym"
 include(":app")
+include(":baselineprofile")

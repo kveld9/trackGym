@@ -1,6 +1,8 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
     alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.android.test) apply false
+    alias(libs.plugins.androidx.baselineprofile) apply false
     alias(libs.plugins.compose.compiler) apply false
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.kotlin.serialization) apply false
@@ -66,6 +68,7 @@ abstract class SyncHarnessTask : DefaultTask() {
   - `data`: Repositories and Room local persistence (`GymRepository.kt`, entities, DAOs).
   - `ui`: Jetpack Compose screens (`ActiveWorkoutScreen`, `WorkoutComparisonScreen`, `HistoryScreen`, `ExercisesScreen`, `RecordsScreen`), theme, and `GymViewModel.kt`.
 - **Build System**: Gradle 9.5 (AGP `$agpVer`, Kotlin DSL: `build.gradle.kts`, `app/build.gradle.kts`, `gradle/libs.versions.toml`).
+- **Performance**: AndroidX Baseline Profiles (`:baselineprofile`).
 """.trimIndent()
 
         val agentsContent = agentsMd.readText()
