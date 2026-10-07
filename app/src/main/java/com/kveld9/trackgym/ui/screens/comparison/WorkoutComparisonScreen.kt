@@ -40,7 +40,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
@@ -78,6 +80,7 @@ fun WorkoutComparisonScreen(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
     var previewBitmap by remember { mutableStateOf<Bitmap?>(null) }
     val shareChooserTitle = stringResource(R.string.share_chooser_title)
 
@@ -252,15 +255,19 @@ fun WorkoutComparisonScreen(
         WorkoutSharePreviewDialog(
             bitmap = bitmap,
             onDownload = {
-                val success = ShareProvider.saveBitmapToGallery(context, bitmap)
-                Toast.makeText(
-                    context,
-                    if (success) R.string.toast_image_saved else R.string.toast_image_save_failed,
-                    Toast.LENGTH_SHORT
-                ).show()
+                coroutineScope.launch {
+                    val success = ShareProvider.saveBitmapToGallery(context, bitmap)
+                    Toast.makeText(
+                        context,
+                        if (success) R.string.toast_image_saved else R.string.toast_image_save_failed,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             },
             onShare = {
-                ShareProvider.shareBitmap(context, bitmap, shareChooserTitle)
+                coroutineScope.launch {
+                    ShareProvider.shareBitmap(context, bitmap, shareChooserTitle)
+                }
             },
             onDismiss = {
                 previewBitmap = null
