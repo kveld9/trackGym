@@ -87,3 +87,22 @@
     1. The agent MUST create or update the corresponding unit test suite in the exact same atomic commit.
     2. Tests must be fast, deterministic, offline, and executable via `./gradlew testDebugUnitTest`.
     3. No feature containing business logic may be considered complete or committed without its corresponding unit test suite passing.
+
+---
+
+## 7. LOW-END DEVICE OPTIMIZATION & ANTI-OBSOLESCENCE POLICY
+
+To actively combat planned obsolescence and ensure universal accessibility for users training on budget or legacy devices:
+- **Strict Backward Compatibility**: Maintain `minSdk 24` (Android 7.0 Nougat) baseline without regressions.
+- **Memory Footprint & Allocation Discipline**:
+  - Runtime heap memory must remain strictly contained ($\le 50\,\text{MB}$).
+  - Never allocate short-lived objects, heavy collections, or formatters inside hot Compose recomposition loops.
+  - Image/bitmap captures (e.g. session summary sharing) must be generated strictly on demand using hardware acceleration and promptly recycled/dereferenced.
+- **CPU & Battery Preservation**:
+  - 0 unnecessary background daemons, 0 WakeLocks, and 0 redundant alarms.
+  - UI state collection must use `collectAsStateWithLifecycle()` to pause rendering pipelines when the screen is locked or backgrounded during a gym rest interval.
+  - List items must declare stable keys (`key(exercise.id)`) to minimize recomposition churn on budget processors.
+- **Storage & Disk Overhead**:
+  - Maintain release APK size $\le 5\,\text{MB}$ using R8 full mode shrinking and resource optimization.
+  - All Room queries, file exports, and JSON parsing operations must execute exclusively off the main thread via `Dispatchers.IO`.
+  - Zero third-party telemetry, commercial ad SDKs, or background trackers.
