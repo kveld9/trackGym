@@ -1,16 +1,22 @@
-# TrackGym 🏋️‍♂️
+# TrackGym
 
 > Native Android gym tracker app built with Kotlin and Jetpack Compose for logging workouts, exercises, weights, reps, and sets, featuring a comprehensive "Before vs After" session comparison engine and automated Personal Record (PR) detection.
 
 ---
 
-## ⚡ Key Features
+## Key Features
 
 - **Live Workout Tracking**:
-  - Real-time session elapsed timer.
-  - Interactive sets table: Set number, Previous performance indicator, Weight (kg), Reps, and Completion checkbox.
-  - Support for multiple set types: *Normal*, *Warm-up*, *Drop Set*, and *Failure*.
-  - Real-time previous target indicators per set for progressive overload.
+  - Real-time session elapsed timer with per-exercise custom rest durations.
+  - Interactive sets table: Set number, Previous performance indicator, Weight, Reps, and Completion checkbox.
+  - Set types: *Normal*, *Warm-up*, *Drop Set*, *Failure*, and *Myo-Reps*.
+  - RPE / RIR selector per set.
+  - Quick set duplication and swipe-to-dismiss sets with undo.
+  - Dynamic exercise reordering and in-workout exercise swap.
+  - Pinned exercise notes and live session notes.
+  - Automatic warm-up set generation.
+- **Routines**:
+  - Reusable workout routines organized in folders.
 - **Custom Exercise Creation**:
   - Pre-seeded base library with 25+ standard exercises categorized by muscle group (*Chest, Back, Legs, Shoulders, Arms, Core*).
   - Manual creation of custom exercises with customizable muscle group, equipment type (*Barbell, Dumbbell, Machine, Cable, Bodyweight*), and notes.
@@ -18,10 +24,21 @@
   - Direct comparison between the current session and the previous session for the same exercise.
   - E.g., *Last Thursday you performed 2x8 @ 15.0 kg and this Thursday you performed 2x10 @ 15.0 kg (+2 reps) or 2x8 @ 18.0 kg (+3.0 kg)*.
   - Automatic calculation of deltas for weight, repetitions, and total training volume.
+- **Training Analysis**:
+  - Progressive overload recommendations based on the previous session.
+  - Real-time overtraining and junk volume warnings.
+  - Weekly muscle split heatmap and training consistency tracking.
+  - Configurable volume metrics: dumbbell volume doubling and optional warm-up set exclusion.
+  - Workout export as a structured prompt for LLM analysis.
 - **Automated Personal Record (PR) Detection**:
   - Real-time detection upon checking off each completed set.
-  - Tracks milestones: **Max Weight**, **Reps Record at a given weight**, **Best Estimated 1RM (Epley Formula)**, and **Max Set Volume**.
+  - Tracks milestones: **Max Weight**, **Reps Record at a given weight**, **Best Estimated 1RM**, and **Max Set Volume**.
+  - Selectable 1RM formula: *Epley*, *Brzycki*, *Wathan*, *Lander*, *Lombardi*, *Mayhew*, or *O'Conner*.
   - Immediate visual badge/banner notification and dedicated PR showcase gallery.
+- **Plate Calculator**:
+  - Barbell profiles, collar clips, and custom plate inventory.
+- **Units**:
+  - Weight in kilograms or pounds; distance in kilometers or miles.
 - **Theming & Appearance**:
   - Full theme customization powered by Jetpack DataStore Preferences:
     - Theme Mode: System Default, Light Mode, Dark Mode.
@@ -31,6 +48,7 @@
   - Offline-first storage with Room Database (SQLite).
   - Storage Access Framework (SAF) JSON export/import with bounded stream parsing (10 MB limit).
   - Duplicate conflict resolution policy (*Skip*, *Overwrite*, or *Duplicate*).
+  - CSV workout history export and import.
 - **Localization (i18n)**:
   - English as base/default language.
   - Full Spanish translation included out of the box.
@@ -38,7 +56,7 @@
 
 ---
 
-## 🌐 Localization & Contributing Translations
+## Localization & Contributing Translations
 
 TrackGym is built to be easily localizable by the community. All UI text is strictly modularized into Android string resources without hardcoded strings in Compose screens.
 
@@ -65,7 +83,7 @@ TrackGym is built to be easily localizable by the community. All UI text is stri
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Component | Technology |
 | :--- | :--- |
@@ -80,7 +98,7 @@ TrackGym is built to be easily localizable by the community. All UI text is stri
 
 ---
 
-## 🚀 Building & Running
+## Building & Running
 
 ### Prerequisites
 - Android SDK (`compileSdk 37`, `targetSdk 35`, `minSdk 24`)
