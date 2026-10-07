@@ -208,12 +208,16 @@
     <string name="view_on_github">Ver en GitHub (%1$s)</string>
 
     <!-- Set Types -->
+    <string name="table_header_reps_or_time">REPS / TIEMPO</string>
     <string name="set_type_normal">Serie normal</string>
     <string name="set_type_warmup">Calentamiento (W)</string>
     <string name="set_type_drop">Drop Set (D)</string>
     <string name="set_type_failure">Al fallo (F)</string>
     <string name="set_type_myo_reps">Myo-Reps (M)</string>
+    <string name="set_type_duration">Tiempo / Isométrico (T)</string>
     <string name="set_type_dialog_title">Seleccionar tipo de serie</string>
+    <string name="action_start_stopwatch">Iniciar cronómetro</string>
+    <string name="action_stop_stopwatch">Detener cronómetro</string>
 
     <!-- RPE / RIR Selection -->
     <string name="rpe_dialog_title">Seleccionar RPE / RIR</string>

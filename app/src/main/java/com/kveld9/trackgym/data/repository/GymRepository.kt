@@ -474,6 +474,7 @@ class GymRepository(private val database: GymDatabase) {
                         setType = s.setType,
                         weightKg = s.weightKg,
                         reps = s.reps,
+                        durationSeconds = s.durationSeconds,
                         rpe = s.rpe,
                         isCompleted = s.isCompleted,
                         completedAt = s.completedAt
@@ -625,6 +626,7 @@ class GymRepository(private val database: GymDatabase) {
                             setType = sDto.setType,
                             weightKg = sDto.weightKg,
                             reps = sDto.reps,
+                            durationSeconds = sDto.durationSeconds,
                             rpe = sDto.rpe,
                             isCompleted = sDto.isCompleted,
                             completedAt = sDto.completedAt

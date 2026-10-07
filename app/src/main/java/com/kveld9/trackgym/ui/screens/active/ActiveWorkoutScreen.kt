@@ -1376,7 +1376,15 @@ fun WorkoutExerciseCard(
             ) {
                 Text(stringResource(R.string.table_header_set), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.width(48.dp), textAlign = TextAlign.Center)
                 Text(weightUnit.symbol.uppercase(), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
-                Text(stringResource(R.string.table_header_reps), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
+                val hasDurationSets = workoutExercise.sets.any { it.setType == SetType.DURATION }
+                Text(
+                    text = if (hasDurationSets) stringResource(R.string.table_header_reps_or_time) else stringResource(R.string.table_header_reps),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f),
+                    textAlign = TextAlign.Center
+                )
                 Text(stringResource(R.string.table_header_complete), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp, fontWeight = FontWeight.Bold, modifier = Modifier.width(48.dp), textAlign = TextAlign.Center)
             }
 
@@ -1586,16 +1594,37 @@ fun SetRowItem(
             weightText = expected
         }
     }
-    var repsText by remember(set.id, set.reps) {
-        mutableStateOf(if (set.reps > 0) set.reps.toString() else "")
+    val isDuration = set.setType == SetType.DURATION
+    var isStopwatchRunning by remember { mutableStateOf(false) }
+
+    LaunchedEffect(isStopwatchRunning) {
+        if (isStopwatchRunning) {
+            while (isStopwatchRunning) {
+                kotlinx.coroutines.delay(1000)
+                val current = (set.durationSeconds ?: set.reps) + 1
+                onUpdateSet(set.copy(durationSeconds = current, reps = current))
+            }
+        }
     }
 
     val ghostWeightDisplay = if (previousSet != null && previousSet.weightKg > 0.0) {
         weightUnit.formatValue(previousSet.weightKg)
     } else null
     val ghostRepsDisplay = if (previousSet != null && previousSet.reps > 0) {
-        previousSet.reps.toString()
+        if (isDuration) com.kveld9.trackgym.domain.util.DurationFormatter.formatSecondsToMmSs(previousSet.durationSeconds ?: previousSet.reps)
+        else previousSet.reps.toString()
     } else null
+
+    var repsText by remember(set.id, set.reps, set.durationSeconds, isDuration) {
+        mutableStateOf(
+            if (isDuration) {
+                val sec = set.durationSeconds ?: set.reps
+                if (sec > 0) com.kveld9.trackgym.domain.util.DurationFormatter.formatSecondsToMmSs(sec) else ""
+            } else {
+                if (set.reps > 0) set.reps.toString() else ""
+            }
+        )
+    }
 
     var showSetTypePicker by remember { mutableStateOf(false) }
 
@@ -1610,6 +1639,7 @@ fun SetRowItem(
         SetType.DROP -> GymBlue
         SetType.FAILURE -> MaterialTheme.colorScheme.error
         SetType.MYO_REPS -> MaterialTheme.colorScheme.tertiary
+        SetType.DURATION -> GymBlue
     }
 
     val badgeLabel = when (set.setType) {
@@ -1618,6 +1648,7 @@ fun SetRowItem(
         SetType.DROP -> "D"
         SetType.FAILURE -> "F"
         SetType.MYO_REPS -> "M"
+        SetType.DURATION -> "T"
     }
 
     var showQuickAdjust by remember { mutableStateOf(false) }
@@ -1667,6 +1698,7 @@ fun SetRowItem(
                                             SetType.DROP -> GymBlue
                                             SetType.FAILURE -> MaterialTheme.colorScheme.error
                                             SetType.MYO_REPS -> MaterialTheme.colorScheme.tertiary
+                                            SetType.DURATION -> GymBlue
                                         },
                                         fontWeight = FontWeight.Bold,
                                         modifier = Modifier.width(28.dp)
@@ -1680,6 +1712,9 @@ fun SetRowItem(
                             },
                             onClick = {
                                 showSetTypePicker = false
+                                if (type != SetType.DURATION) {
+                                    isStopwatchRunning = false
+                                }
                                 onUpdateSet(set.copy(setType = type))
                             }
                         )
@@ -1741,25 +1776,45 @@ fun SetRowItem(
                 )
             }
 
-            // Reps Input with Ghost Placeholder
+            // Reps Input with Ghost Placeholder & In-set Stopwatch
             Box(modifier = Modifier.weight(1f).padding(horizontal = 4.dp)) {
                 OutlinedTextField(
                     value = repsText,
                     onValueChange = { input ->
                         repsText = input
-                        val parsed = input.toIntOrNull() ?: 0
-                        onUpdateSet(set.copy(reps = parsed))
+                        if (isDuration) {
+                            val parsedSec = com.kveld9.trackgym.domain.util.DurationFormatter.parseInputToSeconds(input)
+                            onUpdateSet(set.copy(durationSeconds = parsedSec, reps = parsedSec))
+                        } else {
+                            val parsed = input.toIntOrNull() ?: 0
+                            onUpdateSet(set.copy(reps = parsed))
+                        }
                     },
                     placeholder = {
                         Text(
-                            text = ghostRepsDisplay ?: "0",
-                            color = if (ghostRepsDisplay != null) {
+                            text = if (isDuration) "00:00" else (ghostRepsDisplay ?: "0"),
+                            color = if (ghostRepsDisplay != null || isDuration) {
                                 MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
                             } else {
                                 MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)
                             }
                         )
                     },
+                    trailingIcon = if (isDuration) {
+                        {
+                            IconButton(
+                                onClick = { isStopwatchRunning = !isStopwatchRunning },
+                                modifier = Modifier.size(32.dp)
+                            ) {
+                                Icon(
+                                    imageVector = if (isStopwatchRunning) Icons.Default.Pause else Icons.Default.PlayArrow,
+                                    contentDescription = if (isStopwatchRunning) stringResource(R.string.action_stop_stopwatch) else stringResource(R.string.action_start_stopwatch),
+                                    tint = if (isStopwatchRunning) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                                    modifier = Modifier.size(16.dp)
+                                )
+                            }
+                        }
+                    } else null,
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     textStyle = androidx.compose.ui.text.TextStyle(textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onSurface, fontSize = 15.sp),
@@ -1781,6 +1836,7 @@ fun SetRowItem(
                     .clip(RoundedCornerShape(8.dp))
                     .background(checkBgColor)
                     .clickable {
+                        isStopwatchRunning = false
                         val typedDisplay = weightText.replace(',', '.').toDoubleOrNull()
                         val finalWeightKg = if (typedDisplay != null) {
                             weightUnit.toKg(typedDisplay)
@@ -1792,22 +1848,32 @@ fun SetRowItem(
                             0.0
                         }
 
-                        val typedReps = repsText.toIntOrNull()
-                        val finalReps = if (typedReps != null) {
-                            typedReps
-                        } else if (set.reps > 0) {
-                            set.reps
-                        } else if (previousSet != null && previousSet.reps > 0) {
-                            previousSet.reps
+                        val finalReps = if (isDuration) {
+                            val parsedSec = com.kveld9.trackgym.domain.util.DurationFormatter.parseInputToSeconds(repsText)
+                            if (parsedSec > 0) parsedSec
+                            else (set.durationSeconds ?: set.reps)
                         } else {
-                            0
+                            val typedReps = repsText.toIntOrNull()
+                            if (typedReps != null) {
+                                typedReps
+                            } else if (set.reps > 0) {
+                                set.reps
+                            } else if (previousSet != null && previousSet.reps > 0) {
+                                previousSet.reps
+                            } else {
+                                0
+                            }
                         }
 
                         if (weightText.isBlank()) {
                             weightText = weightUnit.formatValue(finalWeightKg)
                         }
                         if (repsText.isBlank() && finalReps > 0) {
-                            repsText = finalReps.toString()
+                            repsText = if (isDuration) {
+                                com.kveld9.trackgym.domain.util.DurationFormatter.formatSecondsToMmSs(finalReps)
+                            } else {
+                                finalReps.toString()
+                            }
                         }
 
                         showQuickAdjust = false

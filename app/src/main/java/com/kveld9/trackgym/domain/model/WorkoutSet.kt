@@ -7,10 +7,14 @@ data class WorkoutSet(
     val setType: SetType = SetType.NORMAL,
     val weightKg: Double = 0.0,
     val reps: Int = 0,
+    val durationSeconds: Int? = null,
     val rpe: Double? = null,
     val isCompleted: Boolean = false,
     val completedAt: Long? = null
 ) {
     val volume: Double
         get() = if (isCompleted) weightKg * reps else 0.0
+
+    val effectiveDurationSeconds: Int
+        get() = durationSeconds ?: reps
 }

@@ -12,5 +12,6 @@ enum class SetType(
     WARMUP("W", R.string.set_type_warmup, "Warmup"),
     DROP("D", R.string.set_type_drop, "Drop Set"),
     FAILURE("F", R.string.set_type_failure, "Failure"),
-    MYO_REPS("M", R.string.set_type_myo_reps, "Myo-Reps")
+    MYO_REPS("M", R.string.set_type_myo_reps, "Myo-Reps"),
+    DURATION("T", R.string.set_type_duration, "Time / Duration")
 }

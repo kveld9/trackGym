@@ -33,6 +33,7 @@ data class WorkoutSetBackupDto(
     val setType: String,
     val weightKg: Double,
     val reps: Int,
+    val durationSeconds: Int? = null,
     val rpe: Double? = null,
     val isCompleted: Boolean = false,
     val completedAt: Long? = null

@@ -28,6 +28,7 @@ data class WorkoutSetEntity(
     val setType: String = SetType.NORMAL.name,
     val weightKg: Double = 0.0,
     val reps: Int = 0,
+    val durationSeconds: Int? = null,
     val rpe: Double? = null,
     val isCompleted: Boolean = false,
     val completedAt: Long? = null
@@ -40,6 +41,7 @@ data class WorkoutSetEntity(
             setType = runCatching { SetType.valueOf(setType) }.getOrDefault(SetType.NORMAL),
             weightKg = weightKg,
             reps = reps,
+            durationSeconds = durationSeconds,
             rpe = rpe,
             isCompleted = isCompleted,
             completedAt = completedAt
@@ -55,6 +57,7 @@ data class WorkoutSetEntity(
                 setType = domain.setType.name,
                 weightKg = domain.weightKg,
                 reps = domain.reps,
+                durationSeconds = domain.durationSeconds,
                 rpe = domain.rpe,
                 isCompleted = domain.isCompleted,
                 completedAt = domain.completedAt
