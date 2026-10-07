@@ -474,4 +474,11 @@
     <string name="program_finder_routines_included">Included Routines (%1$d):</string>
     <string name="program_finder_exercises_count">%1$d exercises</string>
     <string name="btn_program_wizard">Program Wizard</string>
+    <string name="deload_dialog_title">Generate Deload Routine</string>
+    <string name="deload_dialog_desc">Creates an active recovery copy with reduced sets and lighter weights to dissipate accumulated CNS and joint fatigue.</string>
+    <string name="deload_volume_reduction_label">Volume Reduction (Sets)</string>
+    <string name="deload_load_reduction_label">Load Reduction (Weight)</string>
+    <string name="deload_routine_suffix">(Deload)</string>
+    <string name="action_generate_deload">Create Deload Routine</string>
+    <string name="menu_generate_deload">Create Deload Version</string>
 </resources>

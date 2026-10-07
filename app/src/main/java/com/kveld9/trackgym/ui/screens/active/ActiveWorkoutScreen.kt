@@ -54,10 +54,12 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Timer
 import com.kveld9.trackgym.domain.calculator.ProgramRecommendation
 import com.kveld9.trackgym.domain.model.PeriodizedCycle
+import com.kveld9.trackgym.ui.components.DeloadRoutineDialog
 import com.kveld9.trackgym.ui.components.PeriodizedCycleDialog
 import com.kveld9.trackgym.ui.components.ProgramFinderDialog
 import androidx.compose.material3.AlertDialog
@@ -301,6 +303,7 @@ fun ActiveWorkoutScreen(
             onAdvanceCycleWeek = { routineId -> viewModel.advanceRoutineCycleWeek(routineId) },
             onPreviousCycleWeek = { routineId -> viewModel.previousRoutineCycleWeek(routineId) },
             onInstantiateProgram = { program -> viewModel.instantiateProgram(program) },
+            onGenerateDeloadRoutine = { routineId, loadPct, volPct -> viewModel.generateDeloadRoutine(routineId, loadPct, volPct) },
             modifier = modifier
         )
     } else {
@@ -1046,6 +1049,7 @@ fun EmptyWorkoutDashboard(
     onAdvanceCycleWeek: ((Long) -> Unit)? = null,
     onPreviousCycleWeek: ((Long) -> Unit)? = null,
     onInstantiateProgram: ((ProgramRecommendation) -> Unit)? = null,
+    onGenerateDeloadRoutine: ((Long, Double, Double) -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     var selectedFolderId by remember { mutableStateOf<Long?>(null) }
@@ -1054,6 +1058,7 @@ fun EmptyWorkoutDashboard(
     var showImportRoutineDialog by remember { mutableStateOf(false) }
     var showProgramFinderDialog by remember { mutableStateOf(false) }
     var routineToConfigurePeriodization by remember { mutableStateOf<Routine?>(null) }
+    var routineToGenerateDeload by remember { mutableStateOf<Routine?>(null) }
     val baseRoutines = if (showArchived) {
         routines.filter { it.isArchived }
     } else {
@@ -1314,6 +1319,9 @@ fun EmptyWorkoutDashboard(
                         onStart = { onStartRoutine(routine.id) },
                         onDelete = { onDeleteRoutine(routine.id) },
                         onDuplicate = { onDuplicateRoutine?.invoke(routine.id) },
+                        onGenerateDeload = if (onGenerateDeloadRoutine != null) {
+                            { routineToGenerateDeload = routine }
+                        } else null,
                         onToggleArchive = { onToggleArchive?.invoke(routine.id, !routine.isArchived) },
                         onConfigurePeriodization = { routineToConfigurePeriodization = routine },
                         onAdvanceWeek = { onAdvanceCycleWeek?.invoke(routine.id) },
@@ -1379,6 +1387,18 @@ fun EmptyWorkoutDashboard(
             onDismiss = { showProgramFinderDialog = false }
         )
     }
+
+    if (routineToGenerateDeload != null && onGenerateDeloadRoutine != null) {
+        val targetRoutine = routineToGenerateDeload!!
+        DeloadRoutineDialog(
+            routineName = targetRoutine.name,
+            onGenerate = { loadPct, volPct ->
+                onGenerateDeloadRoutine(targetRoutine.id, loadPct, volPct)
+                routineToGenerateDeload = null
+            },
+            onDismiss = { routineToGenerateDeload = null }
+        )
+    }
 }
 
 @Composable
@@ -1387,6 +1407,7 @@ fun RoutineCardItem(
     onStart: () -> Unit,
     onDelete: () -> Unit,
     onDuplicate: (() -> Unit)? = null,
+    onGenerateDeload: (() -> Unit)? = null,
     onToggleArchive: (() -> Unit)? = null,
     onConfigurePeriodization: (() -> Unit)? = null,
     onAdvanceWeek: (() -> Unit)? = null,
@@ -1563,6 +1584,16 @@ fun RoutineCardItem(
                                 onClick = {
                                     menuExpanded = false
                                     onDuplicate()
+                                }
+                            )
+                        }
+                        if (onGenerateDeload != null) {
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.menu_generate_deload)) },
+                                leadingIcon = { Icon(Icons.Default.Refresh, contentDescription = null) },
+                                onClick = {
+                                    menuExpanded = false
+                                    onGenerateDeload()
                                 }
                             )
                         }

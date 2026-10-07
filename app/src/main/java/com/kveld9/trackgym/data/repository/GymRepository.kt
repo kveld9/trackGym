@@ -25,6 +25,7 @@ import com.kveld9.trackgym.domain.model.PersonalRecord
 import com.kveld9.trackgym.data.local.entity.RoutineEntity
 import com.kveld9.trackgym.data.local.entity.RoutineExerciseEntity
 import com.kveld9.trackgym.data.local.entity.RoutineFolderEntity
+import com.kveld9.trackgym.domain.calculator.DeloadGenerator
 import com.kveld9.trackgym.domain.calculator.PeriodizedRoutineEngine
 import com.kveld9.trackgym.domain.model.PeriodizedCycle
 import com.kveld9.trackgym.domain.model.Routine
@@ -882,6 +883,42 @@ class GymRepository(private val database: GymDatabase) {
             )
         }
         routineDao.insertRoutineExercises(duplicatedExercises)
+        newRoutineId
+    }
+
+    suspend fun generateDeloadRoutine(
+        routineId: Long,
+        loadReductionPct: Double = DeloadGenerator.DEFAULT_LOAD_REDUCTION_PCT,
+        volumeReductionPct: Double = DeloadGenerator.DEFAULT_VOLUME_REDUCTION_PCT,
+        copySuffix: String = "(Deload)"
+    ): Long = withContext(Dispatchers.IO) {
+        val original = routineDao.getRoutineById(routineId) ?: return@withContext -1L
+        val originalExercises = routineDao.getExercisesForRoutine(routineId)
+
+        val newRoutine = RoutineEntity(
+            folderId = original.folderId,
+            name = "${original.name} $copySuffix".trim(),
+            notes = "Deload routine: -${volumeReductionPct.toInt()}% volume, -${loadReductionPct.toInt()}% load.",
+            orderIndex = original.orderIndex + 1,
+            isArchived = false,
+            isPeriodized = false,
+            createdAt = System.currentTimeMillis()
+        )
+        val newRoutineId = routineDao.insertRoutine(newRoutine)
+
+        val deloadExercises = originalExercises.map { re ->
+            val targetSets = DeloadGenerator.calculateDeloadSets(re.targetSets, volumeReductionPct)
+            val deloadWeight = DeloadGenerator.calculateDeloadWeight(re.defaultWeightKg, loadReductionPct)
+            RoutineExerciseEntity(
+                routineId = newRoutineId,
+                exerciseId = re.exerciseId,
+                orderIndex = re.orderIndex,
+                targetSets = targetSets,
+                defaultWeightKg = deloadWeight,
+                defaultReps = re.defaultReps
+            )
+        }
+        routineDao.insertRoutineExercises(deloadExercises)
         newRoutineId
     }
 

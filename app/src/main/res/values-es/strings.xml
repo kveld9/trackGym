@@ -474,4 +474,11 @@
     <string name="program_finder_routines_included">Sesiones incluidas (%1$d):</string>
     <string name="program_finder_exercises_count">%1$d ejercicios</string>
     <string name="btn_program_wizard">Asistente</string>
+    <string name="deload_dialog_title">Generar Rutina de Descarga</string>
+    <string name="deload_dialog_desc">Crea una copia de recuperación activa con menos series y cargas reducidas para disipar fatiga articular y del sistema nervioso.</string>
+    <string name="deload_volume_reduction_label">Reducción de volumen (Series)</string>
+    <string name="deload_load_reduction_label">Reducción de carga (Peso)</string>
+    <string name="deload_routine_suffix">(Descarga)</string>
+    <string name="action_generate_deload">Crear rutina de descarga</string>
+    <string name="menu_generate_deload">Crear versión de descarga</string>
 </resources>

@@ -637,6 +637,19 @@ class GymViewModel(
         }
     }
 
+    fun generateDeloadRoutine(
+        routineId: Long,
+        loadReductionPct: Double = com.kveld9.trackgym.domain.calculator.DeloadGenerator.DEFAULT_LOAD_REDUCTION_PCT,
+        volumeReductionPct: Double = com.kveld9.trackgym.domain.calculator.DeloadGenerator.DEFAULT_VOLUME_REDUCTION_PCT,
+        copySuffix: String = "(Deload)",
+        onCreated: ((Long) -> Unit)? = null
+    ) {
+        viewModelScope.launch {
+            val newId = repository.generateDeloadRoutine(routineId, loadReductionPct, volumeReductionPct, copySuffix)
+            onCreated?.invoke(newId)
+        }
+    }
+
     fun toggleRoutineArchived(routineId: Long, isArchived: Boolean) {
         viewModelScope.launch {
             repository.setRoutineArchived(routineId, isArchived)
