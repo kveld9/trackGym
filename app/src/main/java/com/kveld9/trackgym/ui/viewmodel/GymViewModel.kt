@@ -680,6 +680,7 @@ class GymViewModel(
         notes: String = "",
         syncRoutine: Boolean = false,
         detachRoutine: Boolean = false,
+        completedAtTimestamp: Long? = null,
         onFinished: () -> Unit
     ) {
         val current = _activeWorkout.value ?: return
@@ -697,7 +698,8 @@ class GymViewModel(
                     notes = notes,
                     weightUnit = activeUnit,
                     userBodyWeightKg = userBodyWeight.value,
-                    detachRoutine = detachRoutine
+                    detachRoutine = detachRoutine,
+                    completedAtTimestamp = completedAtTimestamp
                 )
                 if (comparison != null) {
                     _lastFinishedComparison.value = comparison

@@ -363,4 +363,10 @@
     <string name="toast_routine_synced">Routine template updated</string>
     <string name="checkbox_detach_routine">Detach from routine \"%1$s\"</string>
     <string name="checkbox_detach_routine_desc">Save as independent workout without modifying routine history</string>
+    <string name="label_completion_date">Date &amp; Time Completed</string>
+    <string name="action_backdate_workout">Change completion date &amp; time</string>
+    <string name="btn_select_date">Select Date</string>
+    <string name="btn_select_time">Select Time</string>
+    <string name="dialog_select_date_title">Completion Date</string>
+    <string name="dialog_select_time_title">Completion Time</string>
 </resources>

@@ -226,6 +226,7 @@ fun ActiveWorkoutScreen(
     var showSaveRoutineDialog by remember { mutableStateOf(false) }
     var finishNotes by remember { mutableStateOf("") }
     var detachRoutineFromWorkout by remember { mutableStateOf(false) }
+    var backdateCompletionTimestamp by remember { mutableStateOf<Long?>(null) }
     var routineNameInput by remember { mutableStateOf("") }
     var plateCalcExercise by remember { mutableStateOf<WorkoutExercise?>(null) }
     var restConfigExercise by remember { mutableStateOf<WorkoutExercise?>(null) }
@@ -593,6 +594,70 @@ fun ActiveWorkoutScreen(
                         )
                     )
 
+                    val activeDateMillis = backdateCompletionTimestamp ?: System.currentTimeMillis()
+                    val formattedDate = remember(activeDateMillis) {
+                        java.text.SimpleDateFormat("yyyy-MM-dd HH:mm", java.util.Locale.getDefault())
+                            .format(java.util.Date(activeDateMillis))
+                    }
+                    val isBackdated = backdateCompletionTimestamp != null
+                    val context = LocalContext.current
+
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                            .clickable {
+                                val cal = java.util.Calendar.getInstance().apply { timeInMillis = activeDateMillis }
+                                android.app.DatePickerDialog(
+                                    context,
+                                    { _, year, month, dayOfMonth ->
+                                        cal.set(java.util.Calendar.YEAR, year)
+                                        cal.set(java.util.Calendar.MONTH, month)
+                                        cal.set(java.util.Calendar.DAY_OF_MONTH, dayOfMonth)
+                                        android.app.TimePickerDialog(
+                                            context,
+                                            { _, hourOfDay, minute ->
+                                                cal.set(java.util.Calendar.HOUR_OF_DAY, hourOfDay)
+                                                cal.set(java.util.Calendar.MINUTE, minute)
+                                                backdateCompletionTimestamp = cal.timeInMillis
+                                            },
+                                            cal.get(java.util.Calendar.HOUR_OF_DAY),
+                                            cal.get(java.util.Calendar.MINUTE),
+                                            true
+                                        ).show()
+                                    },
+                                    cal.get(java.util.Calendar.YEAR),
+                                    cal.get(java.util.Calendar.MONTH),
+                                    cal.get(java.util.Calendar.DAY_OF_MONTH)
+                                ).show()
+                            }
+                            .padding(horizontal = 12.dp, vertical = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = stringResource(R.string.label_completion_date),
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            Text(
+                                text = formattedDate,
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = if (isBackdated) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = stringResource(R.string.action_backdate_workout),
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+
                     if (activeWorkout?.routineId != null) {
                         Spacer(modifier = Modifier.height(12.dp))
                         Row(
@@ -633,12 +698,22 @@ fun ActiveWorkoutScreen(
                         if (linkedRoutineId != null && !detachRoutineFromWorkout) {
                             when (routineUpdateMode) {
                                 com.kveld9.trackgym.domain.model.RoutineUpdateMode.ALWAYS -> {
-                                    viewModel.finishWorkout(finishNotes, syncRoutine = true, detachRoutine = false) {
+                                    viewModel.finishWorkout(
+                                        notes = finishNotes,
+                                        syncRoutine = true,
+                                        detachRoutine = false,
+                                        completedAtTimestamp = backdateCompletionTimestamp
+                                    ) {
                                         onWorkoutFinished()
                                     }
                                 }
                                 com.kveld9.trackgym.domain.model.RoutineUpdateMode.NEVER -> {
-                                    viewModel.finishWorkout(finishNotes, syncRoutine = false, detachRoutine = false) {
+                                    viewModel.finishWorkout(
+                                        notes = finishNotes,
+                                        syncRoutine = false,
+                                        detachRoutine = false,
+                                        completedAtTimestamp = backdateCompletionTimestamp
+                                    ) {
                                         onWorkoutFinished()
                                     }
                                 }
@@ -647,7 +722,12 @@ fun ActiveWorkoutScreen(
                                 }
                             }
                         } else {
-                            viewModel.finishWorkout(finishNotes, syncRoutine = false, detachRoutine = detachRoutineFromWorkout) {
+                            viewModel.finishWorkout(
+                                notes = finishNotes,
+                                syncRoutine = false,
+                                detachRoutine = detachRoutineFromWorkout,
+                                completedAtTimestamp = backdateCompletionTimestamp
+                            ) {
                                 onWorkoutFinished()
                             }
                         }
@@ -670,7 +750,12 @@ fun ActiveWorkoutScreen(
         AlertDialog(
             onDismissRequest = {
                 showRoutineSyncPrompt = false
-                viewModel.finishWorkout(finishNotes, syncRoutine = false, detachRoutine = detachRoutineFromWorkout) {
+                viewModel.finishWorkout(
+                    notes = finishNotes,
+                    syncRoutine = false,
+                    detachRoutine = detachRoutineFromWorkout,
+                    completedAtTimestamp = backdateCompletionTimestamp
+                ) {
                     onWorkoutFinished()
                 }
             },
@@ -692,7 +777,12 @@ fun ActiveWorkoutScreen(
                 Button(
                     onClick = {
                         showRoutineSyncPrompt = false
-                        viewModel.finishWorkout(finishNotes, syncRoutine = true, detachRoutine = detachRoutineFromWorkout) {
+                        viewModel.finishWorkout(
+                            notes = finishNotes,
+                            syncRoutine = true,
+                            detachRoutine = detachRoutineFromWorkout,
+                            completedAtTimestamp = backdateCompletionTimestamp
+                        ) {
                             onWorkoutFinished()
                         }
                     },
@@ -705,7 +795,12 @@ fun ActiveWorkoutScreen(
                 TextButton(
                     onClick = {
                         showRoutineSyncPrompt = false
-                        viewModel.finishWorkout(finishNotes, syncRoutine = false, detachRoutine = detachRoutineFromWorkout) {
+                        viewModel.finishWorkout(
+                            notes = finishNotes,
+                            syncRoutine = false,
+                            detachRoutine = detachRoutineFromWorkout,
+                            completedAtTimestamp = backdateCompletionTimestamp
+                        ) {
                             onWorkoutFinished()
                         }
                     }

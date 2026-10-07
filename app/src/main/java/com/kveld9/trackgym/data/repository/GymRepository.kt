@@ -321,14 +321,16 @@ class GymRepository(private val database: GymDatabase) {
         notes: String = "",
         weightUnit: com.kveld9.trackgym.domain.model.WeightUnit = com.kveld9.trackgym.domain.model.WeightUnit.KG,
         userBodyWeightKg: Double = 0.0,
-        detachRoutine: Boolean = false
+        detachRoutine: Boolean = false,
+        completedAtTimestamp: Long? = null
     ): WorkoutComparison? = withContext(Dispatchers.IO) {
         val entity = workoutDao.getWorkoutById(workoutId)
             ?: return@withContext null
 
+        val finalCompletedAt = completedAtTimestamp ?: System.currentTimeMillis()
         val completedEntity = entity.copy(
             isCompleted = true,
-            completedAt = System.currentTimeMillis(),
+            completedAt = finalCompletedAt,
             durationSeconds = durationSeconds,
             notes = notes,
             routineId = if (detachRoutine) null else entity.routineId
