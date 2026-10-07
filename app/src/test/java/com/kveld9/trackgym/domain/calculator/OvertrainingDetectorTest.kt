@@ -34,6 +34,7 @@ class OvertrainingDetectorTest {
         val exercise = createExercise("Bench Press", MuscleGroup.CHEST)
         val sets = (1..5).map { createSet(SetType.NORMAL) }
         val workout = Workout(
+            name = "Test Workout",
             exercises = listOf(WorkoutExercise(exercise = exercise, sets = sets))
         )
 
@@ -47,6 +48,7 @@ class OvertrainingDetectorTest {
         val warmups = (1..10).map { createSet(SetType.WARMUP) }
         val normals = (1..5).map { createSet(SetType.NORMAL) }
         val workout = Workout(
+            name = "Leg Day",
             exercises = listOf(WorkoutExercise(exercise = exercise, sets = warmups + normals))
         )
 
@@ -64,6 +66,7 @@ class OvertrainingDetectorTest {
 
         // Total 14 sets for CHEST (> threshold 12)
         val workout = Workout(
+            name = "Chest Blast",
             exercises = listOf(
                 WorkoutExercise(exercise = exercise1, sets = sets1),
                 WorkoutExercise(exercise = exercise2, sets = sets2)
@@ -82,6 +85,7 @@ class OvertrainingDetectorTest {
         val exercise = createExercise("Custom Mobility", MuscleGroup.OTHER)
         val sets = (1..20).map { createSet(SetType.NORMAL) }
         val workout = Workout(
+            name = "Mobility Session",
             exercises = listOf(WorkoutExercise(exercise = exercise, sets = sets))
         )
 
