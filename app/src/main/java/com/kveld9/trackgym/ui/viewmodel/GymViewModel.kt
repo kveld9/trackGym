@@ -676,14 +676,19 @@ class GymViewModel(
         }
     }
 
-    fun finishWorkout(notes: String = "", syncRoutine: Boolean = false, onFinished: () -> Unit) {
+    fun finishWorkout(
+        notes: String = "",
+        syncRoutine: Boolean = false,
+        detachRoutine: Boolean = false,
+        onFinished: () -> Unit
+    ) {
         val current = _activeWorkout.value ?: return
         val activeUnit = weightUnit.value
         viewModelScope.launch {
             stopTimer()
             stopRestTimer()
             try {
-                if (syncRoutine && current.routineId != null) {
+                if (syncRoutine && !detachRoutine && current.routineId != null) {
                     repository.syncRoutineWithWorkoutValues(current.routineId, current)
                 }
                 val comparison = repository.finishWorkout(
@@ -691,7 +696,8 @@ class GymViewModel(
                     durationSeconds = _timerSeconds.value,
                     notes = notes,
                     weightUnit = activeUnit,
-                    userBodyWeightKg = userBodyWeight.value
+                    userBodyWeightKg = userBodyWeight.value,
+                    detachRoutine = detachRoutine
                 )
                 if (comparison != null) {
                     _lastFinishedComparison.value = comparison

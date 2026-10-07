@@ -361,4 +361,6 @@
     <string name="action_update_routine">Update Template</string>
     <string name="action_keep_original">Keep Original</string>
     <string name="toast_routine_synced">Routine template updated</string>
+    <string name="checkbox_detach_routine">Detach from routine \"%1$s\"</string>
+    <string name="checkbox_detach_routine_desc">Save as independent workout without modifying routine history</string>
 </resources>

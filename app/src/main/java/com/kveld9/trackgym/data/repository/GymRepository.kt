@@ -320,7 +320,8 @@ class GymRepository(private val database: GymDatabase) {
         durationSeconds: Long,
         notes: String = "",
         weightUnit: com.kveld9.trackgym.domain.model.WeightUnit = com.kveld9.trackgym.domain.model.WeightUnit.KG,
-        userBodyWeightKg: Double = 0.0
+        userBodyWeightKg: Double = 0.0,
+        detachRoutine: Boolean = false
     ): WorkoutComparison? = withContext(Dispatchers.IO) {
         val entity = workoutDao.getWorkoutById(workoutId)
             ?: return@withContext null
@@ -329,7 +330,8 @@ class GymRepository(private val database: GymDatabase) {
             isCompleted = true,
             completedAt = System.currentTimeMillis(),
             durationSeconds = durationSeconds,
-            notes = notes
+            notes = notes,
+            routineId = if (detachRoutine) null else entity.routineId
         )
         workoutDao.updateWorkout(completedEntity)
 

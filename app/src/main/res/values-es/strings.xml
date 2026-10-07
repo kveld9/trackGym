@@ -361,4 +361,6 @@
     <string name="action_update_routine">Actualizar rutina</string>
     <string name="action_keep_original">Mantener original</string>
     <string name="toast_routine_synced">Plantilla de rutina actualizada</string>
+    <string name="checkbox_detach_routine">Desvincular de la rutina «%1$s»</string>
+    <string name="checkbox_detach_routine_desc">Guardar como sesión independiente sin vincular a la plantilla</string>
 </resources>

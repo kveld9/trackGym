@@ -58,6 +58,7 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -224,6 +225,7 @@ fun ActiveWorkoutScreen(
     var showDiscardDialog by remember { mutableStateOf(false) }
     var showSaveRoutineDialog by remember { mutableStateOf(false) }
     var finishNotes by remember { mutableStateOf("") }
+    var detachRoutineFromWorkout by remember { mutableStateOf(false) }
     var routineNameInput by remember { mutableStateOf("") }
     var plateCalcExercise by remember { mutableStateOf<WorkoutExercise?>(null) }
     var restConfigExercise by remember { mutableStateOf<WorkoutExercise?>(null) }
@@ -590,6 +592,37 @@ fun ActiveWorkoutScreen(
                             unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                         )
                     )
+
+                    if (activeWorkout?.routineId != null) {
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(8.dp))
+                                .clickable { detachRoutineFromWorkout = !detachRoutineFromWorkout }
+                                .padding(vertical = 4.dp)
+                        ) {
+                            Checkbox(
+                                checked = detachRoutineFromWorkout,
+                                onCheckedChange = { detachRoutineFromWorkout = it }
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Column {
+                                Text(
+                                    text = stringResource(R.string.checkbox_detach_routine, activeWorkout?.name.orEmpty()),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                                Text(
+                                    text = stringResource(R.string.checkbox_detach_routine_desc),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        }
+                    }
                 }
             },
             confirmButton = {
@@ -597,15 +630,15 @@ fun ActiveWorkoutScreen(
                     onClick = {
                         showFinishDialog = false
                         val linkedRoutineId = activeWorkout?.routineId
-                        if (linkedRoutineId != null) {
+                        if (linkedRoutineId != null && !detachRoutineFromWorkout) {
                             when (routineUpdateMode) {
                                 com.kveld9.trackgym.domain.model.RoutineUpdateMode.ALWAYS -> {
-                                    viewModel.finishWorkout(finishNotes, syncRoutine = true) {
+                                    viewModel.finishWorkout(finishNotes, syncRoutine = true, detachRoutine = false) {
                                         onWorkoutFinished()
                                     }
                                 }
                                 com.kveld9.trackgym.domain.model.RoutineUpdateMode.NEVER -> {
-                                    viewModel.finishWorkout(finishNotes, syncRoutine = false) {
+                                    viewModel.finishWorkout(finishNotes, syncRoutine = false, detachRoutine = false) {
                                         onWorkoutFinished()
                                     }
                                 }
@@ -614,7 +647,7 @@ fun ActiveWorkoutScreen(
                                 }
                             }
                         } else {
-                            viewModel.finishWorkout(finishNotes, syncRoutine = false) {
+                            viewModel.finishWorkout(finishNotes, syncRoutine = false, detachRoutine = detachRoutineFromWorkout) {
                                 onWorkoutFinished()
                             }
                         }
@@ -637,7 +670,7 @@ fun ActiveWorkoutScreen(
         AlertDialog(
             onDismissRequest = {
                 showRoutineSyncPrompt = false
-                viewModel.finishWorkout(finishNotes, syncRoutine = false) {
+                viewModel.finishWorkout(finishNotes, syncRoutine = false, detachRoutine = detachRoutineFromWorkout) {
                     onWorkoutFinished()
                 }
             },
@@ -659,7 +692,7 @@ fun ActiveWorkoutScreen(
                 Button(
                     onClick = {
                         showRoutineSyncPrompt = false
-                        viewModel.finishWorkout(finishNotes, syncRoutine = true) {
+                        viewModel.finishWorkout(finishNotes, syncRoutine = true, detachRoutine = detachRoutineFromWorkout) {
                             onWorkoutFinished()
                         }
                     },
@@ -672,7 +705,7 @@ fun ActiveWorkoutScreen(
                 TextButton(
                     onClick = {
                         showRoutineSyncPrompt = false
-                        viewModel.finishWorkout(finishNotes, syncRoutine = false) {
+                        viewModel.finishWorkout(finishNotes, syncRoutine = false, detachRoutine = detachRoutineFromWorkout) {
                             onWorkoutFinished()
                         }
                     }
