@@ -232,6 +232,10 @@ class GymRepository(private val database: GymDatabase) {
         }
     }
 
+    suspend fun updateExerciseSupersetGroup(workoutExerciseId: Long, supersetGroupId: String?) = withContext(Dispatchers.IO) {
+        workoutDao.updateExerciseSupersetGroup(workoutExerciseId, supersetGroupId)
+    }
+
     suspend fun insertWarmupSets(
         workoutExerciseId: Long,
         warmupSets: List<WorkoutSet>
@@ -378,7 +382,9 @@ class GymRepository(private val database: GymDatabase) {
                     workoutId = it.workoutId,
                     exercise = workoutExercise.exercise,
                     sets = prevSets,
-                    orderIndex = it.orderIndex
+                    orderIndex = it.orderIndex,
+                    notes = it.notes,
+                    supersetGroupId = it.supersetGroupId
                 )
             }
 
@@ -428,7 +434,8 @@ class GymRepository(private val database: GymDatabase) {
                 exercise = exercise,
                 sets = sets,
                 orderIndex = we.orderIndex,
-                notes = we.notes
+                notes = we.notes,
+                supersetGroupId = we.supersetGroupId
             )
         }
         return Workout(
@@ -476,6 +483,7 @@ class GymRepository(private val database: GymDatabase) {
                     exerciseName = exName,
                     orderIndex = we.orderIndex,
                     notes = we.notes,
+                    supersetGroupId = we.supersetGroupId,
                     sets = setsDto
                 )
             }
@@ -605,7 +613,8 @@ class GymRepository(private val database: GymDatabase) {
                         workoutId = newWorkoutId,
                         exerciseId = exId,
                         orderIndex = weDto.orderIndex,
-                        notes = weDto.notes
+                        notes = weDto.notes,
+                        supersetGroupId = weDto.supersetGroupId
                     )
                     val newWeId = workoutDao.insertWorkoutExercise(weEntity)
 

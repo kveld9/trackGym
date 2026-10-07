@@ -69,6 +69,9 @@ interface WorkoutDao {
     @Query("UPDATE workout_exercises SET exerciseId = :newExerciseId WHERE id = :workoutExerciseId")
     suspend fun swapExercise(workoutExerciseId: Long, newExerciseId: Long)
 
+    @Query("UPDATE workout_exercises SET supersetGroupId = :supersetGroupId WHERE id = :workoutExerciseId")
+    suspend fun updateExerciseSupersetGroup(workoutExerciseId: Long, supersetGroupId: String?)
+
     // Workout Sets
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertWorkoutSet(workoutSet: WorkoutSetEntity): Long

@@ -248,6 +248,15 @@
     <string name="snackbar_set_deleted">Serie eliminada</string>
     <string name="action_undo">Deshacer</string>
     <string name="action_delete_set">Eliminar serie</string>
+    <string name="menu_group_superset">Vincular a superserie</string>
+    <string name="menu_ungroup_superset">Quitar de superserie</string>
+    <string name="superset_label">Superserie %1$s</string>
+    <string name="superset_tag_a">Superserie A</string>
+    <string name="superset_tag_b">Superserie B</string>
+    <string name="superset_tag_c">Superserie C</string>
+    <string name="superset_tag_d">Superserie D</string>
+    <string name="superset_transition_rest">Descanso de transición (15s)</string>
+    <string name="superset_round_rest">Descanso de ronda (120s)</string>
 
     <!-- Rest Timer -->
     <string name="rest_timer_title">Temporizador de descanso</string>

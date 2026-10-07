@@ -43,6 +43,7 @@ data class WorkoutExerciseBackupDto(
     val exerciseName: String,
     val orderIndex: Int = 0,
     val notes: String = "",
+    val supersetGroupId: String? = null,
     val sets: List<WorkoutSetBackupDto> = emptyList()
 )
 

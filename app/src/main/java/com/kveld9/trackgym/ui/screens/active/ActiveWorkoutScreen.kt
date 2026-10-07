@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -197,6 +198,17 @@ fun ActiveWorkoutScreen(
         }
     }
 
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(Unit) {
+        viewModel.supersetFocusEvent.collect { targetExerciseId ->
+            val targetIndex = activeWorkout?.exercises?.indexOfFirst { it.exercise.id == targetExerciseId } ?: -1
+            if (targetIndex >= 0) {
+                listState.animateScrollToItem(targetIndex + 1)
+            }
+        }
+    }
+
     var showExercisePicker by remember { mutableStateOf(false) }
     var showFinishDialog by remember { mutableStateOf(false) }
     var showDiscardDialog by remember { mutableStateOf(false) }
@@ -205,6 +217,7 @@ fun ActiveWorkoutScreen(
     var routineNameInput by remember { mutableStateOf("") }
     var plateCalcExercise by remember { mutableStateOf<WorkoutExercise?>(null) }
     var restConfigExercise by remember { mutableStateOf<WorkoutExercise?>(null) }
+    var supersetConfigExercise by remember { mutableStateOf<WorkoutExercise?>(null) }
     var exerciseToSwap by remember { mutableStateOf<WorkoutExercise?>(null) }
     var pendingSwapTarget by remember { mutableStateOf<Exercise?>(null) }
     var showSwapExercisePicker by remember { mutableStateOf(false) }
@@ -283,6 +296,7 @@ fun ActiveWorkoutScreen(
                 )
 
                 LazyColumn(
+                    state = listState,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(horizontal = 16.dp),
@@ -359,6 +373,7 @@ fun ActiveWorkoutScreen(
                             onRemoveExercise = { viewModel.removeExerciseFromActiveWorkout(we.id) },
                             onOpenPlateCalculator = { plateCalcExercise = we },
                             onSetRestDuration = { restConfigExercise = we },
+                            onSetSupersetGroup = { supersetConfigExercise = we },
                             onAddWarmupSets = {
                                 val workingWeight = we.sets.firstOrNull { it.weightKg > 0.0 && it.setType != SetType.WARMUP }?.weightKg
                                     ?: we.sets.firstOrNull { it.weightKg > 0.0 }?.weightKg
@@ -647,6 +662,18 @@ fun ActiveWorkoutScreen(
                 restConfigExercise = null
             },
             onDismiss = { restConfigExercise = null }
+        )
+    }
+
+    supersetConfigExercise?.let { we ->
+        SupersetGroupDialog(
+            exerciseName = we.exercise.displayName(),
+            currentGroup = we.supersetGroupId,
+            onSelectGroup = { group ->
+                viewModel.setExerciseSupersetGroup(we.id, group)
+                supersetConfigExercise = null
+            },
+            onDismiss = { supersetConfigExercise = null }
         )
     }
 }
@@ -1145,15 +1172,28 @@ fun WorkoutExerciseCard(
     onRemoveExercise: () -> Unit,
     onOpenPlateCalculator: () -> Unit = {},
     onAddWarmupSets: () -> Unit = {},
-    onSetRestDuration: () -> Unit = {}
+    onSetRestDuration: () -> Unit = {},
+    onSetSupersetGroup: () -> Unit = {}
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
+
+    val supersetColor = when (workoutExercise.supersetGroupId) {
+        "A" -> MaterialTheme.colorScheme.primary
+        "B" -> GymBlue
+        "C" -> GymWarmupAmber
+        "D" -> MaterialTheme.colorScheme.tertiary
+        else -> null
+    }
 
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
-        border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)))
+        border = if (supersetColor != null) {
+            BorderStroke(2.dp, supersetColor)
+        } else {
+            CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)))
+        }
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             // Exercise Header
@@ -1187,6 +1227,24 @@ fun WorkoutExerciseCard(
                                 Text(
                                     text = stringResource(R.string.exercise_rest_badge, restSec),
                                     color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                    fontSize = 10.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                                )
+                            }
+                        }
+                        workoutExercise.supersetGroupId?.let { groupId ->
+                            val badgeColor = supersetColor ?: MaterialTheme.colorScheme.primary
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Surface(
+                                shape = RoundedCornerShape(4.dp),
+                                color = badgeColor.copy(alpha = 0.15f),
+                                border = BorderStroke(1.dp, badgeColor),
+                                modifier = Modifier.clickable { onSetSupersetGroup() }
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.superset_label, groupId),
+                                    color = badgeColor,
                                     fontSize = 10.sp,
                                     fontWeight = FontWeight.Bold,
                                     modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
@@ -1257,6 +1315,21 @@ fun WorkoutExerciseCard(
                                 onClick = {
                                     menuExpanded = false
                                     onSetRestDuration()
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = {
+                                    Text(
+                                        if (workoutExercise.supersetGroupId != null)
+                                            stringResource(R.string.menu_ungroup_superset)
+                                        else
+                                            stringResource(R.string.menu_group_superset),
+                                        color = MaterialTheme.colorScheme.onSurface
+                                    )
+                                },
+                                onClick = {
+                                    menuExpanded = false
+                                    onSetSupersetGroup()
                                 }
                             )
                             DropdownMenuItem(
@@ -2375,6 +2448,96 @@ fun ExerciseRestDurationDialog(
                     text = stringResource(R.string.exercise_rest_use_global, defaultGlobalSeconds),
                     color = MaterialTheme.colorScheme.primary
                 )
+            }
+        }
+    )
+}
+
+@Composable
+fun SupersetGroupDialog(
+    exerciseName: String,
+    currentGroup: String?,
+    onSelectGroup: (String?) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val groups = listOf(
+        "A" to (stringResource(R.string.superset_tag_a) to MaterialTheme.colorScheme.primary),
+        "B" to (stringResource(R.string.superset_tag_b) to GymBlue),
+        "C" to (stringResource(R.string.superset_tag_c) to GymWarmupAmber),
+        "D" to (stringResource(R.string.superset_tag_d) to MaterialTheme.colorScheme.tertiary)
+    )
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = stringResource(R.string.menu_group_superset),
+                color = MaterialTheme.colorScheme.onSurface,
+                fontWeight = FontWeight.Bold
+            )
+        },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(
+                    text = exerciseName,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontSize = 13.sp
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                groups.forEach { (groupId, pair) ->
+                    val (label, color) = pair
+                    val isSelected = currentGroup == groupId
+                    Surface(
+                        shape = RoundedCornerShape(8.dp),
+                        color = if (isSelected) color.copy(alpha = 0.2f) else MaterialTheme.colorScheme.surfaceVariant,
+                        border = if (isSelected) BorderStroke(1.5.dp, color) else null,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                onSelectGroup(groupId)
+                                onDismiss()
+                            }
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(12.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(12.dp)
+                                    .background(color, CircleShape)
+                            )
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Text(
+                                text = label,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                                fontSize = 14.sp
+                            )
+                        }
+                    }
+                }
+                if (currentGroup != null) {
+                    Spacer(modifier = Modifier.height(4.dp))
+                    TextButton(
+                        onClick = {
+                            onSelectGroup(null)
+                            onDismiss()
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = stringResource(R.string.menu_ungroup_superset),
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
+                }
+            }
+        },
+        confirmButton = {},
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.action_cancel))
             }
         }
     )

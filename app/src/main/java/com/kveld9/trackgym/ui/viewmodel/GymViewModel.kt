@@ -11,6 +11,7 @@ import com.kveld9.trackgym.domain.model.MuscleGroup
 import com.kveld9.trackgym.domain.model.PersonalRecord
 import com.kveld9.trackgym.domain.model.Workout
 import com.kveld9.trackgym.domain.model.WorkoutComparison
+import com.kveld9.trackgym.domain.model.WorkoutExercise
 import com.kveld9.trackgym.domain.model.WorkoutSet
 import com.kveld9.trackgym.domain.model.SetType
 import com.kveld9.trackgym.data.ThemePreferences
@@ -102,6 +103,9 @@ class GymViewModel(
 
     private val _restTimerWarningEvent = MutableSharedFlow<Int>()
     val restTimerWarningEvent: SharedFlow<Int> = _restTimerWarningEvent.asSharedFlow()
+
+    private val _supersetFocusEvent = MutableSharedFlow<Long>(extraBufferCapacity = 1)
+    val supersetFocusEvent: SharedFlow<Long> = _supersetFocusEvent.asSharedFlow()
 
     private var restTimerJob: Job? = null
 
@@ -364,11 +368,50 @@ class GymViewModel(
                 if (newPrs.isNotEmpty()) {
                     _recentlyUnlockedPr.value = newPrs.first()
                 }
-                val exerciseCustomRest = _activeWorkout.value?.exercises
-                    ?.firstOrNull { it.exercise.id == exerciseId }
+                val currentExercises = _activeWorkout.value?.exercises.orEmpty()
+                val exerciseCustomRest = currentExercises
+                    .firstOrNull { it.exercise.id == exerciseId }
                     ?.exercise?.restDurationSeconds
-                triggerAutoRestTimer(exerciseCustomRest)
+                val completionStep = resolveSupersetNextStep(
+                    exercises = currentExercises,
+                    exerciseId = exerciseId,
+                    customRest = exerciseCustomRest
+                )
+                if (completionStep.nextExerciseId != null) {
+                    _supersetFocusEvent.tryEmit(completionStep.nextExerciseId)
+                }
+                triggerAutoRestTimer(completionStep.restSeconds)
             }
+            setActiveWorkout(repository.getActiveWorkout())
+        }
+    }
+
+    data class SupersetCompletionResult(
+        val restSeconds: Int?,
+        val nextExerciseId: Long?
+    )
+
+    private fun resolveSupersetNextStep(
+        exercises: List<WorkoutExercise>,
+        exerciseId: Long,
+        customRest: Int?
+    ): SupersetCompletionResult {
+        val currentWe = exercises.firstOrNull { it.exercise.id == exerciseId }
+        val groupId = currentWe?.supersetGroupId ?: return SupersetCompletionResult(customRest, null)
+        val groupExercises = exercises.filter { it.supersetGroupId == groupId }
+        if (groupExercises.size <= 1) return SupersetCompletionResult(customRest, null)
+
+        val currentIndex = groupExercises.indexOfFirst { it.exercise.id == exerciseId }
+        return if (currentIndex in 0 until groupExercises.size - 1) {
+            SupersetCompletionResult(15, groupExercises[currentIndex + 1].exercise.id)
+        } else {
+            SupersetCompletionResult(customRest ?: 120, groupExercises.first().exercise.id)
+        }
+    }
+
+    fun setExerciseSupersetGroup(workoutExerciseId: Long, supersetGroupId: String?) {
+        viewModelScope.launch {
+            repository.updateExerciseSupersetGroup(workoutExerciseId, supersetGroupId)
             setActiveWorkout(repository.getActiveWorkout())
         }
     }

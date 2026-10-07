@@ -248,6 +248,15 @@
     <string name="snackbar_set_deleted">Set deleted</string>
     <string name="action_undo">Undo</string>
     <string name="action_delete_set">Delete Set</string>
+    <string name="menu_group_superset">Link to Superset</string>
+    <string name="menu_ungroup_superset">Remove from Superset</string>
+    <string name="superset_label">Superset %1$s</string>
+    <string name="superset_tag_a">Superset A</string>
+    <string name="superset_tag_b">Superset B</string>
+    <string name="superset_tag_c">Superset C</string>
+    <string name="superset_tag_d">Superset D</string>
+    <string name="superset_transition_rest">Transition rest (15s)</string>
+    <string name="superset_round_rest">Round rest (120s)</string>
 
     <!-- Rest Timer -->
     <string name="rest_timer_title">Rest Timer</string>

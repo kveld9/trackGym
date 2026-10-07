@@ -6,7 +6,8 @@ data class WorkoutExercise(
     val exercise: Exercise,
     val sets: List<WorkoutSet> = emptyList(),
     val orderIndex: Int = 0,
-    val notes: String = ""
+    val notes: String = "",
+    val supersetGroupId: String? = null
 ) {
     fun completedSetsCount(excludeWarmup: Boolean = false): Int =
         sets.count { it.isCompleted && (!excludeWarmup || it.setType != SetType.WARMUP) }

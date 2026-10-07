@@ -31,5 +31,6 @@ data class WorkoutExerciseEntity(
     val workoutId: Long,
     val exerciseId: Long,
     val orderIndex: Int = 0,
-    val notes: String = ""
+    val notes: String = "",
+    val supersetGroupId: String? = null
 )
