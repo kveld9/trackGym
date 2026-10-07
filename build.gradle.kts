@@ -1,4 +1,6 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
+val sqliteTmpDir = layout.buildDirectory.dir("tmp").get().asFile.apply { mkdirs() }
+System.setProperty("org.sqlite.tmpdir", sqliteTmpDir.absolutePath)
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.android.test) apply false

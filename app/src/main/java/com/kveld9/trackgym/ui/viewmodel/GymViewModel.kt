@@ -243,6 +243,11 @@ class GymViewModel(
     }
 
     private suspend fun setActiveWorkout(workout: Workout?) {
+        val previousWorkout = _activeWorkout.value
+        val routineOrWorkoutChanged = previousWorkout?.id != workout?.id || previousWorkout?.routineId != workout?.routineId
+        if (routineOrWorkoutChanged) {
+            _previousSetsMap.value = emptyMap()
+        }
         _activeWorkout.value = workout
         refreshPreviousSets(workout)
     }
@@ -257,7 +262,11 @@ class GymViewModel(
         currentMap.keys.retainAll(workoutExerciseIds)
         for (we in workout.exercises) {
             if (!currentMap.containsKey(we.exercise.id)) {
-                val prev = repository.getPreviousSetsForExercise(we.exercise.id, workout.id)
+                val prev = repository.getPreviousSetsForExercise(
+                    exerciseId = we.exercise.id,
+                    currentWorkoutId = workout.id,
+                    routineId = workout.routineId
+                )
                 currentMap[we.exercise.id] = prev
             }
         }

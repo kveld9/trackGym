@@ -180,15 +180,13 @@ class GymRepository(private val database: GymDatabase) {
         val weId = workoutDao.insertWorkoutExercise(weEntity)
 
         // Seed with 1 initial empty/target set (matching previous session if available)
-        val prevWe = workoutDao.getLastCompletedWorkoutExercise(exerciseId, workoutId)
-        val initialWeight = if (prevWe != null) {
-            val prevSets = workoutDao.getWorkoutSets(prevWe.id)
-            prevSets.firstOrNull()?.weightKg ?: 0.0
-        } else 0.0
-        val initialReps = if (prevWe != null) {
-            val prevSets = workoutDao.getWorkoutSets(prevWe.id)
-            prevSets.firstOrNull()?.reps ?: 0
-        } else 0
+        val workout = workoutDao.getWorkoutById(workoutId)
+        val prevWe = getContextualPreviousWorkoutExercise(exerciseId, workoutId, workout?.routineId)
+        val prevCompletedSets = if (prevWe != null) {
+            workoutDao.getWorkoutSets(prevWe.id).filter { it.isCompleted }
+        } else emptyList()
+        val initialWeight = prevCompletedSets.firstOrNull()?.weightKg ?: 0.0
+        val initialReps = prevCompletedSets.firstOrNull()?.reps ?: 0
 
         val initialSet = WorkoutSetEntity(
             workoutExerciseId = weId,
@@ -415,9 +413,27 @@ class GymRepository(private val database: GymDatabase) {
         workoutDao.updateWorkout(entity.copy(durationSeconds = durationSeconds))
     }
 
-    suspend fun getPreviousSetsForExercise(exerciseId: Long, currentWorkoutId: Long): List<WorkoutSet> = withContext(Dispatchers.IO) {
-        val prevWe = workoutDao.getLastCompletedWorkoutExercise(exerciseId, currentWorkoutId) ?: return@withContext emptyList()
-        workoutDao.getWorkoutSets(prevWe.id).map { it.toDomain() }
+    suspend fun getContextualPreviousWorkoutExercise(
+        exerciseId: Long,
+        currentWorkoutId: Long,
+        routineId: Long?
+    ): WorkoutExerciseEntity? {
+        return if (routineId != null) {
+            workoutDao.getLastCompletedWorkoutExerciseForRoutine(exerciseId, currentWorkoutId, routineId)
+                ?: workoutDao.getLastCompletedWorkoutExercise(exerciseId, currentWorkoutId)
+        } else {
+            workoutDao.getLastCompletedWorkoutExercise(exerciseId, currentWorkoutId)
+        }
+    }
+
+    suspend fun getPreviousSetsForExercise(
+        exerciseId: Long,
+        currentWorkoutId: Long,
+        routineId: Long? = null
+    ): List<WorkoutSet> = withContext(Dispatchers.IO) {
+        val prevWe = getContextualPreviousWorkoutExercise(exerciseId, currentWorkoutId, routineId)
+            ?: return@withContext emptyList()
+        workoutDao.getWorkoutSets(prevWe.id).map { it.toDomain() }.filter { it.isCompleted }
     }
 
     suspend fun compareWorkoutWithPrevious(
@@ -431,9 +447,11 @@ class GymRepository(private val database: GymDatabase) {
 
         for (workoutExercise in currentWorkout.exercises) {
             val exerciseId = workoutExercise.exercise.id
-            val prevWe = workoutDao.getLastCompletedWorkoutExercise(exerciseId, workoutId)
+            val prevWe = getContextualPreviousWorkoutExercise(exerciseId, workoutId, currentWorkout.routineId)
             val prevWorkout = if (prevWe != null) workoutDao.getWorkoutById(prevWe.workoutId) else null
-            val prevSets = if (prevWe != null) workoutDao.getWorkoutSets(prevWe.id).map { it.toDomain() } else emptyList()
+            val prevSets = if (prevWe != null) {
+                workoutDao.getWorkoutSets(prevWe.id).map { it.toDomain() }.filter { it.isCompleted }
+            } else emptyList()
 
             val prevWorkoutExercise = prevWe?.let {
                 WorkoutExercise(

@@ -100,10 +100,22 @@ interface WorkoutDao {
         SELECT we.* FROM workout_exercises we
         INNER JOIN workouts w ON we.workoutId = w.id
         WHERE we.exerciseId = :exerciseId AND w.isCompleted = 1 AND w.id != :currentWorkoutId
-        ORDER BY w.completedAt DESC
+        ORDER BY COALESCE(w.completedAt, w.startedAt) DESC, we.orderIndex ASC
         LIMIT 1
     """)
     suspend fun getLastCompletedWorkoutExercise(exerciseId: Long, currentWorkoutId: Long): WorkoutExerciseEntity?
+
+    @Query("""
+        SELECT we.* FROM workout_exercises we
+        INNER JOIN workouts w ON we.workoutId = w.id
+        WHERE we.exerciseId = :exerciseId 
+          AND w.isCompleted = 1 
+          AND w.id != :currentWorkoutId 
+          AND w.routineId = :routineId
+        ORDER BY COALESCE(w.completedAt, w.startedAt) DESC, we.orderIndex ASC
+        LIMIT 1
+    """)
+    suspend fun getLastCompletedWorkoutExerciseForRoutine(exerciseId: Long, currentWorkoutId: Long, routineId: Long): WorkoutExerciseEntity?
 
     @Query("""
         SELECT we.* FROM workout_exercises we

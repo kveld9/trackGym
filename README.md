@@ -22,7 +22,7 @@
   - Typo-tolerant fuzzy exercise search with Spanish diacritic normalization, acronym matching, and score ranking.
   - Manual creation of custom exercises with customizable muscle group, equipment type (*Barbell, Dumbbell, Machine, Cable, Bodyweight*), and notes.
 - **Before vs After Workout Comparison**:
-  - Direct comparison between the current session and the previous session for the same exercise.
+  - Direct comparison between the current session and the previous session for the same exercise, contextually prioritizing the same routine template variant.
   - E.g., *Last Thursday you performed 2x8 @ 15.0 kg and this Thursday you performed 2x10 @ 15.0 kg (+2 reps) or 2x8 @ 18.0 kg (+3.0 kg)*.
   - Automatic calculation of deltas for weight, repetitions, and total training volume.
 - **Training Analysis**:
