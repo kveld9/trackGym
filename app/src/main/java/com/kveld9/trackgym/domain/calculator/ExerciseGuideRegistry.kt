@@ -74,7 +74,10 @@ object ExerciseGuideRegistry {
             )
 
             // Overhead Press / Shoulder Press
-            nameLower.contains("overhead") || nameLower.contains("shoulder press") || nameLower.contains("military press") -> ExerciseGuide(
+            ((nameLower.contains("overhead") && !nameLower.contains("tricep") && !nameLower.contains("extension")) ||
+                nameLower.contains("shoulder press") ||
+                nameLower.contains("military press")) &&
+                (exercise.muscleGroup == MuscleGroup.SHOULDERS || nameLower.contains("press")) -> ExerciseGuide(
                 exerciseName = exercise.name,
                 setupSteps = listOf(
                     R.string.guide_ohp_setup_1,
@@ -112,7 +115,7 @@ object ExerciseGuideRegistry {
             )
 
             // Horizontal Rows
-            nameLower.contains("row") -> ExerciseGuide(
+            Regex("\\b(row|rows|remo|remador)\\b").containsMatchIn(nameLower) -> ExerciseGuide(
                 exerciseName = exercise.name,
                 setupSteps = listOf(
                     R.string.guide_row_setup_1,
@@ -131,7 +134,7 @@ object ExerciseGuideRegistry {
             )
 
             // Biceps / Curls
-            nameLower.contains("curl") -> ExerciseGuide(
+            nameLower.contains("curl") && (exercise.muscleGroup == MuscleGroup.ARMS || nameLower.contains("bicep")) && !nameLower.contains("leg") && !nameLower.contains("hamstring") -> ExerciseGuide(
                 exerciseName = exercise.name,
                 setupSteps = listOf(
                     R.string.guide_bicep_setup_1,
@@ -150,7 +153,7 @@ object ExerciseGuideRegistry {
             )
 
             // Triceps (Extension / Pushdown / Skull Crusher / Dip)
-            nameLower.contains("tricep") || nameLower.contains("pushdown") || nameLower.contains("skull crusher") || nameLower.contains("dip") -> ExerciseGuide(
+            nameLower.contains("tricep") || nameLower.contains("pushdown") || nameLower.contains("skull crusher") || (nameLower.contains("dip") && !nameLower.contains("hip")) -> ExerciseGuide(
                 exerciseName = exercise.name,
                 setupSteps = listOf(
                     R.string.guide_tricep_setup_1,
@@ -163,6 +166,25 @@ object ExerciseGuideRegistry {
                 commonMistakes = listOf(
                     R.string.guide_tricep_mistake_1,
                     R.string.guide_tricep_mistake_2
+                ),
+                breathingCueRes = R.string.guide_breathing_standard,
+                tempoCueRes = R.string.guide_tempo_constant
+            )
+
+            // Leg Isolation (Leg Curl / Leg Extension / Hamstring / Calf)
+            nameLower.contains("leg curl") || nameLower.contains("leg extension") || nameLower.contains("hamstring") || nameLower.contains("calf") || (exercise.muscleGroup == MuscleGroup.LEGS && exercise.mechanics == MechanicsType.ISOLATION) -> ExerciseGuide(
+                exerciseName = exercise.name,
+                setupSteps = listOf(
+                    R.string.guide_leg_isolation_setup_1,
+                    R.string.guide_leg_isolation_setup_2
+                ),
+                executionSteps = listOf(
+                    R.string.guide_leg_isolation_exec_1,
+                    R.string.guide_leg_isolation_exec_2
+                ),
+                commonMistakes = listOf(
+                    R.string.guide_leg_isolation_mistake_1,
+                    R.string.guide_leg_isolation_mistake_2
                 ),
                 breathingCueRes = R.string.guide_breathing_standard,
                 tempoCueRes = R.string.guide_tempo_constant

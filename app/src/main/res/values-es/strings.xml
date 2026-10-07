@@ -640,4 +640,12 @@
     <string name="guide_generic_isolation_setup">Aísla el músculo objetivo inmovilizando completamente las articulaciones adyacentes.</string>
     <string name="guide_generic_isolation_exec">Enfócate en la conexión mente-músculo, tempo estricto y pico de contracción.</string>
     <string name="guide_generic_isolation_mistake">Evita balanceos o reclutar grupos musculares secundarios para mover la carga.</string>
+
+    <!-- Leg Isolation (Curls & Extensions) -->
+    <string name="guide_leg_isolation_setup_1">Alinea el eje de la rodilla directamente con el punto de giro de la máquina.</string>
+    <string name="guide_leg_isolation_setup_2">Ajusta la almohadilla firme contra las espinillas (extensión) o sobre el tendón de Aquiles (curl).</string>
+    <string name="guide_leg_isolation_exec_1">Ejecuta flexión o extensión concéntrica fluida sin patear ni dar tirones.</string>
+    <string name="guide_leg_isolation_exec_2">Pausa 1 segundo en la máxima contracción y resiste el descenso negativo.</string>
+    <string name="guide_leg_isolation_mistake_1">Permitir que las caderas o la zona lumbar se despeguen del asiento o banco durante las repeticiones.</string>
+    <string name="guide_leg_isolation_mistake_2">Usar impulso balístico o hiperextender las rodillas con violencia en el bloqueo.</string>
 </resources>

@@ -640,4 +640,12 @@
     <string name="guide_generic_isolation_setup">Isolate the target muscle by stabilizing adjacent joints completely.</string>
     <string name="guide_generic_isolation_exec">Focus on mind-muscle connection, strict tempo, and peak contraction.</string>
     <string name="guide_generic_isolation_mistake">Avoid swinging or recruiting synergist muscle groups to move load.</string>
+
+    <!-- Leg Isolation (Curls & Extensions) -->
+    <string name="guide_leg_isolation_setup_1">Align knee joint axis directly with the machine\'s pivot point.</string>
+    <string name="guide_leg_isolation_setup_2">Fasten pad snugly against shins (extension) or lower Achilles tendon (curl).</string>
+    <string name="guide_leg_isolation_exec_1">Execute smooth concentric flexion or extension without kicking or jerking.</string>
+    <string name="guide_leg_isolation_exec_2">Pause for 1 second at peak contraction and resist the negative return.</string>
+    <string name="guide_leg_isolation_mistake_1">Allowing hips or lower back to lift off the seat/bench during reps.</string>
+    <string name="guide_leg_isolation_mistake_2">Using ballistic momentum or hyperextending knees violently at lockout.</string>
 </resources>

@@ -72,4 +72,44 @@ class ExerciseGuideRegistryTest {
         assertFalse(guide.executionSteps.isEmpty())
         assertFalse(guide.commonMistakes.isEmpty())
     }
+
+    @Test
+    fun getGuideForExercise_lyingLegCurl_doesNotReceiveBicepsCues() {
+        val legCurl = DefaultExercises.list.first { it.name == "Lying Leg Curl" }
+        val guide = ExerciseGuideRegistry.getGuideForExercise(legCurl)
+
+        assertNotNull(guide)
+        assertFalse(guide.setupSteps.contains(com.kveld9.trackgym.R.string.guide_bicep_setup_1))
+        assertFalse(guide.executionSteps.contains(com.kveld9.trackgym.R.string.guide_bicep_exec_1))
+        assertTrue(guide.setupSteps.contains(com.kveld9.trackgym.R.string.guide_leg_isolation_setup_1))
+    }
+
+    @Test
+    fun getGuideForExercise_overheadTricepsExtension_doesNotReceiveOhpCues() {
+        val overheadTricep = Exercise(
+            name = "Overhead Triceps Extension",
+            muscleGroup = MuscleGroup.ARMS,
+            category = ExerciseCategory.CABLE,
+            mechanics = MechanicsType.ISOLATION
+        )
+        val guide = ExerciseGuideRegistry.getGuideForExercise(overheadTricep)
+
+        assertNotNull(guide)
+        assertFalse(guide.setupSteps.contains(com.kveld9.trackgym.R.string.guide_ohp_setup_1))
+        assertTrue(guide.setupSteps.contains(com.kveld9.trackgym.R.string.guide_tricep_setup_1))
+    }
+
+    @Test
+    fun getGuideForExercise_narrowPushups_doesNotReceiveRowCues() {
+        val narrowPushups = Exercise(
+            name = "Narrow Pushups",
+            muscleGroup = MuscleGroup.CHEST,
+            category = ExerciseCategory.BODYWEIGHT,
+            mechanics = MechanicsType.COMPOUND
+        )
+        val guide = ExerciseGuideRegistry.getGuideForExercise(narrowPushups)
+
+        assertNotNull(guide)
+        assertFalse(guide.setupSteps.contains(com.kveld9.trackgym.R.string.guide_row_setup_1))
+    }
 }
