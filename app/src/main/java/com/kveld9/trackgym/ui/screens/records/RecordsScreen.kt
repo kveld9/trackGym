@@ -187,6 +187,7 @@ fun RecordItemCard(
                     RecordType.MAX_REPS_AT_WEIGHT -> "${record.reps} reps @ ${weightUnit.format(record.weightKg)}"
                     RecordType.ESTIMATED_1RM -> "1RM: ${weightUnit.format(record.recordValue)}"
                     RecordType.MAX_VOLUME_SET -> "Vol: ${weightUnit.format(record.recordValue)}"
+                    RecordType.MAX_AMRAP_REPS_AT_WEIGHT -> "${record.reps}+ reps @ ${weightUnit.format(record.weightKg)}"
                 }
 
                 Text(

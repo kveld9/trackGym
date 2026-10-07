@@ -130,6 +130,7 @@ import com.kveld9.trackgym.ui.components.RpeSelectionDialog
 import com.kveld9.trackgym.ui.components.WorkoutSessionNotesCard
 import com.kveld9.trackgym.ui.theme.GymBlue
 import com.kveld9.trackgym.ui.theme.GymWarmupAmber
+import com.kveld9.trackgym.ui.theme.GymAmrapCrimson
 import com.kveld9.trackgym.ui.util.LocalKeepEnglishExerciseNames
 import com.kveld9.trackgym.ui.util.displayName
 import com.kveld9.trackgym.ui.viewmodel.GymViewModel
@@ -2182,6 +2183,7 @@ fun SetRowItem(
         SetType.DURATION -> GymBlue
         SetType.BODYWEIGHT_LOAD -> GymWarmupAmber
         SetType.BODYWEIGHT_ASSISTED -> MaterialTheme.colorScheme.tertiary
+        SetType.AMRAP -> GymAmrapCrimson
     }
 
     val badgeLabel = when (set.setType) {
@@ -2193,6 +2195,7 @@ fun SetRowItem(
         SetType.DURATION -> "T"
         SetType.BODYWEIGHT_LOAD -> "B+"
         SetType.BODYWEIGHT_ASSISTED -> "B-"
+        SetType.AMRAP -> "${set.setNumber}+"
     }
 
     var showQuickAdjust by remember { mutableStateOf(false) }
@@ -2245,6 +2248,7 @@ fun SetRowItem(
                                             SetType.DURATION -> GymBlue
                                             SetType.BODYWEIGHT_LOAD -> GymWarmupAmber
                                             SetType.BODYWEIGHT_ASSISTED -> MaterialTheme.colorScheme.tertiary
+                                            SetType.AMRAP -> GymAmrapCrimson
                                         },
                                         fontWeight = FontWeight.Bold,
                                         modifier = Modifier.width(28.dp)
@@ -2342,8 +2346,13 @@ fun SetRowItem(
                         }
                     },
                     placeholder = {
+                        val repsPlaceholder = when {
+                            isDuration -> "00:00"
+                            set.setType == SetType.AMRAP -> (ghostRepsDisplay?.let { "$it+" } ?: "0+")
+                            else -> ghostRepsDisplay ?: "0"
+                        }
                         Text(
-                            text = if (isDuration) "00:00" else (ghostRepsDisplay ?: "0"),
+                            text = repsPlaceholder,
                             color = if (ghostRepsDisplay != null || isDuration) {
                                 MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
                             } else {

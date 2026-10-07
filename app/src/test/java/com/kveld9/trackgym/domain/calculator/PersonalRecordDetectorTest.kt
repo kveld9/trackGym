@@ -1,6 +1,7 @@
 package com.kveld9.trackgym.domain.calculator
 
 import com.kveld9.trackgym.domain.model.RecordType
+import com.kveld9.trackgym.domain.model.SetType
 import com.kveld9.trackgym.domain.model.WorkoutSet
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -115,5 +116,43 @@ class PersonalRecordDetectorTest {
         )
 
         assertTrue("Warmup set should never unlock a personal record", unlocked.isEmpty())
+    }
+
+    @Test
+    fun `amrap set unlocks max amrap reps record for that weight`() {
+        val exerciseId = 1L
+        val workoutId = 2L
+
+        val previousAmrap = WorkoutSet(
+            id = 1,
+            workoutExerciseId = 1,
+            setNumber = 3,
+            weightKg = 80.0,
+            reps = 8,
+            setType = SetType.AMRAP,
+            isCompleted = true
+        )
+
+        val newAmrap = WorkoutSet(
+            id = 2,
+            workoutExerciseId = 2,
+            setNumber = 3,
+            weightKg = 80.0,
+            reps = 10,
+            setType = SetType.AMRAP,
+            isCompleted = true
+        )
+
+        val unlocked = PersonalRecordDetector.evaluateSet(
+            exerciseId = exerciseId,
+            workoutId = workoutId,
+            currentSet = newAmrap,
+            historicalSets = listOf(previousAmrap)
+        )
+
+        val amrapRecord = unlocked.find { it.recordType == RecordType.MAX_AMRAP_REPS_AT_WEIGHT }
+        assertNotNull("Should unlock AMRAP record", amrapRecord)
+        assertEquals(10.0, amrapRecord!!.recordValue, 0.01)
+        assertTrue(amrapRecord.description.contains("AMRAP Record at 80.0 kg: 10 reps"))
     }
 }

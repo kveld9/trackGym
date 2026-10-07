@@ -217,11 +217,13 @@
     <string name="set_type_duration">Tiempo / Isométrico (T)</string>
     <string name="set_type_bodyweight_load">Con lastre (+kg) (B+)</string>
     <string name="set_type_bodyweight_assisted">Asistida (-kg) (B-)</string>
+    <string name="set_type_amrap">AMRAP (Máximas Reps) (A+)</string>
     <string name="set_type_dialog_title">Seleccionar tipo de serie</string>
     <string name="action_start_stopwatch">Iniciar cronómetro</string>
     <string name="action_stop_stopwatch">Detener cronómetro</string>
     <string name="settings_user_bodyweight_title">Peso corporal del usuario</string>
     <string name="settings_user_bodyweight_desc">Utilizado para calcular tonelaje real en ejercicios corporales y calistenia</string>
+    <string name="record_max_amrap_reps">Récord de Reps en AMRAP</string>
 
     <!-- RPE / RIR Selection -->
     <string name="rpe_dialog_title">Seleccionar RPE / RIR</string>

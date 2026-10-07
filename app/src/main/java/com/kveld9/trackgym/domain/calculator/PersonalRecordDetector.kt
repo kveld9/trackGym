@@ -38,6 +38,12 @@ object PersonalRecordDetector {
             newRecords.add(it)
         }
 
+        if (currentSet.setType == SetType.AMRAP) {
+            checkMaxAmrapRepsAtWeight(exerciseId, workoutId, currentSet, completedHistory, timestamp, formula)?.let {
+                newRecords.add(it)
+            }
+        }
+
         return newRecords
     }
 
@@ -119,6 +125,39 @@ object PersonalRecordDetector {
             exerciseId = exerciseId,
             recordType = RecordType.ESTIMATED_1RM,
             recordValue = current1RM,
+            weightKg = currentSet.weightKg,
+            reps = currentSet.reps,
+            achievedAt = timestamp,
+            workoutId = workoutId,
+            description = desc
+        )
+    }
+
+    private fun checkMaxAmrapRepsAtWeight(
+        exerciseId: Long,
+        workoutId: Long,
+        currentSet: WorkoutSet,
+        history: List<WorkoutSet>,
+        timestamp: Long,
+        formula: OneRepMaxFormula
+    ): PersonalRecord? {
+        val sameWeightAmraps = history.filter { it.setType == SetType.AMRAP && it.weightKg == currentSet.weightKg }
+        val prevMaxAmrapReps = sameWeightAmraps.maxOfOrNull { it.reps }
+
+        val isRecord = prevMaxAmrapReps == null || currentSet.reps > prevMaxAmrapReps
+        if (!isRecord) return null
+
+        val projected1RM = OneRepMaxCalculator.calculate1RM(currentSet.weightKg, currentSet.reps, formula)
+        val desc = if (prevMaxAmrapReps != null) {
+            "AMRAP Record at ${currentSet.weightKg} kg: ${currentSet.reps} reps (prev: $prevMaxAmrapReps) • Projected 1RM: ${projected1RM} kg"
+        } else {
+            "Initial AMRAP Record at ${currentSet.weightKg} kg: ${currentSet.reps} reps • Projected 1RM: ${projected1RM} kg"
+        }
+
+        return PersonalRecord(
+            exerciseId = exerciseId,
+            recordType = RecordType.MAX_AMRAP_REPS_AT_WEIGHT,
+            recordValue = currentSet.reps.toDouble(),
             weightKg = currentSet.weightKg,
             reps = currentSet.reps,
             achievedAt = timestamp,

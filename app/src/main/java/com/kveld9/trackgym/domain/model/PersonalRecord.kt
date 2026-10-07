@@ -7,7 +7,8 @@ enum class RecordType(@get:StringRes val nameRes: Int, val displayName: String) 
     MAX_WEIGHT(R.string.record_max_weight, "Max Weight"),
     MAX_REPS_AT_WEIGHT(R.string.record_max_reps, "Rep Record"),
     ESTIMATED_1RM(R.string.record_estimated_1rm, "Best Estimated 1RM"),
-    MAX_VOLUME_SET(R.string.record_max_volume, "Set Volume")
+    MAX_VOLUME_SET(R.string.record_max_volume, "Set Volume"),
+    MAX_AMRAP_REPS_AT_WEIGHT(R.string.record_max_amrap_reps, "AMRAP Rep Record")
 }
 
 data class PersonalRecord(
