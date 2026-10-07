@@ -527,7 +527,5 @@
     <string name="substitute_reason_same_group">Mismo grupo muscular</string>
     <string name="substitute_reason_secondary">Músculo sinergista / secundario</string>
     <string name="substitute_no_alternatives">No se encontraron ejercicios alternativos para el equipamiento seleccionado.</string>
-    <string name="action_view_substitutes">Ver Alternativas</string>
     <string name="chip_filter_all_equipment">Todo el equipo</string>
-    <string name="label_alternatives_count">%1$d alternativas</string>
 </resources>

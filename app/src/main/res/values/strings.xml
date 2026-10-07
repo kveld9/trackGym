@@ -527,7 +527,5 @@
     <string name="substitute_reason_same_group">Same muscle group</string>
     <string name="substitute_reason_secondary">Synergist / secondary muscle</string>
     <string name="substitute_no_alternatives">No alternative exercises found for the selected equipment.</string>
-    <string name="action_view_substitutes">View Alternatives</string>
     <string name="chip_filter_all_equipment">All Equipment</string>
-    <string name="label_alternatives_count">%1$d alternatives</string>
 </resources>

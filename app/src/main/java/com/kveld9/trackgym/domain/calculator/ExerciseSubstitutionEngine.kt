@@ -4,8 +4,6 @@ import androidx.annotation.StringRes
 import com.kveld9.trackgym.R
 import com.kveld9.trackgym.domain.model.Exercise
 import com.kveld9.trackgym.domain.model.ExerciseCategory
-import com.kveld9.trackgym.domain.model.MechanicsType
-import com.kveld9.trackgym.domain.model.MuscleGroup
 
 /**
  * Categorization of the rationale behind an exercise substitution recommendation.
