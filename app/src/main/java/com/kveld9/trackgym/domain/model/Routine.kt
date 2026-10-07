@@ -9,5 +9,7 @@ data class Routine(
     val exercises: List<RoutineExercise> = emptyList(),
     val orderIndex: Int = 0,
     val isArchived: Boolean = false,
+    val isPeriodized: Boolean = false,
+    val periodizedCycle: PeriodizedCycle? = null,
     val createdAt: Long = System.currentTimeMillis()
 )

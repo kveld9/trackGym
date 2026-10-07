@@ -432,4 +432,25 @@
     <string name="auto_progression_badge_deload">Auto-Deload: -%1$s</string>
     <string name="auto_progression_action_apply_load">Apply Target Weight</string>
     <string name="auto_progression_rule_saved">Auto-progression rule updated</string>
+    <string name="periodized_cycle_title">Periodized Block &amp; Cycle</string>
+    <string name="periodized_cycle_enable_label">Enable Periodized Block</string>
+    <string name="periodized_cycle_enable_desc">Structure this routine into multi-week progressive blocks with programmed deloads.</string>
+    <string name="periodized_cycle_total_weeks_label">Block Length</string>
+    <string name="periodized_cycle_weeks_count">%1$d Weeks</string>
+    <string name="periodized_cycle_auto_advance_label">Auto-Advance Week</string>
+    <string name="periodized_cycle_auto_advance_desc">Automatically advance to the next week upon completing workouts.</string>
+    <string name="periodized_cycle_breakdown_label">Weekly Structure</string>
+    <string name="periodized_cycle_week_number">Week %1$d</string>
+    <string name="periodized_cycle_active_badge">ACTIVE</string>
+    <string name="periodized_volume_label">Volume</string>
+    <string name="periodized_load_label">Load</string>
+    <string name="periodization_phase_accumulation">Accumulation</string>
+    <string name="periodization_phase_intensification">Intensification</string>
+    <string name="periodization_phase_peak">Peak</string>
+    <string name="periodization_phase_deload">Deload</string>
+    <string name="periodization_phase_custom">Custom</string>
+    <string name="menu_configure_periodization">Periodized Block Config</string>
+    <string name="menu_advance_cycle_week">Advance Week (+1)</string>
+    <string name="menu_previous_cycle_week">Previous Week (-1)</string>
+    <string name="badge_periodized_block">Block: W%1$d/%2$d</string>
 </resources>

@@ -25,5 +25,7 @@ data class RoutineEntity(
     val notes: String = "",
     val orderIndex: Int = 0,
     val isArchived: Boolean = false,
+    val isPeriodized: Boolean = false,
+    val periodizedCycleData: String? = null,
     val createdAt: Long = System.currentTimeMillis()
 )

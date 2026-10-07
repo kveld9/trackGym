@@ -51,8 +51,13 @@ import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Timer
+import com.kveld9.trackgym.domain.model.PeriodizedCycle
+import com.kveld9.trackgym.ui.components.PeriodizedCycleDialog
 import androidx.compose.material3.AlertDialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.material3.Button
@@ -290,6 +295,9 @@ fun ActiveWorkoutScreen(
             onMoveRoutineDown = { routineId -> viewModel.moveRoutineDown(routineId, routines) },
             onMoveFolderUp = { folderId -> viewModel.moveFolderUp(folderId, folders) },
             onMoveFolderDown = { folderId -> viewModel.moveFolderDown(folderId, folders) },
+            onUpdatePeriodization = { routineId, isPeriodized, cycle -> viewModel.updateRoutinePeriodization(routineId, isPeriodized, cycle) },
+            onAdvanceCycleWeek = { routineId -> viewModel.advanceRoutineCycleWeek(routineId) },
+            onPreviousCycleWeek = { routineId -> viewModel.previousRoutineCycleWeek(routineId) },
             modifier = modifier
         )
     } else {
@@ -1031,12 +1039,16 @@ fun EmptyWorkoutDashboard(
     onMoveRoutineDown: ((Long) -> Unit)? = null,
     onMoveFolderUp: ((Long) -> Unit)? = null,
     onMoveFolderDown: ((Long) -> Unit)? = null,
+    onUpdatePeriodization: ((Long, Boolean, PeriodizedCycle?) -> Unit)? = null,
+    onAdvanceCycleWeek: ((Long) -> Unit)? = null,
+    onPreviousCycleWeek: ((Long) -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     var selectedFolderId by remember { mutableStateOf<Long?>(null) }
     var showArchived by remember { mutableStateOf(false) }
     var showReorderFoldersDialog by remember { mutableStateOf(false) }
     var showImportRoutineDialog by remember { mutableStateOf(false) }
+    var routineToConfigurePeriodization by remember { mutableStateOf<Routine?>(null) }
     val baseRoutines = if (showArchived) {
         routines.filter { it.isArchived }
     } else {
@@ -1274,6 +1286,9 @@ fun EmptyWorkoutDashboard(
                         onDelete = { onDeleteRoutine(routine.id) },
                         onDuplicate = { onDuplicateRoutine?.invoke(routine.id) },
                         onToggleArchive = { onToggleArchive?.invoke(routine.id, !routine.isArchived) },
+                        onConfigurePeriodization = { routineToConfigurePeriodization = routine },
+                        onAdvanceWeek = { onAdvanceCycleWeek?.invoke(routine.id) },
+                        onPreviousWeek = { onPreviousCycleWeek?.invoke(routine.id) },
                         onShare = {
                             val shareText = RoutineShareCodec.encodeToShareText(routine)
                             val sendIntent = Intent().apply {
@@ -1294,6 +1309,20 @@ fun EmptyWorkoutDashboard(
         }
 
         Spacer(modifier = Modifier.height(88.dp))
+    }
+
+    if (routineToConfigurePeriodization != null && onUpdatePeriodization != null) {
+        val targetRoutine = routineToConfigurePeriodization!!
+        PeriodizedCycleDialog(
+            routineName = targetRoutine.name,
+            initialIsPeriodized = targetRoutine.isPeriodized,
+            initialCycle = targetRoutine.periodizedCycle,
+            onSave = { isPeriodized, cycle ->
+                onUpdatePeriodization(targetRoutine.id, isPeriodized, cycle)
+                routineToConfigurePeriodization = null
+            },
+            onDismiss = { routineToConfigurePeriodization = null }
+        )
     }
 
     if (showReorderFoldersDialog && (onMoveFolderUp != null || onMoveFolderDown != null)) {
@@ -1320,6 +1349,9 @@ fun RoutineCardItem(
     onDelete: () -> Unit,
     onDuplicate: (() -> Unit)? = null,
     onToggleArchive: (() -> Unit)? = null,
+    onConfigurePeriodization: (() -> Unit)? = null,
+    onAdvanceWeek: (() -> Unit)? = null,
+    onPreviousWeek: (() -> Unit)? = null,
     onShare: (() -> Unit)? = null,
     canMoveUp: Boolean = false,
     canMoveDown: Boolean = false,
@@ -1349,6 +1381,22 @@ fun RoutineCardItem(
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold
                     )
+                    if (routine.isPeriodized && routine.periodizedCycle != null) {
+                        val currentConfig = routine.periodizedCycle.getCurrentWeekConfig()
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Surface(
+                            color = if (currentConfig.isDeload) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.secondaryContainer,
+                            shape = RoundedCornerShape(4.dp)
+                        ) {
+                            Text(
+                                text = stringResource(R.string.badge_periodized_block, currentConfig.weekNumber, routine.periodizedCycle.totalWeeks),
+                                color = if (currentConfig.isDeload) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSecondaryContainer,
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                            )
+                        }
+                    }
                     if (routine.isArchived) {
                         Spacer(modifier = Modifier.width(8.dp))
                         Surface(
@@ -1375,6 +1423,21 @@ fun RoutineCardItem(
                     fontSize = 12.sp,
                     maxLines = 1
                 )
+                if (routine.isPeriodized && routine.periodizedCycle != null) {
+                    val currentConfig = routine.periodizedCycle.getCurrentWeekConfig()
+                    val volPct = (currentConfig.volumeMultiplier * 100).toInt()
+                    val intPct = (currentConfig.intensityMultiplier * 100).toInt()
+                    val deltaInt = intPct - 100
+                    val intSign = if (deltaInt > 0) "+$deltaInt%" else "$deltaInt%"
+                    val rpeStr = currentConfig.targetRpe?.let { " • RPE $it" } ?: ""
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "${currentConfig.phase.name} • $volPct% Vol • $intSign Load$rpeStr",
+                        color = MaterialTheme.colorScheme.primary,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
             }
 
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -1421,6 +1484,36 @@ fun RoutineCardItem(
                                 onClick = {
                                     menuExpanded = false
                                     onMoveDown()
+                                }
+                            )
+                        }
+                        if (onConfigurePeriodization != null) {
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.menu_configure_periodization)) },
+                                leadingIcon = { Icon(Icons.Default.DateRange, contentDescription = null) },
+                                onClick = {
+                                    menuExpanded = false
+                                    onConfigurePeriodization()
+                                }
+                            )
+                        }
+                        if (routine.isPeriodized && onAdvanceWeek != null) {
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.menu_advance_cycle_week)) },
+                                leadingIcon = { Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null) },
+                                onClick = {
+                                    menuExpanded = false
+                                    onAdvanceWeek()
+                                }
+                            )
+                        }
+                        if (routine.isPeriodized && onPreviousWeek != null) {
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.menu_previous_cycle_week)) },
+                                leadingIcon = { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null) },
+                                onClick = {
+                                    menuExpanded = false
+                                    onPreviousWeek()
                                 }
                             )
                         }

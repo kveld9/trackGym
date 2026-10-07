@@ -643,6 +643,30 @@ class GymViewModel(
         }
     }
 
+    fun updateRoutinePeriodization(routineId: Long, isPeriodized: Boolean, cycle: com.kveld9.trackgym.domain.model.PeriodizedCycle?) {
+        viewModelScope.launch {
+            repository.updateRoutinePeriodization(routineId, isPeriodized, cycle)
+        }
+    }
+
+    fun advanceRoutineCycleWeek(routineId: Long) {
+        viewModelScope.launch {
+            repository.advanceRoutineCycleWeek(routineId)
+        }
+    }
+
+    fun previousRoutineCycleWeek(routineId: Long) {
+        viewModelScope.launch {
+            repository.previousRoutineCycleWeek(routineId)
+        }
+    }
+
+    fun setRoutineCycleWeek(routineId: Long, weekNumber: Int) {
+        viewModelScope.launch {
+            repository.setRoutineCycleWeek(routineId, weekNumber)
+        }
+    }
+
     fun importRoutineFromText(rawText: String, onResult: (Boolean) -> Unit) {
         val dto = com.kveld9.trackgym.domain.util.RoutineShareCodec.decodeFromText(rawText)
         if (dto == null) {

@@ -51,6 +51,12 @@ interface RoutineDao {
     @Query("UPDATE routines SET isArchived = :isArchived WHERE id = :id")
     suspend fun updateRoutineArchived(id: Long, isArchived: Boolean)
 
+    @Query("UPDATE routines SET isPeriodized = :isPeriodized, periodizedCycleData = :cycleData WHERE id = :id")
+    suspend fun updateRoutinePeriodization(id: Long, isPeriodized: Boolean, cycleData: String?)
+
+    @Query("UPDATE routines SET periodizedCycleData = :cycleData WHERE id = :id")
+    suspend fun updateRoutineCycleData(id: Long, cycleData: String)
+
     // Routine Exercises
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRoutineExercises(exercises: List<RoutineExerciseEntity>)
