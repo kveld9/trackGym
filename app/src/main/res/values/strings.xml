@@ -378,3 +378,14 @@
     <string name="dialog_select_date_title">Completion Date</string>
     <string name="dialog_select_time_title">Completion Time</string>
 </resources>
+    <string name="action_share_image">Export Workout Image</string>
+    <string name="preview_dialog_title">Workout Summary Preview</string>
+    <string name="action_save_gallery">Save to Gallery</string>
+    <string name="toast_image_saved">Workout image saved to Gallery</string>
+    <string name="toast_image_save_failed">Failed to save workout image</string>
+    <string name="share_card_volume">Volume</string>
+    <string name="share_card_duration">Duration</string>
+    <string name="share_card_sets">Sets</string>
+    <string name="share_card_records">PRs</string>
+    <string name="share_card_tagline">TrackGym • Built for Iron</string>
+    <string name="share_chooser_title">Share Workout Summary</string>

@@ -30,19 +30,26 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import android.content.Intent
+import android.graphics.Bitmap
 import android.widget.Toast
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import com.kveld9.trackgym.domain.calculator.LlmWorkoutPromptGenerator
+import com.kveld9.trackgym.ui.components.WorkoutShareCard
+import com.kveld9.trackgym.ui.components.WorkoutSharePreviewDialog
+import com.kveld9.trackgym.ui.util.ShareProvider
 import com.kveld9.trackgym.domain.calculator.MuscleHeatmapEngine
 import com.kveld9.trackgym.ui.components.MuscleHeatmapCard
 import com.kveld9.trackgym.ui.util.displayName
@@ -70,6 +77,10 @@ fun WorkoutComparisonScreen(
     weightUnit: WeightUnit = WeightUnit.KG,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+    var previewBitmap by remember { mutableStateOf<Bitmap?>(null) }
+    val shareChooserTitle = stringResource(R.string.share_chooser_title)
+
     val dateFormat = SimpleDateFormat("EEEE, d MMMM", Locale.getDefault())
     val dateString = dateFormat.format(Date(comparison.currentWorkout.completedAt ?: comparison.currentWorkout.startedAt)).replaceFirstChar { it.uppercase() }
     val workoutHeatmap = remember(comparison.currentWorkout) {
@@ -97,7 +108,6 @@ fun WorkoutComparisonScreen(
                     }
                 },
                 actions = {
-                    val context = LocalContext.current
                     IconButton(
                         onClick = {
                             val promptText = LlmWorkoutPromptGenerator.generateMarkdownPrompt(comparison, weightUnit)
@@ -137,6 +147,16 @@ fun WorkoutComparisonScreen(
                     totalVolumeKg = comparison.currentWorkout.totalVolume,
                     recordsCount = comparison.totalRecordsUnlocked.size,
                     weightUnit = weightUnit
+                )
+            }
+
+            item {
+                WorkoutShareCard(
+                    comparison = comparison,
+                    weightUnit = weightUnit,
+                    onCapture = { bitmap ->
+                        previewBitmap = bitmap
+                    }
                 )
             }
 
@@ -226,6 +246,26 @@ fun WorkoutComparisonScreen(
                 Spacer(modifier = Modifier.height(24.dp))
             }
         }
+    }
+
+    previewBitmap?.let { bitmap ->
+        WorkoutSharePreviewDialog(
+            bitmap = bitmap,
+            onDownload = {
+                val success = ShareProvider.saveBitmapToGallery(context, bitmap)
+                Toast.makeText(
+                    context,
+                    if (success) R.string.toast_image_saved else R.string.toast_image_save_failed,
+                    Toast.LENGTH_SHORT
+                ).show()
+            },
+            onShare = {
+                ShareProvider.shareBitmap(context, bitmap, shareChooserTitle)
+            },
+            onDismiss = {
+                previewBitmap = null
+            }
+        )
     }
 }
 
