@@ -17,11 +17,13 @@ data class WorkoutExercise(
 
     fun calculateTotalVolume(
         doubleDumbbells: Boolean = true,
-        excludeWarmup: Boolean = false
+        excludeWarmup: Boolean = false,
+        userBodyWeightKg: Double = 0.0
     ): Double {
         val multiplier = if (doubleDumbbells && exercise.category == ExerciseCategory.DUMBBELL) 2.0 else 1.0
+        val isBodyweight = exercise.category == ExerciseCategory.BODYWEIGHT
         return sets.filter { it.isCompleted && (!excludeWarmup || it.setType != SetType.WARMUP) }
-            .sumOf { it.volume } * multiplier
+            .sumOf { it.calculateVolume(isBodyweight, userBodyWeightKg) } * multiplier
     }
 
     val totalVolume: Double

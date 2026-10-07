@@ -132,6 +132,12 @@ class SettingsViewModel(
         }
     }
 
+    fun setUserBodyWeight(weightKg: Double) {
+        viewModelScope.launch {
+            themePreferences.setUserBodyWeight(weightKg)
+        }
+    }
+
     fun exportBackup(streamProvider: () -> OutputStream?) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }

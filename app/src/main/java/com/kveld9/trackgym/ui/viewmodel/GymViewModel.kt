@@ -78,6 +78,11 @@ class GymViewModel(
     } ?: flowOf(true))
         .stateIn(viewModelScope, SharingStarted.Eagerly, true)
 
+    val userBodyWeight: StateFlow<Double> = (themePreferences?.themeSettings?.map {
+        it.userBodyWeightKg
+    } ?: flowOf(75.0))
+        .stateIn(viewModelScope, SharingStarted.Eagerly, 75.0)
+
     private val _activeWorkout = MutableStateFlow<Workout?>(null)
     val activeWorkout: StateFlow<Workout?> = _activeWorkout.asStateFlow()
 
@@ -609,7 +614,8 @@ class GymViewModel(
                     workoutId = current.id,
                     durationSeconds = _timerSeconds.value,
                     notes = notes,
-                    weightUnit = activeUnit
+                    weightUnit = activeUnit,
+                    userBodyWeightKg = userBodyWeight.value
                 )
                 if (comparison != null) {
                     _lastFinishedComparison.value = comparison

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -25,7 +26,8 @@ data class ThemeSettings(
     val excludeWarmupFromVolume: Boolean = false,
     val timerSound: String = "DIGITAL_BEEP",
     val timerSoundCountdown: Boolean = true,
-    val soundFeedbackOnComplete: Boolean = true
+    val soundFeedbackOnComplete: Boolean = true,
+    val userBodyWeightKg: Double = 75.0
 )
 
 class ThemePreferences(
@@ -53,6 +55,7 @@ class ThemePreferences(
         val TIMER_SOUND_KEY = stringPreferencesKey("timer_sound")
         val TIMER_SOUND_COUNTDOWN_KEY = booleanPreferencesKey("timer_sound_countdown")
         val SOUND_FEEDBACK_ON_COMPLETE_KEY = booleanPreferencesKey("sound_feedback_on_complete")
+        val USER_BODY_WEIGHT_KEY = doublePreferencesKey("user_body_weight")
 
         private val LEGACY_AMOLED_KEY = booleanPreferencesKey("amoled_black")
     }
@@ -75,7 +78,8 @@ class ThemePreferences(
                 excludeWarmupFromVolume = preferences[EXCLUDE_WARMUP_FROM_VOLUME_KEY] ?: false,
                 timerSound = preferences[TIMER_SOUND_KEY] ?: "DIGITAL_BEEP",
                 timerSoundCountdown = preferences[TIMER_SOUND_COUNTDOWN_KEY] ?: true,
-                soundFeedbackOnComplete = preferences[SOUND_FEEDBACK_ON_COMPLETE_KEY] ?: true
+                soundFeedbackOnComplete = preferences[SOUND_FEEDBACK_ON_COMPLETE_KEY] ?: true,
+                userBodyWeightKg = preferences[USER_BODY_WEIGHT_KEY] ?: 75.0
             )
         }
 
@@ -157,6 +161,12 @@ class ThemePreferences(
     suspend fun setSoundFeedbackOnComplete(enabled: Boolean) {
         dataStore.edit { preferences ->
             preferences[SOUND_FEEDBACK_ON_COMPLETE_KEY] = enabled
+        }
+    }
+
+    suspend fun setUserBodyWeight(weightKg: Double) {
+        dataStore.edit { preferences ->
+            preferences[USER_BODY_WEIGHT_KEY] = weightKg
         }
     }
 }

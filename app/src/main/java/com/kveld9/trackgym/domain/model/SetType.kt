@@ -13,5 +13,7 @@ enum class SetType(
     DROP("D", R.string.set_type_drop, "Drop Set"),
     FAILURE("F", R.string.set_type_failure, "Failure"),
     MYO_REPS("M", R.string.set_type_myo_reps, "Myo-Reps"),
-    DURATION("T", R.string.set_type_duration, "Time / Duration")
+    DURATION("T", R.string.set_type_duration, "Time / Duration"),
+    BODYWEIGHT_LOAD("B+", R.string.set_type_bodyweight_load, "Weighted Bodyweight"),
+    BODYWEIGHT_ASSISTED("B-", R.string.set_type_bodyweight_assisted, "Assisted Bodyweight")
 }

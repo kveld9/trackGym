@@ -1640,6 +1640,8 @@ fun SetRowItem(
         SetType.FAILURE -> MaterialTheme.colorScheme.error
         SetType.MYO_REPS -> MaterialTheme.colorScheme.tertiary
         SetType.DURATION -> GymBlue
+        SetType.BODYWEIGHT_LOAD -> GymWarmupAmber
+        SetType.BODYWEIGHT_ASSISTED -> MaterialTheme.colorScheme.tertiary
     }
 
     val badgeLabel = when (set.setType) {
@@ -1649,6 +1651,8 @@ fun SetRowItem(
         SetType.FAILURE -> "F"
         SetType.MYO_REPS -> "M"
         SetType.DURATION -> "T"
+        SetType.BODYWEIGHT_LOAD -> "B+"
+        SetType.BODYWEIGHT_ASSISTED -> "B-"
     }
 
     var showQuickAdjust by remember { mutableStateOf(false) }
@@ -1699,6 +1703,8 @@ fun SetRowItem(
                                             SetType.FAILURE -> MaterialTheme.colorScheme.error
                                             SetType.MYO_REPS -> MaterialTheme.colorScheme.tertiary
                                             SetType.DURATION -> GymBlue
+                                            SetType.BODYWEIGHT_LOAD -> GymWarmupAmber
+                                            SetType.BODYWEIGHT_ASSISTED -> MaterialTheme.colorScheme.tertiary
                                         },
                                         fontWeight = FontWeight.Bold,
                                         modifier = Modifier.width(28.dp)
@@ -1733,8 +1739,13 @@ fun SetRowItem(
                         onUpdateSet(set.copy(weightKg = inKg))
                     },
                     placeholder = {
+                        val weightPlaceholder = when (set.setType) {
+                            SetType.BODYWEIGHT_LOAD -> ghostWeightDisplay ?: "+0"
+                            SetType.BODYWEIGHT_ASSISTED -> ghostWeightDisplay ?: "-0"
+                            else -> ghostWeightDisplay ?: "0"
+                        }
                         Text(
-                            text = ghostWeightDisplay ?: "0",
+                            text = weightPlaceholder,
                             color = if (ghostWeightDisplay != null) {
                                 MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
                             } else {

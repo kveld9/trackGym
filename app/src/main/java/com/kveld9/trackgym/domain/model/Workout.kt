@@ -12,8 +12,9 @@ data class Workout(
 ) {
     fun calculateTotalVolume(
         doubleDumbbells: Boolean = true,
-        excludeWarmup: Boolean = false
-    ): Double = exercises.sumOf { it.calculateTotalVolume(doubleDumbbells, excludeWarmup) }
+        excludeWarmup: Boolean = false,
+        userBodyWeightKg: Double = 0.0
+    ): Double = exercises.sumOf { it.calculateTotalVolume(doubleDumbbells, excludeWarmup, userBodyWeightKg) }
 
     val totalVolume: Double
         get() = calculateTotalVolume(true, false)

@@ -215,9 +215,13 @@
     <string name="set_type_failure">Failure Set (F)</string>
     <string name="set_type_myo_reps">Myo-Reps (M)</string>
     <string name="set_type_duration">Time / Isometric (T)</string>
+    <string name="set_type_bodyweight_load">Weighted (+kg) (B+)</string>
+    <string name="set_type_bodyweight_assisted">Assisted (-kg) (B-)</string>
     <string name="set_type_dialog_title">Select Set Type</string>
     <string name="action_start_stopwatch">Start stopwatch</string>
     <string name="action_stop_stopwatch">Stop stopwatch</string>
+    <string name="settings_user_bodyweight_title">User Body Weight</string>
+    <string name="settings_user_bodyweight_desc">Used to calculate real tonnage for bodyweight and calisthenics exercises</string>
 
     <!-- RPE / RIR Selection -->
     <string name="rpe_dialog_title">Select RPE / RIR</string>

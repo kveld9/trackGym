@@ -13,7 +13,18 @@ data class WorkoutSet(
     val completedAt: Long? = null
 ) {
     val volume: Double
-        get() = if (isCompleted) weightKg * reps else 0.0
+        get() = calculateVolume()
+
+    fun calculateVolume(isBodyweight: Boolean = false, userBodyWeightKg: Double = 0.0): Double {
+        if (!isCompleted) return 0.0
+        val effectiveWeight = when {
+            setType == SetType.BODYWEIGHT_LOAD -> userBodyWeightKg + weightKg
+            setType == SetType.BODYWEIGHT_ASSISTED -> (userBodyWeightKg - weightKg).coerceAtLeast(0.0)
+            isBodyweight && userBodyWeightKg > 0.0 -> userBodyWeightKg + weightKg
+            else -> weightKg
+        }
+        return effectiveWeight * reps
+    }
 
     val effectiveDurationSeconds: Int
         get() = durationSeconds ?: reps

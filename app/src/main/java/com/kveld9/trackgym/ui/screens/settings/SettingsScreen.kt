@@ -65,10 +65,17 @@ import androidx.compose.material3.TextButton
 import com.kveld9.trackgym.domain.calculator.OneRepMaxFormula
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -443,6 +450,14 @@ fun SettingsScreen(
                             )
                         }
                     }
+
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
+
+                    // User Body Weight Row
+                    BodyWeightSettingRow(
+                        bodyWeightKg = themeSettings.userBodyWeightKg,
+                        onWeightChanged = { viewModel.setUserBodyWeight(it) }
+                    )
                 }
             }
 
@@ -1044,4 +1059,100 @@ fun OneRepMaxModelsCard(
             }
         }
     }
+}
+
+@Composable
+private fun BodyWeightSettingRow(
+    bodyWeightKg: Double,
+    onWeightChanged: (Double) -> Unit
+) {
+    var showDialog by remember { mutableStateOf(false) }
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { showDialog = true }
+    ) {
+        Icon(
+            imageVector = Icons.Default.FitnessCenter,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = stringResource(R.string.settings_user_bodyweight_title),
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Medium
+            )
+            Text(
+                text = stringResource(R.string.settings_user_bodyweight_desc),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+        Text(
+            text = "$bodyWeightKg kg",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary
+        )
+    }
+
+    if (showDialog) {
+        BodyWeightInputDialog(
+            initialWeight = bodyWeightKg,
+            onDismiss = { showDialog = false },
+            onConfirm = {
+                onWeightChanged(it)
+                showDialog = false
+            }
+        )
+    }
+}
+
+@Composable
+private fun BodyWeightInputDialog(
+    initialWeight: Double,
+    onDismiss: () -> Unit,
+    onConfirm: (Double) -> Unit
+) {
+    var weightText by remember { mutableStateOf(initialWeight.toString()) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.settings_user_bodyweight_title)) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(
+                    text = stringResource(R.string.settings_user_bodyweight_desc),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                OutlinedTextField(
+                    value = weightText,
+                    onValueChange = { weightText = it },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    val parsed = weightText.toDoubleOrNull() ?: initialWeight
+                    onConfirm(parsed)
+                }
+            ) {
+                Text(stringResource(android.R.string.ok))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.action_cancel))
+            }
+        }
+    )
 }

@@ -1,6 +1,7 @@
 package com.kveld9.trackgym.domain.calculator
 
 import com.kveld9.trackgym.domain.model.Exercise
+import com.kveld9.trackgym.domain.model.ExerciseCategory
 import com.kveld9.trackgym.domain.model.ExerciseComparison
 import com.kveld9.trackgym.domain.model.PersonalRecord
 import com.kveld9.trackgym.domain.model.SetComparison
@@ -47,8 +48,10 @@ object WorkoutComparisonEngine {
         previousWorkoutExercise: WorkoutExercise?,
         previousWorkoutDate: Long?,
         recordsUnlocked: List<PersonalRecord> = emptyList(),
-        weightUnit: WeightUnit = WeightUnit.KG
+        weightUnit: WeightUnit = WeightUnit.KG,
+        userBodyWeightKg: Double = 0.0
     ): ExerciseComparison {
+        val isBodyweight = exercise.category == ExerciseCategory.BODYWEIGHT
         val currentSets = currentWorkoutExercise.sets.filter { it.isCompleted }
         val previousSets = previousWorkoutExercise?.sets?.filter { it.isCompleted } ?: emptyList()
 
@@ -59,7 +62,9 @@ object WorkoutComparisonEngine {
 
             val weightDelta = if (prev != null) curr.weightKg - prev.weightKg else curr.weightKg
             val repsDelta = if (prev != null) curr.reps - prev.reps else curr.reps
-            val volumeDelta = if (prev != null) curr.volume - prev.volume else curr.volume
+            val currVol = curr.calculateVolume(isBodyweight, userBodyWeightKg)
+            val prevVol = prev?.calculateVolume(isBodyweight, userBodyWeightKg) ?: 0.0
+            val volumeDelta = if (prev != null) currVol - prevVol else currVol
 
             val isImprovement = prev == null || weightDelta > 0 || (weightDelta == 0.0 && repsDelta > 0)
             val matchingRecords = recordsUnlocked.filter { it.weightKg == curr.weightKg && it.reps == curr.reps }
@@ -78,8 +83,8 @@ object WorkoutComparisonEngine {
             )
         }
 
-        val prevVolume = previousSets.sumOf { it.volume }
-        val currVolume = currentSets.sumOf { it.volume }
+        val prevVolume = previousSets.sumOf { it.calculateVolume(isBodyweight, userBodyWeightKg) }
+        val currVolume = currentSets.sumOf { it.calculateVolume(isBodyweight, userBodyWeightKg) }
         val totalVolumeDelta = currVolume - prevVolume
 
         return ExerciseComparison(

@@ -318,7 +318,8 @@ class GymRepository(private val database: GymDatabase) {
         workoutId: Long,
         durationSeconds: Long,
         notes: String = "",
-        weightUnit: com.kveld9.trackgym.domain.model.WeightUnit = com.kveld9.trackgym.domain.model.WeightUnit.KG
+        weightUnit: com.kveld9.trackgym.domain.model.WeightUnit = com.kveld9.trackgym.domain.model.WeightUnit.KG,
+        userBodyWeightKg: Double = 0.0
     ): WorkoutComparison? = withContext(Dispatchers.IO) {
         val entity = workoutDao.getWorkoutById(workoutId)
             ?: return@withContext null
@@ -331,7 +332,7 @@ class GymRepository(private val database: GymDatabase) {
         )
         workoutDao.updateWorkout(completedEntity)
 
-        compareWorkoutWithPrevious(workoutId, weightUnit)
+        compareWorkoutWithPrevious(workoutId, weightUnit, userBodyWeightKg)
     }
 
     fun getCompletedWorkouts(): Flow<List<Workout>> {
@@ -364,7 +365,8 @@ class GymRepository(private val database: GymDatabase) {
 
     suspend fun compareWorkoutWithPrevious(
         workoutId: Long,
-        weightUnit: com.kveld9.trackgym.domain.model.WeightUnit = com.kveld9.trackgym.domain.model.WeightUnit.KG
+        weightUnit: com.kveld9.trackgym.domain.model.WeightUnit = com.kveld9.trackgym.domain.model.WeightUnit.KG,
+        userBodyWeightKg: Double = 0.0
     ): WorkoutComparison? = withContext(Dispatchers.IO) {
         val currentWorkout = getFullWorkout(workoutId) ?: return@withContext null
         val exerciseComparisons = mutableListOf<ExerciseComparison>()
@@ -397,7 +399,8 @@ class GymRepository(private val database: GymDatabase) {
                 previousWorkoutExercise = prevWorkoutExercise,
                 previousWorkoutDate = prevWorkout?.completedAt,
                 recordsUnlocked = recordsForExercise,
-                weightUnit = weightUnit
+                weightUnit = weightUnit,
+                userBodyWeightKg = userBodyWeightKg
             )
             exerciseComparisons.add(comp)
         }
