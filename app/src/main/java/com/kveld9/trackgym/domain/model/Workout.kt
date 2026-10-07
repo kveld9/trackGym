@@ -10,9 +10,17 @@ data class Workout(
     val notes: String = "",
     val exercises: List<WorkoutExercise> = emptyList()
 ) {
+    fun calculateTotalVolume(
+        doubleDumbbells: Boolean = true,
+        excludeWarmup: Boolean = false
+    ): Double = exercises.sumOf { it.calculateTotalVolume(doubleDumbbells, excludeWarmup) }
+
     val totalVolume: Double
-        get() = exercises.sumOf { it.totalVolume }
+        get() = calculateTotalVolume(true, false)
+
+    fun completedSetsCount(excludeWarmup: Boolean = false): Int =
+        exercises.sumOf { it.completedSetsCount(excludeWarmup) }
 
     val totalCompletedSets: Int
-        get() = exercises.sumOf { it.completedSetsCount }
+        get() = completedSetsCount(false)
 }

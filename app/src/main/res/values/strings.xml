@@ -187,6 +187,8 @@
     <string name="overload_hint_body">Last session: %1$s • Target: %2$s</string>
     <string name="setting_double_dumbbell_title">Double Dumbbell Volume</string>
     <string name="setting_double_dumbbell_desc">Multiply volume by 2 for dumbbell exercises when logging weight per hand</string>
+    <string name="setting_exclude_warmup_title">Exclude Warmup from Volume</string>
+    <string name="setting_exclude_warmup_desc">Do not include warmup sets in total volume tonnage and completed set metrics</string>
     <string name="toast_backup_read_error">Error reading file: %1$s</string>
     <string name="toast_backup_invalid_data">The backup file contains no valid records</string>
     <string name="toast_csv_import_empty">The CSV file contains no valid workout records</string>

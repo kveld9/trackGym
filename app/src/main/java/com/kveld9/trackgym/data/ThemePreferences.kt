@@ -21,7 +21,8 @@ data class ThemeSettings(
     val defaultRestSeconds: Int = 90,
     val exerciseLanguage: String = ThemePreferences.EXERCISE_LANG_SYSTEM, // "SYSTEM", "ENGLISH"
     val ormFormula: String = "EPLEY",
-    val doubleDumbbellVolume: Boolean = true
+    val doubleDumbbellVolume: Boolean = true,
+    val excludeWarmupFromVolume: Boolean = false
 )
 
 class ThemePreferences(
@@ -45,6 +46,7 @@ class ThemePreferences(
         val EXERCISE_LANGUAGE_KEY = stringPreferencesKey("exercise_language")
         val ORM_FORMULA_KEY = stringPreferencesKey("orm_formula")
         val DOUBLE_DUMBBELL_VOLUME_KEY = booleanPreferencesKey("double_dumbbell_volume")
+        val EXCLUDE_WARMUP_FROM_VOLUME_KEY = booleanPreferencesKey("exclude_warmup_from_volume")
 
         private val LEGACY_AMOLED_KEY = booleanPreferencesKey("amoled_black")
     }
@@ -63,7 +65,8 @@ class ThemePreferences(
                 defaultRestSeconds = preferences[DEFAULT_REST_SECONDS_KEY] ?: 90,
                 exerciseLanguage = preferences[EXERCISE_LANGUAGE_KEY] ?: EXERCISE_LANG_SYSTEM,
                 ormFormula = preferences[ORM_FORMULA_KEY] ?: "EPLEY",
-                doubleDumbbellVolume = preferences[DOUBLE_DUMBBELL_VOLUME_KEY] ?: true
+                doubleDumbbellVolume = preferences[DOUBLE_DUMBBELL_VOLUME_KEY] ?: true,
+                excludeWarmupFromVolume = preferences[EXCLUDE_WARMUP_FROM_VOLUME_KEY] ?: false
             )
         }
 
@@ -121,6 +124,12 @@ class ThemePreferences(
     suspend fun setDoubleDumbbellVolume(enabled: Boolean) {
         dataStore.edit { preferences ->
             preferences[DOUBLE_DUMBBELL_VOLUME_KEY] = enabled
+        }
+    }
+
+    suspend fun setExcludeWarmupFromVolume(enabled: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[EXCLUDE_WARMUP_FROM_VOLUME_KEY] = enabled
         }
     }
 }

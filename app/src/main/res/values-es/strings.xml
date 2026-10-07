@@ -187,6 +187,8 @@
     <string name="overload_hint_body">Última sesión: %1$s • Sugerido: %2$s</string>
     <string name="setting_double_dumbbell_title">Duplicar Volumen en Mancuernas</string>
     <string name="setting_double_dumbbell_desc">Multiplica el volumen por 2 en ejercicios de mancuernas al ingresar el peso de una mano</string>
+    <string name="setting_exclude_warmup_title">Excluir Calentamiento de Volumen</string>
+    <string name="setting_exclude_warmup_desc">No contabilizar series de calentamiento en el tonelaje total ni en el conteo de series completadas</string>
     <string name="toast_backup_read_error">Error al leer el archivo: %1$s</string>
     <string name="toast_backup_invalid_data">El archivo no contiene registros válidos</string>
     <string name="toast_csv_import_empty">El archivo CSV no contiene registros de entrenamiento válidos</string>

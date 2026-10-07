@@ -3,6 +3,7 @@ package com.kveld9.trackgym.domain.calculator
 import com.kveld9.trackgym.domain.model.Exercise
 import com.kveld9.trackgym.domain.model.ExerciseCategory
 import com.kveld9.trackgym.domain.model.MuscleGroup
+import com.kveld9.trackgym.domain.model.SetType
 import com.kveld9.trackgym.domain.model.WorkoutExercise
 import com.kveld9.trackgym.domain.model.WorkoutSet
 import org.junit.Assert.assertEquals
@@ -177,5 +178,31 @@ class WorkoutComparisonEngineTest {
         // 20 kg x 10 reps = 200 kg raw. With 2x dumbbell multiplier = 400 kg.
         assertEquals(400.0, we.totalVolume, 0.01)
         assertEquals(200.0, we.calculateTotalVolume(doubleDumbbells = false), 0.01)
+    }
+
+    @Test
+    fun `calculateTotalVolume excludes warmup sets when excludeWarmup is true`() {
+        val benchPress = Exercise(
+            id = 1,
+            name = "Barbell Bench Press",
+            muscleGroup = MuscleGroup.CHEST,
+            category = ExerciseCategory.BARBELL
+        )
+        val we = WorkoutExercise(
+            id = 1,
+            workoutId = 1,
+            exercise = benchPress,
+            sets = listOf(
+                WorkoutSet(id = 1, setNumber = 1, setType = SetType.WARMUP, weightKg = 40.0, reps = 10, isCompleted = true),
+                WorkoutSet(id = 2, setNumber = 2, setType = SetType.NORMAL, weightKg = 80.0, reps = 8, isCompleted = true),
+                WorkoutSet(id = 3, setNumber = 3, setType = SetType.NORMAL, weightKg = 80.0, reps = 8, isCompleted = true)
+            )
+        )
+
+        // Warmup: 40 * 10 = 400 kg. Normal sets: 2 * (80 * 8) = 1280 kg. Total with warmup: 1680 kg.
+        assertEquals(1680.0, we.calculateTotalVolume(doubleDumbbells = false, excludeWarmup = false), 0.01)
+        assertEquals(1280.0, we.calculateTotalVolume(doubleDumbbells = false, excludeWarmup = true), 0.01)
+        assertEquals(3, we.completedSetsCount(excludeWarmup = false))
+        assertEquals(2, we.completedSetsCount(excludeWarmup = true))
     }
 }

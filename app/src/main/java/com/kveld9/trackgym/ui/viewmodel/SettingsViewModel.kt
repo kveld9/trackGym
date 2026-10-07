@@ -108,6 +108,12 @@ class SettingsViewModel(
         }
     }
 
+    fun setExcludeWarmupFromVolume(enabled: Boolean) {
+        viewModelScope.launch {
+            themePreferences.setExcludeWarmupFromVolume(enabled)
+        }
+    }
+
     fun exportBackup(streamProvider: () -> OutputStream?) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
