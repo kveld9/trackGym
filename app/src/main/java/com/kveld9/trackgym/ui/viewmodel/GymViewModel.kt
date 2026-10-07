@@ -567,6 +567,12 @@ class GymViewModel(
         }
     }
 
+    fun toggleRoutineArchived(routineId: Long, isArchived: Boolean) {
+        viewModelScope.launch {
+            repository.setRoutineArchived(routineId, isArchived)
+        }
+    }
+
     fun moveRoutineUp(routineId: Long, currentList: List<Routine>) {
         val index = currentList.indexOfFirst { it.id == routineId }
         if (index > 0) {

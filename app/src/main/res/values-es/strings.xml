@@ -337,4 +337,8 @@
     <string name="dialog_reorder_folders_title">Reordenar carpetas</string>
     <string name="menu_duplicate_routine">Duplicar rutina</string>
     <string name="routine_copy_suffix">(Copia)</string>
+    <string name="routine_filter_archived">Archivadas</string>
+    <string name="menu_archive_routine">Archivar rutina</string>
+    <string name="menu_unarchive_routine">Desarchivar rutina</string>
+    <string name="routine_archived_badge">Archivada</string>
 </resources>

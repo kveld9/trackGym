@@ -48,6 +48,9 @@ interface RoutineDao {
     @Query("UPDATE routines SET orderIndex = :orderIndex WHERE id = :id")
     suspend fun updateRoutineOrder(id: Long, orderIndex: Int)
 
+    @Query("UPDATE routines SET isArchived = :isArchived WHERE id = :id")
+    suspend fun updateRoutineArchived(id: Long, isArchived: Boolean)
+
     // Routine Exercises
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRoutineExercises(exercises: List<RoutineExerciseEntity>)

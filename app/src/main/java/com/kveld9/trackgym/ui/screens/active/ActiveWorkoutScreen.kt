@@ -250,6 +250,7 @@ fun ActiveWorkoutScreen(
             onStartRoutine = { routineId -> viewModel.startWorkoutFromRoutine(routineId) },
             onDeleteRoutine = { routineId -> viewModel.deleteRoutine(routineId) },
             onDuplicateRoutine = { routineId -> viewModel.duplicateRoutine(routineId, copySuffix) },
+            onToggleArchive = { routineId, isArchived -> viewModel.toggleRoutineArchived(routineId, isArchived) },
             onMoveRoutineUp = { routineId -> viewModel.moveRoutineUp(routineId, routines) },
             onMoveRoutineDown = { routineId -> viewModel.moveRoutineDown(routineId, routines) },
             onMoveFolderUp = { folderId -> viewModel.moveFolderUp(folderId, folders) },
@@ -695,6 +696,7 @@ fun EmptyWorkoutDashboard(
     onStartRoutine: (Long) -> Unit,
     onDeleteRoutine: (Long) -> Unit,
     onDuplicateRoutine: ((Long) -> Unit)? = null,
+    onToggleArchive: ((Long, Boolean) -> Unit)? = null,
     onMoveRoutineUp: ((Long) -> Unit)? = null,
     onMoveRoutineDown: ((Long) -> Unit)? = null,
     onMoveFolderUp: ((Long) -> Unit)? = null,
@@ -702,11 +704,17 @@ fun EmptyWorkoutDashboard(
     modifier: Modifier = Modifier
 ) {
     var selectedFolderId by remember { mutableStateOf<Long?>(null) }
+    var showArchived by remember { mutableStateOf(false) }
     var showReorderFoldersDialog by remember { mutableStateOf(false) }
-    val filteredRoutines = if (selectedFolderId == null) {
-        routines
+    val baseRoutines = if (showArchived) {
+        routines.filter { it.isArchived }
     } else {
-        routines.filter { it.folderId == selectedFolderId }
+        routines.filter { !it.isArchived }
+    }
+    val filteredRoutines = if (selectedFolderId == null) {
+        baseRoutines
+    } else {
+        baseRoutines.filter { it.folderId == selectedFolderId }
     }
 
     Column(
@@ -795,8 +803,9 @@ fun EmptyWorkoutDashboard(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        // Folder Chips
-        if (folders.isNotEmpty()) {
+        // Folder & Filter Chips
+        val hasArchived = routines.any { it.isArchived }
+        if (folders.isNotEmpty() || hasArchived) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
@@ -808,8 +817,11 @@ fun EmptyWorkoutDashboard(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     FilterChip(
-                        selected = selectedFolderId == null,
-                        onClick = { selectedFolderId = null },
+                        selected = !showArchived && selectedFolderId == null,
+                        onClick = {
+                            showArchived = false
+                            selectedFolderId = null
+                        },
                         label = { Text(stringResource(R.string.routine_folder_all)) },
                         colors = FilterChipDefaults.filterChipColors(
                             selectedContainerColor = MaterialTheme.colorScheme.primary,
@@ -820,12 +832,30 @@ fun EmptyWorkoutDashboard(
                     )
                     folders.forEach { folder ->
                         FilterChip(
-                            selected = selectedFolderId == folder.id,
-                            onClick = { selectedFolderId = folder.id },
+                            selected = !showArchived && selectedFolderId == folder.id,
+                            onClick = {
+                                showArchived = false
+                                selectedFolderId = folder.id
+                            },
                             label = { Text(folder.name) },
                             colors = FilterChipDefaults.filterChipColors(
                                 selectedContainerColor = MaterialTheme.colorScheme.primary,
                                 selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                                labelColor = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        )
+                    }
+                    if (hasArchived) {
+                        FilterChip(
+                            selected = showArchived,
+                            onClick = {
+                                showArchived = !showArchived
+                            },
+                            label = { Text(stringResource(R.string.routine_filter_archived)) },
+                            colors = FilterChipDefaults.filterChipColors(
+                                selectedContainerColor = MaterialTheme.colorScheme.secondary,
+                                selectedLabelColor = MaterialTheme.colorScheme.onSecondary,
                                 containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                                 labelColor = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -892,6 +922,7 @@ fun EmptyWorkoutDashboard(
                         onStart = { onStartRoutine(routine.id) },
                         onDelete = { onDeleteRoutine(routine.id) },
                         onDuplicate = { onDuplicateRoutine?.invoke(routine.id) },
+                        onToggleArchive = { onToggleArchive?.invoke(routine.id, !routine.isArchived) },
                         canMoveUp = index > 0,
                         canMoveDown = index < filteredRoutines.size - 1,
                         onMoveUp = { onMoveRoutineUp?.invoke(routine.id) },
@@ -920,6 +951,7 @@ fun RoutineCardItem(
     onStart: () -> Unit,
     onDelete: () -> Unit,
     onDuplicate: (() -> Unit)? = null,
+    onToggleArchive: (() -> Unit)? = null,
     canMoveUp: Boolean = false,
     canMoveDown: Boolean = false,
     onMoveUp: (() -> Unit)? = null,
@@ -941,12 +973,29 @@ fun RoutineCardItem(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = routine.name,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = routine.name,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    if (routine.isArchived) {
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Surface(
+                            color = MaterialTheme.colorScheme.surfaceContainerHighest,
+                            shape = RoundedCornerShape(4.dp)
+                        ) {
+                            Text(
+                                text = stringResource(R.string.routine_archived_badge),
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                            )
+                        }
+                    }
+                }
                 Spacer(modifier = Modifier.height(4.dp))
                 val context = LocalContext.current
                 val keepEnglish = LocalKeepEnglishExerciseNames.current
@@ -1013,6 +1062,21 @@ fun RoutineCardItem(
                                 onClick = {
                                     menuExpanded = false
                                     onDuplicate()
+                                }
+                            )
+                        }
+                        if (onToggleArchive != null) {
+                            DropdownMenuItem(
+                                text = {
+                                    Text(
+                                        if (routine.isArchived) stringResource(R.string.menu_unarchive_routine)
+                                        else stringResource(R.string.menu_archive_routine)
+                                    )
+                                },
+                                leadingIcon = { Icon(Icons.Default.Bookmark, contentDescription = null) },
+                                onClick = {
+                                    menuExpanded = false
+                                    onToggleArchive()
                                 }
                             )
                         }

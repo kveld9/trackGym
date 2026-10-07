@@ -818,6 +818,10 @@ class GymRepository(private val database: GymDatabase) {
         newRoutineId
     }
 
+    suspend fun setRoutineArchived(routineId: Long, isArchived: Boolean) = withContext(Dispatchers.IO) {
+        routineDao.updateRoutineArchived(routineId, isArchived)
+    }
+
     suspend fun deleteRoutine(routineId: Long) = withContext(Dispatchers.IO) {
         routineDao.deleteRoutine(routineId)
     }
