@@ -617,7 +617,11 @@ class GymRepository(private val database: GymDatabase) {
                         notes = exDto.notes,
                         isCustom = exDto.isCustom,
                         createdAt = if (exDto.createdAt > 0) exDto.createdAt else System.currentTimeMillis(),
-                        mechanics = if (exDto.mechanics.isNotBlank()) exDto.mechanics else MechanicsClassifier.classify(exDto.name).name
+                        mechanics = if (exDto.mechanics.isNotBlank()) exDto.mechanics else MechanicsClassifier.classify(
+                            name = exDto.name,
+                            category = ExerciseCategory.fromString(exDto.category),
+                            muscleGroup = MuscleGroup.fromString(exDto.muscleGroup)
+                        ).name
                     )
                     val newId = exerciseDao.insertExercise(newEntity)
                     exerciseNameToIdMap[key] = newId
@@ -632,7 +636,11 @@ class GymRepository(private val database: GymDatabase) {
                         notes = exDto.notes,
                         isCustom = exDto.isCustom,
                         createdAt = exDto.createdAt,
-                        mechanics = if (exDto.mechanics.isNotBlank()) exDto.mechanics else MechanicsClassifier.classify(exDto.name).name
+                        mechanics = if (exDto.mechanics.isNotBlank()) exDto.mechanics else MechanicsClassifier.classify(
+                            name = exDto.name,
+                            category = ExerciseCategory.fromString(exDto.category),
+                            muscleGroup = MuscleGroup.fromString(exDto.muscleGroup)
+                        ).name
                     )
                     exerciseDao.insertExercise(updated)
                 }
@@ -1005,7 +1013,12 @@ class GymRepository(private val database: GymDatabase) {
                         name = exTmpl.exerciseName.trim(),
                         muscleGroup = defaultEx?.muscleGroup?.name ?: MuscleGroup.OTHER.name,
                         category = defaultEx?.category?.name ?: ExerciseCategory.OTHER.name,
-                        isCustom = defaultEx == null
+                        isCustom = defaultEx == null,
+                        mechanics = defaultEx?.mechanics?.name ?: MechanicsClassifier.classify(
+                            name = exTmpl.exerciseName,
+                            category = defaultEx?.category ?: ExerciseCategory.OTHER,
+                            muscleGroup = defaultEx?.muscleGroup ?: MuscleGroup.OTHER
+                        ).name
                     )
                     exerciseId = exerciseDao.insertExercise(newEntity)
                 }
@@ -1050,7 +1063,12 @@ class GymRepository(private val database: GymDatabase) {
                     name = exDto.name.trim(),
                     muscleGroup = group.name,
                     category = cat.name,
-                    isCustom = true
+                    isCustom = true,
+                    mechanics = MechanicsClassifier.classify(
+                        name = exDto.name,
+                        category = cat,
+                        muscleGroup = group
+                    ).name
                 )
                 exerciseId = exerciseDao.insertExercise(newEntity)
             }
