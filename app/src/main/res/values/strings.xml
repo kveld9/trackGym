@@ -389,3 +389,5 @@
     <string name="share_card_records">PRs</string>
     <string name="share_card_tagline">TrackGym • Built for Iron</string>
     <string name="share_chooser_title">Share Workout Summary</string>
+    <string name="setting_inline_plates_title">Inline Plate Indicator</string>
+    <string name="setting_inline_plates_desc">Show compact plate breakdown per side under target weight in workout sets</string>

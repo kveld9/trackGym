@@ -93,6 +93,11 @@ class GymViewModel(
     } ?: flowOf(com.kveld9.trackgym.domain.model.DistanceUnit.KM))
         .stateIn(viewModelScope, SharingStarted.Eagerly, com.kveld9.trackgym.domain.model.DistanceUnit.KM)
 
+    val showInlinePlates: StateFlow<Boolean> = (themePreferences?.themeSettings?.map {
+        it.showInlinePlates
+    } ?: flowOf(true))
+        .stateIn(viewModelScope, SharingStarted.Eagerly, true)
+
     private val _activeWorkout = MutableStateFlow<Workout?>(null)
     val activeWorkout: StateFlow<Workout?> = _activeWorkout.asStateFlow()
 

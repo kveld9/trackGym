@@ -389,3 +389,5 @@
     <string name="share_card_records">Récords</string>
     <string name="share_card_tagline">TrackGym • Built for Iron</string>
     <string name="share_chooser_title">Compartir resumen del entrenamiento</string>
+    <string name="setting_inline_plates_title">Desglose compacto de discos</string>
+    <string name="setting_inline_plates_desc">Mostrar combinación de discos por lado bajo el peso en cada serie</string>

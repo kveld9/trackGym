@@ -144,6 +144,12 @@ class SettingsViewModel(
         }
     }
 
+    fun setShowInlinePlates(enabled: Boolean) {
+        viewModelScope.launch {
+            themePreferences.setShowInlinePlates(enabled)
+        }
+    }
+
     fun exportBackup(streamProvider: () -> OutputStream?) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }

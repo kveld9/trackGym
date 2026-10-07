@@ -156,6 +156,7 @@ fun ActiveWorkoutScreen(
     val weightUnit by viewModel.weightUnit.collectAsStateWithLifecycle()
     val distanceUnit by viewModel.distanceUnit.collectAsStateWithLifecycle()
     val userBodyWeight by viewModel.userBodyWeight.collectAsStateWithLifecycle()
+    val showInlinePlates by viewModel.showInlinePlates.collectAsStateWithLifecycle()
 
     // Rest Timer state
     val restRemaining by viewModel.restTimerRemainingSeconds.collectAsStateWithLifecycle()
@@ -236,6 +237,7 @@ fun ActiveWorkoutScreen(
     var backdateCompletionTimestamp by remember { mutableStateOf<Long?>(null) }
     var routineNameInput by remember { mutableStateOf("") }
     var plateCalcExercise by remember { mutableStateOf<WorkoutExercise?>(null) }
+    var plateCalcInitialWeightKg by remember { mutableStateOf<Double?>(null) }
     var restConfigExercise by remember { mutableStateOf<WorkoutExercise?>(null) }
     var supersetConfigExercise by remember { mutableStateOf<WorkoutExercise?>(null) }
     var exerciseToSwap by remember { mutableStateOf<WorkoutExercise?>(null) }
@@ -401,7 +403,15 @@ fun ActiveWorkoutScreen(
                                 }
                             },
                             onRemoveExercise = { viewModel.removeExerciseFromActiveWorkout(we.id) },
-                            onOpenPlateCalculator = { plateCalcExercise = we },
+                            showInlinePlates = showInlinePlates,
+                            onOpenPlateCalculator = {
+                                plateCalcExercise = we
+                                plateCalcInitialWeightKg = null
+                            },
+                            onOpenPlateCalculatorForWeight = { targetKg ->
+                                plateCalcExercise = we
+                                plateCalcInitialWeightKg = targetKg
+                            },
                             onSetRestDuration = { restConfigExercise = we },
                             onSetSupersetGroup = { supersetConfigExercise = we },
                             onAddWarmupSets = {
@@ -866,14 +876,18 @@ fun ActiveWorkoutScreen(
     }
 
     plateCalcExercise?.let { we ->
-        val initialWeightKg = we.sets.lastOrNull { it.weightKg > 0.0 }?.weightKg
+        val initialWeightKg = plateCalcInitialWeightKg
+            ?: we.sets.lastOrNull { it.weightKg > 0.0 }?.weightKg
             ?: we.sets.firstOrNull { it.weightKg > 0.0 }?.weightKg
             ?: DEFAULT_FALLBACK_WEIGHT_KG
         PlateCalculatorDialog(
             exerciseName = we.exercise.displayName(),
             weightUnit = weightUnit,
             initialWeightKg = initialWeightKg,
-            onDismiss = { plateCalcExercise = null }
+            onDismiss = {
+                plateCalcExercise = null
+                plateCalcInitialWeightKg = null
+            }
         )
     }
 
@@ -1721,7 +1735,9 @@ fun WorkoutExerciseCard(
     onToggleComplete: (WorkoutSet, Double, Int) -> Unit,
     onDeleteSet: (WorkoutSet) -> Unit,
     onRemoveExercise: () -> Unit,
+    showInlinePlates: Boolean = true,
     onOpenPlateCalculator: () -> Unit = {},
+    onOpenPlateCalculatorForWeight: (Double) -> Unit = {},
     onAddWarmupSets: () -> Unit = {},
     onSetRestDuration: () -> Unit = {},
     onSetSupersetGroup: () -> Unit = {}
@@ -1960,6 +1976,8 @@ fun WorkoutExerciseCard(
                         distanceUnit = distanceUnit,
                         userBodyWeightKg = userBodyWeightKg,
                         previousSet = prevSet,
+                        showInlinePlates = showInlinePlates,
+                        onOpenPlateCalculator = { targetKg -> onOpenPlateCalculatorForWeight(targetKg) },
                         onUpdateSet = onUpdateSet,
                         onToggleComplete = { w, r -> onToggleComplete(set, w, r) },
                         onDeleteSet = { onDeleteSet(set) }
@@ -2074,6 +2092,8 @@ fun SwipeableSetRow(
     distanceUnit: DistanceUnit = DistanceUnit.KM,
     userBodyWeightKg: Double = 70.0,
     previousSet: WorkoutSet?,
+    showInlinePlates: Boolean = true,
+    onOpenPlateCalculator: (Double) -> Unit = {},
     onUpdateSet: (WorkoutSet) -> Unit,
     onToggleComplete: (Double, Int) -> Unit,
     onDeleteSet: () -> Unit,
@@ -2123,6 +2143,8 @@ fun SwipeableSetRow(
             distanceUnit = distanceUnit,
             userBodyWeightKg = userBodyWeightKg,
             previousSet = previousSet,
+            showInlinePlates = showInlinePlates,
+            onOpenPlateCalculator = onOpenPlateCalculator,
             onUpdateSet = onUpdateSet,
             onToggleComplete = onToggleComplete,
             onDeleteSet = onDeleteSet
@@ -2137,6 +2159,8 @@ fun SetRowItem(
     distanceUnit: DistanceUnit = DistanceUnit.KM,
     userBodyWeightKg: Double = 70.0,
     previousSet: WorkoutSet? = null,
+    showInlinePlates: Boolean = true,
+    onOpenPlateCalculator: (Double) -> Unit = {},
     onUpdateSet: (WorkoutSet) -> Unit,
     onToggleComplete: (Double, Int) -> Unit,
     onDeleteSet: () -> Unit
@@ -2190,6 +2214,24 @@ fun SetRowItem(
     val ghostWeightDisplay = if (previousSet != null && previousSet.weightKg > 0.0) {
         weightUnit.formatValue(previousSet.weightKg)
     } else null
+
+    val effectiveWeightDisplay = weightText.replace(',', '.').toDoubleOrNull()
+        ?: if (set.weightKg > 0.0) weightUnit.fromKg(set.weightKg)
+        else (ghostWeightDisplay?.replace(',', '.')?.toDoubleOrNull() ?: 0.0)
+
+    val compactPlates = remember(effectiveWeightDisplay, weightUnit, isCardio, set.setType, showInlinePlates) {
+        if (showInlinePlates && !isCardio && set.setType != SetType.CARDIO && set.setType != SetType.DURATION &&
+            set.setType != SetType.BODYWEIGHT_LOAD && set.setType != SetType.BODYWEIGHT_ASSISTED &&
+            effectiveWeightDisplay > 0.0
+        ) {
+            com.kveld9.trackgym.domain.calculator.PlateCalculator.formatCompactPlatesPerSide(
+                targetWeight = effectiveWeightDisplay,
+                barWeight = com.kveld9.trackgym.domain.calculator.PlateCalculator.defaultBarWeight(weightUnit),
+                availablePlates = com.kveld9.trackgym.domain.calculator.PlateCalculator.defaultPlates(weightUnit),
+                unit = weightUnit
+            )
+        } else null
+    }
     val ghostDistanceDisplay = if (previousSet != null && previousSet.distanceKm != null && previousSet.distanceKm > 0.0) {
         val distDisplay = distanceUnit.fromKm(previousSet.distanceKm)
         if (distDisplay % 1.0 == 0.0) distDisplay.toInt().toString()
@@ -2558,6 +2600,38 @@ fun SetRowItem(
                 rpe = set.rpe,
                 onClick = { showRpePicker = true }
             )
+
+            if (compactPlates != null) {
+                Surface(
+                    shape = RoundedCornerShape(12.dp),
+                    color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                    modifier = Modifier
+                        .clickable {
+                            val inKg = weightUnit.toKg(effectiveWeightDisplay)
+                            onOpenPlateCalculator(inKg)
+                        }
+                        .padding(vertical = 2.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.FitnessCenter,
+                            contentDescription = stringResource(R.string.action_plate_calculator),
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(12.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = compactPlates,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                }
+            }
 
             if (isCardio) {
                 val distanceVal = set.distanceKm ?: distanceText.replace(',', '.').toDoubleOrNull()?.let { distanceUnit.toKm(it) } ?: 0.0

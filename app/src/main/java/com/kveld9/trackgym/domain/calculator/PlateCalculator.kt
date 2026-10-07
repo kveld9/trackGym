@@ -122,4 +122,57 @@ object PlateCalculator {
         WeightUnit.KG -> DEFAULT_KG_PLATES
         WeightUnit.LB -> DEFAULT_LB_PLATES
     }
+
+    /**
+     * Formats a compact plate breakdown representation for quick display in a set row.
+     * E.g. "[20/10/2.5] kg", "[45/25/10] lb", "[20/20] kg", "[Bar] kg".
+     * Returns null if targetWeight is zero or below the base barbell weight.
+     */
+    fun formatCompactPlatesPerSide(
+        targetWeight: Double,
+        barWeight: Double = DEFAULT_BAR_KG,
+        collarsWeight: Double = 0.0,
+        availablePlates: List<Double> = DEFAULT_KG_PLATES,
+        unit: WeightUnit = WeightUnit.KG
+    ): String? {
+        if (targetWeight <= 0.0) return null
+        val totalBase = barWeight + collarsWeight
+        if (targetWeight < totalBase) return null
+
+        val result = calculatePlates(
+            targetWeight = targetWeight,
+            barWeight = barWeight,
+            collarsWeight = collarsWeight,
+            availablePlates = availablePlates
+        )
+
+        if (result.platesPerSide.isEmpty()) {
+            return if (kotlin.math.abs(targetWeight - totalBase) < 0.001) "[Bar] ${unit.symbol}" else null
+        }
+
+        val plateTokens = result.platesPerSide.flatMap { plate ->
+            val wStr = if (plate.weight % 1.0 == 0.0) {
+                plate.weight.toInt().toString()
+            } else {
+                plate.weight.toString()
+            }
+            if (plate.count > 2) {
+                listOf("$wStr×${plate.count}")
+            } else {
+                List(plate.count) { wStr }
+            }
+        }
+        val platesJoined = plateTokens.joinToString("/")
+
+        return if (result.remainderPerSide > 0.001) {
+            val remStr = if (result.remainderPerSide % 1.0 == 0.0) {
+                result.remainderPerSide.toInt().toString()
+            } else {
+                result.remainderPerSide.toString()
+            }
+            "[$platesJoined +$remStr] ${unit.symbol}"
+        } else {
+            "[$platesJoined] ${unit.symbol}"
+        }
+    }
 }

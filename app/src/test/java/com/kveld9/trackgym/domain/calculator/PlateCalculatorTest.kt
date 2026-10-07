@@ -103,4 +103,60 @@ class PlateCalculatorTest {
         assertEquals(25.0, BarbellProfile.TRAP_HEX.weight(WeightUnit.KG), 0.001)
         assertEquals(0.0, BarbellProfile.SMITH.weight(WeightUnit.KG), 0.001)
     }
+
+    @Test
+    fun formatCompactPlatesPerSide_barOnly_returnsBar() {
+        val result = PlateCalculator.formatCompactPlatesPerSide(
+            targetWeight = 20.0,
+            barWeight = 20.0,
+            unit = WeightUnit.KG
+        )
+        assertEquals("[Bar] kg", result)
+    }
+
+    @Test
+    fun formatCompactPlatesPerSide_belowBarWeight_returnsNull() {
+        val result = PlateCalculator.formatCompactPlatesPerSide(
+            targetWeight = 15.0,
+            barWeight = 20.0,
+            unit = WeightUnit.KG
+        )
+        org.junit.Assert.assertNull(result)
+    }
+
+    @Test
+    fun formatCompactPlatesPerSide_kgBreakdown_matchesExpectedFormat() {
+        // 85kg with 20kg bar and available plates [20, 10, 5, 2.5, 1.25] -> per side: 32.5kg = 20 + 10 + 2.5
+        val result = PlateCalculator.formatCompactPlatesPerSide(
+            targetWeight = 85.0,
+            barWeight = 20.0,
+            availablePlates = listOf(20.0, 10.0, 5.0, 2.5, 1.25),
+            unit = WeightUnit.KG
+        )
+        assertEquals("[20/10/2.5] kg", result)
+    }
+
+    @Test
+    fun formatCompactPlatesPerSide_lbBreakdown_matchesExpectedFormat() {
+        // 205 lbs with 45 lbs bar and [45, 25, 10, 5, 2.5] -> per side: 80 lbs = 45 + 25 + 10
+        val result = PlateCalculator.formatCompactPlatesPerSide(
+            targetWeight = 205.0,
+            barWeight = 45.0,
+            availablePlates = listOf(45.0, 25.0, 10.0, 5.0, 2.5),
+            unit = WeightUnit.LB
+        )
+        assertEquals("[45/25/10] lb", result)
+    }
+
+    @Test
+    fun formatCompactPlatesPerSide_multiplePlates_formatsSlashSeparated() {
+        // 100kg with 20kg bar and [20, 10] -> 40kg per side = 2x20
+        val result = PlateCalculator.formatCompactPlatesPerSide(
+            targetWeight = 100.0,
+            barWeight = 20.0,
+            availablePlates = listOf(20.0, 10.0),
+            unit = WeightUnit.KG
+        )
+        assertEquals("[20/20] kg", result)
+    }
 }

@@ -28,7 +28,8 @@ data class ThemeSettings(
     val timerSoundCountdown: Boolean = true,
     val soundFeedbackOnComplete: Boolean = true,
     val userBodyWeightKg: Double = 75.0,
-    val routineUpdateMode: String = "ASK" // "ALWAYS", "ASK", "NEVER"
+    val routineUpdateMode: String = "ASK", // "ALWAYS", "ASK", "NEVER"
+    val showInlinePlates: Boolean = true
 )
 
 class ThemePreferences(
@@ -58,6 +59,7 @@ class ThemePreferences(
         val SOUND_FEEDBACK_ON_COMPLETE_KEY = booleanPreferencesKey("sound_feedback_on_complete")
         val USER_BODY_WEIGHT_KEY = doublePreferencesKey("user_body_weight")
         val ROUTINE_UPDATE_MODE_KEY = stringPreferencesKey("routine_update_mode")
+        val SHOW_INLINE_PLATES_KEY = booleanPreferencesKey("show_inline_plates")
 
         private val LEGACY_AMOLED_KEY = booleanPreferencesKey("amoled_black")
     }
@@ -82,7 +84,8 @@ class ThemePreferences(
                 timerSoundCountdown = preferences[TIMER_SOUND_COUNTDOWN_KEY] ?: true,
                 soundFeedbackOnComplete = preferences[SOUND_FEEDBACK_ON_COMPLETE_KEY] ?: true,
                 userBodyWeightKg = preferences[USER_BODY_WEIGHT_KEY] ?: 75.0,
-                routineUpdateMode = preferences[ROUTINE_UPDATE_MODE_KEY] ?: "ASK"
+                routineUpdateMode = preferences[ROUTINE_UPDATE_MODE_KEY] ?: "ASK",
+                showInlinePlates = preferences[SHOW_INLINE_PLATES_KEY] ?: true
             )
         }
 
@@ -176,6 +179,12 @@ class ThemePreferences(
     suspend fun setRoutineUpdateMode(mode: String) {
         dataStore.edit { preferences ->
             preferences[ROUTINE_UPDATE_MODE_KEY] = mode
+        }
+    }
+
+    suspend fun setShowInlinePlates(enabled: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[SHOW_INLINE_PLATES_KEY] = enabled
         }
     }
 }
