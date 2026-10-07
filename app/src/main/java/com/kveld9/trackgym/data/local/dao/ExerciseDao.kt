@@ -53,6 +53,9 @@ interface ExerciseDao {
     @Query("UPDATE exercises SET autoProgressionRule = :rule WHERE id = :id")
     suspend fun updateExerciseAutoProgressionRule(id: Long, rule: String?)
 
+    @Query("UPDATE exercises SET primaryMuscle = :primaryMuscle, secondaryMuscles = :secondaryMuscles WHERE id = :id")
+    suspend fun updateExerciseAnatomy(id: Long, primaryMuscle: String?, secondaryMuscles: String?)
+
     @Query("SELECT COUNT(*) FROM exercises")
     suspend fun countExercises(): Int
 }

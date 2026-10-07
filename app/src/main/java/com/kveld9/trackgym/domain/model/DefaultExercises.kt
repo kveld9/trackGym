@@ -1,7 +1,7 @@
 package com.kveld9.trackgym.domain.model
 
 object DefaultExercises {
-    val list: List<Exercise> = listOf(
+    private val baseList: List<Exercise> = listOf(
         // Chest
         Exercise(name = "Barbell Bench Press", muscleGroup = MuscleGroup.CHEST, category = ExerciseCategory.BARBELL),
         Exercise(name = "Incline Dumbbell Press", muscleGroup = MuscleGroup.CHEST, category = ExerciseCategory.DUMBBELL),
@@ -43,4 +43,11 @@ object DefaultExercises {
         Exercise(name = "Hanging Leg Raise", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Cable Crunch", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.CABLE)
     )
+
+    val list: List<Exercise> = baseList.map { ex ->
+        val involvements = com.kveld9.trackgym.domain.calculator.MuscleAnatomyRegistry.getInvolvementsForExercise(ex)
+        val primary = involvements.firstOrNull { it.isPrimary }?.muscle
+        val secondaries = involvements.filter { !it.isPrimary }
+        ex.copy(primaryMuscle = primary, secondaryMuscles = secondaries)
+    }
 }

@@ -79,13 +79,17 @@ class GymRepository(private val database: GymDatabase) {
         name: String,
         muscleGroup: MuscleGroup,
         category: ExerciseCategory,
-        notes: String = ""
+        notes: String = "",
+        primaryMuscle: com.kveld9.trackgym.domain.model.BodyMuscle? = null,
+        secondaryMuscles: List<com.kveld9.trackgym.domain.model.MuscleInvolvement> = emptyList()
     ): Long = withContext(Dispatchers.IO) {
         val entity = ExerciseEntity(
             name = name.trim(),
             muscleGroup = muscleGroup.name,
             category = category.name,
             notes = notes.trim(),
+            primaryMuscle = primaryMuscle?.name,
+            secondaryMuscles = com.kveld9.trackgym.domain.calculator.MuscleAnatomyRegistry.serializeSecondaryMuscles(secondaryMuscles).ifBlank { null },
             isCustom = true
         )
         exerciseDao.insertExercise(entity)
@@ -109,6 +113,18 @@ class GymRepository(private val database: GymDatabase) {
 
     suspend fun updateExerciseAutoProgressionRule(exerciseId: Long, rule: String?) = withContext(Dispatchers.IO) {
         exerciseDao.updateExerciseAutoProgressionRule(exerciseId, rule)
+    }
+
+    suspend fun updateExerciseAnatomy(
+        exerciseId: Long,
+        primaryMuscle: com.kveld9.trackgym.domain.model.BodyMuscle?,
+        secondaryMuscles: List<com.kveld9.trackgym.domain.model.MuscleInvolvement>
+    ) = withContext(Dispatchers.IO) {
+        exerciseDao.updateExerciseAnatomy(
+            id = exerciseId,
+            primaryMuscle = primaryMuscle?.name,
+            secondaryMuscles = com.kveld9.trackgym.domain.calculator.MuscleAnatomyRegistry.serializeSecondaryMuscles(secondaryMuscles).ifBlank { null }
+        )
     }
 
     suspend fun getRecentSessionsSetsForExercise(

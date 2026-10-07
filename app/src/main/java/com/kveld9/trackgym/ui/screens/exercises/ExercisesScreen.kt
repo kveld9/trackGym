@@ -53,11 +53,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Surface
 import androidx.compose.material3.MaterialTheme
 import com.kveld9.trackgym.R
+import com.kveld9.trackgym.domain.calculator.MuscleAnatomyRegistry
+import com.kveld9.trackgym.domain.model.BodyMuscle
 import com.kveld9.trackgym.domain.model.Exercise
 import com.kveld9.trackgym.domain.model.ExerciseCategory
 import com.kveld9.trackgym.domain.model.MuscleGroup
+import com.kveld9.trackgym.domain.model.MuscleInvolvement
 import com.kveld9.trackgym.ui.util.displayName
 import com.kveld9.trackgym.ui.viewmodel.GymViewModel
 
@@ -217,8 +223,8 @@ fun ExercisesScreen(
     if (showCreateDialog) {
         CreateExerciseDialog(
             onDismiss = { showCreateDialog = false },
-            onCreate = { name, group, category, notes ->
-                viewModel.createCustomExercise(name, group, category, notes)
+            onCreate = { name, group, category, notes, primaryMuscle, secondaryMuscles ->
+                viewModel.createCustomExercise(name, group, category, notes, primaryMuscle, secondaryMuscles)
                 showCreateDialog = false
             }
         )
@@ -249,60 +255,192 @@ fun MuscleChip(
 
 @Composable
 fun ExerciseRowCard(exercise: Exercise) {
-    Row(
+    var expanded by remember { mutableStateOf(false) }
+    val involvements = remember(exercise) { MuscleAnatomyRegistry.getInvolvementsForExercise(exercise) }
+    val primary = remember(involvements) { involvements.firstOrNull { it.isPrimary } ?: involvements.firstOrNull() }
+    val secondaries = remember(involvements) { involvements.filter { !it.isPrimary } }
+
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
             .background(MaterialTheme.colorScheme.surfaceContainer)
             .border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f), RoundedCornerShape(12.dp))
-            .padding(14.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+            .clickable { expanded = !expanded }
+            .padding(14.dp)
     ) {
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = exercise.displayName(),
-                color = MaterialTheme.colorScheme.onSurface,
-                fontSize = 15.sp,
-                fontWeight = FontWeight.SemiBold
-            )
-            Spacer(modifier = Modifier.height(3.dp))
-            Text(
-                text = "${stringResource(exercise.muscleGroup.nameRes)} • ${stringResource(exercise.category.nameRes)}",
-                color = MaterialTheme.colorScheme.primary,
-                fontSize = 12.sp
-            )
-        }
-
-        if (exercise.isCustom) {
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(6.dp))
-                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f))
-                    .border(1.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(6.dp))
-                    .padding(horizontal = 8.dp, vertical = 4.dp)
-            ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = stringResource(R.string.badge_manual),
+                    text = exercise.displayName(),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Spacer(modifier = Modifier.height(3.dp))
+                Text(
+                    text = "${stringResource(exercise.muscleGroup.nameRes)} • ${stringResource(exercise.category.nameRes)}",
                     color = MaterialTheme.colorScheme.primary,
-                    fontSize = 10.sp,
-                    fontWeight = FontWeight.Bold
+                    fontSize = 12.sp
                 )
             }
-        } else {
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(6.dp))
-                    .background(MaterialTheme.colorScheme.surfaceContainerHighest)
-                    .border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f), RoundedCornerShape(6.dp))
-                    .padding(horizontal = 8.dp, vertical = 4.dp)
-            ) {
-                Text(
-                    text = stringResource(R.string.badge_preloaded),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontSize = 10.sp,
-                    fontWeight = FontWeight.Medium
-                )
+
+            if (exercise.isCustom) {
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(6.dp))
+                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f))
+                        .border(1.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(6.dp))
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.badge_manual),
+                        color = MaterialTheme.colorScheme.primary,
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            } else {
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(6.dp))
+                        .background(MaterialTheme.colorScheme.surfaceContainerHighest)
+                        .border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f), RoundedCornerShape(6.dp))
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.badge_preloaded),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Muscle Involvement Chips Summary
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (primary != null) {
+                Surface(
+                    color = MaterialTheme.colorScheme.primaryContainer,
+                    shape = RoundedCornerShape(6.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.badge_primary_muscle, stringResource(primary.muscle.nameRes), primary.percentage),
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                    )
+                }
+            }
+            secondaries.take(2).forEach { sec ->
+                Surface(
+                    color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                    shape = RoundedCornerShape(6.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.badge_secondary_muscle, stringResource(sec.muscle.nameRes), sec.percentage),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Medium,
+                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                    )
+                }
+            }
+            if (secondaries.size > 2) {
+                Surface(
+                    color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                    shape = RoundedCornerShape(6.dp)
+                ) {
+                    Text(
+                        text = "+${secondaries.size - 2}",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Medium,
+                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                    )
+                }
+            }
+        }
+
+        // Expanded view showing detailed anatomical breakdown with percentage bars
+        if (expanded) {
+            Spacer(modifier = Modifier.height(12.dp))
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Text(
+                text = stringResource(R.string.label_anatomy_breakdown),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.height(6.dp))
+
+            involvements.forEach { inv ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 3.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Row(
+                        modifier = Modifier.weight(0.45f),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(6.dp)
+                                .clip(CircleShape)
+                                .background(if (inv.isPrimary) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary)
+                        )
+                        Text(
+                            text = stringResource(inv.muscle.nameRes),
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontSize = 12.sp,
+                            fontWeight = if (inv.isPrimary) FontWeight.Bold else FontWeight.Normal
+                        )
+                    }
+
+                    // Visual Progress Bar
+                    Box(
+                        modifier = Modifier
+                            .weight(0.40f)
+                            .height(6.dp)
+                            .clip(RoundedCornerShape(3.dp))
+                            .background(MaterialTheme.colorScheme.surfaceContainerHighest)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth(inv.percentage / 100f)
+                                .height(6.dp)
+                                .clip(RoundedCornerShape(3.dp))
+                                .background(if (inv.isPrimary) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary)
+                        )
+                    }
+
+                    Text(
+                        text = "${inv.percentage}%",
+                        color = if (inv.isPrimary) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = androidx.compose.ui.text.style.TextAlign.End,
+                        modifier = Modifier.weight(0.15f)
+                    )
+                }
             }
         }
     }
@@ -312,15 +450,19 @@ fun ExerciseRowCard(exercise: Exercise) {
 @Composable
 fun CreateExerciseDialog(
     onDismiss: () -> Unit,
-    onCreate: (String, MuscleGroup, ExerciseCategory, String) -> Unit
+    onCreate: (String, MuscleGroup, ExerciseCategory, String, BodyMuscle?, List<MuscleInvolvement>) -> Unit
 ) {
     var name by remember { mutableStateOf("") }
     var selectedGroup by remember { mutableStateOf(MuscleGroup.CHEST) }
     var selectedCategory by remember { mutableStateOf(ExerciseCategory.BARBELL) }
+    var primaryMuscle by remember(selectedGroup) {
+        mutableStateOf(BodyMuscle.entries.firstOrNull { it.muscleGroup == selectedGroup } ?: BodyMuscle.CHEST)
+    }
     var notes by remember { mutableStateOf("") }
 
     var groupExpanded by remember { mutableStateOf(false) }
     var categoryExpanded by remember { mutableStateOf(false) }
+    var primaryExpanded by remember { mutableStateOf(false) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -381,6 +523,45 @@ fun CreateExerciseDialog(
                     }
                 }
 
+                // Primary Target Muscle Dropdown
+                val candidateMuscles = remember(selectedGroup) {
+                    val matching = BodyMuscle.entries.filter { it.muscleGroup == selectedGroup }
+                    if (matching.isNotEmpty()) matching else BodyMuscle.entries
+                }
+                ExposedDropdownMenuBox(
+                    expanded = primaryExpanded,
+                    onExpandedChange = { primaryExpanded = !primaryExpanded }
+                ) {
+                    OutlinedTextField(
+                        value = stringResource(primaryMuscle.nameRes),
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text(stringResource(R.string.label_primary_muscle)) },
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = primaryExpanded) },
+                        modifier = Modifier.menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable, enabled = true).fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                            unfocusedTextColor = MaterialTheme.colorScheme.onSurface
+                        )
+                    )
+                    ExposedDropdownMenu(
+                        expanded = primaryExpanded,
+                        onDismissRequest = { primaryExpanded = false }
+                    ) {
+                        candidateMuscles.forEach { muscle ->
+                            DropdownMenuItem(
+                                text = { Text(stringResource(muscle.nameRes)) },
+                                onClick = {
+                                    primaryMuscle = muscle
+                                    primaryExpanded = false
+                                }
+                            )
+                        }
+                    }
+                }
+
                 // Exercise Category Dropdown
                 ExposedDropdownMenuBox(
                     expanded = categoryExpanded,
@@ -434,7 +615,7 @@ fun CreateExerciseDialog(
             Button(
                 onClick = {
                     if (name.isNotBlank()) {
-                        onCreate(name.trim(), selectedGroup, selectedCategory, notes.trim())
+                        onCreate(name.trim(), selectedGroup, selectedCategory, notes.trim(), primaryMuscle, emptyList())
                     }
                 },
                 enabled = name.isNotBlank(),

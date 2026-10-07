@@ -9,6 +9,8 @@ data class Exercise(
     val restDurationSeconds: Int? = null,
     val warmupRampProtocol: String? = null,
     val autoProgressionRule: String? = null,
+    val primaryMuscle: BodyMuscle? = null,
+    val secondaryMuscles: List<MuscleInvolvement> = emptyList(),
     val isCustom: Boolean = false,
     val createdAt: Long = System.currentTimeMillis()
 )

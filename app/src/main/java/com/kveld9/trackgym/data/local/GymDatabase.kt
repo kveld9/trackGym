@@ -28,7 +28,7 @@ import com.kveld9.trackgym.data.local.entity.WorkoutSetEntity
         RoutineEntity::class,
         RoutineExerciseEntity::class
     ],
-    version = 12,
+    version = 13,
     exportSchema = false
 )
 abstract class GymDatabase : RoomDatabase() {
@@ -42,6 +42,13 @@ abstract class GymDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: GymDatabase? = null
 
+        private val MIGRATION_12_13 = object : androidx.room.migration.Migration(12, 13) {
+            override fun migrate(db: androidx.sqlite.db.SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE exercises ADD COLUMN primaryMuscle TEXT DEFAULT NULL")
+                db.execSQL("ALTER TABLE exercises ADD COLUMN secondaryMuscles TEXT DEFAULT NULL")
+            }
+        }
+
         fun getInstance(context: Context): GymDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
@@ -49,6 +56,7 @@ abstract class GymDatabase : RoomDatabase() {
                     GymDatabase::class.java,
                     "trackgym_database.db"
                 )
+                    .addMigrations(MIGRATION_12_13)
                     .fallbackToDestructiveMigration(dropAllTables = true)
                     .build()
                 INSTANCE = instance

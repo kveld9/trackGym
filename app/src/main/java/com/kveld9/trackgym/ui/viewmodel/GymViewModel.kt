@@ -852,10 +852,22 @@ class GymViewModel(
         name: String,
         muscleGroup: MuscleGroup,
         category: ExerciseCategory,
-        notes: String = ""
+        notes: String = "",
+        primaryMuscle: com.kveld9.trackgym.domain.model.BodyMuscle? = null,
+        secondaryMuscles: List<com.kveld9.trackgym.domain.model.MuscleInvolvement> = emptyList()
     ) {
         viewModelScope.launch {
-            repository.createCustomExercise(name, muscleGroup, category, notes)
+            repository.createCustomExercise(name, muscleGroup, category, notes, primaryMuscle, secondaryMuscles)
+        }
+    }
+
+    fun updateExerciseAnatomy(
+        exerciseId: Long,
+        primaryMuscle: com.kveld9.trackgym.domain.model.BodyMuscle?,
+        secondaryMuscles: List<com.kveld9.trackgym.domain.model.MuscleInvolvement>
+    ) {
+        viewModelScope.launch {
+            repository.updateExerciseAnatomy(exerciseId, primaryMuscle, secondaryMuscles)
         }
     }
 

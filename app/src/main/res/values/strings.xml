@@ -481,4 +481,28 @@
     <string name="deload_routine_suffix">(Deload)</string>
     <string name="action_generate_deload">Create Deload Routine</string>
     <string name="menu_generate_deload">Create Deload Version</string>
+
+    <!-- Body Muscles & Anatomical Mapping -->
+    <string name="body_muscle_chest">Chest</string>
+    <string name="body_muscle_lats">Lats</string>
+    <string name="body_muscle_upper_back">Upper Back</string>
+    <string name="body_muscle_lower_back">Lower Back</string>
+    <string name="body_muscle_traps">Trapezius</string>
+    <string name="body_muscle_shoulders">Deltoids</string>
+    <string name="body_muscle_biceps">Biceps</string>
+    <string name="body_muscle_triceps">Triceps</string>
+    <string name="body_muscle_forearms">Forearms</string>
+    <string name="body_muscle_abdominals">Abdominals</string>
+    <string name="body_muscle_quadriceps">Quadriceps</string>
+    <string name="body_muscle_hamstrings">Hamstrings</string>
+    <string name="body_muscle_glutes">Glutes</string>
+    <string name="body_muscle_calves">Calves</string>
+    <string name="body_muscle_adductors">Adductors</string>
+    <string name="body_muscle_abductors">Abductors</string>
+    <string name="body_muscle_neck">Neck</string>
+    <string name="label_primary_muscle">Primary Target</string>
+    <string name="label_secondary_muscles">Secondary &amp; Stabilizers</string>
+    <string name="label_anatomy_breakdown">Anatomical Muscle Mapping</string>
+    <string name="badge_primary_muscle">Primary: %1$s (%2$d%%)</string>
+    <string name="badge_secondary_muscle">%1$s (%2$d%%)</string>
 </resources>
