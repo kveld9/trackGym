@@ -7,6 +7,7 @@ import com.kveld9.trackgym.data.repository.GymRepository
 import com.kveld9.trackgym.domain.model.Exercise
 import com.kveld9.trackgym.domain.model.ExerciseCategory
 import com.kveld9.trackgym.domain.model.ExerciseTranslationRegistry
+import com.kveld9.trackgym.domain.model.MechanicsType
 import com.kveld9.trackgym.domain.model.MuscleGroup
 import com.kveld9.trackgym.domain.model.PersonalRecord
 import com.kveld9.trackgym.domain.model.Workout
@@ -170,13 +171,32 @@ class GymViewModel(
     private val _selectedOriginFilter = MutableStateFlow(ExerciseOriginFilter.ALL)
     val selectedOriginFilter: StateFlow<ExerciseOriginFilter> = _selectedOriginFilter.asStateFlow()
 
+    private val _selectedEquipmentFilter = MutableStateFlow<ExerciseCategory?>(null)
+    val selectedEquipmentFilter: StateFlow<ExerciseCategory?> = _selectedEquipmentFilter.asStateFlow()
+
+    private val _selectedMechanicsFilter = MutableStateFlow<MechanicsType?>(null)
+    val selectedMechanicsFilter: StateFlow<MechanicsType?> = _selectedMechanicsFilter.asStateFlow()
+
     val filteredExercises: StateFlow<List<Exercise>> = combine(
-        _rawExercises,
-        _searchQuery,
-        _selectedMuscleFilter,
-        _selectedOriginFilter,
-        keepExerciseNamesInEnglish
-    ) { exercises, query, muscleFilter, originFilter, keepEnglish ->
+        listOf(
+            _rawExercises,
+            _searchQuery,
+            _selectedMuscleFilter,
+            _selectedOriginFilter,
+            _selectedEquipmentFilter,
+            _selectedMechanicsFilter,
+            keepExerciseNamesInEnglish
+        )
+    ) { array ->
+        @Suppress("UNCHECKED_CAST")
+        val exercises = array[0] as List<Exercise>
+        val query = array[1] as String
+        val muscleFilter = array[2] as MuscleGroup?
+        val originFilter = array[3] as ExerciseOriginFilter
+        val equipmentFilter = array[4] as ExerciseCategory?
+        val mechanicsFilter = array[5] as MechanicsType?
+        val keepEnglish = array[6] as Boolean
+
         exercises.filter { ex ->
             val matchesQuery = query.isBlank() ||
                 ex.name.contains(query, ignoreCase = true) ||
@@ -187,7 +207,10 @@ class GymViewModel(
                 ExerciseOriginFilter.PRELOADED -> !ex.isCustom
                 ExerciseOriginFilter.CUSTOM -> ex.isCustom
             }
-            matchesQuery && matchesMuscle && matchesOrigin
+            val matchesEquipment = equipmentFilter == null || ex.category == equipmentFilter
+            val matchesMechanics = mechanicsFilter == null || ex.mechanics == mechanicsFilter
+
+            matchesQuery && matchesMuscle && matchesOrigin && matchesEquipment && matchesMechanics
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
@@ -844,6 +867,22 @@ class GymViewModel(
         _selectedOriginFilter.value = filter
     }
 
+    fun setEquipmentFilter(filter: ExerciseCategory?) {
+        _selectedEquipmentFilter.value = filter
+    }
+
+    fun setMechanicsFilter(filter: MechanicsType?) {
+        _selectedMechanicsFilter.value = filter
+    }
+
+    fun clearAllExerciseFilters() {
+        _selectedMuscleFilter.value = null
+        _selectedOriginFilter.value = ExerciseOriginFilter.ALL
+        _selectedEquipmentFilter.value = null
+        _selectedMechanicsFilter.value = null
+        _searchQuery.value = ""
+    }
+
     fun setSearchQuery(query: String) {
         _searchQuery.value = query
     }
@@ -854,10 +893,11 @@ class GymViewModel(
         category: ExerciseCategory,
         notes: String = "",
         primaryMuscle: com.kveld9.trackgym.domain.model.BodyMuscle? = null,
-        secondaryMuscles: List<com.kveld9.trackgym.domain.model.MuscleInvolvement> = emptyList()
+        secondaryMuscles: List<com.kveld9.trackgym.domain.model.MuscleInvolvement> = emptyList(),
+        mechanics: MechanicsType = MechanicsType.COMPOUND
     ) {
         viewModelScope.launch {
-            repository.createCustomExercise(name, muscleGroup, category, notes, primaryMuscle, secondaryMuscles)
+            repository.createCustomExercise(name, muscleGroup, category, notes, primaryMuscle, secondaryMuscles, mechanics)
         }
     }
 

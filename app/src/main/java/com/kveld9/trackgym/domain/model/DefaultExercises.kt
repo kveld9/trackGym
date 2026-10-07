@@ -48,6 +48,7 @@ object DefaultExercises {
         val involvements = com.kveld9.trackgym.domain.calculator.MuscleAnatomyRegistry.getInvolvementsForExercise(ex)
         val primary = involvements.firstOrNull { it.isPrimary }?.muscle
         val secondaries = involvements.filter { !it.isPrimary }
-        ex.copy(primaryMuscle = primary, secondaryMuscles = secondaries)
+        val mechanics = com.kveld9.trackgym.domain.calculator.MechanicsClassifier.classify(ex.name, ex.category, ex.muscleGroup)
+        ex.copy(primaryMuscle = primary, secondaryMuscles = secondaries, mechanics = mechanics)
     }
 }

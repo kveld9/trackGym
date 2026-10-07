@@ -81,7 +81,8 @@ class GymRepository(private val database: GymDatabase) {
         category: ExerciseCategory,
         notes: String = "",
         primaryMuscle: com.kveld9.trackgym.domain.model.BodyMuscle? = null,
-        secondaryMuscles: List<com.kveld9.trackgym.domain.model.MuscleInvolvement> = emptyList()
+        secondaryMuscles: List<com.kveld9.trackgym.domain.model.MuscleInvolvement> = emptyList(),
+        mechanics: com.kveld9.trackgym.domain.model.MechanicsType = com.kveld9.trackgym.domain.model.MechanicsType.COMPOUND
     ): Long = withContext(Dispatchers.IO) {
         val entity = ExerciseEntity(
             name = name.trim(),
@@ -90,6 +91,7 @@ class GymRepository(private val database: GymDatabase) {
             notes = notes.trim(),
             primaryMuscle = primaryMuscle?.name,
             secondaryMuscles = com.kveld9.trackgym.domain.calculator.MuscleAnatomyRegistry.serializeSecondaryMuscles(secondaryMuscles).ifBlank { null },
+            mechanics = mechanics.name,
             isCustom = true
         )
         exerciseDao.insertExercise(entity)

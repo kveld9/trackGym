@@ -505,4 +505,15 @@
     <string name="label_anatomy_breakdown">Anatomical Muscle Mapping</string>
     <string name="badge_primary_muscle">Primary: %1$s (%2$d%%)</string>
     <string name="badge_secondary_muscle">%1$s (%2$d%%)</string>
+
+    <!-- Multifactorial Equipment & Mechanics Filters -->
+    <string name="category_smith_machine">Smith Machine</string>
+    <string name="category_kettlebell">Kettlebell</string>
+    <string name="category_band">Resistance Band</string>
+    <string name="mechanics_compound">Compound</string>
+    <string name="mechanics_isolation">Isolation</string>
+    <string name="label_mechanics_type">Mechanics</string>
+    <string name="chip_all_equipment">All Equipment</string>
+    <string name="chip_all_mechanics">All Mechanics</string>
+    <string name="action_clear_filters">Clear Filters</string>
 </resources>

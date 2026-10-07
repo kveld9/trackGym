@@ -62,6 +62,7 @@ import com.kveld9.trackgym.domain.calculator.MuscleAnatomyRegistry
 import com.kveld9.trackgym.domain.model.BodyMuscle
 import com.kveld9.trackgym.domain.model.Exercise
 import com.kveld9.trackgym.domain.model.ExerciseCategory
+import com.kveld9.trackgym.domain.model.MechanicsType
 import com.kveld9.trackgym.domain.model.MuscleGroup
 import com.kveld9.trackgym.domain.model.MuscleInvolvement
 import com.kveld9.trackgym.ui.util.displayName
@@ -77,6 +78,8 @@ fun ExercisesScreen(
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
     val selectedFilter by viewModel.selectedMuscleFilter.collectAsStateWithLifecycle()
     val selectedOriginFilter by viewModel.selectedOriginFilter.collectAsStateWithLifecycle()
+    val selectedEquipmentFilter by viewModel.selectedEquipmentFilter.collectAsStateWithLifecycle()
+    val selectedMechanicsFilter by viewModel.selectedMechanicsFilter.collectAsStateWithLifecycle()
 
     var showCreateDialog by remember { mutableStateOf(false) }
 
@@ -200,6 +203,78 @@ fun ExercisesScreen(
                 }
             }
 
+            Spacer(modifier = Modifier.height(10.dp))
+
+            // Equipment Category Horizontal Scroll
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState())
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                MuscleChip(
+                    label = stringResource(R.string.chip_all_equipment),
+                    isSelected = selectedEquipmentFilter == null,
+                    onClick = { viewModel.setEquipmentFilter(null) }
+                )
+                ExerciseCategory.entries.filter { it != ExerciseCategory.OTHER }.forEach { cat ->
+                    MuscleChip(
+                        label = stringResource(cat.nameRes),
+                        isSelected = selectedEquipmentFilter == cat,
+                        onClick = { viewModel.setEquipmentFilter(cat) }
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            // Mechanics (Compound / Isolation) & Clear Filters
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState())
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                MuscleChip(
+                    label = stringResource(R.string.chip_all_mechanics),
+                    isSelected = selectedMechanicsFilter == null,
+                    onClick = { viewModel.setMechanicsFilter(null) }
+                )
+                MechanicsType.entries.forEach { mech ->
+                    MuscleChip(
+                        label = stringResource(mech.nameRes),
+                        isSelected = selectedMechanicsFilter == mech,
+                        onClick = { viewModel.setMechanicsFilter(mech) }
+                    )
+                }
+
+                val hasActiveFilters = selectedFilter != null ||
+                    selectedOriginFilter != GymViewModel.ExerciseOriginFilter.ALL ||
+                    selectedEquipmentFilter != null ||
+                    selectedMechanicsFilter != null ||
+                    searchQuery.isNotBlank()
+
+                if (hasActiveFilters) {
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(20.dp))
+                            .background(MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.5f))
+                            .clickable { viewModel.clearAllExerciseFilters() }
+                            .padding(horizontal = 12.dp, vertical = 8.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.action_clear_filters),
+                            color = MaterialTheme.colorScheme.onErrorContainer,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 12.sp
+                        )
+                    }
+                }
+            }
+
             Spacer(modifier = Modifier.height(12.dp))
 
             // Exercise List
@@ -223,8 +298,8 @@ fun ExercisesScreen(
     if (showCreateDialog) {
         CreateExerciseDialog(
             onDismiss = { showCreateDialog = false },
-            onCreate = { name, group, category, notes, primaryMuscle, secondaryMuscles ->
-                viewModel.createCustomExercise(name, group, category, notes, primaryMuscle, secondaryMuscles)
+            onCreate = { name, group, category, notes, primaryMuscle, secondaryMuscles, mechanics ->
+                viewModel.createCustomExercise(name, group, category, notes, primaryMuscle, secondaryMuscles, mechanics)
                 showCreateDialog = false
             }
         )
@@ -283,7 +358,7 @@ fun ExerciseRowCard(exercise: Exercise) {
                 )
                 Spacer(modifier = Modifier.height(3.dp))
                 Text(
-                    text = "${stringResource(exercise.muscleGroup.nameRes)} • ${stringResource(exercise.category.nameRes)}",
+                    text = "${stringResource(exercise.muscleGroup.nameRes)} • ${stringResource(exercise.category.nameRes)} • ${stringResource(exercise.mechanics.nameRes)}",
                     color = MaterialTheme.colorScheme.primary,
                     fontSize = 12.sp
                 )
@@ -450,11 +525,12 @@ fun ExerciseRowCard(exercise: Exercise) {
 @Composable
 fun CreateExerciseDialog(
     onDismiss: () -> Unit,
-    onCreate: (String, MuscleGroup, ExerciseCategory, String, BodyMuscle?, List<MuscleInvolvement>) -> Unit
+    onCreate: (String, MuscleGroup, ExerciseCategory, String, BodyMuscle?, List<MuscleInvolvement>, MechanicsType) -> Unit
 ) {
     var name by remember { mutableStateOf("") }
     var selectedGroup by remember { mutableStateOf(MuscleGroup.CHEST) }
     var selectedCategory by remember { mutableStateOf(ExerciseCategory.BARBELL) }
+    var selectedMechanics by remember { mutableStateOf(MechanicsType.COMPOUND) }
     var primaryMuscle by remember(selectedGroup) {
         mutableStateOf(BodyMuscle.entries.firstOrNull { it.muscleGroup == selectedGroup } ?: BodyMuscle.CHEST)
     }
@@ -462,6 +538,7 @@ fun CreateExerciseDialog(
 
     var groupExpanded by remember { mutableStateOf(false) }
     var categoryExpanded by remember { mutableStateOf(false) }
+    var mechanicsExpanded by remember { mutableStateOf(false) }
     var primaryExpanded by remember { mutableStateOf(false) }
 
     AlertDialog(
@@ -597,6 +674,41 @@ fun CreateExerciseDialog(
                     }
                 }
 
+                // Mechanics Type Dropdown
+                ExposedDropdownMenuBox(
+                    expanded = mechanicsExpanded,
+                    onExpandedChange = { mechanicsExpanded = !mechanicsExpanded }
+                ) {
+                    OutlinedTextField(
+                        value = stringResource(selectedMechanics.nameRes),
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text(stringResource(R.string.label_mechanics_type)) },
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = mechanicsExpanded) },
+                        modifier = Modifier.menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable, enabled = true).fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                            unfocusedTextColor = MaterialTheme.colorScheme.onSurface
+                        )
+                    )
+                    ExposedDropdownMenu(
+                        expanded = mechanicsExpanded,
+                        onDismissRequest = { mechanicsExpanded = false }
+                    ) {
+                        MechanicsType.entries.forEach { mech ->
+                            DropdownMenuItem(
+                                text = { Text(stringResource(mech.nameRes)) },
+                                onClick = {
+                                    selectedMechanics = mech
+                                    mechanicsExpanded = false
+                                }
+                            )
+                        }
+                    }
+                }
+
                 OutlinedTextField(
                     value = notes,
                     onValueChange = { notes = it },
@@ -615,7 +727,7 @@ fun CreateExerciseDialog(
             Button(
                 onClick = {
                     if (name.isNotBlank()) {
-                        onCreate(name.trim(), selectedGroup, selectedCategory, notes.trim(), primaryMuscle, emptyList())
+                        onCreate(name.trim(), selectedGroup, selectedCategory, notes.trim(), primaryMuscle, emptyList(), selectedMechanics)
                     }
                 },
                 enabled = name.isNotBlank(),
