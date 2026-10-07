@@ -346,20 +346,36 @@ class GymViewModel(
                 if (newPrs.isNotEmpty()) {
                     _recentlyUnlockedPr.value = newPrs.first()
                 }
-                triggerAutoRestTimer()
+                val exerciseCustomRest = _activeWorkout.value?.exercises
+                    ?.firstOrNull { it.exercise.id == exerciseId }
+                    ?.exercise?.restDurationSeconds
+                triggerAutoRestTimer(exerciseCustomRest)
             }
             setActiveWorkout(repository.getActiveWorkout())
         }
     }
 
-    private fun triggerAutoRestTimer() {
+    private fun triggerAutoRestTimer(customRestSeconds: Int? = null) {
         viewModelScope.launch {
             val settings = themePreferences?.themeSettings?.firstOrNull()
             val isAuto = settings?.autoRestTimer ?: true
-            val duration = settings?.defaultRestSeconds ?: 90
+            val duration = customRestSeconds ?: settings?.defaultRestSeconds ?: 90
             if (isAuto) {
                 startRestTimer(duration)
             }
+        }
+    }
+
+    fun updateExerciseRestDuration(exerciseId: Long, restSeconds: Int?) {
+        viewModelScope.launch {
+            repository.updateExerciseRestDuration(exerciseId, restSeconds)
+            val current = _activeWorkout.value ?: return@launch
+            val updatedExercises = current.exercises.map { we ->
+                if (we.exercise.id == exerciseId) {
+                    we.copy(exercise = we.exercise.copy(restDurationSeconds = restSeconds))
+                } else we
+            }
+            _activeWorkout.value = current.copy(exercises = updatedExercises)
         }
     }
 

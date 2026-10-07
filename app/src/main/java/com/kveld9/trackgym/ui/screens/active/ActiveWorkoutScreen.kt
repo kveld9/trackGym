@@ -162,6 +162,7 @@ fun ActiveWorkoutScreen(
     var finishNotes by remember { mutableStateOf("") }
     var routineNameInput by remember { mutableStateOf("") }
     var plateCalcExercise by remember { mutableStateOf<WorkoutExercise?>(null) }
+    var restConfigExercise by remember { mutableStateOf<WorkoutExercise?>(null) }
     var exerciseToSwap by remember { mutableStateOf<WorkoutExercise?>(null) }
     var pendingSwapTarget by remember { mutableStateOf<Exercise?>(null) }
     var showSwapExercisePicker by remember { mutableStateOf(false) }
@@ -309,6 +310,7 @@ fun ActiveWorkoutScreen(
                             },
                             onRemoveExercise = { viewModel.removeExerciseFromActiveWorkout(we.id) },
                             onOpenPlateCalculator = { plateCalcExercise = we },
+                            onSetRestDuration = { restConfigExercise = we },
                             onAddWarmupSets = {
                                 val workingWeight = we.sets.firstOrNull { it.weightKg > 0.0 && it.setType != SetType.WARMUP }?.weightKg
                                     ?: we.sets.firstOrNull { it.weightKg > 0.0 }?.weightKg
@@ -584,6 +586,19 @@ fun ActiveWorkoutScreen(
             weightUnit = weightUnit,
             initialWeightKg = initialWeightKg,
             onDismiss = { plateCalcExercise = null }
+        )
+    }
+
+    restConfigExercise?.let { we ->
+        ExerciseRestDurationDialog(
+            exerciseName = we.exercise.displayName(),
+            currentRestSeconds = we.exercise.restDurationSeconds,
+            defaultGlobalSeconds = restTotal,
+            onSaveRest = { seconds ->
+                viewModel.updateExerciseRestDuration(we.exercise.id, seconds)
+                restConfigExercise = null
+            },
+            onDismiss = { restConfigExercise = null }
         )
     }
 }
@@ -1081,7 +1096,8 @@ fun WorkoutExerciseCard(
     onDeleteSet: (WorkoutSet) -> Unit,
     onRemoveExercise: () -> Unit,
     onOpenPlateCalculator: () -> Unit = {},
-    onAddWarmupSets: () -> Unit = {}
+    onAddWarmupSets: () -> Unit = {},
+    onSetRestDuration: () -> Unit = {}
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
 
@@ -1106,12 +1122,30 @@ fun WorkoutExerciseCard(
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.height(2.dp))
-                    Text(
-                        text = "${stringResource(workoutExercise.exercise.muscleGroup.nameRes)} • ${stringResource(workoutExercise.exercise.category.nameRes)}",
-                        color = MaterialTheme.colorScheme.primary,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Medium
-                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = "${stringResource(workoutExercise.exercise.muscleGroup.nameRes)} • ${stringResource(workoutExercise.exercise.category.nameRes)}",
+                            color = MaterialTheme.colorScheme.primary,
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                        workoutExercise.exercise.restDurationSeconds?.let { restSec ->
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Surface(
+                                shape = RoundedCornerShape(4.dp),
+                                color = MaterialTheme.colorScheme.secondaryContainer,
+                                modifier = Modifier.clickable { onSetRestDuration() }
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.exercise_rest_badge, restSec),
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                    fontSize = 10.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                                )
+                            }
+                        }
+                    }
                 }
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -1168,6 +1202,13 @@ fun WorkoutExerciseCard(
                                 onClick = {
                                     menuExpanded = false
                                     onAddWarmupSets()
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.menu_set_rest_duration), color = MaterialTheme.colorScheme.onSurface) },
+                                onClick = {
+                                    menuExpanded = false
+                                    onSetRestDuration()
                                 }
                             )
                             DropdownMenuItem(
@@ -2195,3 +2236,99 @@ fun PlateCalculatorDialog(
         }
     )
 }
+
+@Composable
+fun ExerciseRestDurationDialog(
+    exerciseName: String,
+    currentRestSeconds: Int?,
+    defaultGlobalSeconds: Int,
+    onSaveRest: (Int?) -> Unit,
+    onDismiss: () -> Unit
+) {
+    var textInput by remember { mutableStateOf(currentRestSeconds?.toString().orEmpty()) }
+    val quickDurations = listOf(30, 60, 90, 120, 180, 240)
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = stringResource(R.string.dialog_set_exercise_rest_title),
+                fontWeight = FontWeight.Bold
+            )
+        },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Text(
+                    text = stringResource(R.string.dialog_set_exercise_rest_desc, exerciseName),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                OutlinedTextField(
+                    value = textInput,
+                    onValueChange = { input ->
+                        if (input.isEmpty() || input.all { it.isDigit() }) {
+                            textInput = input
+                        }
+                    },
+                    label = { Text(stringResource(R.string.exercise_rest_custom_label)) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    quickDurations.forEach { seconds ->
+                        Surface(
+                            shape = RoundedCornerShape(16.dp),
+                            color = if (textInput == seconds.toString()) {
+                                MaterialTheme.colorScheme.primary
+                            } else {
+                                MaterialTheme.colorScheme.surfaceContainerHigh
+                            },
+                            modifier = Modifier.clickable { textInput = seconds.toString() }
+                        ) {
+                            Text(
+                                text = "${seconds}s",
+                                color = if (textInput == seconds.toString()) {
+                                    MaterialTheme.colorScheme.onPrimary
+                                } else {
+                                    MaterialTheme.colorScheme.onSurface
+                                },
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 12.sp,
+                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                            )
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    val parsed = textInput.toIntOrNull()
+                    onSaveRest(if (parsed != null && parsed > 0) parsed else null)
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+            ) {
+                Text(stringResource(R.string.action_save), color = MaterialTheme.colorScheme.onPrimary)
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = { onSaveRest(null) }
+            ) {
+                Text(
+                    text = stringResource(R.string.exercise_rest_use_global, defaultGlobalSeconds),
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+        }
+    )
+}
+

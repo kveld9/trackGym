@@ -261,6 +261,12 @@
     <string name="setting_default_rest_duration_title">Duración por defecto</string>
     <string name="setting_default_rest_duration_desc">Duración del intervalo de descanso entre series</string>
     <string name="rest_duration_seconds">%1$ds</string>
+    <string name="menu_set_rest_duration">Configurar descanso</string>
+    <string name="dialog_set_exercise_rest_title">Descanso del ejercicio</string>
+    <string name="dialog_set_exercise_rest_desc">Configura un tiempo de descanso específico para %1$s o déjalo vacío para usar el valor global.</string>
+    <string name="exercise_rest_custom_label">Tiempo de descanso (segundos)</string>
+    <string name="exercise_rest_use_global">Usar Global (%1$ds)</string>
+    <string name="exercise_rest_badge">%1$ds descanso</string>
 
     <!-- Consistency & Calendar Heatmap -->
     <string name="consistency_title">Constancia de entrenamiento</string>

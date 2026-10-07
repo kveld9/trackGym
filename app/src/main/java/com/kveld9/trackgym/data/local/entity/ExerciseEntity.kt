@@ -18,6 +18,7 @@ data class ExerciseEntity(
     val muscleGroup: String,
     val category: String,
     val notes: String = "",
+    val restDurationSeconds: Int? = null,
     val isCustom: Boolean = false,
     val createdAt: Long = System.currentTimeMillis()
 ) {
@@ -28,6 +29,7 @@ data class ExerciseEntity(
             muscleGroup = MuscleGroup.fromString(muscleGroup),
             category = ExerciseCategory.fromString(category),
             notes = notes,
+            restDurationSeconds = restDurationSeconds,
             isCustom = isCustom,
             createdAt = createdAt
         )
@@ -41,6 +43,7 @@ data class ExerciseEntity(
                 muscleGroup = domain.muscleGroup.name,
                 category = domain.category.name,
                 notes = domain.notes,
+                restDurationSeconds = domain.restDurationSeconds,
                 isCustom = domain.isCustom,
                 createdAt = domain.createdAt
             )

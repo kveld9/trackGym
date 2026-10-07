@@ -261,6 +261,12 @@
     <string name="setting_default_rest_duration_title">Default Rest Duration</string>
     <string name="setting_default_rest_duration_desc">Default interval duration for exercises</string>
     <string name="rest_duration_seconds">%1$ds</string>
+    <string name="menu_set_rest_duration">Set Rest Duration</string>
+    <string name="dialog_set_exercise_rest_title">Exercise Rest Duration</string>
+    <string name="dialog_set_exercise_rest_desc">Set a specific rest timer for %1$s or leave blank to use the global default.</string>
+    <string name="exercise_rest_custom_label">Rest time (seconds)</string>
+    <string name="exercise_rest_use_global">Use Default (%1$ds)</string>
+    <string name="exercise_rest_badge">%1$ds rest</string>
 
     <!-- Consistency & Calendar Heatmap -->
     <string name="consistency_title">Training Consistency</string>

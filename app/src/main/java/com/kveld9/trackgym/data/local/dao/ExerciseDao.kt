@@ -44,6 +44,9 @@ interface ExerciseDao {
     @Query("UPDATE exercises SET notes = :notes WHERE id = :id")
     suspend fun updateExerciseNotes(id: Long, notes: String)
 
+    @Query("UPDATE exercises SET restDurationSeconds = :restSeconds WHERE id = :id")
+    suspend fun updateExerciseRestDuration(id: Long, restSeconds: Int?)
+
     @Query("SELECT COUNT(*) FROM exercises")
     suspend fun countExercises(): Int
 }
