@@ -14,6 +14,7 @@ import com.kveld9.trackgym.data.local.entity.PersonalRecordEntity
 import com.kveld9.trackgym.data.local.entity.WorkoutEntity
 import com.kveld9.trackgym.data.local.entity.WorkoutExerciseEntity
 import com.kveld9.trackgym.data.local.entity.WorkoutSetEntity
+import com.kveld9.trackgym.domain.calculator.BiomechanicalClassifier
 import com.kveld9.trackgym.domain.calculator.MechanicsClassifier
 import com.kveld9.trackgym.domain.calculator.PersonalRecordDetector
 import com.kveld9.trackgym.domain.calculator.WorkoutComparisonEngine
@@ -21,6 +22,7 @@ import com.kveld9.trackgym.domain.model.DefaultExercises
 import com.kveld9.trackgym.domain.model.Exercise
 import com.kveld9.trackgym.domain.model.ExerciseCategory
 import com.kveld9.trackgym.domain.model.ExerciseComparison
+import com.kveld9.trackgym.domain.model.MechanicsType
 import com.kveld9.trackgym.domain.model.MuscleGroup
 import com.kveld9.trackgym.domain.model.PersonalRecord
 import com.kveld9.trackgym.data.local.entity.RoutineEntity
@@ -83,7 +85,9 @@ class GymRepository(private val database: GymDatabase) {
         notes: String = "",
         primaryMuscle: com.kveld9.trackgym.domain.model.BodyMuscle? = null,
         secondaryMuscles: List<com.kveld9.trackgym.domain.model.MuscleInvolvement> = emptyList(),
-        mechanics: com.kveld9.trackgym.domain.model.MechanicsType = com.kveld9.trackgym.domain.model.MechanicsType.COMPOUND
+        mechanics: com.kveld9.trackgym.domain.model.MechanicsType = com.kveld9.trackgym.domain.model.MechanicsType.COMPOUND,
+        force: com.kveld9.trackgym.domain.model.ForceType = com.kveld9.trackgym.domain.model.ForceType.PUSH,
+        level: com.kveld9.trackgym.domain.model.DifficultyLevel = com.kveld9.trackgym.domain.model.DifficultyLevel.BEGINNER
     ): Long = withContext(Dispatchers.IO) {
         val entity = ExerciseEntity(
             name = name.trim(),
@@ -93,6 +97,8 @@ class GymRepository(private val database: GymDatabase) {
             primaryMuscle = primaryMuscle?.name,
             secondaryMuscles = com.kveld9.trackgym.domain.calculator.MuscleAnatomyRegistry.serializeSecondaryMuscles(secondaryMuscles).ifBlank { null },
             mechanics = mechanics.name,
+            force = force.name,
+            level = level.name,
             isCustom = true
         )
         exerciseDao.insertExercise(entity)
@@ -627,6 +633,16 @@ class GymRepository(private val database: GymDatabase) {
 
             for (exDto in backup.exercises) {
                 val key = exDto.name.lowercase().trim()
+                val group = MuscleGroup.fromString(exDto.muscleGroup)
+                val cat = ExerciseCategory.fromString(exDto.category)
+                val mechanics = if (exDto.mechanics.isNotBlank()) exDto.mechanics else MechanicsClassifier.classify(
+                    name = exDto.name,
+                    category = cat,
+                    muscleGroup = group
+                ).name
+                val force = BiomechanicalClassifier.classifyForce(exDto.name, cat, group).name
+                val level = BiomechanicalClassifier.classifyDifficulty(exDto.name, cat, group, MechanicsType.fromString(mechanics)).name
+
                 if (!exerciseNameToIdMap.containsKey(key)) {
                     val newEntity = ExerciseEntity(
                         name = exDto.name.trim(),
@@ -635,11 +651,9 @@ class GymRepository(private val database: GymDatabase) {
                         notes = exDto.notes,
                         isCustom = exDto.isCustom,
                         createdAt = if (exDto.createdAt > 0) exDto.createdAt else System.currentTimeMillis(),
-                        mechanics = if (exDto.mechanics.isNotBlank()) exDto.mechanics else MechanicsClassifier.classify(
-                            name = exDto.name,
-                            category = ExerciseCategory.fromString(exDto.category),
-                            muscleGroup = MuscleGroup.fromString(exDto.muscleGroup)
-                        ).name
+                        mechanics = mechanics,
+                        force = force,
+                        level = level
                     )
                     val newId = exerciseDao.insertExercise(newEntity)
                     exerciseNameToIdMap[key] = newId
@@ -654,11 +668,9 @@ class GymRepository(private val database: GymDatabase) {
                         notes = exDto.notes,
                         isCustom = exDto.isCustom,
                         createdAt = exDto.createdAt,
-                        mechanics = if (exDto.mechanics.isNotBlank()) exDto.mechanics else MechanicsClassifier.classify(
-                            name = exDto.name,
-                            category = ExerciseCategory.fromString(exDto.category),
-                            muscleGroup = MuscleGroup.fromString(exDto.muscleGroup)
-                        ).name
+                        mechanics = mechanics,
+                        force = force,
+                        level = level
                     )
                     exerciseDao.insertExercise(updated)
                 }
@@ -690,12 +702,17 @@ class GymRepository(private val database: GymDatabase) {
                     val exKey = weDto.exerciseName.lowercase().trim()
                     var exId = exerciseNameToIdMap[exKey]
                     if (exId == null) {
+                        val mech = MechanicsClassifier.classify(weDto.exerciseName)
+                        val force = BiomechanicalClassifier.classifyForce(weDto.exerciseName, ExerciseCategory.BARBELL, MuscleGroup.OTHER).name
+                        val level = BiomechanicalClassifier.classifyDifficulty(weDto.exerciseName, ExerciseCategory.BARBELL, MuscleGroup.OTHER, mech).name
                         val newEx = ExerciseEntity(
                             name = weDto.exerciseName.trim(),
                             muscleGroup = MuscleGroup.OTHER.name,
                             category = ExerciseCategory.BARBELL.name,
                             isCustom = true,
-                            mechanics = MechanicsClassifier.classify(weDto.exerciseName).name
+                            mechanics = mech.name,
+                            force = force,
+                            level = level
                         )
                         exId = exerciseDao.insertExercise(newEx)
                         exerciseNameToIdMap[exKey] = exId
@@ -1027,15 +1044,29 @@ class GymRepository(private val database: GymDatabase) {
 
                 if (exerciseId == null) {
                     val defaultEx = defaultByName[nameLower]
+                    val cat = defaultEx?.category ?: ExerciseCategory.OTHER
+                    val group = defaultEx?.muscleGroup ?: MuscleGroup.OTHER
+                    val classifiedMechanics = defaultEx?.mechanics ?: MechanicsClassifier.classify(
+                        name = exTmpl.exerciseName,
+                        category = cat,
+                        muscleGroup = group
+                    )
                     val newEntity = ExerciseEntity(
                         name = exTmpl.exerciseName.trim(),
-                        muscleGroup = defaultEx?.muscleGroup?.name ?: MuscleGroup.OTHER.name,
-                        category = defaultEx?.category?.name ?: ExerciseCategory.OTHER.name,
+                        muscleGroup = group.name,
+                        category = cat.name,
                         isCustom = defaultEx == null,
-                        mechanics = defaultEx?.mechanics?.name ?: MechanicsClassifier.classify(
+                        mechanics = classifiedMechanics.name,
+                        force = defaultEx?.force?.name ?: BiomechanicalClassifier.classifyForce(
                             name = exTmpl.exerciseName,
-                            category = defaultEx?.category ?: ExerciseCategory.OTHER,
-                            muscleGroup = defaultEx?.muscleGroup ?: MuscleGroup.OTHER
+                            category = cat,
+                            muscleGroup = group
+                        ).name,
+                        level = defaultEx?.level?.name ?: BiomechanicalClassifier.classifyDifficulty(
+                            name = exTmpl.exerciseName,
+                            category = cat,
+                            muscleGroup = group,
+                            mechanics = classifiedMechanics
                         ).name
                     )
                     exerciseId = exerciseDao.insertExercise(newEntity)
@@ -1077,15 +1108,27 @@ class GymRepository(private val database: GymDatabase) {
                 } catch (_: Exception) {
                     ExerciseCategory.OTHER
                 }
+                val classifiedMechanics = MechanicsClassifier.classify(
+                    name = exDto.name,
+                    category = cat,
+                    muscleGroup = group
+                )
                 val newEntity = ExerciseEntity(
                     name = exDto.name.trim(),
                     muscleGroup = group.name,
                     category = cat.name,
                     isCustom = true,
-                    mechanics = MechanicsClassifier.classify(
+                    mechanics = classifiedMechanics.name,
+                    force = BiomechanicalClassifier.classifyForce(
                         name = exDto.name,
                         category = cat,
                         muscleGroup = group
+                    ).name,
+                    level = BiomechanicalClassifier.classifyDifficulty(
+                        name = exDto.name,
+                        category = cat,
+                        muscleGroup = group,
+                        mechanics = classifiedMechanics
                     ).name
                 )
                 exerciseId = exerciseDao.insertExercise(newEntity)

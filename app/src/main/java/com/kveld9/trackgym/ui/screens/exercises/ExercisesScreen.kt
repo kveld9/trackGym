@@ -67,10 +67,13 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.MaterialTheme
 import com.kveld9.trackgym.R
+import com.kveld9.trackgym.domain.calculator.BiomechanicalClassifier
 import com.kveld9.trackgym.domain.calculator.MuscleAnatomyRegistry
 import com.kveld9.trackgym.domain.model.BodyMuscle
+import com.kveld9.trackgym.domain.model.DifficultyLevel
 import com.kveld9.trackgym.domain.model.Exercise
 import com.kveld9.trackgym.domain.model.ExerciseCategory
+import com.kveld9.trackgym.domain.model.ForceType
 import com.kveld9.trackgym.domain.model.MechanicsType
 import com.kveld9.trackgym.domain.model.MuscleGroup
 import com.kveld9.trackgym.domain.model.MuscleInvolvement
@@ -89,6 +92,8 @@ fun ExercisesScreen(
     val selectedOriginFilter by viewModel.selectedOriginFilter.collectAsStateWithLifecycle()
     val selectedEquipmentFilter by viewModel.selectedEquipmentFilter.collectAsStateWithLifecycle()
     val selectedMechanicsFilter by viewModel.selectedMechanicsFilter.collectAsStateWithLifecycle()
+    val selectedForceFilter by viewModel.selectedForceFilter.collectAsStateWithLifecycle()
+    val selectedDifficultyFilter by viewModel.selectedDifficultyFilter.collectAsStateWithLifecycle()
     val allExercises by viewModel.allExercises.collectAsStateWithLifecycle()
     val completedWorkouts by viewModel.completedWorkouts.collectAsStateWithLifecycle()
     val weightUnit by viewModel.weightUnit.collectAsStateWithLifecycle()
@@ -264,11 +269,62 @@ fun ExercisesScreen(
                         onClick = { viewModel.setMechanicsFilter(mech) }
                     )
                 }
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            // Force Vector (Push / Pull / Static)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState())
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                MuscleChip(
+                    label = stringResource(R.string.chip_all_force),
+                    isSelected = selectedForceFilter == null,
+                    onClick = { viewModel.setForceFilter(null) }
+                )
+                ForceType.entries.filter { it != ForceType.OTHER }.forEach { force ->
+                    MuscleChip(
+                        label = stringResource(force.nameRes),
+                        isSelected = selectedForceFilter == force,
+                        onClick = { viewModel.setForceFilter(force) }
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            // Difficulty Level (Beginner / Intermediate / Expert) & Clear Filters
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState())
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                MuscleChip(
+                    label = stringResource(R.string.chip_all_difficulty),
+                    isSelected = selectedDifficultyFilter == null,
+                    onClick = { viewModel.setDifficultyFilter(null) }
+                )
+                DifficultyLevel.entries.forEach { level ->
+                    MuscleChip(
+                        label = stringResource(level.nameRes),
+                        isSelected = selectedDifficultyFilter == level,
+                        onClick = { viewModel.setDifficultyFilter(level) }
+                    )
+                }
 
                 val hasActiveFilters = selectedFilter != null ||
                     selectedOriginFilter != GymViewModel.ExerciseOriginFilter.ALL ||
                     selectedEquipmentFilter != null ||
                     selectedMechanicsFilter != null ||
+                    selectedForceFilter != null ||
+                    selectedDifficultyFilter != null ||
                     searchQuery.isNotBlank()
 
                 if (hasActiveFilters) {
@@ -316,8 +372,8 @@ fun ExercisesScreen(
     if (showCreateDialog) {
         CreateExerciseDialog(
             onDismiss = { showCreateDialog = false },
-            onCreate = { name, group, category, notes, primaryMuscle, secondaryMuscles, mechanics ->
-                viewModel.createCustomExercise(name, group, category, notes, primaryMuscle, secondaryMuscles, mechanics)
+            onCreate = { name, group, category, notes, primaryMuscle, secondaryMuscles, mechanics, force, level ->
+                viewModel.createCustomExercise(name, group, category, notes, primaryMuscle, secondaryMuscles, mechanics, force, level)
                 showCreateDialog = false
             }
         )
@@ -392,7 +448,7 @@ fun ExerciseRowCard(
                 )
                 Spacer(modifier = Modifier.height(3.dp))
                 Text(
-                    text = "${stringResource(exercise.muscleGroup.nameRes)} • ${stringResource(exercise.category.nameRes)} • ${stringResource(exercise.mechanics.nameRes)}",
+                    text = "${stringResource(exercise.muscleGroup.nameRes)} • ${stringResource(exercise.category.nameRes)} • ${stringResource(exercise.mechanics.nameRes)} • ${stringResource(exercise.force.nameRes)} • ${stringResource(exercise.level.nameRes)}",
                     color = MaterialTheme.colorScheme.primary,
                     fontSize = 12.sp
                 )
@@ -710,12 +766,16 @@ fun ExerciseRowCard(
 @Composable
 fun CreateExerciseDialog(
     onDismiss: () -> Unit,
-    onCreate: (String, MuscleGroup, ExerciseCategory, String, BodyMuscle?, List<MuscleInvolvement>, MechanicsType) -> Unit
+    onCreate: (String, MuscleGroup, ExerciseCategory, String, BodyMuscle?, List<MuscleInvolvement>, MechanicsType, ForceType, DifficultyLevel) -> Unit
 ) {
     var name by remember { mutableStateOf("") }
     var selectedGroup by remember { mutableStateOf(MuscleGroup.CHEST) }
     var selectedCategory by remember { mutableStateOf(ExerciseCategory.BARBELL) }
     var selectedMechanics by remember { mutableStateOf(MechanicsType.COMPOUND) }
+    var selectedForce by remember { mutableStateOf(ForceType.PUSH) }
+    var selectedLevel by remember { mutableStateOf(DifficultyLevel.BEGINNER) }
+    var userModifiedForce by remember { mutableStateOf(false) }
+    var userModifiedLevel by remember { mutableStateOf(false) }
     var primaryMuscle by remember(selectedGroup) {
         mutableStateOf(BodyMuscle.entries.firstOrNull { it.muscleGroup == selectedGroup } ?: BodyMuscle.CHEST)
     }
@@ -724,7 +784,18 @@ fun CreateExerciseDialog(
     var groupExpanded by remember { mutableStateOf(false) }
     var categoryExpanded by remember { mutableStateOf(false) }
     var mechanicsExpanded by remember { mutableStateOf(false) }
+    var forceExpanded by remember { mutableStateOf(false) }
+    var levelExpanded by remember { mutableStateOf(false) }
     var primaryExpanded by remember { mutableStateOf(false) }
+
+    androidx.compose.runtime.LaunchedEffect(name, selectedGroup, selectedCategory, selectedMechanics) {
+        if (!userModifiedForce) {
+            selectedForce = BiomechanicalClassifier.classifyForce(name, selectedCategory, selectedGroup)
+        }
+        if (!userModifiedLevel) {
+            selectedLevel = BiomechanicalClassifier.classifyDifficulty(name, selectedCategory, selectedGroup, selectedMechanics)
+        }
+    }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -894,6 +965,78 @@ fun CreateExerciseDialog(
                     }
                 }
 
+                // Force Vector Dropdown
+                ExposedDropdownMenuBox(
+                    expanded = forceExpanded,
+                    onExpandedChange = { forceExpanded = !forceExpanded }
+                ) {
+                    OutlinedTextField(
+                        value = stringResource(selectedForce.nameRes),
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text(stringResource(R.string.label_force_vector)) },
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = forceExpanded) },
+                        modifier = Modifier.menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable, enabled = true).fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                            unfocusedTextColor = MaterialTheme.colorScheme.onSurface
+                        )
+                    )
+                    ExposedDropdownMenu(
+                        expanded = forceExpanded,
+                        onDismissRequest = { forceExpanded = false }
+                    ) {
+                        ForceType.entries.forEach { force ->
+                            DropdownMenuItem(
+                                text = { Text(stringResource(force.nameRes)) },
+                                onClick = {
+                                    selectedForce = force
+                                    userModifiedForce = true
+                                    forceExpanded = false
+                                }
+                            )
+                        }
+                    }
+                }
+
+                // Difficulty Level Dropdown
+                ExposedDropdownMenuBox(
+                    expanded = levelExpanded,
+                    onExpandedChange = { levelExpanded = !levelExpanded }
+                ) {
+                    OutlinedTextField(
+                        value = stringResource(selectedLevel.nameRes),
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text(stringResource(R.string.label_difficulty_level)) },
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = levelExpanded) },
+                        modifier = Modifier.menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable, enabled = true).fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                            unfocusedTextColor = MaterialTheme.colorScheme.onSurface
+                        )
+                    )
+                    ExposedDropdownMenu(
+                        expanded = levelExpanded,
+                        onDismissRequest = { levelExpanded = false }
+                    ) {
+                        DifficultyLevel.entries.forEach { level ->
+                            DropdownMenuItem(
+                                text = { Text(stringResource(level.nameRes)) },
+                                onClick = {
+                                    selectedLevel = level
+                                    userModifiedLevel = true
+                                    levelExpanded = false
+                                }
+                            )
+                        }
+                    }
+                }
+
                 OutlinedTextField(
                     value = notes,
                     onValueChange = { notes = it },
@@ -912,7 +1055,7 @@ fun CreateExerciseDialog(
             Button(
                 onClick = {
                     if (name.isNotBlank()) {
-                        onCreate(name.trim(), selectedGroup, selectedCategory, notes.trim(), primaryMuscle, emptyList(), selectedMechanics)
+                        onCreate(name.trim(), selectedGroup, selectedCategory, notes.trim(), primaryMuscle, emptyList(), selectedMechanics, selectedForce, selectedLevel)
                     }
                 },
                 enabled = name.isNotBlank(),

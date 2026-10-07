@@ -3,6 +3,7 @@ package com.kveld9.trackgym.ui.screens.active
 import android.content.Intent
 import android.widget.Toast
 import com.kveld9.trackgym.domain.calculator.FuzzyExerciseSearchEngine
+import com.kveld9.trackgym.domain.calculator.RoutineBiomechanicalBalanceEngine
 import com.kveld9.trackgym.domain.util.RoutineShareCodec
 import java.util.Locale
 import kotlinx.coroutines.launch
@@ -1513,6 +1514,34 @@ fun RoutineCardItem(
                     fontSize = 12.sp,
                     maxLines = 1
                 )
+                if (routine.exercises.isNotEmpty()) {
+                    val balance = remember(routine.exercises) {
+                        RoutineBiomechanicalBalanceEngine.calculate(routine.exercises.map { it.exercise })
+                    }
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        Surface(
+                            color = if (balance.isBalanced) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainerHighest,
+                            shape = RoundedCornerShape(4.dp)
+                        ) {
+                            Text(
+                                text = stringResource(balance.balanceStatusRes),
+                                color = if (balance.isBalanced) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant,
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(horizontal = 5.dp, vertical = 2.dp)
+                            )
+                        }
+                        Text(
+                            text = "${balance.pushCount} ${stringResource(R.string.force_push)} • ${balance.pullCount} ${stringResource(R.string.force_pull)}",
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontSize = 11.sp
+                        )
+                    }
+                }
                 if (routine.isPeriodized && routine.periodizedCycle != null) {
                     val currentConfig = routine.periodizedCycle.getCurrentWeekConfig()
                     val volPct = (currentConfig.volumeMultiplier * 100).toInt()
@@ -3503,7 +3532,7 @@ fun ExercisePickerContent(
                         )
                         Spacer(modifier = Modifier.height(2.dp))
                         Text(
-                            text = "${stringResource(exercise.muscleGroup.nameRes)} • ${stringResource(exercise.category.nameRes)}",
+                            text = "${stringResource(exercise.muscleGroup.nameRes)} • ${stringResource(exercise.category.nameRes)} • ${stringResource(exercise.force.nameRes)} • ${stringResource(exercise.level.nameRes)}",
                             color = MaterialTheme.colorScheme.primary,
                             fontSize = 12.sp
                         )

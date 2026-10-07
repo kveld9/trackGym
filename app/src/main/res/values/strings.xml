@@ -661,4 +661,28 @@
     <string name="empty_exercise_history_desc">Complete a workout with this exercise to view historical performance, 1RM progression, and total volume.</string>
     <string name="exercise_history_sets_count">%1$d completed sets</string>
     <string name="exercise_history_set_row">Set %1$d</string>
+
+    <!-- Biomechanical Force Vector & Technical Difficulty -->
+    <string name="force_push">Push</string>
+    <string name="force_pull">Pull</string>
+    <string name="force_static">Static</string>
+    <string name="force_other">Other</string>
+    <string name="label_force_vector">Force Vector</string>
+    <string name="chip_all_force">All Vectors</string>
+
+    <string name="level_beginner">Beginner</string>
+    <string name="level_intermediate">Intermediate</string>
+    <string name="level_expert">Expert</string>
+    <string name="label_difficulty_level">Difficulty Level</string>
+    <string name="chip_all_difficulty">All Levels</string>
+
+    <string name="routine_biomechanical_balance_title">Biomechanical Balance</string>
+    <string name="routine_biomechanical_balance_desc">Force vector and technical complexity distribution</string>
+    <string name="routine_balance_push_pull_ratio">Push/Pull Ratio: %1$.2f</string>
+    <string name="routine_balance_status_balanced">Biomechanically Balanced</string>
+    <string name="routine_balance_status_push_dominant">Push Dominant</string>
+    <string name="routine_balance_status_pull_dominant">Pull Dominant</string>
+    <string name="routine_balance_status_static_dominant">Static Dominant</string>
+    <string name="routine_balance_status_neutral">Neutral Balance</string>
+    <string name="badge_routine_balanced">Balanced</string>
 </resources>

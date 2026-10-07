@@ -28,7 +28,7 @@ import com.kveld9.trackgym.data.local.entity.WorkoutSetEntity
         RoutineEntity::class,
         RoutineExerciseEntity::class
     ],
-    version = 14,
+    version = 15,
     exportSchema = false
 )
 abstract class GymDatabase : RoomDatabase() {
@@ -76,6 +76,68 @@ abstract class GymDatabase : RoomDatabase() {
             }
         }
 
+        private val MIGRATION_14_15 = object : androidx.room.migration.Migration(14, 15) {
+            override fun migrate(db: androidx.sqlite.db.SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE exercises ADD COLUMN force TEXT NOT NULL DEFAULT 'PUSH'")
+                db.execSQL("ALTER TABLE exercises ADD COLUMN level TEXT NOT NULL DEFAULT 'BEGINNER'")
+
+                db.execSQL(
+                    """
+                    UPDATE exercises SET force = 'PULL'
+                    WHERE muscleGroup = 'BACK'
+                       OR LOWER(name) LIKE '%curl%'
+                       OR LOWER(name) LIKE '%pull%'
+                       OR LOWER(name) LIKE '%row%'
+                       OR LOWER(name) LIKE '%chin%'
+                       OR LOWER(name) LIKE '%deadlift%'
+                       OR LOWER(name) LIKE '%shrug%'
+                       OR LOWER(name) LIKE '%rear delt%'
+                       OR LOWER(name) LIKE '%crunch%'
+                       OR LOWER(name) LIKE '%leg raise%'
+                       OR LOWER(name) LIKE '%knee raise%'
+                    """.trimIndent()
+                )
+                db.execSQL(
+                    """
+                    UPDATE exercises SET force = 'STATIC'
+                    WHERE (LOWER(name) LIKE '%plank%'
+                       OR LOWER(name) LIKE '%hold%'
+                       OR LOWER(name) LIKE '%dead hang%'
+                       OR LOWER(name) LIKE '%wall sit%'
+                       OR LOWER(name) LIKE '%l-sit%'
+                       OR LOWER(name) LIKE '%isometric%')
+                      AND LOWER(name) NOT LIKE '%raise%'
+                      AND LOWER(name) NOT LIKE '%clean%'
+                      AND LOWER(name) NOT LIKE '%snatch%'
+                      AND LOWER(name) NOT LIKE '%sit-up%'
+                      AND LOWER(name) NOT LIKE '%sit up%'
+                    """.trimIndent()
+                )
+                db.execSQL(
+                    """
+                    UPDATE exercises SET level = 'INTERMEDIATE'
+                    WHERE LOWER(name) LIKE '%barbell%'
+                       OR LOWER(name) LIKE '%squat%'
+                       OR LOWER(name) LIKE '%deadlift%'
+                       OR LOWER(name) LIKE '%dip%'
+                       OR LOWER(name) LIKE '%pull-up%'
+                       OR LOWER(name) LIKE '%bench press%'
+                       OR LOWER(name) LIKE '%overhead press%'
+                    """.trimIndent()
+                )
+                db.execSQL(
+                    """
+                    UPDATE exercises SET level = 'EXPERT'
+                    WHERE LOWER(name) LIKE '%snatch%'
+                       OR LOWER(name) LIKE '%clean and jerk%'
+                       OR LOWER(name) LIKE '%muscle-up%'
+                       OR LOWER(name) LIKE '%pistol squat%'
+                       OR LOWER(name) LIKE '%dragon flag%'
+                    """.trimIndent()
+                )
+            }
+        }
+
         fun getInstance(context: Context): GymDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
@@ -83,7 +145,7 @@ abstract class GymDatabase : RoomDatabase() {
                     GymDatabase::class.java,
                     "trackgym_database.db"
                 )
-                    .addMigrations(MIGRATION_12_13, MIGRATION_13_14)
+                    .addMigrations(MIGRATION_12_13, MIGRATION_13_14, MIGRATION_14_15)
                     .fallbackToDestructiveMigration(dropAllTables = true)
                     .build()
                 INSTANCE = instance

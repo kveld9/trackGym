@@ -661,4 +661,28 @@
     <string name="empty_exercise_history_desc">Completa un entrenamiento con este ejercicio para consultar su progreso, peso máximo y volumen histórico.</string>
     <string name="exercise_history_sets_count">%1$d series completadas</string>
     <string name="exercise_history_set_row">Serie %1$d</string>
+
+    <!-- Biomechanical Force Vector & Technical Difficulty -->
+    <string name="force_push">Empuje</string>
+    <string name="force_pull">Tirón</string>
+    <string name="force_static">Estático</string>
+    <string name="force_other">Otro</string>
+    <string name="label_force_vector">Vector de Fuerza</string>
+    <string name="chip_all_force">Todos los Vectores</string>
+
+    <string name="level_beginner">Principiante</string>
+    <string name="level_intermediate">Intermedio</string>
+    <string name="level_expert">Experto</string>
+    <string name="label_difficulty_level">Nivel de Dificultad</string>
+    <string name="chip_all_difficulty">Todos los Niveles</string>
+
+    <string name="routine_biomechanical_balance_title">Balance Biomecánico</string>
+    <string name="routine_biomechanical_balance_desc">Distribución de vectores de fuerza y complejidad técnica</string>
+    <string name="routine_balance_push_pull_ratio">Relación Empuje/Tirón: %1$.2f</string>
+    <string name="routine_balance_status_balanced">Biomecánicamente Equilibrado</string>
+    <string name="routine_balance_status_push_dominant">Predominio de Empuje</string>
+    <string name="routine_balance_status_pull_dominant">Predominio de Tirón</string>
+    <string name="routine_balance_status_static_dominant">Predominio Estático</string>
+    <string name="routine_balance_status_neutral">Balance Neutro</string>
+    <string name="badge_routine_balanced">Equilibrado</string>
 </resources>

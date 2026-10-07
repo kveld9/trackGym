@@ -4,8 +4,10 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.kveld9.trackgym.domain.calculator.MuscleAnatomyRegistry
 import com.kveld9.trackgym.domain.model.BodyMuscle
+import com.kveld9.trackgym.domain.model.DifficultyLevel
 import com.kveld9.trackgym.domain.model.Exercise
 import com.kveld9.trackgym.domain.model.ExerciseCategory
+import com.kveld9.trackgym.domain.model.ForceType
 import com.kveld9.trackgym.domain.model.MechanicsType
 import com.kveld9.trackgym.domain.model.MuscleGroup
 
@@ -27,6 +29,8 @@ data class ExerciseEntity(
     val primaryMuscle: String? = null,
     val secondaryMuscles: String? = null,
     val mechanics: String = "COMPOUND",
+    val force: String = "PUSH",
+    val level: String = "BEGINNER",
     val isCustom: Boolean = false,
     val createdAt: Long = System.currentTimeMillis()
 ) {
@@ -43,6 +47,8 @@ data class ExerciseEntity(
             primaryMuscle = primaryMuscle?.let { runCatching { BodyMuscle.valueOf(it) }.getOrNull() },
             secondaryMuscles = MuscleAnatomyRegistry.deserializeSecondaryMuscles(secondaryMuscles),
             mechanics = MechanicsType.fromString(mechanics),
+            force = ForceType.fromString(force),
+            level = DifficultyLevel.fromString(level),
             isCustom = isCustom,
             createdAt = createdAt
         )
@@ -62,6 +68,8 @@ data class ExerciseEntity(
                 primaryMuscle = domain.primaryMuscle?.name,
                 secondaryMuscles = MuscleAnatomyRegistry.serializeSecondaryMuscles(domain.secondaryMuscles).ifBlank { null },
                 mechanics = domain.mechanics.name,
+                force = domain.force.name,
+                level = domain.level.name,
                 isCustom = domain.isCustom,
                 createdAt = domain.createdAt
             )

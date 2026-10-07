@@ -12,6 +12,8 @@ data class Exercise(
     val primaryMuscle: BodyMuscle? = null,
     val secondaryMuscles: List<MuscleInvolvement> = emptyList(),
     val mechanics: MechanicsType = MechanicsType.COMPOUND,
+    val force: ForceType = ForceType.PUSH,
+    val level: DifficultyLevel = DifficultyLevel.BEGINNER,
     val isCustom: Boolean = false,
     val createdAt: Long = System.currentTimeMillis()
 )

@@ -4,9 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.kveld9.trackgym.data.repository.GymRepository
+import com.kveld9.trackgym.domain.calculator.BiomechanicalClassifier
 import com.kveld9.trackgym.domain.calculator.FuzzyExerciseSearchEngine
+import com.kveld9.trackgym.domain.model.DifficultyLevel
 import com.kveld9.trackgym.domain.model.Exercise
 import com.kveld9.trackgym.domain.model.ExerciseCategory
+import com.kveld9.trackgym.domain.model.ForceType
 import com.kveld9.trackgym.domain.model.MechanicsType
 import com.kveld9.trackgym.domain.model.MuscleGroup
 import com.kveld9.trackgym.domain.model.PersonalRecord
@@ -179,6 +182,12 @@ class GymViewModel(
     private val _selectedMechanicsFilter = MutableStateFlow<MechanicsType?>(null)
     val selectedMechanicsFilter: StateFlow<MechanicsType?> = _selectedMechanicsFilter.asStateFlow()
 
+    private val _selectedForceFilter = MutableStateFlow<ForceType?>(null)
+    val selectedForceFilter: StateFlow<ForceType?> = _selectedForceFilter.asStateFlow()
+
+    private val _selectedDifficultyFilter = MutableStateFlow<DifficultyLevel?>(null)
+    val selectedDifficultyFilter: StateFlow<DifficultyLevel?> = _selectedDifficultyFilter.asStateFlow()
+
     val filteredExercises: StateFlow<List<Exercise>> = combine(
         listOf(
             _rawExercises,
@@ -187,6 +196,8 @@ class GymViewModel(
             _selectedOriginFilter,
             _selectedEquipmentFilter,
             _selectedMechanicsFilter,
+            _selectedForceFilter,
+            _selectedDifficultyFilter,
             keepExerciseNamesInEnglish
         )
     ) { array ->
@@ -197,7 +208,9 @@ class GymViewModel(
         val originFilter = array[3] as ExerciseOriginFilter
         val equipmentFilter = array[4] as ExerciseCategory?
         val mechanicsFilter = array[5] as MechanicsType?
-        val keepEnglish = array[6] as Boolean
+        val forceFilter = array[6] as ForceType?
+        val difficultyFilter = array[7] as DifficultyLevel?
+        val keepEnglish = array[8] as Boolean
 
         val preFiltered = exercises.filter { ex ->
             val matchesMuscle = muscleFilter == null || ex.muscleGroup == muscleFilter
@@ -208,8 +221,10 @@ class GymViewModel(
             }
             val matchesEquipment = equipmentFilter == null || ex.category == equipmentFilter
             val matchesMechanics = mechanicsFilter == null || ex.mechanics == mechanicsFilter
+            val matchesForce = forceFilter == null || ex.force == forceFilter
+            val matchesDifficulty = difficultyFilter == null || ex.level == difficultyFilter
 
-            matchesMuscle && matchesOrigin && matchesEquipment && matchesMechanics
+            matchesMuscle && matchesOrigin && matchesEquipment && matchesMechanics && matchesForce && matchesDifficulty
         }
 
         if (query.isBlank()) {
@@ -893,11 +908,21 @@ class GymViewModel(
         _selectedMechanicsFilter.value = filter
     }
 
+    fun setForceFilter(filter: ForceType?) {
+        _selectedForceFilter.value = filter
+    }
+
+    fun setDifficultyFilter(filter: DifficultyLevel?) {
+        _selectedDifficultyFilter.value = filter
+    }
+
     fun clearAllExerciseFilters() {
         _selectedMuscleFilter.value = null
         _selectedOriginFilter.value = ExerciseOriginFilter.ALL
         _selectedEquipmentFilter.value = null
         _selectedMechanicsFilter.value = null
+        _selectedForceFilter.value = null
+        _selectedDifficultyFilter.value = null
         _searchQuery.value = ""
     }
 
@@ -912,10 +937,24 @@ class GymViewModel(
         notes: String = "",
         primaryMuscle: com.kveld9.trackgym.domain.model.BodyMuscle? = null,
         secondaryMuscles: List<com.kveld9.trackgym.domain.model.MuscleInvolvement> = emptyList(),
-        mechanics: MechanicsType = MechanicsType.COMPOUND
+        mechanics: MechanicsType = MechanicsType.COMPOUND,
+        force: ForceType? = null,
+        level: DifficultyLevel? = null
     ) {
+        val resolvedForce = force ?: BiomechanicalClassifier.classifyForce(name, category, muscleGroup)
+        val resolvedLevel = level ?: BiomechanicalClassifier.classifyDifficulty(name, category, muscleGroup, mechanics)
         viewModelScope.launch {
-            repository.createCustomExercise(name, muscleGroup, category, notes, primaryMuscle, secondaryMuscles, mechanics)
+            repository.createCustomExercise(
+                name = name,
+                muscleGroup = muscleGroup,
+                category = category,
+                notes = notes,
+                primaryMuscle = primaryMuscle,
+                secondaryMuscles = secondaryMuscles,
+                mechanics = mechanics,
+                force = resolvedForce,
+                level = resolvedLevel
+            )
         }
     }
 
