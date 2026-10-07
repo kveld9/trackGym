@@ -516,4 +516,18 @@
     <string name="chip_all_equipment">All Equipment</string>
     <string name="chip_all_mechanics">All Mechanics</string>
     <string name="action_clear_filters">Clear Filters</string>
+
+    <!-- Alternative Exercise Engine -->
+    <string name="title_substitutes">Alternative Exercises</string>
+    <string name="subtitle_substitutes_for">Alternatives for %1$s</string>
+    <string name="section_recommended_substitutes">Recommended Alternatives</string>
+    <string name="substitute_match_score">%1$d%% match</string>
+    <string name="substitute_reason_exact">Direct equivalent (same target &amp; mechanics)</string>
+    <string name="substitute_reason_same_primary">Same primary muscle</string>
+    <string name="substitute_reason_same_group">Same muscle group</string>
+    <string name="substitute_reason_secondary">Synergist / secondary muscle</string>
+    <string name="substitute_no_alternatives">No alternative exercises found for the selected equipment.</string>
+    <string name="action_view_substitutes">View Alternatives</string>
+    <string name="chip_filter_all_equipment">All Equipment</string>
+    <string name="label_alternatives_count">%1$d alternatives</string>
 </resources>

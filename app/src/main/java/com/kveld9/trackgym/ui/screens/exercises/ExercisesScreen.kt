@@ -21,7 +21,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Search
+import com.kveld9.trackgym.domain.calculator.ExerciseSubstitutionEngine
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -80,6 +83,7 @@ fun ExercisesScreen(
     val selectedOriginFilter by viewModel.selectedOriginFilter.collectAsStateWithLifecycle()
     val selectedEquipmentFilter by viewModel.selectedEquipmentFilter.collectAsStateWithLifecycle()
     val selectedMechanicsFilter by viewModel.selectedMechanicsFilter.collectAsStateWithLifecycle()
+    val allExercises by viewModel.allExercises.collectAsStateWithLifecycle()
 
     var showCreateDialog by remember { mutableStateOf(false) }
 
@@ -285,7 +289,7 @@ fun ExercisesScreen(
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 items(exercises, key = { it.id }) { exercise ->
-                    ExerciseRowCard(exercise = exercise)
+                    ExerciseRowCard(exercise = exercise, allExercises = allExercises)
                 }
 
                 item {
@@ -329,8 +333,12 @@ fun MuscleChip(
 }
 
 @Composable
-fun ExerciseRowCard(exercise: Exercise) {
+fun ExerciseRowCard(
+    exercise: Exercise,
+    allExercises: List<Exercise> = emptyList()
+) {
     var expanded by remember { mutableStateOf(false) }
+    var showAlternatives by remember { mutableStateOf(false) }
     val involvements = remember(exercise) { MuscleAnatomyRegistry.getInvolvementsForExercise(exercise) }
     val primary = remember(involvements) { involvements.firstOrNull { it.isPrimary } ?: involvements.firstOrNull() }
     val secondaries = remember(involvements) { involvements.filter { !it.isPrimary } }
@@ -515,6 +523,98 @@ fun ExerciseRowCard(exercise: Exercise) {
                         textAlign = androidx.compose.ui.text.style.TextAlign.End,
                         modifier = Modifier.weight(0.15f)
                     )
+                }
+            }
+
+            // Alternative Exercises Section
+            Spacer(modifier = Modifier.height(10.dp))
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(8.dp))
+                    .clickable { showAlternatives = !showAlternatives }
+                    .padding(vertical = 4.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = stringResource(R.string.title_substitutes),
+                    color = MaterialTheme.colorScheme.primary,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Icon(
+                    imageVector = if (showAlternatives) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(18.dp)
+                )
+            }
+
+            if (showAlternatives) {
+                val substitutes = remember(exercise, allExercises) {
+                    ExerciseSubstitutionEngine.findSubstitutes(
+                        target = exercise,
+                        allExercises = allExercises,
+                        limit = 4
+                    )
+                }
+
+                if (substitutes.isEmpty()) {
+                    Text(
+                        text = stringResource(R.string.substitute_no_alternatives),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 11.sp,
+                        modifier = Modifier.padding(vertical = 4.dp)
+                    )
+                } else {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 4.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        substitutes.forEach { sub ->
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(MaterialTheme.colorScheme.surfaceContainerHighest)
+                                    .padding(horizontal = 10.dp, vertical = 6.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(
+                                        text = sub.exercise.displayName(),
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+                                    Text(
+                                        text = "${stringResource(sub.exercise.category.nameRes)} • ${stringResource(sub.exercise.mechanics.nameRes)}",
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        fontSize = 10.sp
+                                    )
+                                }
+                                Surface(
+                                    color = MaterialTheme.colorScheme.primaryContainer,
+                                    shape = RoundedCornerShape(4.dp)
+                                ) {
+                                    Text(
+                                        text = "${sub.matchScore}%",
+                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                        fontSize = 10.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                                    )
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
