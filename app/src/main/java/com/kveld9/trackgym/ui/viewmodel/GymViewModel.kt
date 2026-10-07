@@ -188,6 +188,12 @@ class GymViewModel(
     private val _selectedDifficultyFilter = MutableStateFlow<DifficultyLevel?>(null)
     val selectedDifficultyFilter: StateFlow<DifficultyLevel?> = _selectedDifficultyFilter.asStateFlow()
 
+    private val _selectedCustomCategoryFilter = MutableStateFlow<String?>(null)
+    val selectedCustomCategoryFilter: StateFlow<String?> = _selectedCustomCategoryFilter.asStateFlow()
+
+    val allCustomCategories: StateFlow<List<com.kveld9.trackgym.domain.model.CustomExerciseCategory>> = repository.getAllCustomCategories()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
     val filteredExercises: StateFlow<List<Exercise>> = combine(
         listOf(
             _rawExercises,
@@ -198,6 +204,7 @@ class GymViewModel(
             _selectedMechanicsFilter,
             _selectedForceFilter,
             _selectedDifficultyFilter,
+            _selectedCustomCategoryFilter,
             keepExerciseNamesInEnglish
         )
     ) { array ->
@@ -210,7 +217,8 @@ class GymViewModel(
         val mechanicsFilter = array[5] as MechanicsType?
         val forceFilter = array[6] as ForceType?
         val difficultyFilter = array[7] as DifficultyLevel?
-        val keepEnglish = array[8] as Boolean
+        val customCategoryFilter = array[8] as String?
+        val keepEnglish = array[9] as Boolean
 
         val preFiltered = exercises.filter { ex ->
             val matchesMuscle = muscleFilter == null || ex.muscleGroup == muscleFilter
@@ -223,8 +231,9 @@ class GymViewModel(
             val matchesMechanics = mechanicsFilter == null || ex.mechanics == mechanicsFilter
             val matchesForce = forceFilter == null || ex.force == forceFilter
             val matchesDifficulty = difficultyFilter == null || ex.level == difficultyFilter
+            val matchesCustomCategory = customCategoryFilter == null || ex.customCategories.any { it.equals(customCategoryFilter, ignoreCase = true) }
 
-            matchesMuscle && matchesOrigin && matchesEquipment && matchesMechanics && matchesForce && matchesDifficulty
+            matchesMuscle && matchesOrigin && matchesEquipment && matchesMechanics && matchesForce && matchesDifficulty && matchesCustomCategory
         }
 
         if (query.isBlank()) {
@@ -916,6 +925,40 @@ class GymViewModel(
         _selectedDifficultyFilter.value = filter
     }
 
+    fun setCustomCategoryFilter(category: String?) {
+        _selectedCustomCategoryFilter.value = category
+    }
+
+    fun createCustomCategory(name: String) {
+        viewModelScope.launch {
+            repository.createCustomCategory(name)
+        }
+    }
+
+    fun renameCustomCategory(category: com.kveld9.trackgym.domain.model.CustomExerciseCategory, newName: String) {
+        viewModelScope.launch {
+            if (_selectedCustomCategoryFilter.value.equals(category.name, ignoreCase = true)) {
+                _selectedCustomCategoryFilter.value = newName.trim()
+            }
+            repository.renameCustomCategory(category.id, category.name, newName)
+        }
+    }
+
+    fun deleteCustomCategory(category: com.kveld9.trackgym.domain.model.CustomExerciseCategory) {
+        viewModelScope.launch {
+            if (_selectedCustomCategoryFilter.value.equals(category.name, ignoreCase = true)) {
+                _selectedCustomCategoryFilter.value = null
+            }
+            repository.deleteCustomCategory(category.id, category.name)
+        }
+    }
+
+    fun updateExerciseCustomCategories(exerciseId: Long, categories: List<String>) {
+        viewModelScope.launch {
+            repository.updateExerciseCustomCategories(exerciseId, categories)
+        }
+    }
+
     fun clearAllExerciseFilters() {
         _selectedMuscleFilter.value = null
         _selectedOriginFilter.value = ExerciseOriginFilter.ALL
@@ -923,6 +966,7 @@ class GymViewModel(
         _selectedMechanicsFilter.value = null
         _selectedForceFilter.value = null
         _selectedDifficultyFilter.value = null
+        _selectedCustomCategoryFilter.value = null
         _searchQuery.value = ""
     }
 
@@ -939,7 +983,8 @@ class GymViewModel(
         secondaryMuscles: List<com.kveld9.trackgym.domain.model.MuscleInvolvement> = emptyList(),
         mechanics: MechanicsType = MechanicsType.COMPOUND,
         force: ForceType? = null,
-        level: DifficultyLevel? = null
+        level: DifficultyLevel? = null,
+        customCategories: List<String> = emptyList()
     ) {
         val resolvedForce = force ?: BiomechanicalClassifier.classifyForce(name, category, muscleGroup)
         val resolvedLevel = level ?: BiomechanicalClassifier.classifyDifficulty(name, category, muscleGroup, mechanics)
@@ -953,7 +998,8 @@ class GymViewModel(
                 secondaryMuscles = secondaryMuscles,
                 mechanics = mechanics,
                 force = resolvedForce,
-                level = resolvedLevel
+                level = resolvedLevel,
+                customCategories = customCategories
             )
         }
     }

@@ -685,4 +685,18 @@
     <string name="routine_balance_status_static_dominant">Predominio Estático</string>
     <string name="routine_balance_status_neutral">Balance Neutro</string>
     <string name="badge_routine_balanced">Equilibrado</string>
+
+    <!-- User-Defined Categories & Tags (Item 103) -->
+    <string name="chip_all_custom_categories">Todas las etiquetas</string>
+    <string name="action_manage_custom_categories">Gestionar etiquetas</string>
+    <string name="dialog_manage_categories_title">Categorías y Etiquetas</string>
+    <string name="dialog_manage_categories_add_placeholder">Nueva etiqueta (ej. Calistenia)</string>
+    <string name="action_add_category">Agregar</string>
+    <string name="dialog_rename_category_title">Renombrar etiqueta</string>
+    <string name="dialog_delete_category_confirm">¿Eliminar la etiqueta \"%1$s\"?</string>
+    <string name="dialog_edit_tags_title">Etiquetas para %1$s</string>
+    <string name="action_edit_exercise_tags">Editar Etiquetas</string>
+    <string name="action_save_tags">Guardar Etiquetas</string>
+    <string name="label_custom_categories">Categorías / Etiquetas Personalizadas</string>
+    <string name="no_custom_categories">Aún no hay categorías personalizadas creadas.</string>
 </resources>

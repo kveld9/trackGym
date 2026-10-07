@@ -31,6 +31,7 @@ data class ExerciseEntity(
     val mechanics: String = "COMPOUND",
     val force: String = "PUSH",
     val level: String = "BEGINNER",
+    val customCategories: String = "",
     val isCustom: Boolean = false,
     val createdAt: Long = System.currentTimeMillis()
 ) {
@@ -49,6 +50,7 @@ data class ExerciseEntity(
             mechanics = MechanicsType.fromString(mechanics),
             force = ForceType.fromString(force),
             level = DifficultyLevel.fromString(level),
+            customCategories = com.kveld9.trackgym.domain.util.CustomCategoryCodec.deserialize(customCategories),
             isCustom = isCustom,
             createdAt = createdAt
         )
@@ -70,6 +72,7 @@ data class ExerciseEntity(
                 mechanics = domain.mechanics.name,
                 force = domain.force.name,
                 level = domain.level.name,
+                customCategories = com.kveld9.trackgym.domain.util.CustomCategoryCodec.serialize(domain.customCategories),
                 isCustom = domain.isCustom,
                 createdAt = domain.createdAt
             )

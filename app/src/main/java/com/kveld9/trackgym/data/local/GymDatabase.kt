@@ -4,10 +4,12 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.kveld9.trackgym.data.local.dao.CustomExerciseCategoryDao
 import com.kveld9.trackgym.data.local.dao.ExerciseDao
 import com.kveld9.trackgym.data.local.dao.PersonalRecordDao
 import com.kveld9.trackgym.data.local.dao.RoutineDao
 import com.kveld9.trackgym.data.local.dao.WorkoutDao
+import com.kveld9.trackgym.data.local.entity.CustomExerciseCategoryEntity
 import com.kveld9.trackgym.data.local.entity.ExerciseEntity
 import com.kveld9.trackgym.data.local.entity.PersonalRecordEntity
 import com.kveld9.trackgym.data.local.entity.RoutineEntity
@@ -26,9 +28,10 @@ import com.kveld9.trackgym.data.local.entity.WorkoutSetEntity
         PersonalRecordEntity::class,
         RoutineFolderEntity::class,
         RoutineEntity::class,
-        RoutineExerciseEntity::class
+        RoutineExerciseEntity::class,
+        CustomExerciseCategoryEntity::class
     ],
-    version = 15,
+    version = 16,
     exportSchema = false
 )
 abstract class GymDatabase : RoomDatabase() {
@@ -37,6 +40,7 @@ abstract class GymDatabase : RoomDatabase() {
     abstract fun workoutDao(): WorkoutDao
     abstract fun personalRecordDao(): PersonalRecordDao
     abstract fun routineDao(): RoutineDao
+    abstract fun customCategoryDao(): CustomExerciseCategoryDao
 
     companion object {
         @Volatile
@@ -138,6 +142,24 @@ abstract class GymDatabase : RoomDatabase() {
             }
         }
 
+        private val MIGRATION_15_16 = object : androidx.room.migration.Migration(15, 16) {
+            override fun migrate(db: androidx.sqlite.db.SupportSQLiteDatabase) {
+                db.execSQL(
+                    """
+                    CREATE TABLE IF NOT EXISTS custom_exercise_categories (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        name TEXT NOT NULL,
+                        createdAt INTEGER NOT NULL
+                    )
+                    """.trimIndent()
+                )
+                db.execSQL(
+                    "CREATE UNIQUE INDEX IF NOT EXISTS index_custom_exercise_categories_name ON custom_exercise_categories(name)"
+                )
+                db.execSQL("ALTER TABLE exercises ADD COLUMN customCategories TEXT NOT NULL DEFAULT ''")
+            }
+        }
+
         fun getInstance(context: Context): GymDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
@@ -145,7 +167,7 @@ abstract class GymDatabase : RoomDatabase() {
                     GymDatabase::class.java,
                     "trackgym_database.db"
                 )
-                    .addMigrations(MIGRATION_12_13, MIGRATION_13_14, MIGRATION_14_15)
+                    .addMigrations(MIGRATION_12_13, MIGRATION_13_14, MIGRATION_14_15, MIGRATION_15_16)
                     .fallbackToDestructiveMigration(dropAllTables = true)
                     .build()
                 INSTANCE = instance

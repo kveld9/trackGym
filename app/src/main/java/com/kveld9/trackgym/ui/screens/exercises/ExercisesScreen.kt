@@ -13,21 +13,30 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.FilterChip
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Description
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Label
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
+import com.kveld9.trackgym.domain.model.CustomExerciseCategory
 import com.kveld9.trackgym.domain.calculator.ExerciseSubstitutionEngine
 import com.kveld9.trackgym.ui.components.ExerciseHistoryDialog
 import com.kveld9.trackgym.ui.components.ExerciseTechniqueDialog
@@ -94,6 +103,8 @@ fun ExercisesScreen(
     val selectedMechanicsFilter by viewModel.selectedMechanicsFilter.collectAsStateWithLifecycle()
     val selectedForceFilter by viewModel.selectedForceFilter.collectAsStateWithLifecycle()
     val selectedDifficultyFilter by viewModel.selectedDifficultyFilter.collectAsStateWithLifecycle()
+    val allCustomCategories by viewModel.allCustomCategories.collectAsStateWithLifecycle()
+    val selectedCustomCategoryFilter by viewModel.selectedCustomCategoryFilter.collectAsStateWithLifecycle()
     val allExercises by viewModel.allExercises.collectAsStateWithLifecycle()
     val completedWorkouts by viewModel.completedWorkouts.collectAsStateWithLifecycle()
     val weightUnit by viewModel.weightUnit.collectAsStateWithLifecycle()
@@ -101,6 +112,8 @@ fun ExercisesScreen(
 
     var showCreateDialog by remember { mutableStateOf(false) }
     var selectedExerciseForHistory by remember { mutableStateOf<Exercise?>(null) }
+    var showManageCategoriesDialog by remember { mutableStateOf(false) }
+    var exerciseForTagging by remember { mutableStateOf<Exercise?>(null) }
 
     Scaffold(
         topBar = {
@@ -318,6 +331,63 @@ fun ExercisesScreen(
                         onClick = { viewModel.setDifficultyFilter(level) }
                     )
                 }
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            // User-Defined Categories & Tags Filter Row
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState())
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                MuscleChip(
+                    label = stringResource(R.string.chip_all_custom_categories),
+                    isSelected = selectedCustomCategoryFilter == null,
+                    onClick = { viewModel.setCustomCategoryFilter(null) }
+                )
+                allCustomCategories.forEach { category ->
+                    MuscleChip(
+                        label = category.name,
+                        isSelected = selectedCustomCategoryFilter.equals(category.name, ignoreCase = true),
+                        onClick = {
+                            if (selectedCustomCategoryFilter.equals(category.name, ignoreCase = true)) {
+                                viewModel.setCustomCategoryFilter(null)
+                            } else {
+                                viewModel.setCustomCategoryFilter(category.name)
+                            }
+                        }
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(20.dp))
+                        .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                        .border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f), RoundedCornerShape(20.dp))
+                        .clickable { showManageCategoriesDialog = true }
+                        .padding(horizontal = 12.dp, vertical = 8.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Label,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(14.dp)
+                        )
+                        Text(
+                            text = stringResource(R.string.action_manage_custom_categories),
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 12.sp
+                        )
+                    }
+                }
 
                 val hasActiveFilters = selectedFilter != null ||
                     selectedOriginFilter != GymViewModel.ExerciseOriginFilter.ALL ||
@@ -325,6 +395,7 @@ fun ExercisesScreen(
                     selectedMechanicsFilter != null ||
                     selectedForceFilter != null ||
                     selectedDifficultyFilter != null ||
+                    selectedCustomCategoryFilter != null ||
                     searchQuery.isNotBlank()
 
                 if (hasActiveFilters) {
@@ -358,7 +429,8 @@ fun ExercisesScreen(
                     ExerciseRowCard(
                         exercise = exercise,
                         allExercises = allExercises,
-                        onOpenHistory = { selectedExerciseForHistory = exercise }
+                        onOpenHistory = { selectedExerciseForHistory = exercise },
+                        onEditTags = { exerciseForTagging = exercise }
                     )
                 }
 
@@ -371,10 +443,33 @@ fun ExercisesScreen(
 
     if (showCreateDialog) {
         CreateExerciseDialog(
+            allCategories = allCustomCategories,
             onDismiss = { showCreateDialog = false },
-            onCreate = { name, group, category, notes, primaryMuscle, secondaryMuscles, mechanics, force, level ->
-                viewModel.createCustomExercise(name, group, category, notes, primaryMuscle, secondaryMuscles, mechanics, force, level)
+            onCreate = { name, group, category, notes, primaryMuscle, secondaryMuscles, mechanics, force, level, customCategories ->
+                viewModel.createCustomExercise(name, group, category, notes, primaryMuscle, secondaryMuscles, mechanics, force, level, customCategories)
                 showCreateDialog = false
+            }
+        )
+    }
+
+    if (showManageCategoriesDialog) {
+        ManageCategoriesDialog(
+            categories = allCustomCategories,
+            onDismiss = { showManageCategoriesDialog = false },
+            onCreate = { viewModel.createCustomCategory(it) },
+            onRename = { cat, newName -> viewModel.renameCustomCategory(cat, newName) },
+            onDelete = { viewModel.deleteCustomCategory(it) }
+        )
+    }
+
+    exerciseForTagging?.let { targetExercise ->
+        EditExerciseTagsDialog(
+            exercise = targetExercise,
+            allCategories = allCustomCategories,
+            onDismiss = { exerciseForTagging = null },
+            onSave = { updatedTags ->
+                viewModel.updateExerciseCustomCategories(targetExercise.id, updatedTags)
+                exerciseForTagging = null
             }
         )
     }
@@ -416,7 +511,8 @@ fun MuscleChip(
 fun ExerciseRowCard(
     exercise: Exercise,
     allExercises: List<Exercise> = emptyList(),
-    onOpenHistory: () -> Unit = {}
+    onOpenHistory: () -> Unit = {},
+    onEditTags: () -> Unit = {}
 ) {
     var expanded by remember { mutableStateOf(false) }
     var showAlternatives by remember { mutableStateOf(false) }
@@ -535,6 +631,32 @@ fun ExerciseRowCard(
                         fontWeight = FontWeight.Medium,
                         modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
                     )
+                }
+            }
+        }
+
+        if (exercise.customCategories.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(6.dp))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                exercise.customCategories.forEach { tag ->
+                    Surface(
+                        color = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.7f),
+                        shape = RoundedCornerShape(4.dp)
+                    ) {
+                        Text(
+                            text = "#$tag",
+                            color = MaterialTheme.colorScheme.onTertiaryContainer,
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                        )
+                    }
                 }
             }
         }
@@ -751,6 +873,29 @@ fun ExerciseRowCard(
                     )
                 }
             }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            OutlinedButton(
+                onClick = onEditTags,
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(8.dp),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    contentColor = MaterialTheme.colorScheme.secondary
+                )
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Label,
+                    contentDescription = null,
+                    modifier = Modifier.size(16.dp)
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                    text = stringResource(R.string.action_edit_exercise_tags),
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
         }
     }
 
@@ -765,8 +910,9 @@ fun ExerciseRowCard(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateExerciseDialog(
+    allCategories: List<CustomExerciseCategory> = emptyList(),
     onDismiss: () -> Unit,
-    onCreate: (String, MuscleGroup, ExerciseCategory, String, BodyMuscle?, List<MuscleInvolvement>, MechanicsType, ForceType, DifficultyLevel) -> Unit
+    onCreate: (String, MuscleGroup, ExerciseCategory, String, BodyMuscle?, List<MuscleInvolvement>, MechanicsType, ForceType, DifficultyLevel, List<String>) -> Unit
 ) {
     var name by remember { mutableStateOf("") }
     var selectedGroup by remember { mutableStateOf(MuscleGroup.CHEST) }
@@ -776,6 +922,8 @@ fun CreateExerciseDialog(
     var selectedLevel by remember { mutableStateOf(DifficultyLevel.BEGINNER) }
     var userModifiedForce by remember { mutableStateOf(false) }
     var userModifiedLevel by remember { mutableStateOf(false) }
+    var selectedCategories by remember { mutableStateOf(setOf<String>()) }
+    var newTagText by remember { mutableStateOf("") }
     var primaryMuscle by remember(selectedGroup) {
         mutableStateOf(BodyMuscle.entries.firstOrNull { it.muscleGroup == selectedGroup } ?: BodyMuscle.CHEST)
     }
@@ -1049,13 +1197,82 @@ fun CreateExerciseDialog(
                         unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                     )
                 )
+
+                // Custom Categories / Tags Selection
+                Text(
+                    text = stringResource(R.string.label_custom_categories),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+
+                val availableTags = remember(allCategories, selectedCategories) {
+                    (allCategories.map { it.name } + selectedCategories).distinct()
+                }
+
+                if (availableTags.isNotEmpty()) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .horizontalScroll(rememberScrollState()),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        availableTags.forEach { tag ->
+                            val isChecked = selectedCategories.contains(tag)
+                            FilterChip(
+                                selected = isChecked,
+                                onClick = {
+                                    selectedCategories = if (isChecked) {
+                                        selectedCategories - tag
+                                    } else {
+                                        selectedCategories + tag
+                                    }
+                                },
+                                label = { Text("#$tag", fontSize = 11.sp) }
+                            )
+                        }
+                    }
+                }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    OutlinedTextField(
+                        value = newTagText,
+                        onValueChange = { newTagText = it.replace(",", "") },
+                        placeholder = { Text(stringResource(R.string.dialog_manage_categories_add_placeholder), fontSize = 12.sp) },
+                        singleLine = true,
+                        modifier = Modifier.weight(1f),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                            unfocusedTextColor = MaterialTheme.colorScheme.onSurface
+                        )
+                    )
+                    IconButton(
+                        onClick = {
+                            val trimmed = newTagText.trim()
+                            if (trimmed.isNotBlank()) {
+                                selectedCategories = selectedCategories + trimmed
+                                newTagText = ""
+                            }
+                        },
+                        enabled = newTagText.isNotBlank()
+                    ) {
+                        Icon(Icons.Default.Add, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                    }
+                }
             }
         },
         confirmButton = {
             Button(
                 onClick = {
                     if (name.isNotBlank()) {
-                        onCreate(name.trim(), selectedGroup, selectedCategory, notes.trim(), primaryMuscle, emptyList(), selectedMechanics, selectedForce, selectedLevel)
+                        onCreate(name.trim(), selectedGroup, selectedCategory, notes.trim(), primaryMuscle, emptyList(), selectedMechanics, selectedForce, selectedLevel, selectedCategories.toList())
                     }
                 },
                 enabled = name.isNotBlank(),
@@ -1075,6 +1292,270 @@ fun CreateExerciseDialog(
         dismissButton = {
             TextButton(onClick = onDismiss) {
                 Text(stringResource(R.string.action_cancel), color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+        }
+    )
+}
+
+@Composable
+fun ManageCategoriesDialog(
+    categories: List<CustomExerciseCategory>,
+    onDismiss: () -> Unit,
+    onCreate: (String) -> Unit,
+    onRename: (CustomExerciseCategory, String) -> Unit,
+    onDelete: (CustomExerciseCategory) -> Unit
+) {
+    var newCategoryText by remember { mutableStateOf("") }
+    var editingCategory by remember { mutableStateOf<CustomExerciseCategory?>(null) }
+    var renameText by remember { mutableStateOf("") }
+    var confirmingDeleteCategory by remember { mutableStateOf<CustomExerciseCategory?>(null) }
+
+    if (confirmingDeleteCategory != null) {
+        val targetCat = confirmingDeleteCategory!!
+        AlertDialog(
+            onDismissRequest = { confirmingDeleteCategory = null },
+            title = {
+                Text(stringResource(R.string.dialog_delete_category_confirm, targetCat.name), fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        onDelete(targetCat)
+                        confirmingDeleteCategory = null
+                    }
+                ) {
+                    Text(stringResource(R.string.action_delete), color = MaterialTheme.colorScheme.error)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { confirmingDeleteCategory = null }) {
+                    Text(stringResource(R.string.action_cancel))
+                }
+            }
+        )
+    }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(stringResource(R.string.dialog_manage_categories_title), fontWeight = FontWeight.Bold)
+        },
+        text = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    OutlinedTextField(
+                        value = newCategoryText,
+                        onValueChange = { newCategoryText = it.replace(",", "") },
+                        placeholder = { Text(stringResource(R.string.dialog_manage_categories_add_placeholder), fontSize = 12.sp) },
+                        singleLine = true,
+                        modifier = Modifier.weight(1f)
+                    )
+                    IconButton(
+                        onClick = {
+                            val trimmed = newCategoryText.trim()
+                            if (trimmed.isNotBlank()) {
+                                onCreate(trimmed)
+                                newCategoryText = ""
+                            }
+                        },
+                        enabled = newCategoryText.isNotBlank()
+                    ) {
+                        Icon(Icons.Default.Add, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                    }
+                }
+
+                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
+
+                if (categories.isEmpty()) {
+                    Text(
+                        text = stringResource(R.string.no_custom_categories),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 12.sp,
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
+                } else {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(max = 240.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        items(categories, key = { it.id }) { cat ->
+                            if (editingCategory?.id == cat.id) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                ) {
+                                    OutlinedTextField(
+                                        value = renameText,
+                                        onValueChange = { renameText = it.replace(",", "") },
+                                        singleLine = true,
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                    IconButton(
+                                        onClick = {
+                                            val trimmed = renameText.trim()
+                                            if (trimmed.isNotBlank()) {
+                                                onRename(cat, trimmed)
+                                                editingCategory = null
+                                            }
+                                        }
+                                    ) {
+                                        Icon(Icons.Default.Check, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                                    }
+                                    IconButton(onClick = { editingCategory = null }) {
+                                        Icon(Icons.Default.Close, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                                    }
+                                }
+                            } else {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .background(MaterialTheme.colorScheme.surfaceContainerHighest)
+                                        .padding(horizontal = 10.dp, vertical = 6.dp),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = "#${cat.name}",
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                        fontSize = 13.sp,
+                                        fontWeight = FontWeight.Medium,
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                    IconButton(
+                                        onClick = {
+                                            editingCategory = cat
+                                            renameText = cat.name
+                                        },
+                                        modifier = Modifier.size(32.dp)
+                                    ) {
+                                        Icon(Icons.Default.Edit, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(16.dp))
+                                    }
+                                    IconButton(
+                                        onClick = { confirmingDeleteCategory = cat },
+                                        modifier = Modifier.size(32.dp)
+                                    ) {
+                                        Icon(Icons.Default.Delete, contentDescription = null, tint = MaterialTheme.colorScheme.error, modifier = Modifier.size(16.dp))
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.action_cancel))
+            }
+        }
+    )
+}
+
+@Composable
+fun EditExerciseTagsDialog(
+    exercise: Exercise,
+    allCategories: List<CustomExerciseCategory>,
+    onDismiss: () -> Unit,
+    onSave: (List<String>) -> Unit
+) {
+    var selectedTags by remember { mutableStateOf(exercise.customCategories.toSet()) }
+    var newTagText by remember { mutableStateOf("") }
+
+    val candidateTags = remember(allCategories, selectedTags) {
+        (allCategories.map { it.name } + selectedTags).distinct()
+    }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(stringResource(R.string.dialog_edit_tags_title, exercise.displayName()), fontWeight = FontWeight.Bold, fontSize = 16.sp)
+        },
+        text = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    OutlinedTextField(
+                        value = newTagText,
+                        onValueChange = { newTagText = it.replace(",", "") },
+                        placeholder = { Text(stringResource(R.string.dialog_manage_categories_add_placeholder), fontSize = 12.sp) },
+                        singleLine = true,
+                        modifier = Modifier.weight(1f)
+                    )
+                    IconButton(
+                        onClick = {
+                            val trimmed = newTagText.trim()
+                            if (trimmed.isNotBlank()) {
+                                selectedTags = selectedTags + trimmed
+                                newTagText = ""
+                            }
+                        },
+                        enabled = newTagText.isNotBlank()
+                    ) {
+                        Icon(Icons.Default.Add, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                    }
+                }
+
+                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
+
+                if (candidateTags.isEmpty()) {
+                    Text(
+                        text = stringResource(R.string.no_custom_categories),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 12.sp
+                    )
+                } else {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .horizontalScroll(rememberScrollState()),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        candidateTags.forEach { tag ->
+                            val isChecked = selectedTags.contains(tag)
+                            FilterChip(
+                                selected = isChecked,
+                                onClick = {
+                                    selectedTags = if (isChecked) {
+                                        selectedTags - tag
+                                    } else {
+                                        selectedTags + tag
+                                    }
+                                },
+                                label = { Text("#$tag", fontSize = 12.sp) }
+                            )
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = { onSave(selectedTags.toList()) }
+            ) {
+                Text(stringResource(R.string.action_save_tags), fontWeight = FontWeight.Bold)
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.action_cancel))
             }
         }
     )

@@ -685,4 +685,18 @@
     <string name="routine_balance_status_static_dominant">Static Dominant</string>
     <string name="routine_balance_status_neutral">Neutral Balance</string>
     <string name="badge_routine_balanced">Balanced</string>
+
+    <!-- User-Defined Categories & Tags (Item 103) -->
+    <string name="chip_all_custom_categories">All Tags</string>
+    <string name="action_manage_custom_categories">Manage Tags</string>
+    <string name="dialog_manage_categories_title">Categories &amp; Tags</string>
+    <string name="dialog_manage_categories_add_placeholder">New tag (e.g. Calisthenics)</string>
+    <string name="action_add_category">Add</string>
+    <string name="dialog_rename_category_title">Rename Tag</string>
+    <string name="dialog_delete_category_confirm">Delete tag \"%1$s\"?</string>
+    <string name="dialog_edit_tags_title">Tags for %1$s</string>
+    <string name="action_edit_exercise_tags">Edit Tags</string>
+    <string name="action_save_tags">Save Tags</string>
+    <string name="label_custom_categories">Custom Categories / Tags</string>
+    <string name="no_custom_categories">No custom categories created yet.</string>
 </resources>

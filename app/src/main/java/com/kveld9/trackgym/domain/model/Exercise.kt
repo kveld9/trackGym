@@ -14,6 +14,7 @@ data class Exercise(
     val mechanics: MechanicsType = MechanicsType.COMPOUND,
     val force: ForceType = ForceType.PUSH,
     val level: DifficultyLevel = DifficultyLevel.BEGINNER,
+    val customCategories: List<String> = emptyList(),
     val isCustom: Boolean = false,
     val createdAt: Long = System.currentTimeMillis()
 )

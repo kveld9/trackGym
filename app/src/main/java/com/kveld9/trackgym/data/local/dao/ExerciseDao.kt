@@ -56,6 +56,12 @@ interface ExerciseDao {
     @Query("UPDATE exercises SET primaryMuscle = :primaryMuscle, secondaryMuscles = :secondaryMuscles WHERE id = :id")
     suspend fun updateExerciseAnatomy(id: Long, primaryMuscle: String?, secondaryMuscles: String?)
 
+    @Query("UPDATE exercises SET customCategories = :customCategories WHERE id = :id")
+    suspend fun updateExerciseCustomCategories(id: Long, customCategories: String)
+
+    @Query("SELECT * FROM exercises WHERE customCategories LIKE '%' || :categoryName || '%'")
+    suspend fun getExercisesWithCategory(categoryName: String): List<ExerciseEntity>
+
     @Query("SELECT COUNT(*) FROM exercises")
     suspend fun countExercises(): Int
 }

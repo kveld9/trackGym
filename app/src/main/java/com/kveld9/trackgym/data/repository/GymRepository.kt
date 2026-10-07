@@ -53,11 +53,80 @@ class GymRepository(private val database: GymDatabase) {
     private val workoutDao = database.workoutDao()
     private val prDao = database.personalRecordDao()
     private val routineDao = database.routineDao()
+    private val customCategoryDao = database.customCategoryDao()
 
     suspend fun ensureDefaultExercisesSeeded() = withContext(Dispatchers.IO) {
         if (exerciseDao.countExercises() == 0) {
             val entities = DefaultExercises.list.map { ExerciseEntity.fromDomain(it) }
             exerciseDao.insertAll(entities)
+        }
+    }
+
+    // CUSTOM EXERCISE CATEGORIES & TAGS
+    fun getAllCustomCategories(): Flow<List<com.kveld9.trackgym.domain.model.CustomExerciseCategory>> {
+        return customCategoryDao.getAllCategories().map { list -> list.map { it.toDomain() } }.flowOn(Dispatchers.IO)
+    }
+
+    suspend fun getAllCustomCategoriesSync(): List<com.kveld9.trackgym.domain.model.CustomExerciseCategory> = withContext(Dispatchers.IO) {
+        customCategoryDao.getAllCategoriesSync().map { it.toDomain() }
+    }
+
+    suspend fun createCustomCategory(name: String): Long = withContext(Dispatchers.IO) {
+        val trimmed = name.replace(",", " ").trim()
+        if (trimmed.isBlank()) return@withContext -1L
+        customCategoryDao.insertCategory(com.kveld9.trackgym.data.local.entity.CustomExerciseCategoryEntity(name = trimmed))
+    }
+
+    suspend fun renameCustomCategory(id: Long, oldName: String, newName: String) = withContext(Dispatchers.IO) {
+        val trimmedOld = oldName.replace(",", " ").trim()
+        val trimmedNew = newName.replace(",", " ").trim()
+        if (trimmedOld.isBlank() || trimmedNew.isBlank() || trimmedOld.equals(trimmedNew, ignoreCase = true)) return@withContext
+
+        database.withTransaction {
+            val existingTarget = customCategoryDao.getCategoryByName(trimmedNew)
+            if (existingTarget != null && existingTarget.id != id) {
+                // If a category with the target name already exists, merge them by deleting the old category record
+                customCategoryDao.deleteCategoryById(id)
+            } else {
+                customCategoryDao.updateCategory(com.kveld9.trackgym.data.local.entity.CustomExerciseCategoryEntity(id = id, name = trimmedNew))
+            }
+
+            val affected = exerciseDao.getExercisesWithCategory(trimmedOld)
+            for (entity in affected) {
+                val updated = com.kveld9.trackgym.domain.util.CustomCategoryCodec.rename(entity.customCategories, trimmedOld, trimmedNew)
+                if (updated != entity.customCategories) {
+                    exerciseDao.updateExerciseCustomCategories(entity.id, updated)
+                }
+            }
+        }
+    }
+
+    suspend fun deleteCustomCategory(id: Long, name: String) = withContext(Dispatchers.IO) {
+        val trimmed = name.replace(",", " ").trim()
+        database.withTransaction {
+            customCategoryDao.deleteCategoryById(id)
+            if (trimmed.isNotBlank()) {
+                val affected = exerciseDao.getExercisesWithCategory(trimmed)
+                for (entity in affected) {
+                    val updated = com.kveld9.trackgym.domain.util.CustomCategoryCodec.remove(entity.customCategories, trimmed)
+                    if (updated != entity.customCategories) {
+                        exerciseDao.updateExerciseCustomCategories(entity.id, updated)
+                    }
+                }
+            }
+        }
+    }
+
+    suspend fun updateExerciseCustomCategories(exerciseId: Long, categories: List<String>) = withContext(Dispatchers.IO) {
+        val serialized = com.kveld9.trackgym.domain.util.CustomCategoryCodec.serialize(categories)
+        database.withTransaction {
+            exerciseDao.updateExerciseCustomCategories(exerciseId, serialized)
+            for (cat in categories) {
+                val trimmed = cat.replace(",", " ").trim()
+                if (trimmed.isNotBlank()) {
+                    customCategoryDao.insertCategory(com.kveld9.trackgym.data.local.entity.CustomExerciseCategoryEntity(name = trimmed))
+                }
+            }
         }
     }
 
@@ -87,7 +156,8 @@ class GymRepository(private val database: GymDatabase) {
         secondaryMuscles: List<com.kveld9.trackgym.domain.model.MuscleInvolvement> = emptyList(),
         mechanics: com.kveld9.trackgym.domain.model.MechanicsType = com.kveld9.trackgym.domain.model.MechanicsType.COMPOUND,
         force: com.kveld9.trackgym.domain.model.ForceType = com.kveld9.trackgym.domain.model.ForceType.PUSH,
-        level: com.kveld9.trackgym.domain.model.DifficultyLevel = com.kveld9.trackgym.domain.model.DifficultyLevel.BEGINNER
+        level: com.kveld9.trackgym.domain.model.DifficultyLevel = com.kveld9.trackgym.domain.model.DifficultyLevel.BEGINNER,
+        customCategories: List<String> = emptyList()
     ): Long = withContext(Dispatchers.IO) {
         val entity = ExerciseEntity(
             name = name.trim(),
@@ -99,9 +169,17 @@ class GymRepository(private val database: GymDatabase) {
             mechanics = mechanics.name,
             force = force.name,
             level = level.name,
+            customCategories = com.kveld9.trackgym.domain.util.CustomCategoryCodec.serialize(customCategories),
             isCustom = true
         )
-        exerciseDao.insertExercise(entity)
+        val id = exerciseDao.insertExercise(entity)
+        for (cat in customCategories) {
+            val trimmed = cat.trim()
+            if (trimmed.isNotBlank()) {
+                customCategoryDao.insertCategory(com.kveld9.trackgym.data.local.entity.CustomExerciseCategoryEntity(name = trimmed))
+            }
+        }
+        id
     }
 
     suspend fun deleteExercise(exercise: Exercise) = withContext(Dispatchers.IO) {
