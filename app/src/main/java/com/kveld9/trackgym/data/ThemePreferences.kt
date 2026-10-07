@@ -22,7 +22,10 @@ data class ThemeSettings(
     val exerciseLanguage: String = ThemePreferences.EXERCISE_LANG_SYSTEM, // "SYSTEM", "ENGLISH"
     val ormFormula: String = "EPLEY",
     val doubleDumbbellVolume: Boolean = true,
-    val excludeWarmupFromVolume: Boolean = false
+    val excludeWarmupFromVolume: Boolean = false,
+    val timerSound: String = "DIGITAL_BEEP",
+    val timerSoundCountdown: Boolean = true,
+    val soundFeedbackOnComplete: Boolean = true
 )
 
 class ThemePreferences(
@@ -47,6 +50,9 @@ class ThemePreferences(
         val ORM_FORMULA_KEY = stringPreferencesKey("orm_formula")
         val DOUBLE_DUMBBELL_VOLUME_KEY = booleanPreferencesKey("double_dumbbell_volume")
         val EXCLUDE_WARMUP_FROM_VOLUME_KEY = booleanPreferencesKey("exclude_warmup_from_volume")
+        val TIMER_SOUND_KEY = stringPreferencesKey("timer_sound")
+        val TIMER_SOUND_COUNTDOWN_KEY = booleanPreferencesKey("timer_sound_countdown")
+        val SOUND_FEEDBACK_ON_COMPLETE_KEY = booleanPreferencesKey("sound_feedback_on_complete")
 
         private val LEGACY_AMOLED_KEY = booleanPreferencesKey("amoled_black")
     }
@@ -66,7 +72,10 @@ class ThemePreferences(
                 exerciseLanguage = preferences[EXERCISE_LANGUAGE_KEY] ?: EXERCISE_LANG_SYSTEM,
                 ormFormula = preferences[ORM_FORMULA_KEY] ?: "EPLEY",
                 doubleDumbbellVolume = preferences[DOUBLE_DUMBBELL_VOLUME_KEY] ?: true,
-                excludeWarmupFromVolume = preferences[EXCLUDE_WARMUP_FROM_VOLUME_KEY] ?: false
+                excludeWarmupFromVolume = preferences[EXCLUDE_WARMUP_FROM_VOLUME_KEY] ?: false,
+                timerSound = preferences[TIMER_SOUND_KEY] ?: "DIGITAL_BEEP",
+                timerSoundCountdown = preferences[TIMER_SOUND_COUNTDOWN_KEY] ?: true,
+                soundFeedbackOnComplete = preferences[SOUND_FEEDBACK_ON_COMPLETE_KEY] ?: true
             )
         }
 
@@ -130,6 +139,24 @@ class ThemePreferences(
     suspend fun setExcludeWarmupFromVolume(enabled: Boolean) {
         dataStore.edit { preferences ->
             preferences[EXCLUDE_WARMUP_FROM_VOLUME_KEY] = enabled
+        }
+    }
+
+    suspend fun setTimerSound(sound: String) {
+        dataStore.edit { preferences ->
+            preferences[TIMER_SOUND_KEY] = sound
+        }
+    }
+
+    suspend fun setTimerSoundCountdown(enabled: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[TIMER_SOUND_COUNTDOWN_KEY] = enabled
+        }
+    }
+
+    suspend fun setSoundFeedbackOnComplete(enabled: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[SOUND_FEEDBACK_ON_COMPLETE_KEY] = enabled
         }
     }
 }

@@ -62,6 +62,21 @@ class GymViewModel(
     } ?: flowOf(com.kveld9.trackgym.domain.calculator.OneRepMaxFormula.EPLEY))
         .stateIn(viewModelScope, SharingStarted.Eagerly, com.kveld9.trackgym.domain.calculator.OneRepMaxFormula.EPLEY)
 
+    val timerSound: StateFlow<String> = (themePreferences?.themeSettings?.map {
+        it.timerSound
+    } ?: flowOf("DIGITAL_BEEP"))
+        .stateIn(viewModelScope, SharingStarted.Eagerly, "DIGITAL_BEEP")
+
+    val timerSoundCountdown: StateFlow<Boolean> = (themePreferences?.themeSettings?.map {
+        it.timerSoundCountdown
+    } ?: flowOf(true))
+        .stateIn(viewModelScope, SharingStarted.Eagerly, true)
+
+    val soundFeedbackOnComplete: StateFlow<Boolean> = (themePreferences?.themeSettings?.map {
+        it.soundFeedbackOnComplete
+    } ?: flowOf(true))
+        .stateIn(viewModelScope, SharingStarted.Eagerly, true)
+
     private val _activeWorkout = MutableStateFlow<Workout?>(null)
     val activeWorkout: StateFlow<Workout?> = _activeWorkout.asStateFlow()
 
@@ -84,6 +99,9 @@ class GymViewModel(
 
     private val _restTimerFinishedEvent = MutableSharedFlow<Unit>()
     val restTimerFinishedEvent: SharedFlow<Unit> = _restTimerFinishedEvent.asSharedFlow()
+
+    private val _restTimerWarningEvent = MutableSharedFlow<Int>()
+    val restTimerWarningEvent: SharedFlow<Int> = _restTimerWarningEvent.asSharedFlow()
 
     private var restTimerJob: Job? = null
 
@@ -400,7 +418,11 @@ class GymViewModel(
                 }
                 delay(1000)
                 val current = _restTimerRemainingSeconds.value ?: break
-                _restTimerRemainingSeconds.value = (current - 1).coerceAtLeast(0)
+                val newRemaining = (current - 1).coerceAtLeast(0)
+                _restTimerRemainingSeconds.value = newRemaining
+                if (newRemaining in 1..3 && timerSoundCountdown.value) {
+                    _restTimerWarningEvent.emit(newRemaining)
+                }
             }
         }
     }

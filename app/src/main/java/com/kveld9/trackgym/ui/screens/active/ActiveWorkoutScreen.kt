@@ -77,6 +77,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
@@ -149,8 +150,31 @@ fun ActiveWorkoutScreen(
     val folders by viewModel.folders.collectAsStateWithLifecycle()
 
     val haptic = LocalHapticFeedback.current
+    val context = LocalContext.current
+    val audioCuePlayer = remember { com.kveld9.trackgym.ui.audio.WorkoutAudioCuePlayer(context) }
+    val timerSoundName by viewModel.timerSound.collectAsStateWithLifecycle()
+    val timerSoundCountdown by viewModel.timerSoundCountdown.collectAsStateWithLifecycle()
+    val soundFeedbackOnComplete by viewModel.soundFeedbackOnComplete.collectAsStateWithLifecycle()
+
+    DisposableEffect(Unit) {
+        onDispose {
+            audioCuePlayer.release()
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.restTimerWarningEvent.collect {
+            audioCuePlayer.playWarningBeep()
+            haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+        }
+    }
+
     LaunchedEffect(Unit) {
         viewModel.restTimerFinishedEvent.collect {
+            val sound = runCatching {
+                com.kveld9.trackgym.ui.audio.TimerSound.valueOf(timerSoundName)
+            }.getOrDefault(com.kveld9.trackgym.ui.audio.TimerSound.DIGITAL_BEEP)
+            audioCuePlayer.playFinishedSound(sound)
             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
         }
     }
@@ -290,6 +314,12 @@ fun ActiveWorkoutScreen(
                                 viewModel.updateExerciseNotes(we.exercise.id, notes)
                             },
                             onToggleComplete = { set, weight, reps ->
+                                if (!set.isCompleted) {
+                                    if (soundFeedbackOnComplete) {
+                                        audioCuePlayer.playSetCompleteClick()
+                                    }
+                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                }
                                 activeWorkout?.let { wo ->
                                     viewModel.toggleCompleteSet(set, wo.id, we.exercise.id, weight, reps)
                                 }

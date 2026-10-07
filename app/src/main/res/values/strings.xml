@@ -267,6 +267,17 @@
     <string name="exercise_rest_custom_label">Rest time (seconds)</string>
     <string name="exercise_rest_use_global">Use Default (%1$ds)</string>
     <string name="exercise_rest_badge">%1$ds rest</string>
+    <string name="setting_timer_sound_title">Timer Finish Sound</string>
+    <string name="setting_timer_sound_desc">Sound played when the rest countdown reaches zero</string>
+    <string name="setting_timer_countdown_title">3-2-1 Countdown Beeps</string>
+    <string name="setting_timer_countdown_desc">Audio warning beeps on the last 3 seconds of rest</string>
+    <string name="setting_sound_complete_title">Set Completion Click</string>
+    <string name="setting_sound_complete_desc">Audio feedback when marking a set as completed</string>
+    <string name="sound_digital_beep">Digital Beep</string>
+    <string name="sound_boxing_bell">Boxing Bell</string>
+    <string name="sound_ting_ting">Ting-Ting</string>
+    <string name="sound_alarm">Traditional Alarm</string>
+    <string name="sound_silent">Silent / Mute</string>
 
     <!-- Consistency & Calendar Heatmap -->
     <string name="consistency_title">Training Consistency</string>

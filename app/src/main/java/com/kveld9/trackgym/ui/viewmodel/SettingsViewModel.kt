@@ -114,6 +114,24 @@ class SettingsViewModel(
         }
     }
 
+    fun setTimerSound(sound: String) {
+        viewModelScope.launch {
+            themePreferences.setTimerSound(sound)
+        }
+    }
+
+    fun setTimerSoundCountdown(enabled: Boolean) {
+        viewModelScope.launch {
+            themePreferences.setTimerSoundCountdown(enabled)
+        }
+    }
+
+    fun setSoundFeedbackOnComplete(enabled: Boolean) {
+        viewModelScope.launch {
+            themePreferences.setSoundFeedbackOnComplete(enabled)
+        }
+    }
+
     fun exportBackup(streamProvider: () -> OutputStream?) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }

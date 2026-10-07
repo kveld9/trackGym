@@ -267,6 +267,17 @@
     <string name="exercise_rest_custom_label">Tiempo de descanso (segundos)</string>
     <string name="exercise_rest_use_global">Usar Global (%1$ds)</string>
     <string name="exercise_rest_badge">%1$ds descanso</string>
+    <string name="setting_timer_sound_title">Sonido de fin de descanso</string>
+    <string name="setting_timer_sound_desc">Tono reproducido al llegar a cero en la cuenta regresiva</string>
+    <string name="setting_timer_countdown_title">Beeps de cuenta regresiva (3-2-1)</string>
+    <string name="setting_timer_countdown_desc">Tonos cortos de advertencia en los últimos 3 segundos</string>
+    <string name="setting_sound_complete_title">Sonido al completar serie</string>
+    <string name="setting_sound_complete_desc">Clic sonoro y sutil de confirmación al marcar una serie</string>
+    <string name="sound_digital_beep">Beep Digital</string>
+    <string name="sound_boxing_bell">Campana de Boxeo</string>
+    <string name="sound_ting_ting">Ting-Ting</string>
+    <string name="sound_alarm">Alarma Tradicional</string>
+    <string name="sound_silent">Cero Silencioso</string>
 
     <!-- Consistency & Calendar Heatmap -->
     <string name="consistency_title">Constancia de entrenamiento</string>
