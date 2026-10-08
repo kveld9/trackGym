@@ -340,7 +340,8 @@ fun ActiveWorkoutScreen(
                         onPauseResume = {
                             if (restIsRunning) viewModel.pauseRestTimer() else viewModel.resumeRestTimer()
                         },
-                        onSkip = { viewModel.stopRestTimer() }
+                        onSkip = { viewModel.stopRestTimer() },
+                        modifier = Modifier.padding(bottom = 80.dp)
                     )
                 }
             },
@@ -490,7 +491,7 @@ fun ActiveWorkoutScreen(
                     }
 
                     item {
-                        Spacer(modifier = Modifier.height(88.dp))
+                        Spacer(modifier = Modifier.height(120.dp))
                     }
                 }
             }

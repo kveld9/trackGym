@@ -134,7 +134,8 @@ fun ExercisesScreen(
                 onClick = { showCreateDialog = true },
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
-                shape = CircleShape
+                shape = CircleShape,
+                modifier = Modifier.padding(bottom = 80.dp)
             ) {
                 Icon(Icons.Default.Add, contentDescription = stringResource(R.string.action_create_exercise))
             }
@@ -435,7 +436,7 @@ fun ExercisesScreen(
                 }
 
                 item {
-                    Spacer(modifier = Modifier.height(80.dp))
+                    Spacer(modifier = Modifier.height(120.dp))
                 }
             }
         }
