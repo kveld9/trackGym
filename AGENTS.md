@@ -117,3 +117,9 @@ To actively combat planned obsolescence and ensure universal accessibility for u
   - Maintain release APK size $\le 5\,\text{MB}$ using R8 full mode shrinking and resource optimization.
   - All Room queries, file exports, and JSON parsing operations must execute exclusively off the main thread via `Dispatchers.IO`.
   - Zero third-party telemetry, commercial ad SDKs, or background trackers.
+
+---
+
+## 8. AGENT EXECUTION GUARDRAILS
+
+- **Anti-Loop Prohibition**: Outside `/audit-stack`, if a proposed fix fails two consecutive times, halt immediately, re-evaluate the root cause, or request a human decision. Inside `/audit-stack`, its autonomous remediation loop and circuit breaker (maximum 5 cycles per issue) apply instead.
