@@ -527,7 +527,6 @@ class GymRepository(private val database: GymDatabase) {
     ): WorkoutComparison? = withContext(Dispatchers.IO) {
         val currentWorkout = getFullWorkout(workoutId) ?: return@withContext null
         val exerciseComparisons = mutableListOf<ExerciseComparison>()
-        val totalPrs = mutableListOf<PersonalRecord>()
 
         for (workoutExercise in currentWorkout.exercises) {
             val exerciseId = workoutExercise.exercise.id
@@ -550,7 +549,6 @@ class GymRepository(private val database: GymDatabase) {
             }
 
             val recordsForExercise = prDao.getRecordsForWorkout(workoutId).filter { it.exerciseId == exerciseId }.map { it.toDomain() }
-            totalPrs.addAll(recordsForExercise)
 
             val comp = WorkoutComparisonEngine.compareExercise(
                 exercise = workoutExercise.exercise,
@@ -564,6 +562,7 @@ class GymRepository(private val database: GymDatabase) {
             exerciseComparisons.add(comp)
         }
 
+        val totalPrs = prDao.getRecordsForWorkout(workoutId).map { it.toDomain() }
         val totalVolumeDelta = exerciseComparisons.sumOf { it.totalVolumeDeltaKg }
 
         WorkoutComparison(

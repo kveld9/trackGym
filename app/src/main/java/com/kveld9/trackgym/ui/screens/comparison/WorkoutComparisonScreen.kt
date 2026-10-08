@@ -193,7 +193,7 @@ fun WorkoutComparisonScreen(
                     )
                 }
 
-                items(comparison.totalRecordsUnlocked, key = { it.id }) { pr ->
+                itemsIndexed(comparison.totalRecordsUnlocked, key = { index, pr -> "${pr.id}_$index" }) { _, pr ->
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(12.dp),
