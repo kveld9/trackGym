@@ -29,6 +29,16 @@
 | **Assemble Debug** | `./gradlew assembleDebug` | Compiles debug APK, validates KSP, Compose compiler, and resource packaging. |
 | **Git Status** | `git status` | Read-only check of working tree status and delta isolation. |
 
+### Quiet Gate Invocation (Agents)
+
+Agents send the full Gradle log to a git-ignored file under `build/` and read only the verdict:
+
+```bash
+./gradlew testDebugUnitTest --console=plain > build/gate-unit.log 2>&1; rc=$?; grep -E 'FAILED|error:|BUILD (SUCCESSFUL|FAILED)' build/gate-unit.log | tail -40; echo "exit=$rc"
+```
+
+The verdict is the exit code plus the `BUILD` line, never the filtered text alone. On failure, grep or read the saved log for context instead of re-running the gate. The same pattern applies to `assembleDebug`.
+
 ---
 
 ## 3. LANGUAGE AND GOVERNANCE PROTOCOLS
