@@ -236,7 +236,7 @@ fun GymEquipmentProfilesManageDialog(
                             }
 
                             Text(
-                                text = "${stringResource(R.string.gym_profile_bar_weight)}: $barText • Step: $incText",
+                                text = "${stringResource(R.string.gym_profile_bar_weight)}: $barText • ${stringResource(R.string.gym_profile_step_label)}: $incText",
                                 fontSize = 11.sp,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )

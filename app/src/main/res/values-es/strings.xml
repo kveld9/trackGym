@@ -86,6 +86,7 @@
     <string name="history_empty_desc">Inicia un entrenamiento en la pestaña \'Entrenar\' para comenzar a acumular registros y comparar tu progreso.</string>
     <string name="history_stat_min">%1$d min</string>
     <string name="history_stat_sets">%1$d series</string>
+    <string name="history_stat_reps">%1$d reps</string>
 
     <!-- Exercises Screen -->
     <string name="exercises_title">Ejercicios</string>
@@ -811,6 +812,7 @@
     <string name="gym_profile_name">Nombre del Perfil</string>
     <string name="gym_profile_bar_weight">Peso de Barra Predeterminado</string>
     <string name="gym_profile_min_increment">Salto de Peso Mínimo</string>
+    <string name="gym_profile_step_label">Salto</string>
     <string name="gym_profile_plates">Discos Disponibles</string>
     <string name="gym_profile_set_default">Marcar como predeterminado</string>
     <string name="gym_profile_default_badge">Predeterminado</string>

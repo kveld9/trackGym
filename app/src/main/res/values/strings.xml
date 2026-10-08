@@ -86,6 +86,7 @@
     <string name="history_empty_desc">Start a session in the \'Train\' tab to begin accumulating history and tracking progress.</string>
     <string name="history_stat_min">%1$d min</string>
     <string name="history_stat_sets">%1$d sets</string>
+    <string name="history_stat_reps">%1$d reps</string>
 
     <!-- Exercises Screen -->
     <string name="exercises_title">Exercises</string>
@@ -811,6 +812,7 @@
     <string name="gym_profile_name">Profile Name</string>
     <string name="gym_profile_bar_weight">Default Barbell Weight</string>
     <string name="gym_profile_min_increment">Minimum Weight Increment</string>
+    <string name="gym_profile_step_label">Step</string>
     <string name="gym_profile_plates">Available Plates</string>
     <string name="gym_profile_set_default">Set as default</string>
     <string name="gym_profile_default_badge">Default</string>

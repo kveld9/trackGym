@@ -88,9 +88,9 @@ fun TimeBucketedDistributionCard(
 
                 if (distribution.totalWorkouts > 0) {
                     val summaryValueText = when (selectedMetric) {
-                        DistributionMetricType.SETS -> "${distribution.totalValue.toInt()} sets"
+                        DistributionMetricType.SETS -> stringResource(R.string.history_stat_sets, distribution.totalValue.toInt())
                         DistributionMetricType.VOLUME -> weightUnit.format(distribution.totalValue)
-                        DistributionMetricType.REPS -> "${distribution.totalValue.toInt()} reps"
+                        DistributionMetricType.REPS -> stringResource(R.string.history_stat_reps, distribution.totalValue.toInt())
                     }
                     Text(
                         text = summaryValueText,
@@ -274,9 +274,9 @@ private fun ExerciseDistributionRow(
         )
 
         val valText = when (metric) {
-            DistributionMetricType.SETS -> "${item.value.toInt()} sets (${(item.percentage * 100).toInt()}%)"
+            DistributionMetricType.SETS -> "${stringResource(R.string.history_stat_sets, item.value.toInt())} (${(item.percentage * 100).toInt()}%)"
             DistributionMetricType.VOLUME -> "${weightUnit.format(item.value)} (${(item.percentage * 100).toInt()}%)"
-            DistributionMetricType.REPS -> "${item.value.toInt()} reps (${(item.percentage * 100).toInt()}%)"
+            DistributionMetricType.REPS -> "${stringResource(R.string.history_stat_reps, item.value.toInt())} (${(item.percentage * 100).toInt()}%)"
         }
 
         Text(

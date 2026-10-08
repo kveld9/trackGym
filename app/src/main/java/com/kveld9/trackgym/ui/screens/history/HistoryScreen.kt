@@ -839,7 +839,18 @@ fun HistoryCalendarView(
         monthData.days.firstOrNull { it.dateKey == selectedDateKey }
     }
 
-    val weekDays = listOf("M", "T", "W", "T", "F", "S", "S")
+    val weekDays = remember {
+        val symbols = java.text.DateFormatSymbols.getInstance(Locale.getDefault()).shortWeekdays
+        listOf(
+            symbols[Calendar.MONDAY].take(1).uppercase(Locale.getDefault()),
+            symbols[Calendar.TUESDAY].take(1).uppercase(Locale.getDefault()),
+            symbols[Calendar.WEDNESDAY].take(1).uppercase(Locale.getDefault()),
+            symbols[Calendar.THURSDAY].take(1).uppercase(Locale.getDefault()),
+            symbols[Calendar.FRIDAY].take(1).uppercase(Locale.getDefault()),
+            symbols[Calendar.SATURDAY].take(1).uppercase(Locale.getDefault()),
+            symbols[Calendar.SUNDAY].take(1).uppercase(Locale.getDefault())
+        )
+    }
 
     // Flatten grid with leading empty slots
     val gridItems = remember(monthData) {
