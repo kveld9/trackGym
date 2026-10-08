@@ -24,6 +24,8 @@ class MainActivity : ComponentActivity() {
         SettingsViewModel.Factory(app.themePreferences, app.repository)
     }
 
+    private val selectedTabState = androidx.compose.runtime.mutableIntStateOf(0)
+
     private val timerActionReceiver = object : android.content.BroadcastReceiver() {
         override fun onReceive(context: android.content.Context?, intent: android.content.Intent?) {
             when (intent?.action) {
@@ -56,17 +58,33 @@ class MainActivity : ComponentActivity() {
             registerReceiver(timerActionReceiver, intentFilter)
         }
 
+        handleIntent(intent)
+
         setContent {
             val themeSettings by settingsViewModel.themeSettings.collectAsStateWithLifecycle()
+            val selectedTab by selectedTabState
 
             TrackGymTheme(
                 themeMode = themeSettings.themeMode
             ) {
                 MainScreen(
                     viewModel = viewModel,
-                    settingsViewModel = settingsViewModel
+                    settingsViewModel = settingsViewModel,
+                    initialTab = selectedTab
                 )
             }
+        }
+    }
+
+    override fun onNewIntent(intent: android.content.Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleIntent(intent)
+    }
+
+    private fun handleIntent(intent: android.content.Intent?) {
+        if (intent?.action == android.content.Intent.ACTION_APPLICATION_PREFERENCES) {
+            selectedTabState.intValue = com.kveld9.trackgym.ui.navigation.NavTab.SETTINGS.ordinal
         }
     }
 

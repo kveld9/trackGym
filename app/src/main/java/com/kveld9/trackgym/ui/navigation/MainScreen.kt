@@ -65,9 +65,17 @@ enum class NavTab(@get:StringRes val titleRes: Int, val icon: ImageVector) {
 fun MainScreen(
     viewModel: GymViewModel,
     settingsViewModel: SettingsViewModel,
+    initialTab: Int = 0,
     modifier: Modifier = Modifier
 ) {
-    var selectedTab by rememberSaveable { mutableIntStateOf(0) }
+    var selectedTab by rememberSaveable { mutableIntStateOf(initialTab) }
+
+    LaunchedEffect(initialTab) {
+        if (initialTab != selectedTab) {
+            selectedTab = initialTab
+        }
+    }
+
     val lastFinishedComparison by viewModel.lastFinishedComparison.collectAsStateWithLifecycle()
     val selectedDetailComparison by viewModel.selectedDetailComparison.collectAsStateWithLifecycle()
     val weightUnit by viewModel.weightUnit.collectAsStateWithLifecycle()

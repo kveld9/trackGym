@@ -48,6 +48,7 @@
     - Theme Mode: System Default, Light Mode, Dark Mode.
     - Pure AMOLED Black toggle (`#000000` surface and background for OLED battery savings).
     - Dynamic Color (Material You / Monet) support on Android 12+ (API 31+).
+    - Direct access from Android system app settings (`ACTION_APPLICATION_PREFERENCES`).
 - **Backup & Restore**:
   - Offline-first storage with Room Database (SQLite).
   - Storage Access Framework (SAF) JSON export/import with bounded stream parsing (10 MB limit).
