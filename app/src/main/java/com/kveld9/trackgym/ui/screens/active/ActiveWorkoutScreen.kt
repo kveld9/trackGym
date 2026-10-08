@@ -200,7 +200,6 @@ fun ActiveWorkoutScreen(
     val userBodyWeight by viewModel.userBodyWeight.collectAsStateWithLifecycle()
     val showInlinePlates by viewModel.showInlinePlates.collectAsStateWithLifecycle()
     val allRecords by viewModel.allRecords.collectAsStateWithLifecycle()
-    val completedWorkouts by viewModel.completedWorkouts.collectAsStateWithLifecycle()
     val gymProfiles by viewModel.gymProfiles.collectAsStateWithLifecycle()
     val activeGymProfile by viewModel.activeGymProfile.collectAsStateWithLifecycle()
 
@@ -1159,6 +1158,7 @@ fun ActiveWorkoutScreen(
     }
 
     exerciseForHistory?.let { exercise ->
+        val completedWorkouts by viewModel.completedWorkouts.collectAsStateWithLifecycle()
         ExerciseHistoryDialog(
             exercise = exercise,
             completedWorkouts = completedWorkouts,
