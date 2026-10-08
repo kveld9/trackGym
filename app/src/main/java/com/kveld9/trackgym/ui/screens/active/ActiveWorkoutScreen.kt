@@ -296,10 +296,12 @@ fun ActiveWorkoutScreen(
 
     if (activeWorkout == null) {
         val copySuffix = stringResource(R.string.routine_copy_suffix)
+        val defaultWorkoutTitle = stringResource(R.string.workout_default_title)
+        val deloadSuffix = stringResource(R.string.deload_routine_suffix)
         EmptyWorkoutDashboard(
             routines = routines,
             folders = folders,
-            onStartWorkout = { viewModel.startWorkout() },
+            onStartWorkout = { viewModel.startWorkout(defaultWorkoutTitle) },
             onStartRoutine = { routineId -> viewModel.startWorkoutFromRoutine(routineId) },
             onDeleteRoutine = { routineId -> viewModel.deleteRoutine(routineId) },
             onDuplicateRoutine = { routineId -> viewModel.duplicateRoutine(routineId, copySuffix) },
@@ -313,7 +315,7 @@ fun ActiveWorkoutScreen(
             onAdvanceCycleWeek = { routineId -> viewModel.advanceRoutineCycleWeek(routineId) },
             onPreviousCycleWeek = { routineId -> viewModel.previousRoutineCycleWeek(routineId) },
             onInstantiateProgram = { program -> viewModel.instantiateProgram(program) },
-            onGenerateDeloadRoutine = { routineId, loadPct, volPct -> viewModel.generateDeloadRoutine(routineId, loadPct, volPct) },
+            onGenerateDeloadRoutine = { routineId, loadPct, volPct -> viewModel.generateDeloadRoutine(routineId, loadPct, volPct, deloadSuffix) },
             modifier = modifier
         )
     } else {

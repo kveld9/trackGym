@@ -5,6 +5,8 @@ import android.net.Uri
 import android.os.Build
 import android.widget.Toast
 import com.kveld9.trackgym.data.ThemePreferences
+import com.kveld9.trackgym.domain.model.DistanceUnit
+import com.kveld9.trackgym.domain.model.WeightUnit
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
@@ -378,8 +380,8 @@ fun SettingsScreen(
                     }
 
                     val weightOptions = listOf(
-                        "KG" to stringResource(R.string.unit_kilograms),
-                        "LB" to stringResource(R.string.unit_pounds)
+                        WeightUnit.KG.name to stringResource(R.string.unit_kilograms),
+                        WeightUnit.LB.name to stringResource(R.string.unit_pounds)
                     )
 
                     SingleChoiceSegmentedButtonRow(
@@ -429,8 +431,8 @@ fun SettingsScreen(
                     }
 
                     val distanceOptions = listOf(
-                        "KM" to stringResource(R.string.unit_kilometers),
-                        "MI" to stringResource(R.string.unit_miles)
+                        DistanceUnit.KM.name to stringResource(R.string.unit_kilometers),
+                        DistanceUnit.MI.name to stringResource(R.string.unit_miles)
                     )
 
                     SingleChoiceSegmentedButtonRow(

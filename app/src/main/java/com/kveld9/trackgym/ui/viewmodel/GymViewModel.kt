@@ -336,7 +336,7 @@ class GymViewModel(
         timerJob = null
     }
 
-    fun startWorkout(title: String = "Entrenamiento") {
+    fun startWorkout(title: String = "Workout") {
         viewModelScope.launch {
             val workout = repository.startNewWorkout(title)
             setActiveWorkout(workout)
