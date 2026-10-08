@@ -17,6 +17,7 @@
   - Automatic warm-up set generation.
   - Optional keep-screen-on mode to keep the display awake during active training.
   - Configurable pre-set "Get Ready" countdown (3s, 5s, 10s, 15s) with audio warning beeps and haptic cues before timed, isometric, or heavy sets.
+  - Sticky auto-hiding top bar with dynamic enter-always scrolling to maximize screen real estate during active sets.
 - **Routines**:
   - Reusable workout routines organized in folders.
 - **Custom Exercise Creation**:

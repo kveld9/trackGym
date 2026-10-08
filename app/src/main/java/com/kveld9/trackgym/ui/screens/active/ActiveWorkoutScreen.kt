@@ -102,6 +102,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
@@ -335,11 +337,13 @@ fun ActiveWorkoutScreen(
             modifier = modifier
         )
     } else {
+        val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
         Scaffold(
             snackbarHost = { SnackbarHost(snackbarHostState) },
             topBar = {
                 ActiveWorkoutTopBar(
                     timerSeconds = timerSeconds,
+                    scrollBehavior = scrollBehavior,
                     onFinishClick = { showFinishDialog = true },
                     onCancelClick = { showDiscardDialog = true },
                     onSaveAsRoutineClick = {
@@ -364,7 +368,7 @@ fun ActiveWorkoutScreen(
                 }
             },
             containerColor = MaterialTheme.colorScheme.background,
-            modifier = modifier
+            modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
         ) { paddingValues ->
             Column(
                 modifier = Modifier
@@ -1984,6 +1988,7 @@ fun FloatingRestTimer(
 @Composable
 fun ActiveWorkoutTopBar(
     timerSeconds: Long,
+    scrollBehavior: TopAppBarScrollBehavior? = null,
     onFinishClick: () -> Unit,
     onCancelClick: () -> Unit,
     onSaveAsRoutineClick: () -> Unit
@@ -1994,6 +1999,7 @@ fun ActiveWorkoutTopBar(
     val timeFormatted = String.format("%02d:%02d", minutes, seconds)
 
     TopAppBar(
+        scrollBehavior = scrollBehavior,
         title = {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
