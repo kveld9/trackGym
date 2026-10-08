@@ -58,6 +58,9 @@ fun RecordsScreen(
 ) {
     val records by viewModel.allRecords.collectAsStateWithLifecycle()
     val exercises by viewModel.allExercises.collectAsStateWithLifecycle()
+    val userBodyWeight by viewModel.userBodyWeight.collectAsStateWithLifecycle()
+    val biologicalSex by viewModel.userBiologicalSex.collectAsStateWithLifecycle()
+    val userAge by viewModel.userAge.collectAsStateWithLifecycle()
 
     val exercisesMap = exercises.associateBy { it.id }
 
@@ -78,17 +81,35 @@ fun RecordsScreen(
         containerColor = MaterialTheme.colorScheme.background,
         modifier = modifier
     ) { paddingValues ->
-        if (records.isEmpty()) {
-            EmptyRecordsView(modifier = Modifier.padding(paddingValues))
-        } else {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-                    .padding(horizontal = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                item {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            item(key = "strength_standards_card") {
+                com.kveld9.trackgym.ui.components.StrengthStandardsCard(
+                    exercises = exercises,
+                    records = records,
+                    userBodyWeightKg = userBodyWeight,
+                    biologicalSex = biologicalSex,
+                    userAge = userAge,
+                    weightUnit = weightUnit,
+                    onUpdateProfile = { newSex, newAge ->
+                        viewModel.setUserBiologicalSex(newSex)
+                        viewModel.setUserAge(newAge)
+                    },
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+            }
+
+            if (records.isEmpty()) {
+                item(key = "empty_records_view") {
+                    EmptyRecordsView(modifier = Modifier.padding(vertical = 32.dp))
+                }
+            } else {
+                item(key = "records_history_header") {
                     Text(
                         text = stringResource(R.string.records_history_section, records.size),
                         color = MaterialTheme.colorScheme.tertiary,
@@ -107,10 +128,10 @@ fun RecordsScreen(
                         weightUnit = weightUnit
                     )
                 }
+            }
 
-                item {
-                    Spacer(modifier = Modifier.height(120.dp))
-                }
+            item(key = "bottom_spacer") {
+                Spacer(modifier = Modifier.height(120.dp))
             }
         }
     }

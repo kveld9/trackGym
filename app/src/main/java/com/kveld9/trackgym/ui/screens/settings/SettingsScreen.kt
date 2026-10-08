@@ -48,6 +48,8 @@ import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.StayCurrentPortrait
 import androidx.compose.material.icons.filled.Straighten
 import androidx.compose.material.icons.filled.Timer
+import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.MilitaryTech
 import androidx.compose.material3.AlertDialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.material3.Button
@@ -55,6 +57,8 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -513,6 +517,22 @@ fun SettingsScreen(
                     BodyWeightSettingRow(
                         bodyWeightKg = themeSettings.userBodyWeightKg,
                         onWeightChanged = { viewModel.setUserBodyWeight(it) }
+                    )
+
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
+
+                    // User Biological Sex Row
+                    BiologicalSexSettingRow(
+                        sex = themeSettings.userBiologicalSex,
+                        onSexChanged = { viewModel.setUserBiologicalSex(it) }
+                    )
+
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
+
+                    // User Age Row
+                    AgeSettingRow(
+                        age = themeSettings.userAge,
+                        onAgeChanged = { viewModel.setUserAge(it) }
                     )
                 }
             }
@@ -1425,6 +1445,147 @@ private fun BodyWeightInputDialog(
             Button(
                 onClick = {
                     val parsed = weightText.toDoubleOrNull() ?: initialWeight
+                    onConfirm(parsed)
+                }
+            ) {
+                Text(stringResource(android.R.string.ok))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.action_cancel))
+            }
+        }
+    )
+}
+
+@Composable
+private fun BiologicalSexSettingRow(
+    sex: String,
+    onSexChanged: (String) -> Unit
+) {
+    val currentSex = if (sex == "FEMALE") com.kveld9.trackgym.domain.model.BiologicalSex.FEMALE else com.kveld9.trackgym.domain.model.BiologicalSex.MALE
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Icon(
+            imageVector = Icons.Default.MilitaryTech,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = stringResource(R.string.settings_user_sex_title),
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Medium
+            )
+            Text(
+                text = stringResource(R.string.settings_user_sex_desc),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            com.kveld9.trackgym.domain.model.BiologicalSex.entries.forEach { s ->
+                FilterChip(
+                    selected = currentSex == s,
+                    onClick = { onSexChanged(s.name) },
+                    label = { Text(stringResource(s.displayNameRes)) },
+                    colors = FilterChipDefaults.filterChipColors(
+                        selectedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
+                        selectedLabelColor = MaterialTheme.colorScheme.primary
+                    )
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun AgeSettingRow(
+    age: Int,
+    onAgeChanged: (Int) -> Unit
+) {
+    var showDialog by remember { mutableStateOf(false) }
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { showDialog = true }
+    ) {
+        Icon(
+            imageVector = Icons.Default.CalendarMonth,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = stringResource(R.string.settings_user_age_title),
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Medium
+            )
+            Text(
+                text = stringResource(R.string.settings_user_age_desc),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+        Text(
+            text = stringResource(R.string.strength_user_age_years, age),
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary
+        )
+    }
+
+    if (showDialog) {
+        AgeInputDialog(
+            initialAge = age,
+            onDismiss = { showDialog = false },
+            onConfirm = {
+                onAgeChanged(it)
+                showDialog = false
+            }
+        )
+    }
+}
+
+@Composable
+private fun AgeInputDialog(
+    initialAge: Int,
+    onDismiss: () -> Unit,
+    onConfirm: (Int) -> Unit
+) {
+    var ageText by remember { mutableStateOf(initialAge.toString()) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.settings_user_age_title)) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(
+                    text = stringResource(R.string.settings_user_age_desc),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                OutlinedTextField(
+                    value = ageText,
+                    onValueChange = { ageText = it.filter { ch -> ch.isDigit() } },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    val parsed = ageText.toIntOrNull()?.coerceIn(12, 100) ?: initialAge
                     onConfirm(parsed)
                 }
             ) {

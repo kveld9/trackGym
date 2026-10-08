@@ -90,6 +90,20 @@ class GymViewModel(
     } ?: flowOf(75.0))
         .stateIn(viewModelScope, SharingStarted.Eagerly, 75.0)
 
+    val userBiologicalSex: StateFlow<com.kveld9.trackgym.domain.model.BiologicalSex> = (themePreferences?.themeSettings?.map {
+        try {
+            com.kveld9.trackgym.domain.model.BiologicalSex.valueOf(it.userBiologicalSex)
+        } catch (_: Exception) {
+            com.kveld9.trackgym.domain.model.BiologicalSex.MALE
+        }
+    } ?: flowOf(com.kveld9.trackgym.domain.model.BiologicalSex.MALE))
+        .stateIn(viewModelScope, SharingStarted.Eagerly, com.kveld9.trackgym.domain.model.BiologicalSex.MALE)
+
+    val userAge: StateFlow<Int> = (themePreferences?.themeSettings?.map {
+        it.userAge
+    } ?: flowOf(30))
+        .stateIn(viewModelScope, SharingStarted.Eagerly, 30)
+
     val routineUpdateMode: StateFlow<com.kveld9.trackgym.domain.model.RoutineUpdateMode> = (themePreferences?.themeSettings?.map {
         com.kveld9.trackgym.domain.model.RoutineUpdateMode.fromString(it.routineUpdateMode)
     } ?: flowOf(com.kveld9.trackgym.domain.model.RoutineUpdateMode.ASK))
@@ -155,6 +169,18 @@ class GymViewModel(
                 val newActive = updated.firstOrNull { it.isDefault } ?: updated.firstOrNull()
                 newActive?.let { themePreferences?.setActiveGymProfileId(it.id) }
             }
+        }
+    }
+
+    fun setUserBiologicalSex(sex: com.kveld9.trackgym.domain.model.BiologicalSex) {
+        viewModelScope.launch {
+            themePreferences?.setUserBiologicalSex(sex.name)
+        }
+    }
+
+    fun setUserAge(age: Int) {
+        viewModelScope.launch {
+            themePreferences?.setUserAge(age)
         }
     }
 

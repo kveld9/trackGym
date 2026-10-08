@@ -44,11 +44,12 @@
   - Configurable volume metrics: dumbbell volume doubling and optional warm-up set exclusion.
   - Workout export as a structured prompt for LLM analysis.
   - High-contrast OLED shareable workout cards (`WorkoutShareCard` & `WorkoutSharePreviewDialog`) with full metrics breakdown, PR highlights, and one-tap Gallery export or system share sheet.
-- **Automated Personal Record (PR) Detection**:
+- **Automated Personal Record (PR) Detection & Strength Standards**:
   - Real-time detection upon checking off each completed set.
   - Tracks milestones: **Max Weight**, **Reps Record at a given weight**, **Best Estimated 1RM**, and **Max Set Volume**.
   - Selectable 1RM formula: *Epley*, *Brzycki*, *Wathan*, *Lander*, *Lombardi*, *Mayhew*, or *O'Conner*.
   - Immediate visual badge/banner notification and dedicated PR showcase gallery.
+  - **Strength Level Benchmarks (`StrengthBenchmarkEngine`)**: Normative population standards for core compound lifts (*Bench Press, Squat, Deadlift, Overhead Press*) stratified by bodyweight ratio, biological sex, and age attenuation. Classifies strength into 5 tiers (*Beginner, Novice, Intermediate, Advanced, Elite*) with exact percentiles (*"Stronger than X% of lifters"*) and target weight to next rank.
 - **Plate Calculator & Equipment Profiles**:
   - Multiple equipment locations (Commercial Gym, Home Gym, Hotel Gym) with custom bar weight, plate inventory, and minimum micro-loading steps.
   - Quick-switch profile bar in plate calculator dialog and settings.

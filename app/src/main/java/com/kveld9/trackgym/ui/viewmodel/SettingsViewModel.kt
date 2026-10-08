@@ -181,6 +181,18 @@ class SettingsViewModel(
         }
     }
 
+    fun setUserBiologicalSex(sex: String) {
+        viewModelScope.launch {
+            themePreferences.setUserBiologicalSex(sex)
+        }
+    }
+
+    fun setUserAge(age: Int) {
+        viewModelScope.launch {
+            themePreferences.setUserAge(age)
+        }
+    }
+
     fun setRoutineUpdateMode(mode: String) {
         viewModelScope.launch {
             themePreferences.setRoutineUpdateMode(mode)

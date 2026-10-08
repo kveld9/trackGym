@@ -28,6 +28,8 @@ data class ThemeSettings(
     val timerSoundCountdown: Boolean = true,
     val soundFeedbackOnComplete: Boolean = true,
     val userBodyWeightKg: Double = 75.0,
+    val userBiologicalSex: String = "MALE", // "MALE", "FEMALE"
+    val userAge: Int = 30,
     val routineUpdateMode: String = "ASK", // "ALWAYS", "ASK", "NEVER"
     val showInlinePlates: Boolean = true,
     val keepScreenOn: Boolean = false,
@@ -63,6 +65,8 @@ class ThemePreferences(
         val TIMER_SOUND_COUNTDOWN_KEY = booleanPreferencesKey("timer_sound_countdown")
         val SOUND_FEEDBACK_ON_COMPLETE_KEY = booleanPreferencesKey("sound_feedback_on_complete")
         val USER_BODY_WEIGHT_KEY = doublePreferencesKey("user_body_weight")
+        val USER_BIOLOGICAL_SEX_KEY = stringPreferencesKey("user_biological_sex")
+        val USER_AGE_KEY = intPreferencesKey("user_age")
         val ROUTINE_UPDATE_MODE_KEY = stringPreferencesKey("routine_update_mode")
         val SHOW_INLINE_PLATES_KEY = booleanPreferencesKey("show_inline_plates")
         val KEEP_SCREEN_ON_KEY = booleanPreferencesKey("keep_screen_on")
@@ -94,6 +98,8 @@ class ThemePreferences(
                 timerSoundCountdown = preferences[TIMER_SOUND_COUNTDOWN_KEY] ?: true,
                 soundFeedbackOnComplete = preferences[SOUND_FEEDBACK_ON_COMPLETE_KEY] ?: true,
                 userBodyWeightKg = preferences[USER_BODY_WEIGHT_KEY] ?: 75.0,
+                userBiologicalSex = preferences[USER_BIOLOGICAL_SEX_KEY] ?: "MALE",
+                userAge = preferences[USER_AGE_KEY] ?: 30,
                 routineUpdateMode = preferences[ROUTINE_UPDATE_MODE_KEY] ?: "ASK",
                 showInlinePlates = preferences[SHOW_INLINE_PLATES_KEY] ?: true,
                 keepScreenOn = preferences[KEEP_SCREEN_ON_KEY] ?: false,
@@ -188,6 +194,18 @@ class ThemePreferences(
     suspend fun setUserBodyWeight(weightKg: Double) {
         dataStore.edit { preferences ->
             preferences[USER_BODY_WEIGHT_KEY] = weightKg
+        }
+    }
+
+    suspend fun setUserBiologicalSex(sex: String) {
+        dataStore.edit { preferences ->
+            preferences[USER_BIOLOGICAL_SEX_KEY] = sex
+        }
+    }
+
+    suspend fun setUserAge(age: Int) {
+        dataStore.edit { preferences ->
+            preferences[USER_AGE_KEY] = age
         }
     }
 

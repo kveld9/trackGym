@@ -828,4 +828,33 @@
     <string name="wheel_picker_apply">Apply</string>
     <string name="wheel_picker_apply_and_complete">Complete Set</string>
     <string name="wheel_picker_open">Dial Picker</string>
+
+    <!-- Strength Level Benchmarks (Item 71) -->
+    <string name="strength_benchmarks_title">Strength Standards</string>
+    <string name="strength_benchmarks_subtitle">Compare your 1RM against population standards by bodyweight</string>
+    <string name="strength_benchmarks_tab_title">Standards</string>
+    <string name="strength_records_tab_title">Records</string>
+    <string name="strength_sex_male">Male</string>
+    <string name="strength_sex_female">Female</string>
+    <string name="strength_level_beginner">Beginner</string>
+    <string name="strength_level_novice">Novice</string>
+    <string name="strength_level_intermediate">Intermediate</string>
+    <string name="strength_level_advanced">Advanced</string>
+    <string name="strength_level_elite">Elite</string>
+    <string name="core_lift_bench_press">Bench Press</string>
+    <string name="core_lift_squat">Squat</string>
+    <string name="core_lift_deadlift">Deadlift</string>
+    <string name="core_lift_overhead_press">Overhead Press</string>
+    <string name="strength_percentile_stronger_than">Stronger than %1$.1f%% of lifters</string>
+    <string name="strength_ratio_label">BW Ratio: %1$.2f×</string>
+    <string name="strength_next_level_target">Next level target: %1$s</string>
+    <string name="strength_no_data_logged">No 1RM record logged yet</string>
+    <string name="strength_profile_settings_title">User Profile for Standards</string>
+    <string name="strength_biological_sex_label">Biological Sex</string>
+    <string name="strength_user_age_label">Age</string>
+    <string name="strength_user_age_years">%1$d years</string>
+    <string name="settings_user_age_title">User Age</string>
+    <string name="settings_user_age_desc">Used to adjust normative strength standards for age</string>
+    <string name="settings_user_sex_title">Biological Sex</string>
+    <string name="settings_user_sex_desc">Baseline used for strength standard tables</string>
 </resources>

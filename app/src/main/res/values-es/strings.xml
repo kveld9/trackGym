@@ -828,4 +828,33 @@
     <string name="wheel_picker_apply">Aplicar</string>
     <string name="wheel_picker_apply_and_complete">Completar Serie</string>
     <string name="wheel_picker_open">Ruleta Táctil</string>
+
+    <!-- Strength Level Benchmarks (Item 71) -->
+    <string name="strength_benchmarks_title">Estándares de Fuerza</string>
+    <string name="strength_benchmarks_subtitle">Compara tu 1RM contra estándares poblacionales según peso corporal</string>
+    <string name="strength_benchmarks_tab_title">Estándares</string>
+    <string name="strength_records_tab_title">Récords</string>
+    <string name="strength_sex_male">Hombre</string>
+    <string name="strength_sex_female">Mujer</string>
+    <string name="strength_level_beginner">Principiante</string>
+    <string name="strength_level_novice">Novato</string>
+    <string name="strength_level_intermediate">Intermedio</string>
+    <string name="strength_level_advanced">Avanzado</string>
+    <string name="strength_level_elite">Élite</string>
+    <string name="core_lift_bench_press">Press de Banca</string>
+    <string name="core_lift_squat">Sentadilla</string>
+    <string name="core_lift_deadlift">Peso Muerto</string>
+    <string name="core_lift_overhead_press">Press Militar</string>
+    <string name="strength_percentile_stronger_than">Más fuerte que el %1$.1f%% de los levantadores</string>
+    <string name="strength_ratio_label">Ratio PC: %1$.2f×</string>
+    <string name="strength_next_level_target">Objetivo sig. nivel: %1$s</string>
+    <string name="strength_no_data_logged">Sin récord de 1RM registrado</string>
+    <string name="strength_profile_settings_title">Perfil para Estándares</string>
+    <string name="strength_biological_sex_label">Sexo Biológico</string>
+    <string name="strength_user_age_label">Edad</string>
+    <string name="strength_user_age_years">%1$d años</string>
+    <string name="settings_user_age_title">Edad del Usuario</string>
+    <string name="settings_user_age_desc">Utilizado para ajustar los estándares de fuerza según la edad</string>
+    <string name="settings_user_sex_title">Sexo Biológico</string>
+    <string name="settings_user_sex_desc">Base para las tablas de estándares poblacionales</string>
 </resources>
