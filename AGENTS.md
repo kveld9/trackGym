@@ -39,6 +39,18 @@ Agents send the full Gradle log to a git-ignored file under `build/` and read on
 
 The verdict is the exit code plus the `BUILD` line, never the filtered text alone. On failure, grep or read the saved log for context instead of re-running the gate. The same pattern applies to `assembleDebug`.
 
+### On-device verification (ADB)
+
+Only when the user explicitly requests on-device verification for the current task, the agent may verify the freshly built debug build on an attached device. Scope is strictly limited to the debug package `com.kveld9.trackgym.debug`:
+
+- `adb devices` discovery (honor `ANDROID_SERIAL` when set; with several devices, target one explicitly via `-s`);
+- `adb install -r` of the freshly built debug APK (`app/build/outputs/apk/debug/`);
+- launching the debug app (`adb shell monkey -p com.kveld9.trackgym.debug -c android.intent.category.LAUNCHER 1` or `am start`);
+- `logcat` capture scoped to the debug process (`--pid=$(adb shell pidof com.kveld9.trackgym.debug)`);
+- `dumpsys package com.kveld9.trackgym.debug` reads and screenshots of the debug app.
+
+Guardrails: never run `adb uninstall`, `pm clear`, or any action that wipes app data; never touch the release package `com.kveld9.trackgym` (holds real user workout data) or any other package; never perform a factory reset. When installation is blocked by a signature conflict (`INSTALL_FAILED_UPDATE_INCOMPATIBLE`), stop and ask the user. Never commit logcats, dumpsys output, or screenshots. Always report device model, actions taken, and the launch verdict (alive PID vs `FATAL EXCEPTION`) as evidence.
+
 ---
 
 ## 3. LANGUAGE AND GOVERNANCE PROTOCOLS
