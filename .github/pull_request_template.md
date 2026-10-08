@@ -16,7 +16,7 @@
 - [ ] `./gradlew detekt` passes without new baseline entries
 - [ ] `./gradlew assembleDebug` succeeds
 - [ ] New or changed logic in `domain/` or `data/` has unit tests
-- [ ] UI changes follow [`DESIGN.md`](../DESIGN.md) (48 dp touch targets, no emojis)
+- [ ] UI changes follow [`DESIGN.md`](https://github.com/kveld9/trackGym/blob/main/DESIGN.md) (48 dp touch targets, no emojis)
 - [ ] Commits follow [Conventional Commits](https://www.conventionalcommits.org/)
 
 ## Screenshots
