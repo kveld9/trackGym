@@ -123,3 +123,4 @@ To actively combat planned obsolescence and ensure universal accessibility for u
 ## 8. AGENT EXECUTION GUARDRAILS
 
 - **Anti-Loop Prohibition**: Outside `/audit-stack`, if a proposed fix fails two consecutive times, halt immediately, re-evaluate the root cause, or request a human decision. Inside `/audit-stack`, its autonomous remediation loop and circuit breaker (maximum 5 cycles per issue) apply instead.
+- **Pre-Push Audit Gate**: No push to `origin` without a green `/audit-stack` over the pushed range (`origin/main..HEAD`; a triaged pass counts as green). Pushing `main` publishes a GitHub Release (Section 4), so the range is audited once before it ships. Per-commit auto-audit is prohibited: its multi-stage token cost exceeds its marginal value over the mandatory per-change gates (Sections 2 and 6), and auto-remediation commits inside the loop risk audit-commit chains.
