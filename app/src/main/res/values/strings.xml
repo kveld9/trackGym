@@ -331,6 +331,17 @@
     <string name="consistency_legend_more">More</string>
     <string name="consistency_no_streak">No active streak</string>
 
+    <!-- History View & Selectable Dates Calendar -->
+    <string name="history_view_list">List</string>
+    <string name="history_view_calendar">Calendar</string>
+    <string name="action_switch_to_list">Switch to list view</string>
+    <string name="action_switch_to_calendar">Switch to calendar view</string>
+    <string name="calendar_select_date_hint">Select any active day to view workouts</string>
+    <string name="calendar_workouts_on_date">Workouts on %1$s</string>
+    <string name="calendar_no_workouts_in_month">No completed workouts in this month</string>
+    <string name="calendar_prev_month">Previous month</string>
+    <string name="calendar_next_month">Next month</string>
+
     <!-- Routines & Templates -->
     <string name="routines_title">Routines &amp; Templates</string>
     <string name="routines_subtitle">Start workouts from reusable routine templates</string>

@@ -331,6 +331,17 @@
     <string name="consistency_legend_more">Más</string>
     <string name="consistency_no_streak">Sin racha activa</string>
 
+    <!-- History View & Selectable Dates Calendar -->
+    <string name="history_view_list">Lista</string>
+    <string name="history_view_calendar">Calendario</string>
+    <string name="action_switch_to_list">Cambiar a vista de lista</string>
+    <string name="action_switch_to_calendar">Cambiar a vista de calendario</string>
+    <string name="calendar_select_date_hint">Toca cualquier día activo para ver los entrenamientos</string>
+    <string name="calendar_workouts_on_date">Entrenamientos del %1$s</string>
+    <string name="calendar_no_workouts_in_month">No hay entrenamientos completados en este mes</string>
+    <string name="calendar_prev_month">Mes anterior</string>
+    <string name="calendar_next_month">Mes siguiente</string>
+
     <!-- Routines & Templates -->
     <string name="routines_title">Rutinas y Plantillas</string>
     <string name="routines_subtitle">Inicia sesiones desde plantillas personalizadas</string>

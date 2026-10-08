@@ -32,6 +32,7 @@
   - Automatic calculation of deltas for weight, repetitions, and total training volume.
 - **Training Analysis**:
   - Progressive overload recommendations based on the previous session.
+  - Interactive monthly calendar navigation with selectable workout dates and direct day filtering.
   - Real-time overtraining and junk volume warnings.
   - Weekly muscle split heatmap and training consistency tracking.
   - Configurable volume metrics: dumbbell volume doubling and optional warm-up set exclusion.
