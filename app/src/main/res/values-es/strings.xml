@@ -870,4 +870,31 @@
     <string name="setting_auto_backup_rotation_count">%1$d archivos</string>
     <string name="setting_auto_backup_success">Respaldo automático silencioso guardado: %1$s</string>
     <string name="setting_auto_backup_failed">Fallo en el respaldo automático: %1$s</string>
+
+    <!-- Body Measurements & Telemetry (Items 59 & 60) -->
+    <string name="body_telemetry_title">Medidas Corporales</string>
+    <string name="body_telemetry_subtitle">Seguimiento de peso, grasa estimada y circunferencias corporales</string>
+    <string name="body_meas_weight">Peso Corporal</string>
+    <string name="body_meas_body_fat">Grasa Corporal</string>
+    <string name="body_meas_neck">Cuello</string>
+    <string name="body_meas_shoulders">Hombros</string>
+    <string name="body_meas_chest">Pecho</string>
+    <string name="body_meas_left_bicep">Bíceps Izquierdo</string>
+    <string name="body_meas_right_bicep">Bíceps Derecho</string>
+    <string name="body_meas_left_forearm">Antebrazo Izquierdo</string>
+    <string name="body_meas_right_forearm">Antebrazo Derecho</string>
+    <string name="body_meas_waist">Cintura</string>
+    <string name="body_meas_hips">Cadera</string>
+    <string name="body_meas_left_thigh">Muslo Izquierdo</string>
+    <string name="body_meas_right_thigh">Muslo Derecho</string>
+    <string name="body_meas_left_calf">Pantorrilla Izquierda</string>
+    <string name="body_meas_right_calf">Pantorrilla Derecha</string>
+    <string name="body_meas_log_entry">Registrar Medida</string>
+    <string name="body_meas_value_label">Valor</string>
+    <string name="body_meas_trend_title">Tendencia &amp; Media Móvil</string>
+    <string name="body_meas_no_data">Sin registros para esta métrica aún</string>
+    <string name="body_meas_latest">Último: %1$.1f %2$s</string>
+    <string name="body_meas_net_delta">Δ Neto: %1$+.1f %2$s (%3$+.1f%%)</string>
+    <string name="body_meas_saved">Medida guardada</string>
+    <string name="body_meas_deleted">Medida eliminada</string>
 </resources>

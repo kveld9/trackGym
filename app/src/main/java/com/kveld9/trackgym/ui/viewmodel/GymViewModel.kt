@@ -241,6 +241,30 @@ class GymViewModel(
     val folders: StateFlow<List<RoutineFolder>> = repository.getAllFolders()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
+    val allBodyMeasurements: StateFlow<List<com.kveld9.trackgym.domain.model.BodyMeasurement>> = repository.getAllBodyMeasurements()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    fun logBodyMeasurement(
+        type: com.kveld9.trackgym.domain.model.BodyMeasurementType,
+        value: Double,
+        measuredAt: Long = System.currentTimeMillis(),
+        notes: String = ""
+    ) {
+        viewModelScope.launch {
+            repository.logBodyMeasurement(type, value, measuredAt, notes)
+            // If bodyweight was updated, synchronize with userBodyWeightKg setting
+            if (type == com.kveld9.trackgym.domain.model.BodyMeasurementType.WEIGHT && value > 0.0) {
+                themePreferences?.setUserBodyWeight(value)
+            }
+        }
+    }
+
+    fun deleteBodyMeasurement(id: Long) {
+        viewModelScope.launch {
+            repository.deleteBodyMeasurement(id)
+        }
+    }
+
     private val _rawExercises = repository.getAllExercises()
     val allExercises: StateFlow<List<Exercise>> = _rawExercises
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())

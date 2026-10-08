@@ -54,6 +54,7 @@ class GymRepository(private val database: GymDatabase) {
     private val prDao = database.personalRecordDao()
     private val routineDao = database.routineDao()
     private val customCategoryDao = database.customCategoryDao()
+    private val bodyMeasurementDao = database.bodyMeasurementDao()
 
     suspend fun ensureDefaultExercisesSeeded() = withContext(Dispatchers.IO) {
         if (exerciseDao.countExercises() == 0) {
@@ -1257,5 +1258,41 @@ class GymRepository(private val database: GymDatabase) {
 
     suspend fun deleteRoutine(routineId: Long) = withContext(Dispatchers.IO) {
         routineDao.deleteRoutine(routineId)
+    }
+
+    // BODY MEASUREMENTS (Items 59 & 60)
+    fun getAllBodyMeasurements(): Flow<List<com.kveld9.trackgym.domain.model.BodyMeasurement>> {
+        return bodyMeasurementDao.getAllMeasurements().map { list ->
+            list.map { it.toDomain() }
+        }.flowOn(Dispatchers.IO)
+    }
+
+    fun getMeasurementsByTypeAsc(type: com.kveld9.trackgym.domain.model.BodyMeasurementType): Flow<List<com.kveld9.trackgym.domain.model.BodyMeasurement>> {
+        return bodyMeasurementDao.getMeasurementsByTypeAsc(type.name).map { list ->
+            list.map { it.toDomain() }
+        }.flowOn(Dispatchers.IO)
+    }
+
+    suspend fun getLatestMeasurementByType(type: com.kveld9.trackgym.domain.model.BodyMeasurementType): com.kveld9.trackgym.domain.model.BodyMeasurement? = withContext(Dispatchers.IO) {
+        bodyMeasurementDao.getLatestMeasurementByType(type.name)?.toDomain()
+    }
+
+    suspend fun logBodyMeasurement(
+        type: com.kveld9.trackgym.domain.model.BodyMeasurementType,
+        value: Double,
+        measuredAt: Long = System.currentTimeMillis(),
+        notes: String = ""
+    ): Long = withContext(Dispatchers.IO) {
+        val entity = com.kveld9.trackgym.data.local.entity.BodyMeasurementEntity(
+            type = type.name,
+            value = value,
+            measuredAt = measuredAt,
+            notes = notes
+        )
+        bodyMeasurementDao.insertMeasurement(entity)
+    }
+
+    suspend fun deleteBodyMeasurement(id: Long) = withContext(Dispatchers.IO) {
+        bodyMeasurementDao.deleteMeasurement(id)
     }
 }

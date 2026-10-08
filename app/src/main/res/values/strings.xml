@@ -870,4 +870,31 @@
     <string name="setting_auto_backup_rotation_count">%1$d files</string>
     <string name="setting_auto_backup_success">Silent auto-backup saved: %1$s</string>
     <string name="setting_auto_backup_failed">Auto-backup failed: %1$s</string>
+
+    <!-- Body Measurements & Telemetry (Items 59 & 60) -->
+    <string name="body_telemetry_title">Body Telemetry</string>
+    <string name="body_telemetry_subtitle">Track bodyweight, fat percentage, and anthropometric circumferences</string>
+    <string name="body_meas_weight">Body Weight</string>
+    <string name="body_meas_body_fat">Body Fat</string>
+    <string name="body_meas_neck">Neck</string>
+    <string name="body_meas_shoulders">Shoulders</string>
+    <string name="body_meas_chest">Chest</string>
+    <string name="body_meas_left_bicep">Left Bicep</string>
+    <string name="body_meas_right_bicep">Right Bicep</string>
+    <string name="body_meas_left_forearm">Left Forearm</string>
+    <string name="body_meas_right_forearm">Right Forearm</string>
+    <string name="body_meas_waist">Waist</string>
+    <string name="body_meas_hips">Hips</string>
+    <string name="body_meas_left_thigh">Left Thigh</string>
+    <string name="body_meas_right_thigh">Right Thigh</string>
+    <string name="body_meas_left_calf">Left Calf</string>
+    <string name="body_meas_right_calf">Right Calf</string>
+    <string name="body_meas_log_entry">Log Measurement</string>
+    <string name="body_meas_value_label">Value</string>
+    <string name="body_meas_trend_title">Trend &amp; Moving Average</string>
+    <string name="body_meas_no_data">No measurements logged for this metric yet</string>
+    <string name="body_meas_latest">Latest: %1$.1f %2$s</string>
+    <string name="body_meas_net_delta">Net Δ: %1$+.1f %2$s (%3$+.1f%%)</string>
+    <string name="body_meas_saved">Measurement saved</string>
+    <string name="body_meas_deleted">Measurement deleted</string>
 </resources>

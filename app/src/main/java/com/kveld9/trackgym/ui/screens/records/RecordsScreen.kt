@@ -61,6 +61,7 @@ fun RecordsScreen(
     val userBodyWeight by viewModel.userBodyWeight.collectAsStateWithLifecycle()
     val biologicalSex by viewModel.userBiologicalSex.collectAsStateWithLifecycle()
     val userAge by viewModel.userAge.collectAsStateWithLifecycle()
+    val bodyMeasurements by viewModel.allBodyMeasurements.collectAsStateWithLifecycle()
 
     val exercisesMap = exercises.associateBy { it.id }
 
@@ -88,6 +89,19 @@ fun RecordsScreen(
                 .padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
+            item(key = "body_telemetry_card") {
+                com.kveld9.trackgym.ui.components.BodyTelemetryCard(
+                    measurements = bodyMeasurements,
+                    onLogMeasurement = { type, value, notes ->
+                        viewModel.logBodyMeasurement(type, value, notes = notes)
+                    },
+                    onDeleteMeasurement = { id ->
+                        viewModel.deleteBodyMeasurement(id)
+                    },
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+            }
+
             item(key = "strength_standards_card") {
                 com.kveld9.trackgym.ui.components.StrengthStandardsCard(
                     exercises = exercises,

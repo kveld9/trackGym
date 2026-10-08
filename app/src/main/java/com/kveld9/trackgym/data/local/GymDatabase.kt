@@ -4,11 +4,13 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.kveld9.trackgym.data.local.dao.BodyMeasurementDao
 import com.kveld9.trackgym.data.local.dao.CustomExerciseCategoryDao
 import com.kveld9.trackgym.data.local.dao.ExerciseDao
 import com.kveld9.trackgym.data.local.dao.PersonalRecordDao
 import com.kveld9.trackgym.data.local.dao.RoutineDao
 import com.kveld9.trackgym.data.local.dao.WorkoutDao
+import com.kveld9.trackgym.data.local.entity.BodyMeasurementEntity
 import com.kveld9.trackgym.data.local.entity.CustomExerciseCategoryEntity
 import com.kveld9.trackgym.data.local.entity.ExerciseEntity
 import com.kveld9.trackgym.data.local.entity.PersonalRecordEntity
@@ -29,9 +31,10 @@ import com.kveld9.trackgym.data.local.entity.WorkoutSetEntity
         RoutineFolderEntity::class,
         RoutineEntity::class,
         RoutineExerciseEntity::class,
-        CustomExerciseCategoryEntity::class
+        CustomExerciseCategoryEntity::class,
+        BodyMeasurementEntity::class
     ],
-    version = 16,
+    version = 17,
     exportSchema = false
 )
 abstract class GymDatabase : RoomDatabase() {
@@ -41,6 +44,7 @@ abstract class GymDatabase : RoomDatabase() {
     abstract fun personalRecordDao(): PersonalRecordDao
     abstract fun routineDao(): RoutineDao
     abstract fun customCategoryDao(): CustomExerciseCategoryDao
+    abstract fun bodyMeasurementDao(): BodyMeasurementDao
 
     companion object {
         @Volatile
@@ -160,6 +164,24 @@ abstract class GymDatabase : RoomDatabase() {
             }
         }
 
+        private val MIGRATION_16_17 = object : androidx.room.migration.Migration(16, 17) {
+            override fun migrate(db: androidx.sqlite.db.SupportSQLiteDatabase) {
+                db.execSQL(
+                    """
+                    CREATE TABLE IF NOT EXISTS body_measurements (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        type TEXT NOT NULL,
+                        value REAL NOT NULL,
+                        measuredAt INTEGER NOT NULL,
+                        notes TEXT NOT NULL DEFAULT ''
+                    )
+                    """.trimIndent()
+                )
+                db.execSQL("CREATE INDEX IF NOT EXISTS index_body_measurements_type ON body_measurements(type)")
+                db.execSQL("CREATE INDEX IF NOT EXISTS index_body_measurements_measuredAt ON body_measurements(measuredAt)")
+            }
+        }
+
         fun getInstance(context: Context): GymDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
@@ -167,7 +189,7 @@ abstract class GymDatabase : RoomDatabase() {
                     GymDatabase::class.java,
                     "trackgym_database.db"
                 )
-                    .addMigrations(MIGRATION_12_13, MIGRATION_13_14, MIGRATION_14_15, MIGRATION_15_16)
+                    .addMigrations(MIGRATION_12_13, MIGRATION_13_14, MIGRATION_14_15, MIGRATION_15_16, MIGRATION_16_17)
                     .fallbackToDestructiveMigration(dropAllTables = true)
                     .build()
                 INSTANCE = instance
