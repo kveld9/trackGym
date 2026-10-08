@@ -192,7 +192,7 @@ fun WorkoutComparisonScreen(
                     )
                 }
 
-                items(comparison.totalRecordsUnlocked) { pr ->
+                items(comparison.totalRecordsUnlocked, key = { it.id }) { pr ->
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(12.dp),
@@ -241,7 +241,7 @@ fun WorkoutComparisonScreen(
                 )
             }
 
-            items(comparison.exerciseComparisons) { exComp ->
+            items(comparison.exerciseComparisons, key = { it.exercise.id }) { exComp ->
                 ExerciseComparisonCard(exerciseComparison = exComp, weightUnit = weightUnit)
             }
 
