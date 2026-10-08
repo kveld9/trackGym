@@ -350,6 +350,14 @@
     <string name="distribution_top_exercises">Ejercicios principales</string>
     <string name="distribution_muscle_groups">Grupos musculares</string>
 
+    <!-- Hypertrophy Volume Landmarks -->
+    <string name="hypertrophy_title">Series semanales vs Umbral de hipertrofia</string>
+    <string name="hypertrophy_subtitle">Objetivo: 10–20 series directas/sem por grupo muscular</string>
+    <string name="hypertrophy_status_below">Sub-óptimo (&lt;10 series)</string>
+    <string name="hypertrophy_status_optimal">Óptimo (10–20 series)</string>
+    <string name="hypertrophy_status_excessive">Sobrecarga (&gt;20 series)</string>
+    <string name="hypertrophy_weekly_sets">%1$d / %2$d series</string>
+
     <!-- History View & Selectable Dates Calendar -->
     <string name="history_view_list">Lista</string>
     <string name="history_view_calendar">Calendario</string>

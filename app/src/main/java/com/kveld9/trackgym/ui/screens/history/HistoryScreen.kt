@@ -75,6 +75,7 @@ import com.kveld9.trackgym.domain.model.WeightUnit
 import com.kveld9.trackgym.domain.model.Workout
 import com.kveld9.trackgym.ui.components.MuscleHeatmapCard
 import com.kveld9.trackgym.ui.components.TimeBucketedDistributionCard
+import com.kveld9.trackgym.ui.components.HypertrophyThresholdCard
 import com.kveld9.trackgym.ui.util.LocalKeepEnglishExerciseNames
 import com.kveld9.trackgym.ui.util.displayName
 import com.kveld9.trackgym.ui.viewmodel.GymViewModel
@@ -295,6 +296,13 @@ fun HistoryScreen(
                             TimeBucketedDistributionCard(
                                 workouts = completedWorkouts,
                                 weightUnit = weightUnit
+                            )
+                        }
+
+                        // Hypertrophy Thresholds Card
+                        item {
+                            HypertrophyThresholdCard(
+                                workouts = completedWorkouts
                             )
                         }
 

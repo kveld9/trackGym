@@ -39,6 +39,7 @@
   - Real-time overtraining and junk volume warnings.
   - Weekly muscle split heatmap and continuous week streak engine (`WeekStreakEngine`) tracking active and all-time best consecutive training weeks.
   - Time-bucketed muscle and exercise stimulus distribution (`TimeBucketedDistributionEngine`) comparing sets, tonnage, and reps across overlapping windows (*Last Week, Last Month, Last Year, All Time*).
+  - Direct weekly muscle set volume versus hypertrophy landmarks (`HypertrophyVolumeEngine`) comparing direct sets against evidence-based ranges (10–20 weekly sets).
   - Configurable volume metrics: dumbbell volume doubling and optional warm-up set exclusion.
   - Workout export as a structured prompt for LLM analysis.
 - **Automated Personal Record (PR) Detection**:

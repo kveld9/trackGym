@@ -350,6 +350,14 @@
     <string name="distribution_top_exercises">Top Exercises</string>
     <string name="distribution_muscle_groups">Muscle Groups</string>
 
+    <!-- Hypertrophy Volume Landmarks -->
+    <string name="hypertrophy_title">Weekly Volume vs Hypertrophy Landmarks</string>
+    <string name="hypertrophy_subtitle">Target: 10–20 direct sets/week per muscle group</string>
+    <string name="hypertrophy_status_below">Sub-optimal (&lt;10 sets)</string>
+    <string name="hypertrophy_status_optimal">Optimal (10–20 sets)</string>
+    <string name="hypertrophy_status_excessive">Overreaching (&gt;20 sets)</string>
+    <string name="hypertrophy_weekly_sets">%1$d / %2$d sets</string>
+
     <!-- History View & Selectable Dates Calendar -->
     <string name="history_view_list">List</string>
     <string name="history_view_calendar">Calendar</string>
