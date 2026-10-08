@@ -200,7 +200,8 @@ fun ProgressPhotosCard(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     IconButton(
                         onClick = {
-                            val tempFile = File(context.cacheDir, "temp_camera_${System.currentTimeMillis()}.jpg")
+                            val tempDir = File(context.cacheDir, "shared_images").apply { mkdirs() }
+                            val tempFile = File(tempDir, "temp_camera_${System.currentTimeMillis()}.jpg")
                             tempCameraFile = tempFile
                             val uri = FileProvider.getUriForFile(
                                 context,
