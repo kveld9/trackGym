@@ -358,6 +358,12 @@
     <string name="hypertrophy_status_excessive">Overreaching (&gt;20 sets)</string>
     <string name="hypertrophy_weekly_sets">%1$d / %2$d sets</string>
 
+    <!-- 1RM Progression Curve -->
+    <string name="one_rm_progression_title">Estimated 1RM Progression</string>
+    <string name="one_rm_progression_no_data">Log multiple sessions to view 1RM evolution</string>
+    <string name="one_rm_progression_gain">Growth: +%1$s (%2$s)</string>
+    <string name="one_rm_progression_drop">Change: %1$s (%2$s)</string>
+
     <!-- History View & Selectable Dates Calendar -->
     <string name="history_view_list">List</string>
     <string name="history_view_calendar">Calendar</string>

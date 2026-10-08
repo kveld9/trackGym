@@ -358,6 +358,12 @@
     <string name="hypertrophy_status_excessive">Sobrecarga (&gt;20 series)</string>
     <string name="hypertrophy_weekly_sets">%1$d / %2$d series</string>
 
+    <!-- 1RM Progression Curve -->
+    <string name="one_rm_progression_title">Curva de progresión de 1RM</string>
+    <string name="one_rm_progression_no_data">Registra varias sesiones para ver la evolución del 1RM</string>
+    <string name="one_rm_progression_gain">Progreso: +%1$s (%2$s)</string>
+    <string name="one_rm_progression_drop">Variación: %1$s (%2$s)</string>
+
     <!-- History View & Selectable Dates Calendar -->
     <string name="history_view_list">Lista</string>
     <string name="history_view_calendar">Calendario</string>

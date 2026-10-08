@@ -128,6 +128,12 @@ fun ExerciseHistoryDialog(
                         weightUnit = weightUnit
                     )
 
+                    // 1RM Historical Progression Curve
+                    OneRepMaxProgressionCard(
+                        history = history,
+                        weightUnit = weightUnit
+                    )
+
                     HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
 
                     Text(
