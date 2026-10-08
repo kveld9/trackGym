@@ -857,4 +857,17 @@
     <string name="settings_user_age_desc">Used to adjust normative strength standards for age</string>
     <string name="settings_user_sex_title">Biological Sex</string>
     <string name="settings_user_sex_desc">Baseline used for strength standard tables</string>
+
+    <!-- Auto-Backup via SAF (Item 108) -->
+    <string name="setting_auto_backup_title">Silent Auto-Backup (SAF)</string>
+    <string name="setting_auto_backup_desc">Automatically export a silent JSON backup to a local folder when completing workouts</string>
+    <string name="setting_auto_backup_folder_title">Auto-Backup Folder</string>
+    <string name="setting_auto_backup_folder_none">No folder selected (Disabled)</string>
+    <string name="setting_auto_backup_select_folder">Select Local Folder</string>
+    <string name="setting_auto_backup_disable">Disable Auto-Backup</string>
+    <string name="setting_auto_backup_rotation_title">Max Backups to Retain</string>
+    <string name="setting_auto_backup_rotation_desc">Oldest automatic backups will be automatically pruned</string>
+    <string name="setting_auto_backup_rotation_count">%1$d files</string>
+    <string name="setting_auto_backup_success">Silent auto-backup saved: %1$s</string>
+    <string name="setting_auto_backup_failed">Auto-backup failed: %1$s</string>
 </resources>

@@ -36,7 +36,9 @@ data class ThemeSettings(
     val dynamicColor: Boolean = false,
     val getReadySeconds: Int = 0,
     val activeGymProfileId: String = "commercial_gym",
-    val gymProfilesJson: String = ""
+    val gymProfilesJson: String = "",
+    val autoBackupUri: String? = null,
+    val maxAutoBackups: Int = 10
 )
 
 class ThemePreferences(
@@ -74,6 +76,8 @@ class ThemePreferences(
         val GET_READY_SECONDS_KEY = intPreferencesKey("get_ready_seconds")
         val ACTIVE_GYM_PROFILE_ID_KEY = stringPreferencesKey("active_gym_profile_id")
         val GYM_PROFILES_KEY = stringPreferencesKey("gym_equipment_profiles")
+        val AUTO_BACKUP_URI_KEY = stringPreferencesKey("auto_backup_uri")
+        val MAX_AUTO_BACKUPS_KEY = intPreferencesKey("max_auto_backups")
 
         private val LEGACY_AMOLED_KEY = booleanPreferencesKey("amoled_black")
     }
@@ -106,7 +110,9 @@ class ThemePreferences(
                 dynamicColor = preferences[DYNAMIC_COLOR_KEY] ?: false,
                 getReadySeconds = preferences[GET_READY_SECONDS_KEY] ?: 0,
                 activeGymProfileId = preferences[ACTIVE_GYM_PROFILE_ID_KEY] ?: "commercial_gym",
-                gymProfilesJson = preferences[GYM_PROFILES_KEY] ?: ""
+                gymProfilesJson = preferences[GYM_PROFILES_KEY] ?: "",
+                autoBackupUri = preferences[AUTO_BACKUP_URI_KEY],
+                maxAutoBackups = preferences[MAX_AUTO_BACKUPS_KEY] ?: 10
             )
         }
 
@@ -248,6 +254,22 @@ class ThemePreferences(
     suspend fun setGymProfilesJson(json: String) {
         dataStore.edit { preferences ->
             preferences[GYM_PROFILES_KEY] = json
+        }
+    }
+
+    suspend fun setAutoBackupUri(uriString: String?) {
+        dataStore.edit { preferences ->
+            if (uriString != null) {
+                preferences[AUTO_BACKUP_URI_KEY] = uriString
+            } else {
+                preferences.remove(AUTO_BACKUP_URI_KEY)
+            }
+        }
+    }
+
+    suspend fun setMaxAutoBackups(max: Int) {
+        dataStore.edit { preferences ->
+            preferences[MAX_AUTO_BACKUPS_KEY] = max
         }
     }
 }

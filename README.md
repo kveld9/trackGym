@@ -67,6 +67,7 @@
 - **Backup & Restore**:
   - Offline-first storage with Room Database (SQLite).
   - Storage Access Framework (SAF) JSON export/import with bounded stream parsing (10 MB limit).
+  - **Silent Auto-Backup via SAF (`AutoBackupEngine`)**: Unattended local JSON backups saved automatically to a user-designated folder upon completing every workout, with automatic FIFO rotation of the oldest backup files.
   - Duplicate conflict resolution policy (*Skip*, *Overwrite*, or *Duplicate*).
   - CSV workout history export and import.
 - **Localization (i18n)**:

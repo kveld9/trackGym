@@ -47,7 +47,8 @@ import kotlinx.coroutines.launch
 
 class GymViewModel(
     private val repository: GymRepository,
-    private val themePreferences: ThemePreferences? = null
+    private val themePreferences: ThemePreferences? = null,
+    private val autoBackupEngine: com.kveld9.trackgym.data.backup.AutoBackupEngine? = null
 ) : ViewModel() {
 
     val weightUnit: StateFlow<WeightUnit> = (themePreferences?.themeSettings?.map {
@@ -993,6 +994,13 @@ class GymViewModel(
                 if (comparison != null) {
                     _lastFinishedComparison.value = comparison
                 }
+
+                // Silent Auto-Backup via SAF (Item 108)
+                val backupUri = themePreferences?.themeSettings?.firstOrNull()?.autoBackupUri
+                val maxBackups = themePreferences?.themeSettings?.firstOrNull()?.maxAutoBackups ?: 10
+                if (!backupUri.isNullOrBlank() && autoBackupEngine != null) {
+                    autoBackupEngine.performAutoBackup(backupUri, maxBackups)
+                }
             } catch (e: Exception) {
                 // Workout was removed or not found (e.g. wiped by an overwrite import)
             } finally {
@@ -1147,11 +1155,12 @@ class GymViewModel(
 
     class Factory(
         private val repository: GymRepository,
-        private val themePreferences: ThemePreferences? = null
+        private val themePreferences: ThemePreferences? = null,
+        private val autoBackupEngine: com.kveld9.trackgym.data.backup.AutoBackupEngine? = null
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return GymViewModel(repository, themePreferences) as T
+            return GymViewModel(repository, themePreferences, autoBackupEngine) as T
         }
     }
 }

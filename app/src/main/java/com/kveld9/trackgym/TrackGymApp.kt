@@ -24,6 +24,10 @@ class TrackGymApp : Application() {
         com.kveld9.trackgym.data.ThemePreferences(this)
     }
 
+    val autoBackupEngine: com.kveld9.trackgym.data.backup.AutoBackupEngine by lazy {
+        com.kveld9.trackgym.data.backup.AutoBackupEngine(this, repository)
+    }
+
     override fun onCreate() {
         super.onCreate()
         if (!isErrorProcess()) {

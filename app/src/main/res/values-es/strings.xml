@@ -857,4 +857,17 @@
     <string name="settings_user_age_desc">Utilizado para ajustar los estándares de fuerza según la edad</string>
     <string name="settings_user_sex_title">Sexo Biológico</string>
     <string name="settings_user_sex_desc">Base para las tablas de estándares poblacionales</string>
+
+    <!-- Auto-Backup via SAF (Item 108) -->
+    <string name="setting_auto_backup_title">Respaldo Automático Silencioso (SAF)</string>
+    <string name="setting_auto_backup_desc">Exporta automáticamente una copia silenciosa en JSON a una carpeta local al finalizar entrenamientos</string>
+    <string name="setting_auto_backup_folder_title">Carpeta de Respaldo Automático</string>
+    <string name="setting_auto_backup_folder_none">Ninguna carpeta seleccionada (Desactivado)</string>
+    <string name="setting_auto_backup_select_folder">Seleccionar Carpeta Local</string>
+    <string name="setting_auto_backup_disable">Desactivar Respaldo Automático</string>
+    <string name="setting_auto_backup_rotation_title">Máximo de Copias a Conservar</string>
+    <string name="setting_auto_backup_rotation_desc">Las copias automáticas más antiguas se purgarán automáticamente</string>
+    <string name="setting_auto_backup_rotation_count">%1$d archivos</string>
+    <string name="setting_auto_backup_success">Respaldo automático silencioso guardado: %1$s</string>
+    <string name="setting_auto_backup_failed">Fallo en el respaldo automático: %1$s</string>
 </resources>

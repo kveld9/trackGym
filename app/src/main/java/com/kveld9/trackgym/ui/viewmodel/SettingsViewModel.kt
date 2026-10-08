@@ -223,6 +223,18 @@ class SettingsViewModel(
         }
     }
 
+    fun setAutoBackupUri(uriString: String?) {
+        viewModelScope.launch {
+            themePreferences.setAutoBackupUri(uriString)
+        }
+    }
+
+    fun setMaxAutoBackups(max: Int) {
+        viewModelScope.launch {
+            themePreferences.setMaxAutoBackups(max)
+        }
+    }
+
     fun exportBackup(streamProvider: () -> OutputStream?) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
