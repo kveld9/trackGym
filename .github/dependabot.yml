@@ -6,6 +6,10 @@ updates:
     target-branch: main
     schedule:
       interval: monthly
+    groups:
+      github-actions:
+        patterns:
+          - "*"
 
   - package-ecosystem: gradle
     labels: []
@@ -13,3 +17,10 @@ updates:
     target-branch: main
     schedule:
       interval: monthly
+    groups:
+      gradle-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
