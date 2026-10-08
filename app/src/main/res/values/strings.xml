@@ -337,6 +337,19 @@
     <string name="consistency_streak_this_week_done">Trained this week</string>
     <string name="consistency_streak_this_week_pending">Pending this week</string>
 
+    <!-- Time-Bucketed Distribution -->
+    <string name="time_bucket_last_week">Last Week</string>
+    <string name="time_bucket_last_month">Last Month</string>
+    <string name="time_bucket_last_year">Last Year</string>
+    <string name="time_bucket_all_time">All Time</string>
+    <string name="metric_type_sets">Sets</string>
+    <string name="metric_type_volume">Volume</string>
+    <string name="metric_type_reps">Reps</string>
+    <string name="distribution_title">Stimulus Distribution</string>
+    <string name="distribution_no_data">No workout data in selected window</string>
+    <string name="distribution_top_exercises">Top Exercises</string>
+    <string name="distribution_muscle_groups">Muscle Groups</string>
+
     <!-- History View & Selectable Dates Calendar -->
     <string name="history_view_list">List</string>
     <string name="history_view_calendar">Calendar</string>

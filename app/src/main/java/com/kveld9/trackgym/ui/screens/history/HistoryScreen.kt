@@ -74,6 +74,7 @@ import com.kveld9.trackgym.domain.calculator.TrainingConsistencyStats
 import com.kveld9.trackgym.domain.model.WeightUnit
 import com.kveld9.trackgym.domain.model.Workout
 import com.kveld9.trackgym.ui.components.MuscleHeatmapCard
+import com.kveld9.trackgym.ui.components.TimeBucketedDistributionCard
 import com.kveld9.trackgym.ui.util.LocalKeepEnglishExerciseNames
 import com.kveld9.trackgym.ui.util.displayName
 import com.kveld9.trackgym.ui.viewmodel.GymViewModel
@@ -286,6 +287,14 @@ fun HistoryScreen(
                                 title = stringResource(R.string.heatmap_title_weekly),
                                 subtitle = weeklySubtitle,
                                 emptyMessage = stringResource(R.string.heatmap_no_muscles_weekly)
+                            )
+                        }
+
+                        // Time-Bucketed Stimulus Distribution Card
+                        item {
+                            TimeBucketedDistributionCard(
+                                workouts = completedWorkouts,
+                                weightUnit = weightUnit
                             )
                         }
 
