@@ -707,4 +707,17 @@
     <!-- Keep Screen On (Item 89) -->
     <string name="setting_keep_screen_on_title">Keep screen on</string>
     <string name="setting_keep_screen_on_desc">Keep the display on during active workout sessions</string>
+
+    <!-- Privacy & Permissions (Item 92) -->
+    <string name="privacy_title">Privacy &amp; Permissions</string>
+    <string name="privacy_offline_title">100% Offline &amp; Private</string>
+    <string name="privacy_offline_desc">TrackGym operates entirely on your device. Your workout history, personal records, and notes are stored locally in your private SQLite database.</string>
+    <string name="privacy_no_internet_title">Zero Internet Permission</string>
+    <string name="privacy_no_internet_desc">The application does not declare or request the INTERNET permission. No data can ever leave your device.</string>
+    <string name="privacy_no_tracking_title">Zero Tracking &amp; Zero Ads</string>
+    <string name="privacy_no_tracking_desc">No third-party SDKs, analytics, trackers, or commercial advertising libraries are included.</string>
+    <string name="privacy_storage_title">Storage &amp; Backups</string>
+    <string name="privacy_storage_desc">Used strictly when you explicitly choose to export or import your data via the Android Storage Access Framework (SAF).</string>
+    <string name="privacy_notifications_title">Rest Timer Notifications</string>
+    <string name="privacy_notifications_desc">Used solely to display the countdown and interactive controls for rest timers during an active session.</string>
 </resources>

@@ -707,4 +707,17 @@
     <!-- Keep Screen On (Item 89) -->
     <string name="setting_keep_screen_on_title">Mantener pantalla encendida</string>
     <string name="setting_keep_screen_on_desc">Evita que la pantalla se apague mientras entrenas</string>
+
+    <!-- Privacy & Permissions (Item 92) -->
+    <string name="privacy_title">Privacidad y Permisos</string>
+    <string name="privacy_offline_title">100% Offline y Privado</string>
+    <string name="privacy_offline_desc">TrackGym funciona completamente en tu dispositivo. Tu historial de entrenamientos, récords personales y notas se guardan localmente en tu base de datos SQLite.</string>
+    <string name="privacy_no_internet_title">Sin Permiso de Internet</string>
+    <string name="privacy_no_internet_desc">La aplicación no solicita ni declara el permiso de INTERNET. Ningún dato puede salir de tu dispositivo.</string>
+    <string name="privacy_no_tracking_title">Cero Rastreo y Cero Publicidad</string>
+    <string name="privacy_no_tracking_desc">No se incluye ningún SDK de terceros, telemetría, analítica ni publicidad comercial.</string>
+    <string name="privacy_storage_title">Almacenamiento y Respaldos</string>
+    <string name="privacy_storage_desc">Se utiliza únicamente cuando decides explícitamente exportar o importar tus datos mediante Storage Access Framework (SAF).</string>
+    <string name="privacy_notifications_title">Notificaciones de Descanso</string>
+    <string name="privacy_notifications_desc">Se usan exclusivamente para mostrar el cronómetro y controles interactivos del descanso durante una sesión activa.</string>
 </resources>

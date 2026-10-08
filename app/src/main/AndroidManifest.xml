@@ -25,6 +25,21 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ui.privacy.PrivacyActivity"
+            android:exported="true"
+            android:label="@string/privacy_title"
+            android:theme="@style/Theme.TrackGym">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW_PERMISSION_USAGE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW_PERMISSION_USAGE_FOR_PERIOD" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
