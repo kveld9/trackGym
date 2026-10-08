@@ -78,6 +78,7 @@ Guardrails: never run `adb uninstall`, `pm clear`, or any action that wipes app 
 - **Single-Pass Pipeline**: `.github/workflows/ci.yml` runs on `ubuntu-latest`.
 - **Pull Requests**: Runs unit tests, detekt, and the R8-minified release build (`./gradlew testDebugUnitTest assembleRelease detekt`), signed with a throwaway keystore generated per run (PR builds never receive release secrets).
 - **Secret Scan**: `.github/workflows/secret-scan.yml` runs Gitleaks over the pushed or pull-request commits on `main` and fails on any detected secret.
+- **CodeQL**: `.github/workflows/codeql.yml` analyzes Kotlin (manual `:app:compileDebugKotlin`) and the workflows on pushes, pull requests and weekly; results appear under Security > Code scanning.
 - **Main Branch Push**:
   1. Computes Semantic Versioning from Conventional Commits (`feat!:`, `BREAKING CHANGE` -> Major, `feat:` -> Minor, `fix:`/other -> Patch).
   2. Bumps and passes `versionName` and `versionCode` via Gradle `-P` properties (`-PversionName=... -PversionCode=...`).
