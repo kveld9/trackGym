@@ -918,4 +918,11 @@
     <string name="progress_compare_after">After</string>
     <string name="progress_compare_select_hint">Select two photos to compare</string>
     <string name="progress_silhouette_guide_hint">Align your posture with the ghost silhouette</string>
+
+    <!-- Google Health Connect Local Sync (Item 107) -->
+    <string name="setting_health_connect_title">Google Health Connect Sync</string>
+    <string name="setting_health_connect_desc">Privately sync completed workouts and calories burned directly to Android Health Connect on device</string>
+    <string name="setting_health_connect_unavailable">Health Connect not available on this device</string>
+    <string name="setting_health_connect_request_perms">Authorize Permissions</string>
+    <string name="setting_health_connect_authorized">Permissions Granted</string>
 </resources>

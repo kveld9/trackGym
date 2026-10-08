@@ -918,4 +918,11 @@
     <string name="progress_compare_after">Después</string>
     <string name="progress_compare_select_hint">Selecciona dos fotos para comparar</string>
     <string name="progress_silhouette_guide_hint">Alinea tu postura con la silueta de referencia</string>
+
+    <!-- Google Health Connect Local Sync (Item 107) -->
+    <string name="setting_health_connect_title">Sincronización con Health Connect</string>
+    <string name="setting_health_connect_desc">Sincroniza en privado tus sesiones y calorías quemadas directamente con Health Connect en el dispositivo</string>
+    <string name="setting_health_connect_unavailable">Health Connect no disponible en este dispositivo</string>
+    <string name="setting_health_connect_request_perms">Autorizar Permisos</string>
+    <string name="setting_health_connect_authorized">Permisos Otorgados</string>
 </resources>

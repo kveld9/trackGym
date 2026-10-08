@@ -38,7 +38,8 @@ data class ThemeSettings(
     val activeGymProfileId: String = "commercial_gym",
     val gymProfilesJson: String = "",
     val autoBackupUri: String? = null,
-    val maxAutoBackups: Int = 10
+    val maxAutoBackups: Int = 10,
+    val healthConnectSync: Boolean = false
 )
 
 class ThemePreferences(
@@ -78,6 +79,7 @@ class ThemePreferences(
         val GYM_PROFILES_KEY = stringPreferencesKey("gym_equipment_profiles")
         val AUTO_BACKUP_URI_KEY = stringPreferencesKey("auto_backup_uri")
         val MAX_AUTO_BACKUPS_KEY = intPreferencesKey("max_auto_backups")
+        val HEALTH_CONNECT_SYNC_KEY = booleanPreferencesKey("health_connect_sync")
 
         private val LEGACY_AMOLED_KEY = booleanPreferencesKey("amoled_black")
     }
@@ -112,7 +114,8 @@ class ThemePreferences(
                 activeGymProfileId = preferences[ACTIVE_GYM_PROFILE_ID_KEY] ?: "commercial_gym",
                 gymProfilesJson = preferences[GYM_PROFILES_KEY] ?: "",
                 autoBackupUri = preferences[AUTO_BACKUP_URI_KEY],
-                maxAutoBackups = preferences[MAX_AUTO_BACKUPS_KEY] ?: 10
+                maxAutoBackups = preferences[MAX_AUTO_BACKUPS_KEY] ?: 10,
+                healthConnectSync = preferences[HEALTH_CONNECT_SYNC_KEY] ?: false
             )
         }
 
@@ -270,6 +273,12 @@ class ThemePreferences(
     suspend fun setMaxAutoBackups(max: Int) {
         dataStore.edit { preferences ->
             preferences[MAX_AUTO_BACKUPS_KEY] = max
+        }
+    }
+
+    suspend fun setHealthConnectSync(enabled: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[HEALTH_CONNECT_SYNC_KEY] = enabled
         }
     }
 }

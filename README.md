@@ -66,6 +66,7 @@
     - Direct access from Android system app settings (`ACTION_APPLICATION_PREFERENCES`).
     - Android Privacy Dashboard transparency screen (`VIEW_PERMISSION_USAGE`).
     - Global uncaught exception handler with isolated crash recovery screen (`:error_process`).
+    - **Google Health Connect Local Sync (`HealthConnectSyncManager`, `HealthConnectSyncEngine`)**: Native, 100% private and offline sync of finished workout sessions and metabolic calories burned directly to Android Health Connect on device without cloud dependencies.
 - **Backup & Restore**:
   - Offline-first storage with Room Database (SQLite).
   - Storage Access Framework (SAF) JSON export/import with bounded stream parsing (10 MB limit).

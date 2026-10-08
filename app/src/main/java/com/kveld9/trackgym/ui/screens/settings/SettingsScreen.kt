@@ -188,6 +188,17 @@ fun SettingsScreen(
         }
     }
 
+    val healthConnectSyncManager = remember {
+        (context.applicationContext as? com.kveld9.trackgym.TrackGymApp)?.healthConnectSyncManager
+    }
+    val healthConnectLauncher = rememberLauncherForActivityResult(
+        contract = androidx.health.connect.client.PermissionController.createRequestPermissionResultContract()
+    ) { grantedPermissions ->
+        if (healthConnectSyncManager != null && grantedPermissions.containsAll(healthConnectSyncManager.permissions)) {
+            viewModel.setHealthConnectSync(true)
+        }
+    }
+
     if (showGymProfilesDialog) {
         GymEquipmentProfilesManageDialog(
             profiles = gymProfiles,
@@ -1247,6 +1258,71 @@ fun SettingsScreen(
                                 )
                             }
                         }
+                    }
+                }
+            }
+
+            // Google Health Connect Local Sync Section (Item 107)
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = MaterialTheme.shapes.large,
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.FitnessCenter,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                        Spacer(modifier = Modifier.width(16.dp))
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = stringResource(R.string.setting_health_connect_title),
+                                style = MaterialTheme.typography.bodyLarge,
+                                fontWeight = FontWeight.Medium
+                            )
+                            Text(
+                                text = stringResource(R.string.setting_health_connect_desc),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Switch(
+                            checked = themeSettings.healthConnectSync,
+                            onCheckedChange = { enabled ->
+                                if (enabled) {
+                                    if (healthConnectSyncManager?.isAvailable() == true) {
+                                        healthConnectLauncher.launch(healthConnectSyncManager.permissions)
+                                    } else {
+                                        Toast.makeText(
+                                            context,
+                                            context.getString(R.string.setting_health_connect_unavailable),
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                } else {
+                                    viewModel.setHealthConnectSync(false)
+                                }
+                            }
+                        )
+                    }
+
+                    if (healthConnectSyncManager?.isAvailable() != true) {
+                        Text(
+                            text = stringResource(R.string.setting_health_connect_unavailable),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.error
+                        )
                     }
                 }
             }

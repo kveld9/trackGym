@@ -235,6 +235,12 @@ class SettingsViewModel(
         }
     }
 
+    fun setHealthConnectSync(enabled: Boolean) {
+        viewModelScope.launch {
+            themePreferences.setHealthConnectSync(enabled)
+        }
+    }
+
     fun exportBackup(streamProvider: () -> OutputStream?) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }

@@ -48,7 +48,8 @@ import kotlinx.coroutines.launch
 class GymViewModel(
     private val repository: GymRepository,
     private val themePreferences: ThemePreferences? = null,
-    private val autoBackupEngine: com.kveld9.trackgym.data.backup.AutoBackupEngine? = null
+    private val autoBackupEngine: com.kveld9.trackgym.data.backup.AutoBackupEngine? = null,
+    private val healthConnectSyncManager: com.kveld9.trackgym.data.health.HealthConnectSyncManager? = null
 ) : ViewModel() {
 
     val weightUnit: StateFlow<WeightUnit> = (themePreferences?.themeSettings?.map {
@@ -1045,6 +1046,15 @@ class GymViewModel(
                 if (!backupUri.isNullOrBlank() && autoBackupEngine != null) {
                     autoBackupEngine.performAutoBackup(backupUri, maxBackups)
                 }
+
+                // Native Google Health Connect Local Sync (Item 107)
+                val isHealthConnectEnabled = themePreferences?.themeSettings?.firstOrNull()?.healthConnectSync ?: false
+                if (isHealthConnectEnabled && healthConnectSyncManager != null) {
+                    val fullCompletedWorkout = repository.getFullWorkout(current.id)
+                    if (fullCompletedWorkout != null) {
+                        healthConnectSyncManager.syncWorkout(fullCompletedWorkout, userBodyWeight.value)
+                    }
+                }
             } catch (e: Exception) {
                 // Workout was removed or not found (e.g. wiped by an overwrite import)
             } finally {
@@ -1200,11 +1210,12 @@ class GymViewModel(
     class Factory(
         private val repository: GymRepository,
         private val themePreferences: ThemePreferences? = null,
-        private val autoBackupEngine: com.kveld9.trackgym.data.backup.AutoBackupEngine? = null
+        private val autoBackupEngine: com.kveld9.trackgym.data.backup.AutoBackupEngine? = null,
+        private val healthConnectSyncManager: com.kveld9.trackgym.data.health.HealthConnectSyncManager? = null
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return GymViewModel(repository, themePreferences, autoBackupEngine) as T
+            return GymViewModel(repository, themePreferences, autoBackupEngine, healthConnectSyncManager) as T
         }
     }
 }

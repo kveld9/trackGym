@@ -18,10 +18,12 @@ benchmarkMacroJunit4 = "1.5.0-rc01"
 baselineprofile = "1.5.0-rc01"
 profileinstaller = "1.4.1"
 documentfile = "1.0.1"
+connectClient = "1.1.0-alpha11"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-documentfile = { group = "androidx.documentfile", name = "documentfile", version.ref = "documentfile" }
+androidx-health-connect-client = { group = "androidx.health.connect", name = "connect-client", version.ref = "connectClient" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
