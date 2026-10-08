@@ -5,6 +5,7 @@ import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.permission.HealthPermission
 import androidx.health.connect.client.records.ExerciseSessionRecord
 import androidx.health.connect.client.records.TotalCaloriesBurnedRecord
+import androidx.health.connect.client.records.metadata.Metadata
 import androidx.health.connect.client.units.Energy
 import com.kveld9.trackgym.domain.calculator.HealthConnectSyncEngine
 import com.kveld9.trackgym.domain.model.Workout
@@ -69,6 +70,7 @@ class HealthConnectSyncManager(private val context: Context) {
                 startZoneOffset = zoneOffset,
                 endTime = endTime,
                 endZoneOffset = zoneOffset,
+                metadata = Metadata.unknownRecordingMethod(),
                 exerciseType = ExerciseSessionRecord.EXERCISE_TYPE_STRENGTH_TRAINING,
                 title = workout.name,
                 notes = workout.notes.ifBlank { null }
@@ -91,6 +93,7 @@ class HealthConnectSyncManager(private val context: Context) {
                     startZoneOffset = zoneOffset,
                     endTime = endTime,
                     endZoneOffset = zoneOffset,
+                    metadata = Metadata.unknownRecordingMethod(),
                     energy = Energy.kilocalories(caloriesKcal)
                 )
                 records.add(caloriesRecord)
