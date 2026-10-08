@@ -494,11 +494,6 @@ class GymRepository(private val database: GymDatabase) {
         }
     }
 
-    suspend fun updateWorkoutDuration(workoutId: Long, durationSeconds: Long) = withContext(Dispatchers.IO) {
-        val entity = workoutDao.getWorkoutById(workoutId) ?: return@withContext
-        workoutDao.updateWorkout(entity.copy(durationSeconds = durationSeconds))
-    }
-
     suspend fun getContextualPreviousWorkoutExercise(
         exerciseId: Long,
         currentWorkoutId: Long,

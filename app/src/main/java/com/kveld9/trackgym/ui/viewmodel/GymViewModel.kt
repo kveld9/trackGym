@@ -425,11 +425,14 @@ class GymViewModel(
         _previousSetsMap.value = currentMap
     }
 
+    private fun elapsedSecondsSince(startedAt: Long): Long =
+        ((System.currentTimeMillis() - startedAt) / 1000).coerceAtLeast(0)
+
     private suspend fun loadActiveWorkout() {
         val active = repository.getActiveWorkout()
         setActiveWorkout(active)
         if (active != null) {
-            val elapsedFromStart = (System.currentTimeMillis() - active.startedAt) / 1000
+            val elapsedFromStart = elapsedSecondsSince(active.startedAt)
             val restoredDuration = elapsedFromStart.coerceAtLeast(active.durationSeconds).coerceAtLeast(0)
             _timerSeconds.value = restoredDuration
             startTimer()
@@ -443,16 +446,10 @@ class GymViewModel(
     private fun startTimer() {
         timerJob?.cancel()
         timerJob = viewModelScope.launch {
-            var tickCount = 0
             while (true) {
                 delay(1000)
-                _timerSeconds.value += 1
-                tickCount++
-                if (tickCount >= 10) {
-                    tickCount = 0
-                    _activeWorkout.value?.id?.let { wid ->
-                        repository.updateWorkoutDuration(wid, _timerSeconds.value)
-                    }
+                _activeWorkout.value?.startedAt?.let { startedAt ->
+                    _timerSeconds.value = elapsedSecondsSince(startedAt)
                 }
             }
         }
