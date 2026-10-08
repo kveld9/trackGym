@@ -32,7 +32,9 @@ data class ThemeSettings(
     val showInlinePlates: Boolean = true,
     val keepScreenOn: Boolean = false,
     val dynamicColor: Boolean = false,
-    val getReadySeconds: Int = 0
+    val getReadySeconds: Int = 0,
+    val activeGymProfileId: String = "commercial_gym",
+    val gymProfilesJson: String = ""
 )
 
 class ThemePreferences(
@@ -66,6 +68,8 @@ class ThemePreferences(
         val KEEP_SCREEN_ON_KEY = booleanPreferencesKey("keep_screen_on")
         val DYNAMIC_COLOR_KEY = booleanPreferencesKey("dynamic_color")
         val GET_READY_SECONDS_KEY = intPreferencesKey("get_ready_seconds")
+        val ACTIVE_GYM_PROFILE_ID_KEY = stringPreferencesKey("active_gym_profile_id")
+        val GYM_PROFILES_KEY = stringPreferencesKey("gym_equipment_profiles")
 
         private val LEGACY_AMOLED_KEY = booleanPreferencesKey("amoled_black")
     }
@@ -94,7 +98,9 @@ class ThemePreferences(
                 showInlinePlates = preferences[SHOW_INLINE_PLATES_KEY] ?: true,
                 keepScreenOn = preferences[KEEP_SCREEN_ON_KEY] ?: false,
                 dynamicColor = preferences[DYNAMIC_COLOR_KEY] ?: false,
-                getReadySeconds = preferences[GET_READY_SECONDS_KEY] ?: 0
+                getReadySeconds = preferences[GET_READY_SECONDS_KEY] ?: 0,
+                activeGymProfileId = preferences[ACTIVE_GYM_PROFILE_ID_KEY] ?: "commercial_gym",
+                gymProfilesJson = preferences[GYM_PROFILES_KEY] ?: ""
             )
         }
 
@@ -212,6 +218,18 @@ class ThemePreferences(
     suspend fun setGetReadySeconds(seconds: Int) {
         dataStore.edit { preferences ->
             preferences[GET_READY_SECONDS_KEY] = seconds
+        }
+    }
+
+    suspend fun setActiveGymProfileId(id: String) {
+        dataStore.edit { preferences ->
+            preferences[ACTIVE_GYM_PROFILE_ID_KEY] = id
+        }
+    }
+
+    suspend fun setGymProfilesJson(json: String) {
+        dataStore.edit { preferences ->
+            preferences[GYM_PROFILES_KEY] = json
         }
     }
 }

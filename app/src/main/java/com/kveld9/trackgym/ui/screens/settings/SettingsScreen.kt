@@ -93,6 +93,7 @@ import androidx.core.net.toUri
 import com.kveld9.trackgym.BuildConfig
 import com.kveld9.trackgym.R
 import com.kveld9.trackgym.data.backup.DuplicatePolicy
+import com.kveld9.trackgym.ui.components.GymEquipmentProfilesManageDialog
 import com.kveld9.trackgym.ui.viewmodel.SettingsUiEvent
 import com.kveld9.trackgym.ui.viewmodel.SettingsViewModel
 
@@ -106,6 +107,10 @@ fun SettingsScreen(
     val context = LocalContext.current
     val themeSettings by viewModel.themeSettings.collectAsStateWithLifecycle()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val gymProfiles by viewModel.gymProfiles.collectAsStateWithLifecycle()
+    val activeGymProfile by viewModel.activeGymProfile.collectAsStateWithLifecycle()
+    val weightUnit = remember(themeSettings.weightUnit) { WeightUnit.fromString(themeSettings.weightUnit) }
+    var showGymProfilesDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
@@ -163,6 +168,18 @@ fun SettingsScreen(
         if (uri != null) {
             viewModel.startImportCsv { context.contentResolver.openInputStream(uri) }
         }
+    }
+
+    if (showGymProfilesDialog) {
+        GymEquipmentProfilesManageDialog(
+            profiles = gymProfiles,
+            activeProfileId = activeGymProfile.id,
+            weightUnit = weightUnit,
+            onSelectProfile = { viewModel.selectGymProfile(it) },
+            onSaveProfile = { viewModel.saveGymProfile(it) },
+            onDeleteProfile = { viewModel.deleteGymProfile(it) },
+            onDismiss = { showGymProfilesDialog = false }
+        )
     }
 
     Scaffold(
@@ -841,6 +858,44 @@ fun SettingsScreen(
                             checked = themeSettings.showInlinePlates,
                             onCheckedChange = { viewModel.setShowInlinePlates(it) }
                         )
+                    }
+
+                    HorizontalDivider()
+
+                    // Equipment Profiles Setting
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.FitnessCenter,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                        Spacer(modifier = Modifier.width(16.dp))
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = stringResource(R.string.gym_profiles_title),
+                                style = MaterialTheme.typography.bodyLarge,
+                                fontWeight = FontWeight.Medium
+                            )
+                            val barDisplay = "${activeGymProfile.barWeight(weightUnit)} ${weightUnit.symbol}"
+                            Text(
+                                text = "${activeGymProfile.name} • $barDisplay",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                        OutlinedButton(
+                            onClick = { showGymProfilesDialog = true },
+                            shape = RoundedCornerShape(8.dp)
+                        ) {
+                            Text(
+                                text = stringResource(R.string.gym_profile_select),
+                                fontSize = 12.sp
+                            )
+                        }
                     }
 
                     HorizontalDivider()

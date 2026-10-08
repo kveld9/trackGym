@@ -799,4 +799,25 @@
     <string name="context_tag_deload">Sensación descarga</string>
     <string name="filter_by_context_tag">Filtrar por Contexto</string>
     <string name="chip_all_context_tags">Todos los Contextos</string>
+
+    <!-- Multiple Gym Equipment Profiles (Item 104) -->
+    <string name="gym_profiles_title">Perfiles de Equipamiento</string>
+    <string name="gym_profiles_desc">Administra discos disponibles, barras y saltos de peso para diferentes gimnasios</string>
+    <string name="gym_profile_active">Perfil de Equipamiento Activo</string>
+    <string name="gym_profile_select">Seleccionar Perfil</string>
+    <string name="gym_profile_add">Nuevo Perfil</string>
+    <string name="gym_profile_edit">Editar Perfil</string>
+    <string name="gym_profile_delete">Eliminar Perfil</string>
+    <string name="gym_profile_name">Nombre del Perfil</string>
+    <string name="gym_profile_bar_weight">Peso de Barra Predeterminado</string>
+    <string name="gym_profile_min_increment">Salto de Peso Mínimo</string>
+    <string name="gym_profile_plates">Discos Disponibles</string>
+    <string name="gym_profile_set_default">Marcar como predeterminado</string>
+    <string name="gym_profile_default_badge">Predeterminado</string>
+    <string name="gym_profile_commercial">Gym Comercial</string>
+    <string name="gym_profile_home">Home Gym</string>
+    <string name="gym_profile_hotel">Gym de Hotel</string>
+    <string name="gym_profile_saved">Perfil guardado</string>
+    <string name="gym_profile_deleted">Perfil eliminado</string>
+    <string name="gym_profile_cannot_delete_last">No se puede eliminar el único perfil de equipamiento</string>
 </resources>

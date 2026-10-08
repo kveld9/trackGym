@@ -107,6 +107,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberSwipeToDismissBoxState
@@ -167,10 +168,13 @@ import com.kveld9.trackgym.ui.components.RpeSelectionDialog
 import com.kveld9.trackgym.ui.components.RpeTargetWeightDialog
 import com.kveld9.trackgym.ui.components.WarmupRampDialog
 import com.kveld9.trackgym.ui.components.WorkoutSessionNotesCard
+import com.kveld9.trackgym.domain.model.GymEquipmentProfile
+import com.kveld9.trackgym.ui.components.GymEquipmentProfilesManageDialog
 import com.kveld9.trackgym.ui.theme.GymBlue
 import com.kveld9.trackgym.ui.theme.GymWarmupAmber
 import com.kveld9.trackgym.ui.theme.GymAmrapCrimson
 import com.kveld9.trackgym.ui.theme.GymCardioTeal
+import com.kveld9.trackgym.ui.util.LocalActiveGymProfile
 import com.kveld9.trackgym.ui.util.LocalKeepEnglishExerciseNames
 import com.kveld9.trackgym.ui.util.displayName
 import com.kveld9.trackgym.ui.viewmodel.GymViewModel
@@ -195,6 +199,8 @@ fun ActiveWorkoutScreen(
     val showInlinePlates by viewModel.showInlinePlates.collectAsStateWithLifecycle()
     val allRecords by viewModel.allRecords.collectAsStateWithLifecycle()
     val completedWorkouts by viewModel.completedWorkouts.collectAsStateWithLifecycle()
+    val gymProfiles by viewModel.gymProfiles.collectAsStateWithLifecycle()
+    val activeGymProfile by viewModel.activeGymProfile.collectAsStateWithLifecycle()
 
     // Rest Timer state
     val restRemaining by viewModel.restTimerRemainingSeconds.collectAsStateWithLifecycle()
@@ -317,8 +323,9 @@ fun ActiveWorkoutScreen(
         }
     }
 
-    if (activeWorkout == null) {
-        val copySuffix = stringResource(R.string.routine_copy_suffix)
+    CompositionLocalProvider(LocalActiveGymProfile provides activeGymProfile) {
+        if (activeWorkout == null) {
+            val copySuffix = stringResource(R.string.routine_copy_suffix)
         val defaultWorkoutTitle = stringResource(R.string.workout_default_title)
         val deloadSuffix = stringResource(R.string.deload_routine_suffix)
         EmptyWorkoutDashboard(
@@ -995,6 +1002,11 @@ fun ActiveWorkoutScreen(
             exerciseName = we.exercise.displayName(),
             weightUnit = weightUnit,
             initialWeightKg = initialWeightKg,
+            activeProfile = activeGymProfile,
+            allProfiles = gymProfiles,
+            onSelectProfile = { viewModel.selectGymProfile(it) },
+            onSaveProfile = { viewModel.saveGymProfile(it) },
+            onDeleteProfile = { viewModel.deleteGymProfile(it) },
             onDismiss = {
                 plateCalcExercise = null
                 plateCalcInitialWeightKg = null
@@ -1121,6 +1133,7 @@ fun ActiveWorkoutScreen(
             userBodyWeightKg = userBodyWeight,
             onDismiss = { exerciseForHistory = null }
         )
+    }
     }
 }
 
@@ -2838,15 +2851,16 @@ fun SetRowItem(
         ?: if (set.weightKg > 0.0) weightUnit.fromKg(set.weightKg)
         else (ghostWeightDisplay?.replace(',', '.')?.toDoubleOrNull() ?: 0.0)
 
-    val compactPlates = remember(effectiveWeightDisplay, weightUnit, isCardio, set.setType, showInlinePlates) {
+    val currentActiveGymProfile = LocalActiveGymProfile.current
+    val compactPlates = remember(effectiveWeightDisplay, weightUnit, isCardio, set.setType, showInlinePlates, currentActiveGymProfile) {
         if (showInlinePlates && !isCardio && set.setType != SetType.CARDIO && set.setType != SetType.DURATION &&
             set.setType != SetType.BODYWEIGHT_LOAD && set.setType != SetType.BODYWEIGHT_ASSISTED &&
             effectiveWeightDisplay > 0.0
         ) {
             com.kveld9.trackgym.domain.calculator.PlateCalculator.formatCompactPlatesPerSide(
                 targetWeight = effectiveWeightDisplay,
-                barWeight = com.kveld9.trackgym.domain.calculator.PlateCalculator.defaultBarWeight(weightUnit),
-                availablePlates = com.kveld9.trackgym.domain.calculator.PlateCalculator.defaultPlates(weightUnit),
+                barWeight = currentActiveGymProfile.barWeight(weightUnit),
+                availablePlates = currentActiveGymProfile.availablePlates(weightUnit),
                 unit = weightUnit
             )
         } else null
@@ -3776,20 +3790,44 @@ fun PlateCalculatorDialog(
     exerciseName: String,
     weightUnit: WeightUnit,
     initialWeightKg: Double,
+    activeProfile: GymEquipmentProfile = GymEquipmentProfile.defaultProfiles().first(),
+    allProfiles: List<GymEquipmentProfile> = emptyList(),
+    onSelectProfile: (String) -> Unit = {},
+    onSaveProfile: (GymEquipmentProfile) -> Unit = {},
+    onDeleteProfile: (String) -> Unit = {},
     onDismiss: () -> Unit
 ) {
+    var showManageProfilesDialog by remember { mutableStateOf(false) }
+
+    if (showManageProfilesDialog) {
+        GymEquipmentProfilesManageDialog(
+            profiles = if (allProfiles.isNotEmpty()) allProfiles else GymEquipmentProfile.defaultProfiles(),
+            activeProfileId = activeProfile.id,
+            weightUnit = weightUnit,
+            onSelectProfile = { id ->
+                onSelectProfile(id)
+                showManageProfilesDialog = false
+            },
+            onSaveProfile = onSaveProfile,
+            onDeleteProfile = onDeleteProfile,
+            onDismiss = { showManageProfilesDialog = false }
+        )
+    }
+
     val initialDisplay = weightUnit.formatValue(initialWeightKg)
     var targetWeightInput by remember { mutableStateOf(initialDisplay) }
-    val defaultBar = com.kveld9.trackgym.domain.calculator.PlateCalculator.defaultBarWeight(weightUnit)
-    var barWeightInput by remember { mutableStateOf(if (defaultBar % 1.0 == 0.0) defaultBar.toInt().toString() else defaultBar.toString()) }
+    val defaultBar = activeProfile.barWeight(weightUnit)
+    var barWeightInput by remember(activeProfile) {
+        mutableStateOf(if (defaultBar % 1.0 == 0.0) defaultBar.toInt().toString() else defaultBar.toString())
+    }
 
     var includeCollars by remember { mutableStateOf(false) }
     val defaultCollars = remember(weightUnit) { com.kveld9.trackgym.domain.calculator.PlateCalculator.defaultCollarsWeight(weightUnit) }
 
-    val allDefaultPlates = remember(weightUnit) {
-        com.kveld9.trackgym.domain.calculator.PlateCalculator.defaultPlates(weightUnit)
+    val allDefaultPlates = remember(weightUnit, activeProfile) {
+        activeProfile.availablePlates(weightUnit)
     }
-    var activePlates by remember(weightUnit) { mutableStateOf(allDefaultPlates.toSet()) }
+    var activePlates by remember(weightUnit, activeProfile) { mutableStateOf(allDefaultPlates.toSet()) }
 
     val currentTarget = targetWeightInput.replace(',', '.').toDoubleOrNull() ?: 0.0
     val currentBar = barWeightInput.replace(',', '.').toDoubleOrNull() ?: defaultBar
@@ -3832,6 +3870,58 @@ fun PlateCalculatorDialog(
                     .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(14.dp)
             ) {
+                // Gym Equipment Profiles Selector
+                if (allProfiles.isNotEmpty()) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = stringResource(R.string.gym_profiles_title),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        IconButton(
+                            onClick = { showManageProfilesDialog = true },
+                            modifier = Modifier.size(36.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Edit,
+                                contentDescription = stringResource(R.string.gym_profile_edit),
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(16.dp)
+                            )
+                        }
+                    }
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .horizontalScroll(rememberScrollState()),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        allProfiles.forEach { profile ->
+                            val isSelected = profile.id == activeProfile.id
+                            FilterChip(
+                                selected = isSelected,
+                                onClick = {
+                                    onSelectProfile(profile.id)
+                                    val newBar = profile.barWeight(weightUnit)
+                                    barWeightInput = if (newBar % 1.0 == 0.0) newBar.toInt().toString() else newBar.toString()
+                                    activePlates = profile.availablePlates(weightUnit).toSet()
+                                },
+                                label = { Text(profile.name, fontSize = 11.sp) },
+                                colors = FilterChipDefaults.filterChipColors(
+                                    selectedContainerColor = MaterialTheme.colorScheme.primary,
+                                    selectedLabelColor = MaterialTheme.colorScheme.onPrimary
+                                )
+                            )
+                        }
+                    }
+                }
                 // Target and Bar Inputs
                 Row(
                     modifier = Modifier.fillMaxWidth(),

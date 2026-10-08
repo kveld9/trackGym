@@ -799,4 +799,25 @@
     <string name="context_tag_deload">Deload Feeling</string>
     <string name="filter_by_context_tag">Filter by Context</string>
     <string name="chip_all_context_tags">All Contexts</string>
+
+    <!-- Multiple Gym Equipment Profiles (Item 104) -->
+    <string name="gym_profiles_title">Equipment Profiles</string>
+    <string name="gym_profiles_desc">Manage available plates, bars, and weight increments for different gyms</string>
+    <string name="gym_profile_active">Active Equipment Profile</string>
+    <string name="gym_profile_select">Select Profile</string>
+    <string name="gym_profile_add">New Profile</string>
+    <string name="gym_profile_edit">Edit Profile</string>
+    <string name="gym_profile_delete">Delete Profile</string>
+    <string name="gym_profile_name">Profile Name</string>
+    <string name="gym_profile_bar_weight">Default Barbell Weight</string>
+    <string name="gym_profile_min_increment">Minimum Weight Increment</string>
+    <string name="gym_profile_plates">Available Plates</string>
+    <string name="gym_profile_set_default">Set as default</string>
+    <string name="gym_profile_default_badge">Default</string>
+    <string name="gym_profile_commercial">Commercial Gym</string>
+    <string name="gym_profile_home">Home Gym</string>
+    <string name="gym_profile_hotel">Hotel Gym</string>
+    <string name="gym_profile_saved">Profile saved</string>
+    <string name="gym_profile_deleted">Profile deleted</string>
+    <string name="gym_profile_cannot_delete_last">Cannot delete the only equipment profile</string>
 </resources>

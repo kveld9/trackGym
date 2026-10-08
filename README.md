@@ -48,8 +48,10 @@
   - Tracks milestones: **Max Weight**, **Reps Record at a given weight**, **Best Estimated 1RM**, and **Max Set Volume**.
   - Selectable 1RM formula: *Epley*, *Brzycki*, *Wathan*, *Lander*, *Lombardi*, *Mayhew*, or *O'Conner*.
   - Immediate visual badge/banner notification and dedicated PR showcase gallery.
-- **Plate Calculator**:
-  - Barbell profiles, collar clips, and custom plate inventory.
+- **Plate Calculator & Equipment Profiles**:
+  - Multiple equipment locations (Commercial Gym, Home Gym, Hotel Gym) with custom bar weight, plate inventory, and minimum micro-loading steps.
+  - Quick-switch profile bar in plate calculator dialog and settings.
+  - Barbell profiles, collar clips, inline compact plate breakdown under set rows, and custom plate inventory.
 - **Units**:
   - Weight in kilograms or pounds; distance in kilometers or miles.
 - **Theming & Appearance**:
