@@ -62,6 +62,7 @@ fun RecordsScreen(
     val biologicalSex by viewModel.userBiologicalSex.collectAsStateWithLifecycle()
     val userAge by viewModel.userAge.collectAsStateWithLifecycle()
     val bodyMeasurements by viewModel.allBodyMeasurements.collectAsStateWithLifecycle()
+    val progressPhotos by viewModel.allProgressPhotos.collectAsStateWithLifecycle()
 
     val exercisesMap = exercises.associateBy { it.id }
 
@@ -97,6 +98,19 @@ fun RecordsScreen(
                     },
                     onDeleteMeasurement = { id ->
                         viewModel.deleteBodyMeasurement(id)
+                    },
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+            }
+
+            item(key = "progress_photos_card") {
+                com.kveld9.trackgym.ui.components.ProgressPhotosCard(
+                    photos = progressPhotos,
+                    onAddPhoto = { filePath, pose, notes ->
+                        viewModel.addProgressPhoto(filePath, pose, notes = notes)
+                    },
+                    onDeletePhoto = { id ->
+                        viewModel.deleteProgressPhoto(id)
                     },
                     modifier = Modifier.padding(bottom = 4.dp)
                 )

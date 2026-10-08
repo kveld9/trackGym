@@ -265,6 +265,26 @@ class GymViewModel(
         }
     }
 
+    val allProgressPhotos: StateFlow<List<com.kveld9.trackgym.domain.model.ProgressPhoto>> = repository.getAllProgressPhotos()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    fun addProgressPhoto(
+        filePath: String,
+        pose: com.kveld9.trackgym.domain.model.ProgressPhotoPose,
+        capturedAt: Long = System.currentTimeMillis(),
+        notes: String = ""
+    ) {
+        viewModelScope.launch {
+            repository.addProgressPhoto(filePath, pose, capturedAt, notes)
+        }
+    }
+
+    fun deleteProgressPhoto(id: Long) {
+        viewModelScope.launch {
+            repository.deleteProgressPhoto(id)
+        }
+    }
+
     private val _rawExercises = repository.getAllExercises()
     val allExercises: StateFlow<List<Exercise>> = _rawExercises
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())

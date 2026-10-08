@@ -897,4 +897,25 @@
     <string name="body_meas_net_delta">Net Δ: %1$+.1f %2$s (%3$+.1f%%)</string>
     <string name="body_meas_saved">Measurement saved</string>
     <string name="body_meas_deleted">Measurement deleted</string>
+
+    <!-- Progress Photos & Visual Comparison (Items 61, 62, 63) -->
+    <string name="progress_photos_title">Progress Pictures</string>
+    <string name="progress_photos_subtitle">Visual physique tracking and comparison</string>
+    <string name="photo_pose_all">All Poses</string>
+    <string name="photo_pose_front">Front</string>
+    <string name="photo_pose_side">Side</string>
+    <string name="photo_pose_back">Back</string>
+    <string name="action_take_photo">Take Picture</string>
+    <string name="action_pick_photo">Import Gallery</string>
+    <string name="action_compare_photos">Compare Before / After</string>
+    <string name="action_ghost_silhouette">Silhouette Guide</string>
+    <string name="progress_photos_empty">No progress pictures logged yet</string>
+    <string name="progress_photo_notes_label">Notes (optional)</string>
+    <string name="progress_photo_saved">Progress picture saved</string>
+    <string name="progress_photo_deleted">Progress picture deleted</string>
+    <string name="progress_compare_title">Before &amp; After Comparison</string>
+    <string name="progress_compare_before">Before</string>
+    <string name="progress_compare_after">After</string>
+    <string name="progress_compare_select_hint">Select two photos to compare</string>
+    <string name="progress_silhouette_guide_hint">Align your posture with the ghost silhouette</string>
 </resources>

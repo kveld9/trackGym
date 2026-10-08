@@ -897,4 +897,25 @@
     <string name="body_meas_net_delta">Δ Neto: %1$+.1f %2$s (%3$+.1f%%)</string>
     <string name="body_meas_saved">Medida guardada</string>
     <string name="body_meas_deleted">Medida eliminada</string>
+
+    <!-- Progress Photos & Visual Comparison (Items 61, 62, 63) -->
+    <string name="progress_photos_title">Fotos de Progreso</string>
+    <string name="progress_photos_subtitle">Seguimiento y comparativa visual del físico</string>
+    <string name="photo_pose_all">Todas las Poses</string>
+    <string name="photo_pose_front">Frontal</string>
+    <string name="photo_pose_side">Lateral</string>
+    <string name="photo_pose_back">Trasera</string>
+    <string name="action_take_photo">Tomar Foto</string>
+    <string name="action_pick_photo">Importar Galería</string>
+    <string name="action_compare_photos">Comparar Antes / Después</string>
+    <string name="action_ghost_silhouette">Guía de Silueta</string>
+    <string name="progress_photos_empty">Sin fotos de progreso registradas aún</string>
+    <string name="progress_photo_notes_label">Notas (opcional)</string>
+    <string name="progress_photo_saved">Foto de progreso guardada</string>
+    <string name="progress_photo_deleted">Foto de progreso eliminada</string>
+    <string name="progress_compare_title">Comparativa Antes &amp; Después</string>
+    <string name="progress_compare_before">Antes</string>
+    <string name="progress_compare_after">Después</string>
+    <string name="progress_compare_select_hint">Selecciona dos fotos para comparar</string>
+    <string name="progress_silhouette_guide_hint">Alinea tu postura con la silueta de referencia</string>
 </resources>

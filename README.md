@@ -51,6 +51,7 @@
   - Immediate visual badge/banner notification and dedicated PR showcase gallery.
   - **Strength Level Benchmarks (`StrengthBenchmarkEngine`)**: Normative population standards for core compound lifts (*Bench Press, Squat, Deadlift, Overhead Press*) stratified by bodyweight ratio, biological sex, and age attenuation. Classifies strength into 5 tiers (*Beginner, Novice, Intermediate, Advanced, Elite*) with exact percentiles (*"Stronger than X% of lifters"*) and target weight to next rank.
   - **Anthropometric Body Telemetry & Trend Moving Average Curves (`BodyMeasurementTrendEngine`)**: Tracking of bodyweight, estimated body fat percentage, and key circumferences (*Neck, Shoulders, Chest, Left/Right Biceps, Left/Right Forearms, Waist, Hips, Left/Right Thighs, Left/Right Calves*) with raw trend lines and 3-point moving average curves to filter fluid retention fluctuations.
+  - **Progress Pictures Gallery & Before/After Comparison (`PhotoStorageManager`, `BeforeAfterComparisonDialog`, `CameraGhostSilhouette`)**: Offline gallery organizing physique photos by poses (*Front, Side, Back*), interactive dual-image split slider for comparing two dates with a draggable divider, and camera ghost silhouette alignment guide.
 - **Plate Calculator & Equipment Profiles**:
   - Multiple equipment locations (Commercial Gym, Home Gym, Hotel Gym) with custom bar weight, plate inventory, and minimum micro-loading steps.
   - Quick-switch profile bar in plate calculator dialog and settings.

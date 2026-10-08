@@ -8,12 +8,14 @@ import com.kveld9.trackgym.data.local.dao.BodyMeasurementDao
 import com.kveld9.trackgym.data.local.dao.CustomExerciseCategoryDao
 import com.kveld9.trackgym.data.local.dao.ExerciseDao
 import com.kveld9.trackgym.data.local.dao.PersonalRecordDao
+import com.kveld9.trackgym.data.local.dao.ProgressPhotoDao
 import com.kveld9.trackgym.data.local.dao.RoutineDao
 import com.kveld9.trackgym.data.local.dao.WorkoutDao
 import com.kveld9.trackgym.data.local.entity.BodyMeasurementEntity
 import com.kveld9.trackgym.data.local.entity.CustomExerciseCategoryEntity
 import com.kveld9.trackgym.data.local.entity.ExerciseEntity
 import com.kveld9.trackgym.data.local.entity.PersonalRecordEntity
+import com.kveld9.trackgym.data.local.entity.ProgressPhotoEntity
 import com.kveld9.trackgym.data.local.entity.RoutineEntity
 import com.kveld9.trackgym.data.local.entity.RoutineExerciseEntity
 import com.kveld9.trackgym.data.local.entity.RoutineFolderEntity
@@ -32,9 +34,10 @@ import com.kveld9.trackgym.data.local.entity.WorkoutSetEntity
         RoutineEntity::class,
         RoutineExerciseEntity::class,
         CustomExerciseCategoryEntity::class,
-        BodyMeasurementEntity::class
+        BodyMeasurementEntity::class,
+        ProgressPhotoEntity::class
     ],
-    version = 17,
+    version = 18,
     exportSchema = false
 )
 abstract class GymDatabase : RoomDatabase() {
@@ -45,6 +48,7 @@ abstract class GymDatabase : RoomDatabase() {
     abstract fun routineDao(): RoutineDao
     abstract fun customCategoryDao(): CustomExerciseCategoryDao
     abstract fun bodyMeasurementDao(): BodyMeasurementDao
+    abstract fun progressPhotoDao(): ProgressPhotoDao
 
     companion object {
         @Volatile
@@ -182,6 +186,24 @@ abstract class GymDatabase : RoomDatabase() {
             }
         }
 
+        private val MIGRATION_17_18 = object : androidx.room.migration.Migration(17, 18) {
+            override fun migrate(db: androidx.sqlite.db.SupportSQLiteDatabase) {
+                db.execSQL(
+                    """
+                    CREATE TABLE IF NOT EXISTS progress_photos (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        filePath TEXT NOT NULL,
+                        pose TEXT NOT NULL,
+                        capturedAt INTEGER NOT NULL,
+                        notes TEXT NOT NULL DEFAULT ''
+                    )
+                    """.trimIndent()
+                )
+                db.execSQL("CREATE INDEX IF NOT EXISTS index_progress_photos_pose ON progress_photos(pose)")
+                db.execSQL("CREATE INDEX IF NOT EXISTS index_progress_photos_capturedAt ON progress_photos(capturedAt)")
+            }
+        }
+
         fun getInstance(context: Context): GymDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
@@ -189,7 +211,7 @@ abstract class GymDatabase : RoomDatabase() {
                     GymDatabase::class.java,
                     "trackgym_database.db"
                 )
-                    .addMigrations(MIGRATION_12_13, MIGRATION_13_14, MIGRATION_14_15, MIGRATION_15_16, MIGRATION_16_17)
+                    .addMigrations(MIGRATION_12_13, MIGRATION_13_14, MIGRATION_14_15, MIGRATION_15_16, MIGRATION_16_17, MIGRATION_17_18)
                     .fallbackToDestructiveMigration(dropAllTables = true)
                     .build()
                 INSTANCE = instance
