@@ -65,12 +65,14 @@ object PlateCalculator {
         collarsWeight: Double = 0.0,
         availablePlates: List<Double> = DEFAULT_KG_PLATES
     ): PlateCalculationResult {
-        val totalBase = barWeight + collarsWeight
-        if (targetWeight <= totalBase) {
+        val safeBar = if (barWeight.isFinite() && barWeight >= 0.0) barWeight else DEFAULT_BAR_KG
+        val safeCollars = if (collarsWeight.isFinite() && collarsWeight >= 0.0) collarsWeight else 0.0
+        val totalBase = safeBar + safeCollars
+        if (!targetWeight.isFinite() || targetWeight <= totalBase) {
             return PlateCalculationResult(
-                targetWeight = targetWeight,
-                barWeight = barWeight,
-                collarsWeight = collarsWeight,
+                targetWeight = if (targetWeight.isFinite()) targetWeight else 0.0,
+                barWeight = safeBar,
+                collarsWeight = safeCollars,
                 weightPerSide = 0.0,
                 platesPerSide = emptyList(),
                 remainderPerSide = 0.0,
@@ -78,7 +80,7 @@ object PlateCalculator {
             )
         }
 
-        val sortedPlates = availablePlates.filter { it > 0.0 }.sortedDescending()
+        val sortedPlates = availablePlates.filter { it.isFinite() && it > 0.0 }.sortedDescending()
         val targetWeightPerSide = (targetWeight - totalBase) / 2.0
         var remaining = targetWeightPerSide
 
@@ -99,8 +101,8 @@ object PlateCalculator {
 
         return PlateCalculationResult(
             targetWeight = targetWeight,
-            barWeight = barWeight,
-            collarsWeight = collarsWeight,
+            barWeight = safeBar,
+            collarsWeight = safeCollars,
             weightPerSide = targetWeightPerSide,
             platesPerSide = platesResult,
             remainderPerSide = remaining,
@@ -135,7 +137,7 @@ object PlateCalculator {
         availablePlates: List<Double> = DEFAULT_KG_PLATES,
         unit: WeightUnit = WeightUnit.KG
     ): String? {
-        if (targetWeight <= 0.0) return null
+        if (!targetWeight.isFinite() || targetWeight <= 0.0) return null
         val totalBase = barWeight + collarsWeight
         if (targetWeight < totalBase) return null
 

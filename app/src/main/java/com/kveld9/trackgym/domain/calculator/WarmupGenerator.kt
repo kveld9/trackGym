@@ -108,18 +108,20 @@ object WarmupGenerator {
         roundToKg: Double = 2.5,
         protocol: List<WarmupSetConfig> = DEFAULT_WARMUP_PROTOCOL
     ): List<WorkoutSet> {
-        if (targetWeightKg <= minWeightKg) {
+        val safeMin = if (minWeightKg.isFinite() && minWeightKg >= 0.0) minWeightKg else 20.0
+        val safeRound = if (roundToKg.isFinite() && roundToKg > 0.0) roundToKg else 2.5
+        if (!targetWeightKg.isFinite() || targetWeightKg <= safeMin) {
             return emptyList()
         }
 
         return protocol.mapNotNull { step ->
             val rawWeight = if (step.isBarOnly) {
-                minWeightKg
+                safeMin
             } else {
-                (targetWeightKg * step.percentage).coerceAtLeast(minWeightKg)
+                (targetWeightKg * step.percentage).coerceAtLeast(safeMin)
             }
-            val roundedWeight = kotlin.math.round(rawWeight / roundToKg) * roundToKg
-            if (roundedWeight >= targetWeightKg) null else Pair(roundedWeight, step.reps)
+            val roundedWeight = kotlin.math.round(rawWeight / safeRound) * safeRound
+            if (!roundedWeight.isFinite() || roundedWeight >= targetWeightKg) null else Pair(roundedWeight, step.reps)
         }
             .distinctBy { it.first }
             .mapIndexed { index, (weight, reps) ->

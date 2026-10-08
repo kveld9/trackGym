@@ -69,4 +69,18 @@ class RpeTargetWeightCalculatorTest {
         )
         assertEquals(81.0, result.suggestedWeightKg, 0.05)
     }
+
+    @Test
+    fun calculateTargetWeight_nanValues_handledGracefullyWithoutCrashing() {
+        val result = RpeTargetWeightCalculator.calculateTargetWeight(
+            estimated1RmKg = Double.NaN,
+            targetReps = 5,
+            targetRpe = Double.NaN
+        )
+        assertEquals(0.0, result.percentage, 0.001)
+        assertEquals(0.0, result.suggestedWeightKg, 0.001)
+
+        val pct = RpeTargetWeightCalculator.getPercentageOf1RM(5, Double.NaN)
+        assertEquals(0.0, pct, 0.001)
+    }
 }

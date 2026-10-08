@@ -156,7 +156,7 @@ object RpeTargetWeightCalculator {
      * Resolves the % of 1RM for a target repetition count and RPE.
      */
     fun getPercentageOf1RM(reps: Int, rpe: Double): Double {
-        if (reps <= 0) return 0.0
+        if (reps <= 0 || !rpe.isFinite()) return 0.0
         val clampedRpe = rpe.coerceIn(5.0, 10.0)
         val rpeKey = (kotlin.math.round(clampedRpe * 10.0)).toInt()
 
@@ -169,6 +169,7 @@ object RpeTargetWeightCalculator {
         val rir = (10.0 - clampedRpe).coerceAtLeast(0.0)
         val effectiveReps = reps + rir
         val raw = 1.0 / (1.0 + (effectiveReps - 1.0) / 30.0)
+        if (!raw.isFinite() || raw <= 0.0) return 0.0
         return (raw * 1000.0).roundToInt() / 1000.0
     }
 
@@ -181,11 +182,11 @@ object RpeTargetWeightCalculator {
         targetRpe: Double,
         roundingStepKg: Double = 2.5
     ): RpeTargetWeightResult {
-        if (estimated1RmKg <= 0.0 || targetReps <= 0) {
+        if (!estimated1RmKg.isFinite() || estimated1RmKg <= 0.0 || targetReps <= 0 || !targetRpe.isFinite()) {
             return RpeTargetWeightResult(
-                estimated1RmKg = estimated1RmKg,
+                estimated1RmKg = if (estimated1RmKg.isFinite()) estimated1RmKg else 0.0,
                 targetReps = targetReps,
-                targetRpe = targetRpe,
+                targetRpe = if (targetRpe.isFinite()) targetRpe else 0.0,
                 percentage = 0.0,
                 theoreticalWeightKg = 0.0,
                 suggestedWeightKg = 0.0
@@ -194,13 +195,23 @@ object RpeTargetWeightCalculator {
 
         val percentage = getPercentageOf1RM(targetReps, targetRpe)
         val exact = estimated1RmKg * percentage
-        val theoretical = (exact * 10.0).roundToInt() / 10.0
+        val theoretical = if ((exact * 10.0).isFinite() && (exact * 10.0) <= Int.MAX_VALUE) {
+            (exact * 10.0).roundToInt() / 10.0
+        } else exact
 
-        val suggested = if (roundingStepKg > 0.0) {
-            (theoretical / roundingStepKg).roundToInt() * roundingStepKg
+        val validRounding = roundingStepKg.isFinite() && roundingStepKg > 0.0
+        val suggested = if (validRounding) {
+            val steps = theoretical / roundingStepKg
+            if (steps.isFinite() && steps <= Int.MAX_VALUE && steps >= Int.MIN_VALUE) {
+                steps.roundToInt() * roundingStepKg
+            } else theoretical
         } else {
             theoretical
         }
+
+        val finalSuggested = if ((suggested * 10.0).isFinite() && (suggested * 10.0) <= Int.MAX_VALUE) {
+            (suggested * 10.0).roundToInt() / 10.0
+        } else suggested
 
         return RpeTargetWeightResult(
             estimated1RmKg = estimated1RmKg,
@@ -208,7 +219,7 @@ object RpeTargetWeightCalculator {
             targetRpe = targetRpe,
             percentage = percentage,
             theoreticalWeightKg = theoretical,
-            suggestedWeightKg = (suggested * 10.0).roundToInt() / 10.0
+            suggestedWeightKg = finalSuggested
         )
     }
 }

@@ -159,4 +159,14 @@ class PlateCalculatorTest {
         )
         assertEquals("[20/20] kg", result)
     }
+
+    @Test
+    fun calculatePlates_nanAndInfiniteInputs_handledGracefully() {
+        val result = PlateCalculator.calculatePlates(Double.NaN)
+        assertTrue(result.platesPerSide.isEmpty())
+        assertEquals(0.0, result.weightPerSide, 0.001)
+
+        val formatResult = PlateCalculator.formatCompactPlatesPerSide(Double.NaN)
+        assertEquals(null, formatResult)
+    }
 }

@@ -26,10 +26,12 @@ object CardioCalculator {
      * Returns null if distance is non-positive or duration is non-positive.
      */
     fun calculatePaceSecondsPerUnit(durationSeconds: Int, distanceKm: Double, distanceUnit: com.kveld9.trackgym.domain.model.DistanceUnit = com.kveld9.trackgym.domain.model.DistanceUnit.KM): Int? {
-        if (durationSeconds <= 0 || distanceKm <= 0.0) return null
+        if (durationSeconds <= 0 || !distanceKm.isFinite() || distanceKm <= 0.0) return null
         val distanceInUnits = distanceUnit.fromKm(distanceKm)
-        if (distanceInUnits <= 0.0) return null
-        return (durationSeconds / distanceInUnits).roundToInt()
+        if (!distanceInUnits.isFinite() || distanceInUnits <= 0.0) return null
+        val paceDouble = durationSeconds / distanceInUnits
+        if (!paceDouble.isFinite() || paceDouble > Int.MAX_VALUE) return null
+        return paceDouble.roundToInt()
     }
 
     /**
@@ -71,9 +73,12 @@ object CardioCalculator {
         met: Double = DEFAULT_CARDIO_MET
     ): Int {
         if (durationSeconds <= 0) return 0
-        val effectiveWeight = if (bodyWeightKg > 0.0) bodyWeightKg else DEFAULT_FALLBACK_BODYWEIGHT_KG
+        val effectiveWeight = if (bodyWeightKg.isFinite() && bodyWeightKg > 0.0) bodyWeightKg else DEFAULT_FALLBACK_BODYWEIGHT_KG
+        val effectiveMet = if (met.isFinite() && met > 0.0) met else DEFAULT_CARDIO_MET
         val durationMinutes = durationSeconds / 60.0
-        val calories = met * 3.5 * effectiveWeight / 200.0 * durationMinutes
+        val calories = effectiveMet * 3.5 * effectiveWeight / 200.0 * durationMinutes
+        if (!calories.isFinite() || calories <= 0.0) return 0
+        if (calories > Int.MAX_VALUE) return Int.MAX_VALUE
         return calories.roundToInt().coerceAtLeast(0)
     }
 }

@@ -30,10 +30,12 @@ object OneRepMaxCalculator {
         reps: Int,
         formula: OneRepMaxFormula = OneRepMaxFormula.EPLEY
     ): Double {
-        if (weightKg <= 0.0 || reps <= 0) return 0.0
+        if (!weightKg.isFinite() || weightKg <= 0.0 || reps <= 0) return 0.0
         if (reps == 1) return weightKg
 
         val raw = computeRaw1RM(weightKg, reps, formula)
+        if (!raw.isFinite() || raw <= 0.0) return 0.0
+        if (raw * 10.0 > Int.MAX_VALUE) return raw
         return (raw * 10.0).roundToInt() / 10.0
     }
 

@@ -17,7 +17,8 @@ object DeloadGenerator {
      */
     fun calculateDeloadSets(baseSets: Int, volumeReductionPct: Double = DEFAULT_VOLUME_REDUCTION_PCT): Int {
         if (baseSets <= 0) return 1
-        val multiplier = (1.0 - (volumeReductionPct / 100.0)).coerceIn(0.2, 0.9)
+        val safePct = if (volumeReductionPct.isFinite()) volumeReductionPct else DEFAULT_VOLUME_REDUCTION_PCT
+        val multiplier = (1.0 - (safePct / 100.0)).coerceIn(0.2, 0.9)
         val calculated = (baseSets * multiplier).roundToInt()
         return max(1, calculated)
     }
@@ -31,11 +32,12 @@ object DeloadGenerator {
         loadReductionPct: Double = DEFAULT_LOAD_REDUCTION_PCT,
         stepKg: Double = 0.5
     ): Double {
-        if (baseWeightKg <= 0.0) return 0.0
-        val multiplier = (1.0 - (loadReductionPct / 100.0)).coerceIn(0.4, 0.95)
+        if (!baseWeightKg.isFinite() || baseWeightKg <= 0.0) return 0.0
+        val safePct = if (loadReductionPct.isFinite()) loadReductionPct else DEFAULT_LOAD_REDUCTION_PCT
+        val multiplier = (1.0 - (safePct / 100.0)).coerceIn(0.4, 0.95)
         val raw = baseWeightKg * multiplier
-        val step = if (stepKg <= 0.0) 0.5 else stepKg
+        val step = if (stepKg.isFinite() && stepKg > 0.0) stepKg else 0.5
         val rounded = (kotlin.math.round(raw / step) * step)
-        return max(0.0, rounded)
+        return if (rounded.isFinite()) max(0.0, rounded) else 0.0
     }
 }

@@ -19,7 +19,7 @@ object PersonalRecordDetector {
         timestamp: Long = System.currentTimeMillis(),
         formula: OneRepMaxFormula = OneRepMaxFormula.EPLEY
     ): List<PersonalRecord> {
-        if (!currentSet.isCompleted || currentSet.weightKg <= 0.0 || currentSet.reps <= 0 || currentSet.setType == SetType.WARMUP) {
+        if (!currentSet.isCompleted || !currentSet.weightKg.isFinite() || currentSet.weightKg <= 0.0 || currentSet.reps <= 0 || currentSet.setType == SetType.WARMUP) {
             return emptyList()
         }
 

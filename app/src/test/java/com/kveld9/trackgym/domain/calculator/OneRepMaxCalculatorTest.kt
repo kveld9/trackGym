@@ -23,6 +23,8 @@ class OneRepMaxCalculatorTest {
         assertEquals(0.0, OneRepMaxCalculator.calculate1RM(0.0, 10), 0.01)
         assertEquals(0.0, OneRepMaxCalculator.calculate1RM(100.0, 0), 0.01)
         assertEquals(0.0, OneRepMaxCalculator.calculate1RM(-50.0, 5), 0.01)
+        assertEquals(0.0, OneRepMaxCalculator.calculate1RM(Double.NaN, 5), 0.01)
+        assertEquals(0.0, OneRepMaxCalculator.calculate1RM(Double.POSITIVE_INFINITY, 5), 0.01)
     }
 
     @Test

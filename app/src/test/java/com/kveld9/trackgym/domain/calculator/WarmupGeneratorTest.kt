@@ -191,4 +191,13 @@ class WarmupGeneratorTest {
         assertEquals(75.0, sets[1].weightKg, 0.001)
         assertEquals(2, sets[1].reps)
     }
+
+    @Test
+    fun generateWarmupSets_nanTargetWeight_returnsEmptyList() {
+        val sets = WarmupGenerator.generateWarmupSets(
+            targetWeightKg = Double.NaN,
+            minWeightKg = 20.0
+        )
+        assertEquals(0, sets.size)
+    }
 }

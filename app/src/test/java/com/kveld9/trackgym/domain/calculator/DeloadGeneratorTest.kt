@@ -47,5 +47,7 @@ class DeloadGeneratorTest {
     fun calculateDeloadWeight_handlesZeroAndEdgeCases() {
         assertEquals(0.0, DeloadGenerator.calculateDeloadWeight(0.0), 0.001)
         assertEquals(0.0, DeloadGenerator.calculateDeloadWeight(-10.0), 0.001)
+        assertEquals(0.0, DeloadGenerator.calculateDeloadWeight(Double.NaN), 0.001)
+        assertEquals(2, DeloadGenerator.calculateDeloadSets(3, Double.NaN))
     }
 }
