@@ -76,6 +76,14 @@ import com.kveld9.trackgym.domain.model.Workout
 import com.kveld9.trackgym.ui.components.MuscleHeatmapCard
 import com.kveld9.trackgym.ui.components.TimeBucketedDistributionCard
 import com.kveld9.trackgym.ui.components.HypertrophyThresholdCard
+import com.kveld9.trackgym.ui.components.WorkoutShareCard
+import com.kveld9.trackgym.ui.components.WorkoutSharePreviewDialog
+import com.kveld9.trackgym.ui.util.ShareProvider
+import com.kveld9.trackgym.domain.model.WorkoutComparison
+import android.graphics.Bitmap
+import android.widget.Toast
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
 import com.kveld9.trackgym.ui.util.LocalKeepEnglishExerciseNames
 import com.kveld9.trackgym.ui.util.displayName
 import com.kveld9.trackgym.ui.viewmodel.GymViewModel
@@ -124,6 +132,11 @@ fun HistoryScreen(
 
     var workoutToSaveAsRoutine by remember { mutableStateOf<Workout?>(null) }
     var routineNameInput by remember { mutableStateOf("") }
+    var workoutToShare by remember { mutableStateOf<Workout?>(null) }
+    var previewBitmap by remember { mutableStateOf<Bitmap?>(null) }
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    val shareChooserTitle = stringResource(R.string.share_chooser_title)
 
     Scaffold(
         topBar = {
@@ -317,6 +330,9 @@ fun HistoryScreen(
                                 onSaveAsRoutine = {
                                     routineNameInput = workout.name
                                     workoutToSaveAsRoutine = workout
+                                },
+                                onShareCard = {
+                                    workoutToShare = workout
                                 }
                             )
                         }
@@ -406,6 +422,54 @@ fun HistoryScreen(
                 TextButton(onClick = { workoutToSaveAsRoutine = null }) {
                     Text(stringResource(R.string.action_cancel), color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
+            }
+        )
+    }
+
+    workoutToShare?.let { workout ->
+        val dummyComparison = remember(workout) {
+            WorkoutComparison(
+                currentWorkout = workout,
+                previousWorkout = null,
+                exerciseComparisons = emptyList(),
+                totalRecordsUnlocked = emptyList(),
+                totalVolumeDeltaKg = 0.0
+            )
+        }
+
+        // Invisible off-screen composable that triggers capture to bitmap
+        Box(modifier = Modifier.size(0.dp)) {
+            WorkoutShareCard(
+                comparison = dummyComparison,
+                weightUnit = weightUnit,
+                onCapture = { bitmap ->
+                    previewBitmap = bitmap
+                    workoutToShare = null
+                }
+            )
+        }
+    }
+
+    previewBitmap?.let { bitmap ->
+        WorkoutSharePreviewDialog(
+            bitmap = bitmap,
+            onDownload = {
+                coroutineScope.launch {
+                    val success = ShareProvider.saveBitmapToGallery(context, bitmap)
+                    Toast.makeText(
+                        context,
+                        if (success) R.string.toast_image_saved else R.string.toast_image_save_failed,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            },
+            onShare = {
+                coroutineScope.launch {
+                    ShareProvider.shareBitmap(context, bitmap, shareChooserTitle)
+                }
+            },
+            onDismiss = {
+                previewBitmap = null
             }
         )
     }
@@ -580,7 +644,8 @@ fun WorkoutHistoryCard(
     workout: Workout,
     weightUnit: WeightUnit = WeightUnit.KG,
     onClick: () -> Unit,
-    onSaveAsRoutine: () -> Unit
+    onSaveAsRoutine: () -> Unit,
+    onShareCard: () -> Unit = {}
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
     val dateFormat = SimpleDateFormat("EEEE, d MMMM", Locale.getDefault())
@@ -635,6 +700,13 @@ fun WorkoutHistoryCard(
                                 onClick = {
                                     menuExpanded = false
                                     onSaveAsRoutine()
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.action_share_image), color = MaterialTheme.colorScheme.onSurface) },
+                                onClick = {
+                                    menuExpanded = false
+                                    onShareCard()
                                 }
                             )
                         }

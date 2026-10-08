@@ -42,6 +42,7 @@
   - Direct weekly muscle set volume versus hypertrophy landmarks (`HypertrophyVolumeEngine`) comparing direct sets against evidence-based ranges (10–20 weekly sets).
   - Configurable volume metrics: dumbbell volume doubling and optional warm-up set exclusion.
   - Workout export as a structured prompt for LLM analysis.
+  - High-contrast OLED shareable workout cards (`WorkoutShareCard` & `WorkoutSharePreviewDialog`) with full metrics breakdown, PR highlights, and one-tap Gallery export or system share sheet.
 - **Automated Personal Record (PR) Detection**:
   - Real-time detection upon checking off each completed set.
   - Tracks milestones: **Max Weight**, **Reps Record at a given weight**, **Best Estimated 1RM**, and **Max Set Volume**.
