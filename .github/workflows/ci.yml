@@ -53,7 +53,16 @@ jobs:
       # PR Workflow: Unit Tests, Release Build (R8) & Detekt
       - name: Run Unit Tests, Release Build & Detekt (PR)
         if: github.event_name == 'pull_request'
-        run: ./gradlew testDebugUnitTest assembleRelease detekt
+        env:
+          KEYSTORE_PATH: ${{ runner.temp }}/pr-signing.jks
+          KEYSTORE_PASSWORD: pr-only
+          KEY_ALIAS: pr-only
+          KEY_PASSWORD: pr-only
+        run: |
+          # Throwaway key: PR builds never receive release secrets and the runner has no debug keystore.
+          keytool -genkeypair -keystore "$KEYSTORE_PATH" -alias "$KEY_ALIAS" -keyalg RSA -keysize 2048 -validity 1 \
+            -storepass "$KEYSTORE_PASSWORD" -keypass "$KEY_PASSWORD" -dname "CN=TrackGym PR Build"
+          ./gradlew testDebugUnitTest assembleRelease detekt
 
       # Main Workflow: 1. Compute Semantic Version & Changelog
       - name: Compute Semantic Version & Changelog

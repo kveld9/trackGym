@@ -76,7 +76,7 @@ Guardrails: never run `adb uninstall`, `pm clear`, or any action that wipes app 
 ## 4. CI/CD & AUTOMATED RELEASES PROTOCOL
 
 - **Single-Pass Pipeline**: `.github/workflows/ci.yml` runs on `ubuntu-latest`.
-- **Pull Requests**: Runs unit tests, detekt, and the R8-minified release build (`./gradlew testDebugUnitTest assembleRelease detekt`), signed with the debug key when no keystore secrets are available.
+- **Pull Requests**: Runs unit tests, detekt, and the R8-minified release build (`./gradlew testDebugUnitTest assembleRelease detekt`), signed with a throwaway keystore generated per run (PR builds never receive release secrets).
 - **Secret Scan**: `.github/workflows/secret-scan.yml` runs Gitleaks over the pushed or pull-request commits on `main` and fails on any detected secret.
 - **Main Branch Push**:
   1. Computes Semantic Versioning from Conventional Commits (`feat!:`, `BREAKING CHANGE` -> Major, `feat:` -> Minor, `fix:`/other -> Patch).
