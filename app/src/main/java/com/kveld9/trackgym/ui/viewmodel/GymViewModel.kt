@@ -438,7 +438,9 @@ class GymViewModel(
         _activeWorkout.update { current ->
             current?.copy(
                 exercises = current.exercises.map { we ->
-                    if (we.id == exerciseId) we.copy(notes = notes) else we
+                    if (we.exercise.id == exerciseId) {
+                        we.copy(exercise = we.exercise.copy(notes = notes))
+                    } else we
                 }
             )
         }

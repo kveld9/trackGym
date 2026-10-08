@@ -2704,14 +2704,23 @@ fun SetRowItem(
         )
     }
 
+    val currentSetState by androidx.compose.runtime.rememberUpdatedState(set)
+    val currentOnUpdateSet by androidx.compose.runtime.rememberUpdatedState(onUpdateSet)
     LaunchedEffect(isStopwatchRunning) {
         if (isStopwatchRunning) {
+            var elapsed = currentSetState.durationSeconds ?: currentSetState.reps
             while (isStopwatchRunning) {
                 kotlinx.coroutines.delay(1000)
-                val current = (set.durationSeconds ?: set.reps) + 1
-                val distKm = set.distanceKm ?: 0.0
-                val cal = CardioCalculator.calculateCaloriesBurned(current, userBodyWeightKg)
-                onUpdateSet(set.copy(durationSeconds = current, reps = current, caloriesBurned = if (isCardio) cal else set.caloriesBurned))
+                elapsed++
+                val cal = CardioCalculator.calculateCaloriesBurned(elapsed, userBodyWeightKg)
+                val latest = currentSetState
+                currentOnUpdateSet(
+                    latest.copy(
+                        durationSeconds = elapsed,
+                        reps = elapsed,
+                        caloriesBurned = if (isCardio) cal else latest.caloriesBurned
+                    )
+                )
             }
         }
     }
