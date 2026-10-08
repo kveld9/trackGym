@@ -279,6 +279,8 @@
     <!-- Rest Timer -->
     <string name="rest_timer_title">Rest Timer</string>
     <string name="rest_timer_skip">Skip</string>
+    <string name="rest_timer_pause">Pause</string>
+    <string name="rest_timer_resume">Resume</string>
     <string name="rest_timer_add_15">+15s</string>
     <string name="rest_timer_minus_15">-15s</string>
     <string name="rest_timer_add_30">+30s</string>

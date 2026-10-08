@@ -279,6 +279,8 @@
     <!-- Rest Timer -->
     <string name="rest_timer_title">Temporizador de descanso</string>
     <string name="rest_timer_skip">Saltar</string>
+    <string name="rest_timer_pause">Pausar</string>
+    <string name="rest_timer_resume">Reanudar</string>
     <string name="rest_timer_add_15">+15s</string>
     <string name="rest_timer_minus_15">-15s</string>
     <string name="rest_timer_add_30">+30s</string>

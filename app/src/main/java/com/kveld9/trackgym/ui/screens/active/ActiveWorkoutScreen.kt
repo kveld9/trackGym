@@ -1924,7 +1924,7 @@ fun FloatingRestTimer(
                     ) {
                         Icon(
                             imageVector = if (isRunning) Icons.Default.Pause else Icons.Default.PlayArrow,
-                            contentDescription = if (isRunning) "Pause" else "Resume",
+                            contentDescription = if (isRunning) stringResource(R.string.rest_timer_pause) else stringResource(R.string.rest_timer_resume),
                             tint = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.size(20.dp)
                         )
