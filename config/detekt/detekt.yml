@@ -1,0 +1,6 @@
+# Overrides on top of the detekt default rule set.
+naming:
+  FunctionNaming:
+    # Jetpack Compose functions use PascalCase by convention.
+    ignoreAnnotated:
+      - "Composable"

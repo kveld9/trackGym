@@ -26,6 +26,7 @@
 | Sensor | Linux Command | Scope / Purpose |
 | :--- | :--- | :--- |
 | **Unit Tests** | `./gradlew testDebugUnitTest` | Verifies pure domain calculations (1RM, PR detection, comparison deltas). Fast and deterministic. |
+| **Static Analysis** | `./gradlew detekt` | Runs detekt with `config/detekt/detekt.yml` against `app/detekt-baseline.xml`. Fails on findings not in the baseline. Regenerate the baseline only for intentional suppressions: `./gradlew detektBaseline`. |
 | **Assemble Debug** | `./gradlew assembleDebug` | Compiles debug APK, validates KSP, Compose compiler, and resource packaging. |
 | **Git Status** | `git status` | Read-only check of working tree status and delta isolation. |
 
@@ -75,7 +76,7 @@ Guardrails: never run `adb uninstall`, `pm clear`, or any action that wipes app 
 ## 4. CI/CD & AUTOMATED RELEASES PROTOCOL
 
 - **Single-Pass Pipeline**: `.github/workflows/ci.yml` runs on `ubuntu-latest`.
-- **Pull Requests**: Runs unit tests and the R8-minified release build (`./gradlew testDebugUnitTest assembleRelease`), signed with the debug key when no keystore secrets are available.
+- **Pull Requests**: Runs unit tests, detekt, and the R8-minified release build (`./gradlew testDebugUnitTest assembleRelease detekt`), signed with the debug key when no keystore secrets are available.
 - **Secret Scan**: `.github/workflows/secret-scan.yml` runs Gitleaks over the pushed or pull-request commits on `main` and fails on any detected secret.
 - **Main Branch Push**:
   1. Computes Semantic Versioning from Conventional Commits (`feat!:`, `BREAKING CHANGE` -> Major, `feat:` -> Minor, `fix:`/other -> Patch).

@@ -134,6 +134,9 @@ TrackGym is built to be easily localizable by the community. All UI text is stri
 # Run domain unit tests
 ./gradlew testDebugUnitTest
 
+# Run static analysis (detekt, baseline in app/detekt-baseline.xml)
+./gradlew detekt
+
 # Assemble debug APK
 ./gradlew assembleDebug
 

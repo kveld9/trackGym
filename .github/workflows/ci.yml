@@ -50,10 +50,10 @@ jobs:
           ./gradlew syncHarness
           git diff --exit-code AGENTS.md || (echo "Harness is out of sync with dependencies! Run ./gradlew syncHarness before committing." && exit 1)
 
-      # PR Workflow: Unit Tests & Release Build (R8)
-      - name: Run Unit Tests & Release Build (PR)
+      # PR Workflow: Unit Tests, Release Build (R8) & Detekt
+      - name: Run Unit Tests, Release Build & Detekt (PR)
         if: github.event_name == 'pull_request'
-        run: ./gradlew testDebugUnitTest assembleRelease
+        run: ./gradlew testDebugUnitTest assembleRelease detekt
 
       # Main Workflow: 1. Compute Semantic Version & Changelog
       - name: Compute Semantic Version & Changelog
@@ -136,7 +136,7 @@ jobs:
           KEY_ALIAS: ${{ secrets.KEY_ALIAS || env.DEFAULT_KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD || env.DEFAULT_KEY_PASSWORD }}
         run: |
-          ./gradlew testDebugUnitTest assembleRelease assembleDebug \
+          ./gradlew testDebugUnitTest detekt assembleRelease assembleDebug \
             -PversionName="${{ steps.semver.outputs.version }}" \
             -PversionCode="${{ steps.semver.outputs.version_code }}"
 
