@@ -40,6 +40,13 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ui.error.ErrorActivity"
+            android:process=":error_process"
+            android:exported="false"
+            android:label="@string/error_title"
+            android:theme="@style/Theme.TrackGym" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"

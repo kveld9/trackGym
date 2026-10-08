@@ -720,4 +720,13 @@
     <string name="privacy_storage_desc">Se utiliza únicamente cuando decides explícitamente exportar o importar tus datos mediante Storage Access Framework (SAF).</string>
     <string name="privacy_notifications_title">Notificaciones de Descanso</string>
     <string name="privacy_notifications_desc">Se usan exclusivamente para mostrar el cronómetro y controles interactivos del descanso durante una sesión activa.</string>
+
+    <!-- Application Error Recovery (Item 91) -->
+    <string name="error_title">Error de la Aplicación</string>
+    <string name="error_occurred_title">Ocurrió un error inesperado</string>
+    <string name="error_occurred_desc">TrackGym se detuvo de forma segura para proteger tus datos de cualquier corrupción. Puedes reiniciar la app o copiar los detalles a continuación para reportar el problema.</string>
+    <string name="error_action_restart">Reiniciar TrackGym</string>
+    <string name="error_action_copy">Copiar Informe</string>
+    <string name="error_action_close">Cerrar</string>
+    <string name="error_copied_toast">Informe de error copiado al portapapeles</string>
 </resources>

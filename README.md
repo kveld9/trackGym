@@ -50,6 +50,7 @@
     - Dynamic Color (Material You / Monet) support on Android 12+ (API 31+).
     - Direct access from Android system app settings (`ACTION_APPLICATION_PREFERENCES`).
     - Android Privacy Dashboard transparency screen (`VIEW_PERMISSION_USAGE`).
+    - Global uncaught exception handler with isolated crash recovery screen (`:error_process`).
 - **Backup & Restore**:
   - Offline-first storage with Room Database (SQLite).
   - Storage Access Framework (SAF) JSON export/import with bounded stream parsing (10 MB limit).
