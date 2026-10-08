@@ -122,6 +122,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -192,7 +193,7 @@ fun ActiveWorkoutScreen(
 ) {
     val activeWorkout by viewModel.activeWorkout.collectAsStateWithLifecycle()
     val previousSetsMap by viewModel.previousSetsMap.collectAsStateWithLifecycle()
-    val timerSeconds by viewModel.timerSeconds.collectAsStateWithLifecycle()
+    val timerSecondsState = viewModel.timerSeconds.collectAsStateWithLifecycle()
     val recentPr by viewModel.recentlyUnlockedPr.collectAsStateWithLifecycle()
     val allExercises by viewModel.allExercises.collectAsStateWithLifecycle()
     val weightUnit by viewModel.weightUnit.collectAsStateWithLifecycle()
@@ -204,7 +205,7 @@ fun ActiveWorkoutScreen(
     val activeGymProfile by viewModel.activeGymProfile.collectAsStateWithLifecycle()
 
     // Rest Timer state
-    val restRemaining by viewModel.restTimerRemainingSeconds.collectAsStateWithLifecycle()
+    val restRemainingState = viewModel.restTimerRemainingSeconds.collectAsStateWithLifecycle()
     val restTotal by viewModel.restTimerTotalSeconds.collectAsStateWithLifecycle()
     val restIsRunning by viewModel.restTimerIsRunning.collectAsStateWithLifecycle()
 
@@ -260,16 +261,17 @@ fun ActiveWorkoutScreen(
         }
     }
 
-    LaunchedEffect(restRemaining, restTotal) {
-        val remaining = restRemaining
-        if (remaining != null && remaining > 0) {
-            com.kveld9.trackgym.service.RestTimerNotificationManager.showTimerNotification(
-                context = context,
-                remainingSeconds = remaining,
-                totalSeconds = restTotal
-            )
-        } else if (remaining == null) {
-            com.kveld9.trackgym.service.RestTimerNotificationManager.dismissNotification(context)
+    LaunchedEffect(restTotal) {
+        snapshotFlow { restRemainingState.value }.collect { remaining ->
+            if (remaining != null && remaining > 0) {
+                com.kveld9.trackgym.service.RestTimerNotificationManager.showTimerNotification(
+                    context = context,
+                    remainingSeconds = remaining,
+                    totalSeconds = restTotal
+                )
+            } else if (remaining == null) {
+                com.kveld9.trackgym.service.RestTimerNotificationManager.dismissNotification(context)
+            }
         }
     }
 
@@ -356,7 +358,7 @@ fun ActiveWorkoutScreen(
             snackbarHost = { SnackbarHost(snackbarHostState) },
             topBar = {
                 ActiveWorkoutTopBar(
-                    timerSeconds = timerSeconds,
+                    timerSeconds = { timerSecondsState.value },
                     scrollBehavior = scrollBehavior,
                     onFinishClick = { showFinishDialog = true },
                     onCancelClick = { showDiscardDialog = true },
@@ -367,6 +369,7 @@ fun ActiveWorkoutScreen(
                 )
             },
             bottomBar = {
+                val restRemaining = restRemainingState.value
                 if (restRemaining != null) {
                     FloatingRestTimer(
                         remainingSeconds = restRemaining ?: 0,
@@ -2069,15 +2072,16 @@ fun FloatingRestTimer(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ActiveWorkoutTopBar(
-    timerSeconds: Long,
+    timerSeconds: () -> Long,
     scrollBehavior: TopAppBarScrollBehavior? = null,
     onFinishClick: () -> Unit,
     onCancelClick: () -> Unit,
     onSaveAsRoutineClick: () -> Unit
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
-    val minutes = timerSeconds / 60
-    val seconds = timerSeconds % 60
+    val elapsed = timerSeconds()
+    val minutes = elapsed / 60
+    val seconds = elapsed % 60
     val timeFormatted = String.format("%02d:%02d", minutes, seconds)
 
     TopAppBar(
