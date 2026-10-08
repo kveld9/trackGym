@@ -23,6 +23,10 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import com.kveld9.trackgym.domain.model.StandardContextTag
+import com.kveld9.trackgym.domain.model.WorkoutContextTagParser
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -279,6 +283,7 @@ fun ActiveWorkoutScreen(
     var showDiscardDialog by remember { mutableStateOf(false) }
     var showSaveRoutineDialog by remember { mutableStateOf(false) }
     var finishNotes by remember { mutableStateOf("") }
+    var selectedContextTags by remember { mutableStateOf<List<String>>(emptyList()) }
     var detachRoutineFromWorkout by remember { mutableStateOf(false) }
     var backdateCompletionTimestamp by remember { mutableStateOf<Long?>(null) }
     var routineNameInput by remember { mutableStateOf("") }
@@ -688,6 +693,35 @@ fun ActiveWorkoutScreen(
                         )
                     )
 
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        text = stringResource(R.string.label_context_tags),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    @OptIn(ExperimentalLayoutApi::class)
+                    FlowRow(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        StandardContextTag.entries.forEach { tag ->
+                            val isSelected = selectedContextTags.contains(tag.tagKey)
+                            FilterChip(
+                                selected = isSelected,
+                                onClick = {
+                                    selectedContextTags = WorkoutContextTagParser.toggleTag(selectedContextTags, tag.tagKey)
+                                },
+                                label = { Text(stringResource(tag.labelRes), fontSize = 11.sp) },
+                                colors = FilterChipDefaults.filterChipColors(
+                                    selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                                    selectedLabelColor = MaterialTheme.colorScheme.primary
+                                )
+                            )
+                        }
+                    }
+
                     val activeDateMillis = backdateCompletionTimestamp ?: System.currentTimeMillis()
                     val formattedDate = remember(activeDateMillis) {
                         java.text.SimpleDateFormat("yyyy-MM-dd HH:mm", java.util.Locale.getDefault())
@@ -788,12 +822,13 @@ fun ActiveWorkoutScreen(
                 Button(
                     onClick = {
                         showFinishDialog = false
+                        val finalNotes = WorkoutContextTagParser.embedTagsIntoNotes(selectedContextTags, finishNotes)
                         val linkedRoutineId = activeWorkout?.routineId
                         if (linkedRoutineId != null && !detachRoutineFromWorkout) {
                             when (routineUpdateMode) {
                                 com.kveld9.trackgym.domain.model.RoutineUpdateMode.ALWAYS -> {
                                     viewModel.finishWorkout(
-                                        notes = finishNotes,
+                                        notes = finalNotes,
                                         syncRoutine = true,
                                         detachRoutine = false,
                                         completedAtTimestamp = backdateCompletionTimestamp
@@ -803,7 +838,7 @@ fun ActiveWorkoutScreen(
                                 }
                                 com.kveld9.trackgym.domain.model.RoutineUpdateMode.NEVER -> {
                                     viewModel.finishWorkout(
-                                        notes = finishNotes,
+                                        notes = finalNotes,
                                         syncRoutine = false,
                                         detachRoutine = false,
                                         completedAtTimestamp = backdateCompletionTimestamp
@@ -817,7 +852,7 @@ fun ActiveWorkoutScreen(
                             }
                         } else {
                             viewModel.finishWorkout(
-                                notes = finishNotes,
+                                notes = finalNotes,
                                 syncRoutine = false,
                                 detachRoutine = detachRoutineFromWorkout,
                                 completedAtTimestamp = backdateCompletionTimestamp
@@ -841,11 +876,12 @@ fun ActiveWorkoutScreen(
 
     if (showRoutineSyncPrompt) {
         val routineName = activeWorkout?.name.orEmpty()
+        val finalNotes = WorkoutContextTagParser.embedTagsIntoNotes(selectedContextTags, finishNotes)
         AlertDialog(
             onDismissRequest = {
                 showRoutineSyncPrompt = false
                 viewModel.finishWorkout(
-                    notes = finishNotes,
+                    notes = finalNotes,
                     syncRoutine = false,
                     detachRoutine = detachRoutineFromWorkout,
                     completedAtTimestamp = backdateCompletionTimestamp
@@ -872,7 +908,7 @@ fun ActiveWorkoutScreen(
                     onClick = {
                         showRoutineSyncPrompt = false
                         viewModel.finishWorkout(
-                            notes = finishNotes,
+                            notes = finalNotes,
                             syncRoutine = true,
                             detachRoutine = detachRoutineFromWorkout,
                             completedAtTimestamp = backdateCompletionTimestamp
@@ -890,7 +926,7 @@ fun ActiveWorkoutScreen(
                     onClick = {
                         showRoutineSyncPrompt = false
                         viewModel.finishWorkout(
-                            notes = finishNotes,
+                            notes = finalNotes,
                             syncRoutine = false,
                             detachRoutine = detachRoutineFromWorkout,
                             completedAtTimestamp = backdateCompletionTimestamp

@@ -756,4 +756,17 @@
     <!-- Dynamic Color Theming (Item 90) -->
     <string name="setting_dynamic_color_title">Dynamic color</string>
     <string name="setting_dynamic_color_desc">Apply colors based on your wallpaper (Android 12+)</string>
+
+    <!-- Workout Context Tags (Item 106) -->
+    <string name="label_context_tags">Session Context Tags</string>
+    <string name="context_tag_fasted">Fasted</string>
+    <string name="context_tag_low_sleep">Sleep &lt;6h</string>
+    <string name="context_tag_joint_pain">Joint Pain</string>
+    <string name="context_tag_pre_workout">Pre-Workout</string>
+    <string name="context_tag_high_stress">High Stress</string>
+    <string name="context_tag_competition">Competition</string>
+    <string name="context_tag_caloric_deficit">Caloric Deficit</string>
+    <string name="context_tag_deload">Deload Feeling</string>
+    <string name="filter_by_context_tag">Filter by Context</string>
+    <string name="chip_all_context_tags">All Contexts</string>
 </resources>

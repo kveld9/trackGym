@@ -48,6 +48,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
+import com.kveld9.trackgym.domain.model.StandardContextTag
+import com.kveld9.trackgym.domain.model.WorkoutContextTagParser
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
@@ -103,6 +107,18 @@ fun HistoryScreen(
         })
     }
     var selectedDateKey by remember { mutableStateOf<String?>(null) }
+    var selectedContextFilter by remember { mutableStateOf<String?>(null) }
+
+    val filteredCompletedWorkouts = remember(completedWorkouts, selectedContextFilter) {
+        if (selectedContextFilter == null) {
+            completedWorkouts
+        } else {
+            completedWorkouts.filter { workout ->
+                val tags = WorkoutContextTagParser.extractTagsFromNotes(workout.notes)
+                tags.any { it.equals(selectedContextFilter, ignoreCase = true) }
+            }
+        }
+    }
 
     var workoutToSaveAsRoutine by remember { mutableStateOf<Workout?>(null) }
     var routineNameInput by remember { mutableStateOf("") }
@@ -208,7 +224,41 @@ fun HistoryScreen(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(6.dp))
+                // Context Tags Filter Bar
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState())
+                        .padding(horizontal = 16.dp, vertical = 2.dp),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    FilterChip(
+                        selected = selectedContextFilter == null,
+                        onClick = { selectedContextFilter = null },
+                        label = { Text(stringResource(R.string.chip_all_context_tags), fontSize = 11.sp) },
+                        colors = FilterChipDefaults.filterChipColors(
+                            selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                            selectedLabelColor = MaterialTheme.colorScheme.primary
+                        )
+                    )
+                    StandardContextTag.entries.forEach { tag ->
+                        val isSelected = selectedContextFilter.equals(tag.tagKey, ignoreCase = true)
+                        FilterChip(
+                            selected = isSelected,
+                            onClick = {
+                                selectedContextFilter = if (isSelected) null else tag.tagKey
+                            },
+                            label = { Text(stringResource(tag.labelRes), fontSize = 11.sp) },
+                            colors = FilterChipDefaults.filterChipColors(
+                                selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                                selectedLabelColor = MaterialTheme.colorScheme.primary
+                            )
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(4.dp))
 
                 if (!isCalendarView) {
                     LazyColumn(
@@ -239,7 +289,7 @@ fun HistoryScreen(
                             )
                         }
 
-                        items(completedWorkouts, key = { it.id }) { workout ->
+                        items(filteredCompletedWorkouts, key = { it.id }) { workout ->
                             WorkoutHistoryCard(
                                 workout = workout,
                                 weightUnit = weightUnit,
