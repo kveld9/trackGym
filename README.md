@@ -143,3 +143,7 @@ TrackGym is built to be easily localizable by the community. All UI text is stri
 # Install on connected device
 ./gradlew installDebug
 ```
+
+## License
+
+TrackGym is licensed under the [GNU General Public License v3.0](LICENSE).
