@@ -378,8 +378,13 @@ fun ExerciseComparisonCard(
                 Column(modifier = Modifier.weight(1f)) {
                     Text(stringResource(R.string.badge_previous), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 10.sp, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(2.dp))
+                    val prevText = when (exerciseComparison.previousSummary) {
+                        "First time" -> stringResource(R.string.summary_first_time)
+                        "No completed sets" -> stringResource(R.string.summary_no_sets)
+                        else -> exerciseComparison.previousSummary
+                    }
                     Text(
-                        text = exerciseComparison.previousSummary,
+                        text = prevText,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 13.sp,
                         fontWeight = FontWeight.Medium
@@ -396,8 +401,13 @@ fun ExerciseComparisonCard(
                 Column(modifier = Modifier.weight(1f), horizontalAlignment = Alignment.End) {
                     Text(stringResource(R.string.badge_current), color = MaterialTheme.colorScheme.primary, fontSize = 10.sp, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(2.dp))
+                    val currText = when (exerciseComparison.currentSummary) {
+                        "First time" -> stringResource(R.string.summary_first_time)
+                        "No completed sets" -> stringResource(R.string.summary_no_sets)
+                        else -> exerciseComparison.currentSummary
+                    }
                     Text(
-                        text = exerciseComparison.currentSummary,
+                        text = currText,
                         color = MaterialTheme.colorScheme.onSurface,
                         fontSize = 13.sp,
                         fontWeight = FontWeight.Bold
