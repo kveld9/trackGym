@@ -18,7 +18,9 @@ data class TrainingConsistencyStats(
     val currentStreakWeeks: Int,
     val totalWorkoutsLast30Days: Int,
     val totalVolumeLast30Days: Double,
-    val recentDays: List<DayActivity>
+    val recentDays: List<DayActivity>,
+    val bestStreakWeeks: Int = currentStreakWeeks,
+    val isStreakActiveThisWeek: Boolean = false
 )
 
 object TrainingConsistencyEngine {
@@ -40,10 +42,12 @@ object TrainingConsistencyEngine {
         val totalVolumeLast30Days = last30Workouts.sumOf { it.totalVolume }
 
         val recentDays = generateRecentDays(referenceTimestamp, workoutsByDay, dateFormat)
-        val streakWeeks = calculateWeeklyStreak(validWorkouts, referenceTimestamp)
+        val streakResult = WeekStreakEngine.calculateStreak(validWorkouts, referenceTimestamp)
 
         return TrainingConsistencyStats(
-            currentStreakWeeks = streakWeeks,
+            currentStreakWeeks = streakResult.currentStreakWeeks,
+            bestStreakWeeks = streakResult.bestStreakWeeks,
+            isStreakActiveThisWeek = streakResult.isStreakActiveThisWeek,
             totalWorkoutsLast30Days = totalWorkoutsLast30Days,
             totalVolumeLast30Days = totalVolumeLast30Days,
             recentDays = recentDays
@@ -110,44 +114,5 @@ object TrainingConsistencyEngine {
         if (count == 1 && volume < 5000) return 1
         if (count == 1) return 2
         return 3
-    }
-
-    private fun calculateWeeklyStreak(
-        workouts: List<Workout>,
-        referenceTimestamp: Long
-    ): Int {
-        if (workouts.isEmpty()) return 0
-
-        val cal = Calendar.getInstance()
-        val activeWeeks = mutableSetOf<Pair<Int, Int>>()
-        for (wo in workouts) {
-            cal.timeInMillis = wo.completedAt ?: wo.startedAt
-            activeWeeks.add(cal.get(Calendar.YEAR) to cal.get(Calendar.WEEK_OF_YEAR))
-        }
-
-        val checkCal = Calendar.getInstance().apply { timeInMillis = referenceTimestamp }
-        val currentKey = checkCal.get(Calendar.YEAR) to checkCal.get(Calendar.WEEK_OF_YEAR)
-
-        if (!activeWeeks.contains(currentKey)) {
-            checkCal.add(Calendar.WEEK_OF_YEAR, -1)
-            val prevKey = checkCal.get(Calendar.YEAR) to checkCal.get(Calendar.WEEK_OF_YEAR)
-            if (!activeWeeks.contains(prevKey)) return 0
-        }
-
-        return countConsecutiveWeeks(checkCal, activeWeeks)
-    }
-
-    private fun countConsecutiveWeeks(
-        cal: Calendar,
-        activeWeeks: Set<Pair<Int, Int>>
-    ): Int {
-        var streak = 0
-        while (true) {
-            val key = cal.get(Calendar.YEAR) to cal.get(Calendar.WEEK_OF_YEAR)
-            if (!activeWeeks.contains(key)) break
-            streak++
-            cal.add(Calendar.WEEK_OF_YEAR, -1)
-        }
-        return streak
     }
 }

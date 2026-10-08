@@ -37,7 +37,7 @@
   - Interactive monthly calendar navigation with selectable workout dates and direct day filtering.
   - Work-to-rest time ratio analysis (`1:X` distribution, work vs rest percentages, and progress visualization).
   - Real-time overtraining and junk volume warnings.
-  - Weekly muscle split heatmap and training consistency tracking.
+  - Weekly muscle split heatmap and continuous week streak engine (`WeekStreakEngine`) tracking active and all-time best consecutive training weeks.
   - Configurable volume metrics: dumbbell volume doubling and optional warm-up set exclusion.
   - Workout export as a structured prompt for LLM analysis.
 - **Automated Personal Record (PR) Detection**:

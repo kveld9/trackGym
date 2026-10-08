@@ -333,6 +333,9 @@
     <string name="consistency_legend_less">Menos</string>
     <string name="consistency_legend_more">Más</string>
     <string name="consistency_no_streak">Sin racha activa</string>
+    <string name="consistency_best_streak">Máx: %1$d sem</string>
+    <string name="consistency_streak_this_week_done">Entrenado esta semana</string>
+    <string name="consistency_streak_this_week_pending">Pendiente esta semana</string>
 
     <!-- History View & Selectable Dates Calendar -->
     <string name="history_view_list">Lista</string>

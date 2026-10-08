@@ -333,6 +333,9 @@
     <string name="consistency_legend_less">Less</string>
     <string name="consistency_legend_more">More</string>
     <string name="consistency_no_streak">No active streak</string>
+    <string name="consistency_best_streak">Best: %1$d w</string>
+    <string name="consistency_streak_this_week_done">Trained this week</string>
+    <string name="consistency_streak_this_week_pending">Pending this week</string>
 
     <!-- History View & Selectable Dates Calendar -->
     <string name="history_view_list">List</string>
