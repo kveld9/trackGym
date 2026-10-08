@@ -16,15 +16,24 @@ import java.time.ZoneOffset
 
 class HealthConnectSyncManager(private val context: Context) {
 
-    val permissions = setOf(
-        HealthPermission.getWritePermission(ExerciseSessionRecord::class),
-        HealthPermission.getWritePermission(TotalCaloriesBurnedRecord::class)
-    )
+    val permissions: Set<String> by lazy {
+        try {
+            setOf(
+                HealthPermission.getWritePermission(ExerciseSessionRecord::class),
+                HealthPermission.getWritePermission(TotalCaloriesBurnedRecord::class)
+            )
+        } catch (_: Throwable) {
+            emptySet()
+        }
+    }
 
     fun isAvailable(): Boolean {
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.O) {
+            return false
+        }
         return try {
             HealthConnectClient.getSdkStatus(context) == HealthConnectClient.SDK_AVAILABLE
-        } catch (_: Exception) {
+        } catch (_: Throwable) {
             false
         }
     }

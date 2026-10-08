@@ -28,8 +28,12 @@ class TrackGymApp : Application() {
         com.kveld9.trackgym.data.backup.AutoBackupEngine(this, repository)
     }
 
-    val healthConnectSyncManager: com.kveld9.trackgym.data.health.HealthConnectSyncManager by lazy {
-        com.kveld9.trackgym.data.health.HealthConnectSyncManager(this)
+    val healthConnectSyncManager: com.kveld9.trackgym.data.health.HealthConnectSyncManager? by lazy {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            com.kveld9.trackgym.data.health.HealthConnectSyncManager(this)
+        } else {
+            null
+        }
     }
 
     override fun onCreate() {

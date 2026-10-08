@@ -58,6 +58,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -119,24 +120,30 @@ fun ProgressPhotosCard(
         }
     }
 
-    // Camera Capture setup
-    var tempCameraUri by remember { mutableStateOf<Uri?>(null) }
-    var tempCameraFile by remember { mutableStateOf<File?>(null) }
+    // Camera Capture setup - preserved across process death and orientation changes
+    var tempCameraPath by rememberSaveable { mutableStateOf<String?>(null) }
 
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture()
     ) { success: Boolean ->
-        val uri = tempCameraUri
-        if (success && uri != null) {
-            scope.launch {
-                val savedPath = PhotoStorageManager.savePhotoFromUri(context, uri)
-                // Cleanup temp file
-                tempCameraFile?.delete()
-                if (savedPath != null) {
-                    pendingPhotoPath = savedPath
-                    showAddDialog = true
+        val path = tempCameraPath
+        if (success && path != null) {
+            val file = File(path)
+            if (file.exists()) {
+                val uri = Uri.fromFile(file)
+                scope.launch {
+                    val savedPath = PhotoStorageManager.savePhotoFromUri(context, uri)
+                    file.delete()
+                    tempCameraPath = null
+                    if (savedPath != null) {
+                        pendingPhotoPath = savedPath
+                        showAddDialog = true
+                    }
                 }
             }
+        } else {
+            tempCameraPath?.let { File(it).delete() }
+            tempCameraPath = null
         }
     }
 
@@ -202,13 +209,12 @@ fun ProgressPhotosCard(
                         onClick = {
                             val tempDir = File(context.cacheDir, "shared_images").apply { mkdirs() }
                             val tempFile = File(tempDir, "temp_camera_${System.currentTimeMillis()}.jpg")
-                            tempCameraFile = tempFile
+                            tempCameraPath = tempFile.absolutePath
                             val uri = FileProvider.getUriForFile(
                                 context,
                                 "${context.packageName}.fileprovider",
                                 tempFile
                             )
-                            tempCameraUri = uri
                             cameraLauncher.launch(uri)
                         },
                         modifier = Modifier.size(36.dp)
