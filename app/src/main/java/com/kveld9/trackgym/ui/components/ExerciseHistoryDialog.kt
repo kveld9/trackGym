@@ -79,6 +79,12 @@ fun ExerciseHistoryDialog(
     val lifetimeTotalVolume = remember(history) {
         history.sumOf { it.totalVolumeKg }
     }
+    val lifetimeBestSetVolume = remember(history) {
+        history.maxOfOrNull { it.bestSetVolumeKg } ?: 0.0
+    }
+    val lifetimeBestTime = remember(history) {
+        history.maxOfOrNull { it.bestTimeSeconds } ?: 0
+    }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -116,6 +122,8 @@ fun ExerciseHistoryDialog(
                         lifetimeMaxWeight = lifetimeMaxWeight,
                         lifetimeBest1Rm = lifetimeBest1Rm,
                         lifetimeTotalVolume = lifetimeTotalVolume,
+                        lifetimeBestSetVolume = lifetimeBestSetVolume,
+                        lifetimeBestTime = lifetimeBestTime,
                         totalSessions = history.size,
                         weightUnit = weightUnit
                     )
@@ -159,6 +167,8 @@ private fun LifetimeStatsCard(
     lifetimeMaxWeight: Double,
     lifetimeBest1Rm: Double,
     lifetimeTotalVolume: Double,
+    lifetimeBestSetVolume: Double,
+    lifetimeBestTime: Int,
     totalSessions: Int,
     weightUnit: WeightUnit
 ) {
@@ -196,6 +206,27 @@ private fun LifetimeStatsCard(
                     label = stringResource(R.string.label_total_sessions),
                     value = totalSessions.toString()
                 )
+            }
+
+            if (lifetimeBestSetVolume > 0.0 || lifetimeBestTime > 0) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
+                    if (lifetimeBestSetVolume > 0.0) {
+                        StatMetricColumn(
+                            label = stringResource(R.string.label_best_set_volume),
+                            value = weightUnit.format(lifetimeBestSetVolume, decimals = 0)
+                        )
+                    }
+                    if (lifetimeBestTime > 0) {
+                        StatMetricColumn(
+                            label = stringResource(R.string.label_best_time),
+                            value = com.kveld9.trackgym.domain.util.DurationFormatter.formatSecondsToMmSs(lifetimeBestTime)
+                        )
+                    }
+                }
             }
         }
     }
@@ -266,7 +297,7 @@ private fun ExerciseHistorySessionCard(
 
             Spacer(modifier = Modifier.height(6.dp))
 
-            // Metrics row: Max Weight & Total Volume
+            // Metrics row: Max Weight, Session Volume, Best Set Volume, Time
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -291,12 +322,52 @@ private fun ExerciseHistorySessionCard(
                     border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.secondary.copy(alpha = 0.4f)))
                 ) {
                     Text(
-                        text = "${stringResource(R.string.label_total_volume)}: ${weightUnit.format(entry.totalVolumeKg, decimals = 0)}",
+                        text = "${stringResource(R.string.label_session_volume)}: ${weightUnit.format(entry.totalVolumeKg, decimals = 0)}",
                         color = MaterialTheme.colorScheme.onSecondaryContainer,
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Medium,
                         modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
                     )
+                }
+            }
+
+            if (entry.bestSetVolumeKg > 0.0 || entry.bestTimeSeconds > 0) {
+                Spacer(modifier = Modifier.height(6.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    if (entry.bestSetVolumeKg > 0.0) {
+                        Surface(
+                            shape = RoundedCornerShape(6.dp),
+                            color = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.4f),
+                            border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f)))
+                        ) {
+                            Text(
+                                text = "${stringResource(R.string.label_best_set_volume)}: ${weightUnit.format(entry.bestSetVolumeKg, decimals = 0)}",
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                            )
+                        }
+                    }
+
+                    if (entry.bestTimeSeconds > 0) {
+                        Surface(
+                            shape = RoundedCornerShape(6.dp),
+                            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f),
+                            border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)))
+                        ) {
+                            Text(
+                                text = "${stringResource(R.string.label_best_time)}: ${com.kveld9.trackgym.domain.util.DurationFormatter.formatSecondsToMmSs(entry.bestTimeSeconds)}",
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Medium,
+                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                            )
+                        }
+                    }
                 }
             }
 

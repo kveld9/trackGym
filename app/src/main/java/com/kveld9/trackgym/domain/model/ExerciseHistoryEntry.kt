@@ -11,5 +11,8 @@ data class ExerciseHistoryEntry(
     val totalVolumeKg: Double,
     val completedSetsCount: Int,
     val best1RmKg: Double,
-    val completedSets: List<WorkoutSet>
+    val completedSets: List<WorkoutSet>,
+    val bestSetVolumeKg: Double = 0.0,
+    val bestTimeSeconds: Int = 0,
+    val totalTimeSeconds: Int = 0
 )

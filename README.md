@@ -26,6 +26,7 @@
   - User-defined categories and custom tags management with multi-filtering, in-line tag assignment, and cascading renames/deletions.
   - Typo-tolerant fuzzy exercise search with Spanish diacritic normalization, acronym matching, and score ranking.
   - Manual creation of custom exercises with customizable muscle group, equipment type (*Barbell, Dumbbell, Machine, Cable, Bodyweight*), mechanics, force vector, difficulty level, custom tags, and notes.
+  - Dedicated exercise history view with lifetime stats, session volume, best set volume (`max(weight * reps)`), and isometric time metrics.
 - **Before vs After Workout Comparison**:
   - Direct comparison between the current session and the previous session for the same exercise, contextually prioritizing the same routine template variant.
   - E.g., *Last Thursday you performed 2x8 @ 15.0 kg and this Thursday you performed 2x10 @ 15.0 kg (+2 reps) or 2x8 @ 18.0 kg (+3.0 kg)*.

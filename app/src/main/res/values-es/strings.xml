@@ -678,6 +678,10 @@
     <string name="label_max_weight">Peso Máx.</string>
     <string name="label_best_1rm">Mejor 1RM</string>
     <string name="label_total_volume">Volumen Total</string>
+    <string name="label_best_set_volume">Vol. Mejor Serie</string>
+    <string name="label_session_volume">Vol. Sesión</string>
+    <string name="label_best_time">Mejor Tiempo</string>
+    <string name="label_total_time">Tiempo Total</string>
     <string name="label_total_sessions">Sesiones</string>
     <string name="label_history_sessions">Sesiones Registradas</string>
     <string name="empty_exercise_history_title">Sin historial registrado</string>

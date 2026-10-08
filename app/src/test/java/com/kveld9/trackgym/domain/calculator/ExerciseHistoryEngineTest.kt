@@ -209,4 +209,72 @@ class ExerciseHistoryEngineTest {
         val expected1Rm = OneRepMaxCalculator.calculate1RM(90.0, 10)
         assertEquals(expected1Rm, history[0].best1RmKg, 0.01)
     }
+
+    @Test
+    fun extractHistory_bestSetVolumeAndSessionVolume_computedAccurately() {
+        val workout = Workout(
+            id = 5L,
+            name = "Hypertrophy Bench",
+            isCompleted = true,
+            completedAt = 5000L,
+            exercises = listOf(
+                WorkoutExercise(
+                    id = 5L,
+                    exercise = benchPress,
+                    sets = listOf(
+                        WorkoutSet(id = 8L, setNumber = 1, weightKg = 80.0, reps = 10, isCompleted = true), // 800 kg vol
+                        WorkoutSet(id = 9L, setNumber = 2, weightKg = 100.0, reps = 5, isCompleted = true), // 500 kg vol
+                        WorkoutSet(id = 10L, setNumber = 3, weightKg = 60.0, reps = 15, isCompleted = true)  // 900 kg vol
+                    )
+                )
+            )
+        )
+
+        val history = ExerciseHistoryEngine.extractHistory(
+            exerciseId = 101L,
+            completedWorkouts = listOf(workout)
+        )
+
+        assertEquals(1, history.size)
+        // Best Set Volume is max(800, 500, 900) = 900 kg
+        assertEquals(900.0, history[0].bestSetVolumeKg, 0.01)
+        // Session Volume is sum(800, 500, 900) = 2200 kg
+        assertEquals(2200.0, history[0].totalVolumeKg, 0.01)
+    }
+
+    @Test
+    fun extractHistory_timeMetricsForIsometricAndDurationSets() {
+        val isometricExercise = Exercise(
+            id = 103L,
+            name = "Plank",
+            muscleGroup = MuscleGroup.CORE,
+            category = ExerciseCategory.BODYWEIGHT
+        )
+        val workout = Workout(
+            id = 6L,
+            name = "Core Session",
+            isCompleted = true,
+            completedAt = 6000L,
+            exercises = listOf(
+                WorkoutExercise(
+                    id = 6L,
+                    exercise = isometricExercise,
+                    sets = listOf(
+                        WorkoutSet(id = 11L, setNumber = 1, setType = SetType.DURATION, durationSeconds = 45, isCompleted = true),
+                        WorkoutSet(id = 12L, setNumber = 2, setType = SetType.DURATION, durationSeconds = 60, isCompleted = true),
+                        WorkoutSet(id = 13L, setNumber = 3, setType = SetType.DURATION, durationSeconds = 50, isCompleted = true)
+                    )
+                )
+            )
+        )
+
+        val history = ExerciseHistoryEngine.extractHistory(
+            exerciseId = 103L,
+            completedWorkouts = listOf(workout)
+        )
+
+        assertEquals(1, history.size)
+        assertEquals(60, history[0].bestTimeSeconds)
+        assertEquals(155, history[0].totalTimeSeconds)
+    }
 }
