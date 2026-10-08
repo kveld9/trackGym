@@ -1365,7 +1365,7 @@ fun EmptyWorkoutDashboard(
                                 type = "text/plain"
                             }
                             val shareIntent = Intent.createChooser(sendIntent, routine.name)
-                            context.startActivity(shareIntent)
+                            runCatching { context.startActivity(shareIntent) }
                         },
                         canMoveUp = index > 0,
                         canMoveDown = index < filteredRoutines.size - 1,

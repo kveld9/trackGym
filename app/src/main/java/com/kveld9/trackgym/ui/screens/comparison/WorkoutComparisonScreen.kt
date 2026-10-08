@@ -119,7 +119,7 @@ fun WorkoutComparisonScreen(
                                 putExtra(Intent.EXTRA_TEXT, promptText)
                                 type = "text/plain"
                             }
-                            context.startActivity(Intent.createChooser(sendIntent, null))
+                            runCatching { context.startActivity(Intent.createChooser(sendIntent, null)) }
                         }
                     ) {
                         Icon(
@@ -585,7 +585,7 @@ fun LlmPromptExportCard(
                             putExtra(Intent.EXTRA_TEXT, promptText)
                             type = "text/plain"
                         }
-                        context.startActivity(Intent.createChooser(sendIntent, null))
+                        runCatching { context.startActivity(Intent.createChooser(sendIntent, null)) }
                     },
                     modifier = Modifier.weight(1f)
                 ) {

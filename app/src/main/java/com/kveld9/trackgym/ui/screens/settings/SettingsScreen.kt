@@ -993,8 +993,10 @@ fun SettingsScreen(
 
                     FilledTonalButton(
                         onClick = {
-                            val intent = Intent(Intent.ACTION_VIEW, "https://github.com/kveld9/trackGym".toUri())
-                            context.startActivity(intent)
+                            runCatching {
+                                val intent = Intent(Intent.ACTION_VIEW, "https://github.com/kveld9/trackGym".toUri())
+                                context.startActivity(intent)
+                            }
                         },
                         shape = MaterialTheme.shapes.medium
                     ) {

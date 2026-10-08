@@ -72,6 +72,8 @@ class MainActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        unregisterReceiver(timerActionReceiver)
+        runCatching {
+            unregisterReceiver(timerActionReceiver)
+        }
     }
 }
