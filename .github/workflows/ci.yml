@@ -50,10 +50,10 @@ jobs:
           ./gradlew syncHarness
           git diff --exit-code AGENTS.md || (echo "Harness is out of sync with dependencies! Run ./gradlew syncHarness before committing." && exit 1)
 
-      # PR Workflow: Fast Unit Tests
-      - name: Run Unit Tests (PR)
+      # PR Workflow: Unit Tests & Release Build (R8)
+      - name: Run Unit Tests & Release Build (PR)
         if: github.event_name == 'pull_request'
-        run: ./gradlew testDebugUnitTest
+        run: ./gradlew testDebugUnitTest assembleRelease
 
       # Main Workflow: 1. Compute Semantic Version & Changelog
       - name: Compute Semantic Version & Changelog
