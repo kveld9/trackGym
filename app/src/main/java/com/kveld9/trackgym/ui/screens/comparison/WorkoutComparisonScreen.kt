@@ -50,12 +50,15 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import com.kveld9.trackgym.domain.calculator.LlmWorkoutPromptGenerator
+import com.kveld9.trackgym.domain.calculator.WorkToRestRatioEngine
+import com.kveld9.trackgym.domain.model.Workout
 import com.kveld9.trackgym.ui.components.WorkoutShareCard
 import com.kveld9.trackgym.ui.components.WorkoutSharePreviewDialog
 import com.kveld9.trackgym.ui.util.ShareProvider
 import com.kveld9.trackgym.domain.calculator.MuscleHeatmapEngine
 import com.kveld9.trackgym.ui.components.MuscleHeatmapCard
 import com.kveld9.trackgym.ui.util.displayName
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -145,6 +148,7 @@ fun WorkoutComparisonScreen(
         ) {
             item {
                 WorkoutSummaryHeader(
+                    workout = comparison.currentWorkout,
                     title = comparison.currentWorkout.name,
                     dateString = dateString,
                     durationSeconds = comparison.currentWorkout.durationSeconds,
@@ -279,6 +283,7 @@ fun WorkoutComparisonScreen(
 
 @Composable
 fun WorkoutSummaryHeader(
+    workout: Workout? = null,
     title: String,
     dateString: String,
     durationSeconds: Long,
@@ -286,6 +291,10 @@ fun WorkoutSummaryHeader(
     recordsCount: Int,
     weightUnit: WeightUnit = WeightUnit.KG
 ) {
+    val workRestRatio = remember(workout, durationSeconds) {
+        workout?.let { WorkToRestRatioEngine.calculateRatio(it, durationSeconds) }
+    }
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
@@ -311,6 +320,54 @@ fun WorkoutSummaryHeader(
                 )
                 if (recordsCount > 0) {
                     StatBadge(label = stringResource(R.string.stat_records), value = recordsCount.toString(), valueColor = MaterialTheme.colorScheme.tertiary)
+                }
+                workRestRatio?.let { ratio ->
+                    StatBadge(
+                        label = stringResource(R.string.stat_work_rest_ratio),
+                        value = ratio.ratioString,
+                        valueColor = MaterialTheme.colorScheme.secondary
+                    )
+                }
+            }
+
+            workRestRatio?.let { ratio ->
+                if (ratio.totalSeconds > 0) {
+                    Spacer(modifier = Modifier.height(14.dp))
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = stringResource(
+                                    R.string.work_time_label,
+                                    formatDuration(ratio.workSeconds),
+                                    ratio.workPercentage
+                                ),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                            Text(
+                                text = stringResource(
+                                    R.string.rest_time_label,
+                                    formatDuration(ratio.restSeconds),
+                                    ratio.restPercentage
+                                ),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(6.dp))
+                        LinearProgressIndicator(
+                            progress = { (ratio.workPercentage / 100.0).toFloat().coerceIn(0f, 1f) },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(6.dp)
+                                .clip(RoundedCornerShape(3.dp)),
+                            color = MaterialTheme.colorScheme.primary,
+                            trackColor = MaterialTheme.colorScheme.surfaceVariant
+                        )
+                    }
                 }
             }
         }

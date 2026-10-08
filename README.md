@@ -33,6 +33,7 @@
 - **Training Analysis**:
   - Progressive overload recommendations based on the previous session.
   - Interactive monthly calendar navigation with selectable workout dates and direct day filtering.
+  - Work-to-rest time ratio analysis (`1:X` distribution, work vs rest percentages, and progress visualization).
   - Real-time overtraining and junk volume warnings.
   - Weekly muscle split heatmap and training consistency tracking.
   - Configurable volume metrics: dumbbell volume doubling and optional warm-up set exclusion.

@@ -70,6 +70,9 @@
     <string name="stat_duration">DURATION</string>
     <string name="stat_volume">VOLUME</string>
     <string name="stat_records">RECORDS</string>
+    <string name="stat_work_rest_ratio">WORK / REST</string>
+    <string name="work_time_label">Work: %1$s (%2$.0f%%)</string>
+    <string name="rest_time_label">Rest: %1$s (%2$.0f%%)</string>
     <string name="badge_record">RECORD</string>
     <string name="badge_previous">PREVIOUS</string>
     <string name="badge_current">CURRENT</string>
