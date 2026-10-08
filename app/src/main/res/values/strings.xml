@@ -315,6 +315,11 @@
     <string name="sound_ting_ting">Ting-Ting</string>
     <string name="sound_alarm">Traditional Alarm</string>
     <string name="sound_silent">Silent / Mute</string>
+    <string name="setting_get_ready_title">Pre-Set \"Get Ready\" Countdown</string>
+    <string name="setting_get_ready_desc">Short countdown before starting timed or heavy sets</string>
+    <string name="get_ready_off">Off</string>
+    <string name="get_ready_countdown_active">Get Ready: %1$ds</string>
+    <string name="action_get_ready_timer">Get Ready Countdown</string>
 
     <!-- Consistency & Calendar Heatmap -->
     <string name="consistency_title">Training Consistency</string>

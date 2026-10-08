@@ -315,6 +315,11 @@
     <string name="sound_ting_ting">Ting-Ting</string>
     <string name="sound_alarm">Alarma Tradicional</string>
     <string name="sound_silent">Cero Silencioso</string>
+    <string name="setting_get_ready_title">Temporizador de preparación pre-serie</string>
+    <string name="setting_get_ready_desc">Cuenta regresiva corta antes de iniciar series cronometradas o pesadas</string>
+    <string name="get_ready_off">Desactivado</string>
+    <string name="get_ready_countdown_active">Prepararse: %1$ds</string>
+    <string name="action_get_ready_timer">Cuenta de preparación</string>
 
     <!-- Consistency & Calendar Heatmap -->
     <string name="consistency_title">Constancia de entrenamiento</string>

@@ -31,7 +31,8 @@ data class ThemeSettings(
     val routineUpdateMode: String = "ASK", // "ALWAYS", "ASK", "NEVER"
     val showInlinePlates: Boolean = true,
     val keepScreenOn: Boolean = false,
-    val dynamicColor: Boolean = false
+    val dynamicColor: Boolean = false,
+    val getReadySeconds: Int = 0
 )
 
 class ThemePreferences(
@@ -64,6 +65,7 @@ class ThemePreferences(
         val SHOW_INLINE_PLATES_KEY = booleanPreferencesKey("show_inline_plates")
         val KEEP_SCREEN_ON_KEY = booleanPreferencesKey("keep_screen_on")
         val DYNAMIC_COLOR_KEY = booleanPreferencesKey("dynamic_color")
+        val GET_READY_SECONDS_KEY = intPreferencesKey("get_ready_seconds")
 
         private val LEGACY_AMOLED_KEY = booleanPreferencesKey("amoled_black")
     }
@@ -91,7 +93,8 @@ class ThemePreferences(
                 routineUpdateMode = preferences[ROUTINE_UPDATE_MODE_KEY] ?: "ASK",
                 showInlinePlates = preferences[SHOW_INLINE_PLATES_KEY] ?: true,
                 keepScreenOn = preferences[KEEP_SCREEN_ON_KEY] ?: false,
-                dynamicColor = preferences[DYNAMIC_COLOR_KEY] ?: false
+                dynamicColor = preferences[DYNAMIC_COLOR_KEY] ?: false,
+                getReadySeconds = preferences[GET_READY_SECONDS_KEY] ?: 0
             )
         }
 
@@ -203,6 +206,12 @@ class ThemePreferences(
     suspend fun setDynamicColor(enabled: Boolean) {
         dataStore.edit { preferences ->
             preferences[DYNAMIC_COLOR_KEY] = enabled
+        }
+    }
+
+    suspend fun setGetReadySeconds(seconds: Int) {
+        dataStore.edit { preferences ->
+            preferences[GET_READY_SECONDS_KEY] = seconds
         }
     }
 }

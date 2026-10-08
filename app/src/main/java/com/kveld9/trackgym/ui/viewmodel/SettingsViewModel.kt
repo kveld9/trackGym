@@ -162,6 +162,12 @@ class SettingsViewModel(
         }
     }
 
+    fun setGetReadySeconds(seconds: Int) {
+        viewModelScope.launch {
+            themePreferences.setGetReadySeconds(seconds)
+        }
+    }
+
     fun exportBackup(streamProvider: () -> OutputStream?) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }

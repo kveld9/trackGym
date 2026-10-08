@@ -207,6 +207,7 @@ fun ActiveWorkoutScreen(
     val timerSoundCountdown by viewModel.timerSoundCountdown.collectAsStateWithLifecycle()
     val soundFeedbackOnComplete by viewModel.soundFeedbackOnComplete.collectAsStateWithLifecycle()
     val keepScreenOn by viewModel.keepScreenOn.collectAsStateWithLifecycle()
+    val getReadySeconds by viewModel.getReadySeconds.collectAsStateWithLifecycle()
 
     DisposableEffect(activeWorkout != null, keepScreenOn) {
         val activity = context.findActivity()
@@ -416,6 +417,9 @@ fun ActiveWorkoutScreen(
                             distanceUnit = distanceUnit,
                             userBodyWeightKg = userBodyWeight,
                             previousSets = previousSetsMap[we.exercise.id].orEmpty(),
+                            getReadySeconds = getReadySeconds,
+                            audioCuePlayer = audioCuePlayer,
+                            timerSoundName = timerSoundName,
                             canMoveUp = index > 0,
                             canMoveDown = index < exercisesList.size - 1,
                             onMoveUp = { viewModel.moveExercise(index, index - 1) },
@@ -2063,6 +2067,9 @@ fun WorkoutExerciseCard(
     distanceUnit: DistanceUnit = DistanceUnit.KM,
     userBodyWeightKg: Double = 70.0,
     previousSets: List<WorkoutSet> = emptyList(),
+    getReadySeconds: Int = 0,
+    audioCuePlayer: com.kveld9.trackgym.ui.audio.WorkoutAudioCuePlayer? = null,
+    timerSoundName: String = "DIGITAL_BEEP",
     canMoveUp: Boolean = false,
     canMoveDown: Boolean = false,
     onMoveUp: () -> Unit = {},
@@ -2420,6 +2427,9 @@ fun WorkoutExerciseCard(
                         userBodyWeightKg = userBodyWeightKg,
                         previousSet = prevSet,
                         showInlinePlates = showInlinePlates,
+                        getReadySeconds = getReadySeconds,
+                        audioCuePlayer = audioCuePlayer,
+                        timerSoundName = timerSoundName,
                         onOpenPlateCalculator = { targetKg -> onOpenPlateCalculatorForWeight(targetKg) },
                         onOpenRpeCalculator = { onOpenRpeCalculator(set) },
                         onUpdateSet = onUpdateSet,
@@ -2612,6 +2622,9 @@ fun SwipeableSetRow(
     userBodyWeightKg: Double = 70.0,
     previousSet: WorkoutSet?,
     showInlinePlates: Boolean = true,
+    getReadySeconds: Int = 0,
+    audioCuePlayer: com.kveld9.trackgym.ui.audio.WorkoutAudioCuePlayer? = null,
+    timerSoundName: String = "DIGITAL_BEEP",
     onOpenPlateCalculator: (Double) -> Unit = {},
     onOpenRpeCalculator: () -> Unit = {},
     onUpdateSet: (WorkoutSet) -> Unit,
@@ -2664,6 +2677,9 @@ fun SwipeableSetRow(
             userBodyWeightKg = userBodyWeightKg,
             previousSet = previousSet,
             showInlinePlates = showInlinePlates,
+            getReadySeconds = getReadySeconds,
+            audioCuePlayer = audioCuePlayer,
+            timerSoundName = timerSoundName,
             onOpenPlateCalculator = onOpenPlateCalculator,
             onOpenRpeCalculator = onOpenRpeCalculator,
             onUpdateSet = onUpdateSet,
@@ -2681,6 +2697,9 @@ fun SetRowItem(
     userBodyWeightKg: Double = 70.0,
     previousSet: WorkoutSet? = null,
     showInlinePlates: Boolean = true,
+    getReadySeconds: Int = 0,
+    audioCuePlayer: com.kveld9.trackgym.ui.audio.WorkoutAudioCuePlayer? = null,
+    timerSoundName: String = "DIGITAL_BEEP",
     onOpenPlateCalculator: (Double) -> Unit = {},
     onOpenRpeCalculator: () -> Unit = {},
     onUpdateSet: (WorkoutSet) -> Unit,
@@ -2710,6 +2729,33 @@ fun SetRowItem(
     val isDuration = set.setType == SetType.DURATION
     val isCardio = set.setType == SetType.CARDIO
     var isStopwatchRunning by remember { mutableStateOf(false) }
+    var getReadyCountdown by remember { mutableStateOf<Int?>(null) }
+    val haptic = LocalHapticFeedback.current
+
+    LaunchedEffect(getReadyCountdown) {
+        val count = getReadyCountdown ?: return@LaunchedEffect
+        if (count > 0) {
+            if (count <= 3) {
+                val sound = runCatching {
+                    com.kveld9.trackgym.ui.audio.TimerSound.valueOf(timerSoundName)
+                }.getOrDefault(com.kveld9.trackgym.ui.audio.TimerSound.DIGITAL_BEEP)
+                audioCuePlayer?.playWarningBeep(sound)
+                haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+            }
+            kotlinx.coroutines.delay(1000)
+            getReadyCountdown = count - 1
+        } else {
+            val sound = runCatching {
+                com.kveld9.trackgym.ui.audio.TimerSound.valueOf(timerSoundName)
+            }.getOrDefault(com.kveld9.trackgym.ui.audio.TimerSound.DIGITAL_BEEP)
+            audioCuePlayer?.playFinishedSound(sound)
+            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+            getReadyCountdown = null
+            if (isDuration || isCardio) {
+                isStopwatchRunning = true
+            }
+        }
+    }
 
     var distanceText by remember(set.id, set.distanceKm) {
         mutableStateOf(
@@ -2889,6 +2935,29 @@ fun SetRowItem(
                             }
                         )
                     }
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
+                    DropdownMenuItem(
+                        text = {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    imageVector = Icons.Default.Timer,
+                                    contentDescription = null,
+                                    tint = GymWarmupAmber,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = stringResource(R.string.action_get_ready_timer),
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    fontSize = 14.sp
+                                )
+                            }
+                        },
+                        onClick = {
+                            showSetTypePicker = false
+                            getReadyCountdown = if (getReadySeconds > 0) getReadySeconds else 5
+                        }
+                    )
                 }
             }
 
@@ -3020,13 +3089,29 @@ fun SetRowItem(
                     trailingIcon = if (isDuration || isCardio) {
                         {
                             IconButton(
-                                onClick = { isStopwatchRunning = !isStopwatchRunning },
+                                onClick = {
+                                    if (isStopwatchRunning) {
+                                        isStopwatchRunning = false
+                                        getReadyCountdown = null
+                                    } else if (getReadyCountdown != null) {
+                                        getReadyCountdown = null
+                                    } else if (getReadySeconds > 0) {
+                                        getReadyCountdown = getReadySeconds
+                                    } else {
+                                        isStopwatchRunning = true
+                                    }
+                                },
                                 modifier = Modifier.size(32.dp)
                             ) {
                                 Icon(
-                                    imageVector = if (isStopwatchRunning) Icons.Default.Pause else Icons.Default.PlayArrow,
-                                    contentDescription = if (isStopwatchRunning) stringResource(R.string.action_stop_stopwatch) else stringResource(R.string.action_start_stopwatch),
-                                    tint = if (isStopwatchRunning) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                                    imageVector = if (isStopwatchRunning) Icons.Default.Pause
+                                        else if (getReadyCountdown != null) Icons.Default.Timer
+                                        else Icons.Default.PlayArrow,
+                                    contentDescription = if (isStopwatchRunning) stringResource(R.string.action_stop_stopwatch)
+                                        else stringResource(R.string.action_start_stopwatch),
+                                    tint = if (isStopwatchRunning) MaterialTheme.colorScheme.primary
+                                        else if (getReadyCountdown != null) GymWarmupAmber
+                                        else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                                     modifier = Modifier.size(16.dp)
                                 )
                             }
@@ -3107,6 +3192,7 @@ fun SetRowItem(
                         }
 
                         showQuickAdjust = false
+                        getReadyCountdown = null
                         onToggleComplete(finalWeightKg, finalReps)
                     },
                 contentAlignment = Alignment.Center
@@ -3117,6 +3203,58 @@ fun SetRowItem(
                     tint = if (set.isCompleted) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(24.dp)
                 )
+            }
+        }
+
+        if (getReadyCountdown != null) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp, vertical = 4.dp)
+                    .clip(RoundedCornerShape(6.dp))
+                    .background(GymWarmupAmber.copy(alpha = 0.2f))
+                    .padding(horizontal = 8.dp, vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Default.Timer,
+                        contentDescription = null,
+                        tint = GymWarmupAmber,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = stringResource(R.string.get_ready_countdown_active, getReadyCountdown ?: 0),
+                        color = GymWarmupAmber,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 12.sp
+                    )
+                }
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        text = stringResource(R.string.rest_timer_skip),
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 11.sp,
+                        modifier = Modifier
+                            .clickable {
+                                getReadyCountdown = null
+                                if (isDuration || isCardio) isStopwatchRunning = true
+                            }
+                            .padding(4.dp)
+                    )
+                    Text(
+                        text = stringResource(R.string.action_cancel),
+                        color = MaterialTheme.colorScheme.error,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 11.sp,
+                        modifier = Modifier
+                            .clickable { getReadyCountdown = null }
+                            .padding(4.dp)
+                    )
+                }
             }
         }
 

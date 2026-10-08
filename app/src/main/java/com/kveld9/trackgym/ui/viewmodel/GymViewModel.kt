@@ -108,6 +108,11 @@ class GymViewModel(
     } ?: flowOf(false))
         .stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
+    val getReadySeconds: StateFlow<Int> = (themePreferences?.themeSettings?.map {
+        it.getReadySeconds
+    } ?: flowOf(0))
+        .stateIn(viewModelScope, SharingStarted.Eagerly, 0)
+
     private val _activeWorkout = MutableStateFlow<Workout?>(null)
     val activeWorkout: StateFlow<Workout?> = _activeWorkout.asStateFlow()
 
