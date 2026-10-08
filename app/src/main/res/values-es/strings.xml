@@ -703,4 +703,8 @@
     <string name="action_save_tags">Guardar Etiquetas</string>
     <string name="label_custom_categories">Categorías / Etiquetas Personalizadas</string>
     <string name="no_custom_categories">Aún no hay categorías personalizadas creadas.</string>
+
+    <!-- Keep Screen On (Item 89) -->
+    <string name="setting_keep_screen_on_title">Mantener pantalla encendida</string>
+    <string name="setting_keep_screen_on_desc">Evita que la pantalla se apague mientras entrenas</string>
 </resources>

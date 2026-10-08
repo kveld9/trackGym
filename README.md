@@ -15,6 +15,7 @@
   - Dynamic exercise reordering and in-workout exercise swap.
   - Pinned exercise notes and live session notes.
   - Automatic warm-up set generation.
+  - Optional keep-screen-on mode to keep the display awake during active training.
 - **Routines**:
   - Reusable workout routines organized in folders.
 - **Custom Exercise Creation**:

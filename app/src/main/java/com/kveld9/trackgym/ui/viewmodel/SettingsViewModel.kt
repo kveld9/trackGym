@@ -150,6 +150,12 @@ class SettingsViewModel(
         }
     }
 
+    fun setKeepScreenOn(enabled: Boolean) {
+        viewModelScope.launch {
+            themePreferences.setKeepScreenOn(enabled)
+        }
+    }
+
     fun exportBackup(streamProvider: () -> OutputStream?) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }

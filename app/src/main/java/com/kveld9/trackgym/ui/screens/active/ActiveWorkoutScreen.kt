@@ -1,6 +1,10 @@
 package com.kveld9.trackgym.ui.screens.active
 
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
+import android.view.WindowManager
 import android.widget.Toast
 import com.kveld9.trackgym.domain.calculator.FuzzyExerciseSearchEngine
 import com.kveld9.trackgym.domain.calculator.RoutineBiomechanicalBalanceEngine
@@ -202,6 +206,17 @@ fun ActiveWorkoutScreen(
     val timerSoundName by viewModel.timerSound.collectAsStateWithLifecycle()
     val timerSoundCountdown by viewModel.timerSoundCountdown.collectAsStateWithLifecycle()
     val soundFeedbackOnComplete by viewModel.soundFeedbackOnComplete.collectAsStateWithLifecycle()
+    val keepScreenOn by viewModel.keepScreenOn.collectAsStateWithLifecycle()
+
+    DisposableEffect(activeWorkout != null, keepScreenOn) {
+        val activity = context.findActivity()
+        if (activeWorkout != null && keepScreenOn) {
+            activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
+        onDispose {
+            activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
+    }
 
     DisposableEffect(Unit) {
         onDispose {
@@ -4068,5 +4083,11 @@ fun SupersetGroupDialog(
             }
         }
     )
+}
+
+private tailrec fun Context.findActivity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> baseContext.findActivity()
+    else -> null
 }
 

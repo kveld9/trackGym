@@ -703,4 +703,8 @@
     <string name="action_save_tags">Save Tags</string>
     <string name="label_custom_categories">Custom Categories / Tags</string>
     <string name="no_custom_categories">No custom categories created yet.</string>
+
+    <!-- Keep Screen On (Item 89) -->
+    <string name="setting_keep_screen_on_title">Keep screen on</string>
+    <string name="setting_keep_screen_on_desc">Keep the display on during active workout sessions</string>
 </resources>
