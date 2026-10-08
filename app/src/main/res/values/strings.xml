@@ -40,6 +40,8 @@
     <string name="desc_complete_set">Complete set</string>
     <string name="badge_manual">MANUAL</string>
     <string name="badge_preloaded">SYSTEM</string>
+    <string name="badge_auto">AUTO</string>
+    <string name="desc_quick_adjust">Quick adjust load</string>
     <string name="action_plate_calculator">Plate Calculator</string>
     <string name="plate_calc_title">Plate Calculator</string>
     <string name="plate_calc_bar_weight">Barbell Weight</string>

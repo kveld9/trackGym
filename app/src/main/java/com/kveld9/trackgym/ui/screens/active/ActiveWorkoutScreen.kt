@@ -2153,7 +2153,7 @@ fun WorkoutExerciseCard(
                                 modifier = Modifier.clickable { onConfigureAutoProgression() }
                             ) {
                                 Text(
-                                    text = "Auto",
+                                    text = stringResource(R.string.badge_auto),
                                     color = MaterialTheme.colorScheme.primary,
                                     fontSize = 10.sp,
                                     fontWeight = FontWeight.Bold,
@@ -2931,7 +2931,7 @@ fun SetRowItem(
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Tune,
-                                    contentDescription = "Quick adjust",
+                                    contentDescription = stringResource(R.string.desc_quick_adjust),
                                     tint = if (showQuickAdjust) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
                                     modifier = Modifier.size(16.dp)
                                 )
