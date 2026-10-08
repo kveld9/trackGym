@@ -1,0 +1,11 @@
+#!/bin/sh
+# Runs the fast CI checks before pushing. Skip once with: git push --no-verify
+
+log="build/pre-push.log"
+mkdir -p build
+
+if ! ./gradlew testDebugUnitTest detekt --console=plain > "$log" 2>&1; then
+  grep -E 'FAILED|^e: |BUILD FAILED' "$log" | tail -20 >&2
+  echo "pre-push: checks failed, full log in $log" >&2
+  exit 1
+fi

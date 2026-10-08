@@ -6,6 +6,14 @@ Thanks for helping improve TrackGym. This guide covers the workflow and the chec
 
 Requirements and build commands are listed in [README.md](README.md#building--running) (JDK 21+, Android SDK `compileSdk 37`).
 
+Enable the repository Git hooks once per clone:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+`commit-msg` rejects messages that are not Conventional Commits, and `pre-push` runs `testDebugUnitTest` and `detekt`.
+
 ## Workflow
 
 1. Open an issue first for features or behavior changes, so the approach can be agreed before you write code. Translations and small fixes can go straight to a pull request.

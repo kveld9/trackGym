@@ -3,3 +3,6 @@
 
 # Windows script files must use CRLF
 *.bat           text eol=crlf
+
+# Git hooks are POSIX shell scripts and must use LF
+/.githooks/*    text eol=lf
