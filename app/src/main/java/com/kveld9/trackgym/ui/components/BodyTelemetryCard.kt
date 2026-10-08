@@ -252,10 +252,11 @@ fun BodyTelemetryCard(
 
                     // Recent logs list for this type (up to 3 items)
                     if (filtered.isNotEmpty()) {
+                        val recentDateFormat = remember { SimpleDateFormat("d MMM yyyy", Locale.getDefault()) }
                         val recentList = filtered.sortedByDescending { it.measuredAt }.take(3)
                         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                             recentList.forEach { item ->
-                                val dateStr = SimpleDateFormat("d MMM yyyy", Locale.getDefault()).format(Date(item.measuredAt))
+                                val dateStr = recentDateFormat.format(Date(item.measuredAt))
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()

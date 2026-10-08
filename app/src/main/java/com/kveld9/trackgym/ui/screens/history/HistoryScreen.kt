@@ -648,7 +648,7 @@ fun WorkoutHistoryCard(
     onShareCard: () -> Unit = {}
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
-    val dateFormat = SimpleDateFormat("EEEE, d MMMM", Locale.getDefault())
+    val dateFormat = remember { SimpleDateFormat("EEEE, d MMMM", Locale.getDefault()) }
     val dateString = dateFormat.format(Date(workout.completedAt ?: workout.startedAt)).replaceFirstChar { it.uppercase() }
     val durationMin = workout.durationSeconds / 60
 

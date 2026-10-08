@@ -88,7 +88,7 @@ fun WorkoutComparisonScreen(
     var previewBitmap by remember { mutableStateOf<Bitmap?>(null) }
     val shareChooserTitle = stringResource(R.string.share_chooser_title)
 
-    val dateFormat = SimpleDateFormat("EEEE, d MMMM", Locale.getDefault())
+    val dateFormat = remember { SimpleDateFormat("EEEE, d MMMM", Locale.getDefault()) }
     val dateString = dateFormat.format(Date(comparison.currentWorkout.completedAt ?: comparison.currentWorkout.startedAt)).replaceFirstChar { it.uppercase() }
     val workoutHeatmap = remember(comparison.currentWorkout) {
         MuscleHeatmapEngine.calculate(comparison.currentWorkout)
