@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -241,7 +242,7 @@ fun WorkoutComparisonScreen(
                 )
             }
 
-            items(comparison.exerciseComparisons, key = { it.exercise.id }) { exComp ->
+            itemsIndexed(comparison.exerciseComparisons, key = { index, exComp -> "${exComp.exercise.id}_$index" }) { _, exComp ->
                 ExerciseComparisonCard(exerciseComparison = exComp, weightUnit = weightUnit)
             }
 
