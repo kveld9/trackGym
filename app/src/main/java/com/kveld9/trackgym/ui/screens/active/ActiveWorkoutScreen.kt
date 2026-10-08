@@ -67,6 +67,7 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Speed
 import androidx.compose.material.icons.filled.Timer
 import com.kveld9.trackgym.domain.calculator.ProgramRecommendation
 import com.kveld9.trackgym.domain.model.PeriodizedCycle
@@ -170,6 +171,7 @@ import com.kveld9.trackgym.ui.components.WarmupRampDialog
 import com.kveld9.trackgym.ui.components.WorkoutSessionNotesCard
 import com.kveld9.trackgym.domain.model.GymEquipmentProfile
 import com.kveld9.trackgym.ui.components.GymEquipmentProfilesManageDialog
+import com.kveld9.trackgym.ui.components.HapticWheelSetPickerDialog
 import com.kveld9.trackgym.ui.theme.GymBlue
 import com.kveld9.trackgym.ui.theme.GymWarmupAmber
 import com.kveld9.trackgym.ui.theme.GymAmrapCrimson
@@ -295,6 +297,7 @@ fun ActiveWorkoutScreen(
     var routineNameInput by remember { mutableStateOf("") }
     var plateCalcExercise by remember { mutableStateOf<WorkoutExercise?>(null) }
     var plateCalcInitialWeightKg by remember { mutableStateOf<Double?>(null) }
+    var wheelPickerTarget by remember { mutableStateOf<Pair<WorkoutExercise, WorkoutSet>?>(null) }
     var rpeCalcExercise by remember { mutableStateOf<WorkoutExercise?>(null) }
     var rpeCalcSet by remember { mutableStateOf<WorkoutSet?>(null) }
     var restConfigExercise by remember { mutableStateOf<WorkoutExercise?>(null) }
@@ -451,6 +454,7 @@ fun ActiveWorkoutScreen(
                                 viewModel.duplicateLastSet(we.id)
                             },
                             onUpdateSet = { set -> viewModel.updateSet(set) },
+                            onOpenWheelPicker = { targetSet -> wheelPickerTarget = Pair(we, targetSet) },
                             onUpdateExerciseNotes = { notes ->
                                 viewModel.updateExerciseNotes(we.exercise.id, notes)
                             },
@@ -1011,6 +1015,35 @@ fun ActiveWorkoutScreen(
                 plateCalcExercise = null
                 plateCalcInitialWeightKg = null
             }
+        )
+    }
+
+    wheelPickerTarget?.let { (we, targetSet) ->
+        HapticWheelSetPickerDialog(
+            exerciseName = we.exercise.displayName(),
+            setNumber = targetSet.setNumber,
+            initialWeightKg = targetSet.weightKg,
+            initialReps = targetSet.reps,
+            weightUnit = weightUnit,
+            onApply = { weightKg, reps, completeNow ->
+                val updated = targetSet.copy(
+                    weightKg = weightKg,
+                    reps = reps,
+                    isCompleted = if (completeNow) true else targetSet.isCompleted
+                )
+                viewModel.updateSet(updated)
+                if (completeNow && !targetSet.isCompleted) {
+                    if (soundFeedbackOnComplete) {
+                        audioCuePlayer.playSetCompleteClick()
+                    }
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    activeWorkout?.let { wo ->
+                        viewModel.toggleCompleteSet(updated, wo.id, we.exercise.id, weightKg, reps)
+                    }
+                }
+                wheelPickerTarget = null
+            },
+            onDismiss = { wheelPickerTarget = null }
         )
     }
 
@@ -2147,7 +2180,8 @@ fun WorkoutExerciseCard(
     onSetRestDuration: () -> Unit = {},
     onSetSupersetGroup: () -> Unit = {},
     onOpenTechniqueGuide: () -> Unit = {},
-    onOpenExerciseHistory: () -> Unit = {}
+    onOpenExerciseHistory: () -> Unit = {},
+    onOpenWheelPicker: (WorkoutSet) -> Unit = {}
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
 
@@ -2487,6 +2521,7 @@ fun WorkoutExerciseCard(
                         timerSoundName = timerSoundName,
                         onOpenPlateCalculator = { targetKg -> onOpenPlateCalculatorForWeight(targetKg) },
                         onOpenRpeCalculator = { onOpenRpeCalculator(set) },
+                        onOpenWheelPicker = { onOpenWheelPicker(set) },
                         onUpdateSet = onUpdateSet,
                         onToggleComplete = { w, r -> onToggleComplete(set, w, r) },
                         onDeleteSet = { onDeleteSet(set) }
@@ -2682,6 +2717,7 @@ fun SwipeableSetRow(
     timerSoundName: String = "DIGITAL_BEEP",
     onOpenPlateCalculator: (Double) -> Unit = {},
     onOpenRpeCalculator: () -> Unit = {},
+    onOpenWheelPicker: () -> Unit = {},
     onUpdateSet: (WorkoutSet) -> Unit,
     onToggleComplete: (Double, Int) -> Unit,
     onDeleteSet: () -> Unit,
@@ -2737,6 +2773,7 @@ fun SwipeableSetRow(
             timerSoundName = timerSoundName,
             onOpenPlateCalculator = onOpenPlateCalculator,
             onOpenRpeCalculator = onOpenRpeCalculator,
+            onOpenWheelPicker = onOpenWheelPicker,
             onUpdateSet = onUpdateSet,
             onToggleComplete = onToggleComplete,
             onDeleteSet = onDeleteSet
@@ -2757,6 +2794,7 @@ fun SetRowItem(
     timerSoundName: String = "DIGITAL_BEEP",
     onOpenPlateCalculator: (Double) -> Unit = {},
     onOpenRpeCalculator: () -> Unit = {},
+    onOpenWheelPicker: () -> Unit = {},
     onUpdateSet: (WorkoutSet) -> Unit,
     onToggleComplete: (Double, Int) -> Unit,
     onDeleteSet: () -> Unit
@@ -3325,6 +3363,35 @@ fun SetRowItem(
                 rpe = set.rpe,
                 onClick = { showRpePicker = true }
             )
+
+            if (!isCardio && set.setType != SetType.CARDIO && set.setType != SetType.DURATION) {
+                Surface(
+                    shape = RoundedCornerShape(12.dp),
+                    color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                    modifier = Modifier
+                        .clickable { onOpenWheelPicker() }
+                        .padding(vertical = 2.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Speed,
+                            contentDescription = stringResource(R.string.wheel_picker_open),
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(12.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = stringResource(R.string.wheel_picker_open),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                }
+            }
 
             if (compactPlates != null) {
                 Surface(

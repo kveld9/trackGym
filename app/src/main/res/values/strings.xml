@@ -820,4 +820,12 @@
     <string name="gym_profile_saved">Profile saved</string>
     <string name="gym_profile_deleted">Profile deleted</string>
     <string name="gym_profile_cannot_delete_last">Cannot delete the only equipment profile</string>
+
+    <!-- Haptic NumberPicker / Scroll Wheel (Item 87) -->
+    <string name="wheel_picker_title">Set %1$d Values</string>
+    <string name="wheel_picker_weight_label">Weight</string>
+    <string name="wheel_picker_reps_label">Reps</string>
+    <string name="wheel_picker_apply">Apply</string>
+    <string name="wheel_picker_apply_and_complete">Complete Set</string>
+    <string name="wheel_picker_open">Dial Picker</string>
 </resources>

@@ -19,6 +19,7 @@
   - Configurable pre-set "Get Ready" countdown (3s, 5s, 10s, 15s) with audio warning beeps and haptic cues before timed, isometric, or heavy sets.
   - Sticky auto-hiding top bar with dynamic enter-always scrolling to maximize screen real estate during active sets.
   - Session context tags (*Fasted, Low Sleep, Joint Discomfort, Pre-Workout, High Stress, Competition, Caloric Deficit, Deload*) with multi-tag filtering in workout history.
+  - Haptic NumberPicker / Cylindrical Wheel Dial: 3D wheel scroll selector with magnetic snapping and tick feedback for rapid weight, fraction, and reps logging without bringing up the virtual keyboard.
 - **Routines**:
   - Reusable workout routines organized in folders.
 - **Custom Exercise Creation**:
