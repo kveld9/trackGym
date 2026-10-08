@@ -67,7 +67,7 @@ The verdict is the exit code plus the `BUILD` line, never the filtered text alon
 - **Main Branch Push**:
   1. Computes Semantic Versioning from Conventional Commits (`feat!:`, `BREAKING CHANGE` -> Major, `feat:` -> Minor, `fix:`/other -> Patch).
   2. Bumps and passes `versionName` and `versionCode` via Gradle `-P` properties (`-PversionName=... -PversionCode=...`).
-  3. Single Gradle execution builds release & debug APKs.
+  3. Single Gradle execution builds release & debug APKs. The debug build uses `applicationIdSuffix = ".debug"` (`com.kveld9.trackgym.debug`) and installs side by side with the release app.
   4. Packages APKs into `trackGym-${VERSION}-release.apk` and `trackGym-${VERSION}-debug.apk` with multi-hash integrity file (`checksums-v${VERSION}.txt`) and `SHA256SUMS.txt`.
   5. Automatically creates Git tag `v${VERSION}` and publishes a GitHub Release with changelog and downloads.
 - **Keystore Configuration**:
