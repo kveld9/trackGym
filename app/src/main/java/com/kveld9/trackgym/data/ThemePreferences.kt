@@ -30,7 +30,8 @@ data class ThemeSettings(
     val userBodyWeightKg: Double = 75.0,
     val routineUpdateMode: String = "ASK", // "ALWAYS", "ASK", "NEVER"
     val showInlinePlates: Boolean = true,
-    val keepScreenOn: Boolean = false
+    val keepScreenOn: Boolean = false,
+    val dynamicColor: Boolean = false
 )
 
 class ThemePreferences(
@@ -62,6 +63,7 @@ class ThemePreferences(
         val ROUTINE_UPDATE_MODE_KEY = stringPreferencesKey("routine_update_mode")
         val SHOW_INLINE_PLATES_KEY = booleanPreferencesKey("show_inline_plates")
         val KEEP_SCREEN_ON_KEY = booleanPreferencesKey("keep_screen_on")
+        val DYNAMIC_COLOR_KEY = booleanPreferencesKey("dynamic_color")
 
         private val LEGACY_AMOLED_KEY = booleanPreferencesKey("amoled_black")
     }
@@ -88,7 +90,8 @@ class ThemePreferences(
                 userBodyWeightKg = preferences[USER_BODY_WEIGHT_KEY] ?: 75.0,
                 routineUpdateMode = preferences[ROUTINE_UPDATE_MODE_KEY] ?: "ASK",
                 showInlinePlates = preferences[SHOW_INLINE_PLATES_KEY] ?: true,
-                keepScreenOn = preferences[KEEP_SCREEN_ON_KEY] ?: false
+                keepScreenOn = preferences[KEEP_SCREEN_ON_KEY] ?: false,
+                dynamicColor = preferences[DYNAMIC_COLOR_KEY] ?: false
             )
         }
 
@@ -194,6 +197,12 @@ class ThemePreferences(
     suspend fun setKeepScreenOn(enabled: Boolean) {
         dataStore.edit { preferences ->
             preferences[KEEP_SCREEN_ON_KEY] = enabled
+        }
+    }
+
+    suspend fun setDynamicColor(enabled: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[DYNAMIC_COLOR_KEY] = enabled
         }
     }
 }

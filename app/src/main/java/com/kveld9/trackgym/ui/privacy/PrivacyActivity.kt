@@ -60,7 +60,10 @@ class PrivacyActivity : ComponentActivity() {
         setContent {
             val themeSettings by themePreferences.themeSettings.collectAsState(initial = ThemeSettings())
 
-            TrackGymTheme(themeMode = themeSettings.themeMode) {
+            TrackGymTheme(
+                themeMode = themeSettings.themeMode,
+                dynamicColor = themeSettings.dynamicColor
+            ) {
                 PrivacyScreen(
                     onBackClick = { finish() }
                 )

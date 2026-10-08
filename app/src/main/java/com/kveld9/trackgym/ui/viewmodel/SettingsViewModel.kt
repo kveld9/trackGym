@@ -156,6 +156,12 @@ class SettingsViewModel(
         }
     }
 
+    fun setDynamicColor(enabled: Boolean) {
+        viewModelScope.launch {
+            themePreferences.setDynamicColor(enabled)
+        }
+    }
+
     fun exportBackup(streamProvider: () -> OutputStream?) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }

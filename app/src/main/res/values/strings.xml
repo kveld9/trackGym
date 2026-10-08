@@ -729,4 +729,8 @@
     <string name="error_action_copy">Copy Report</string>
     <string name="error_action_close">Close</string>
     <string name="error_copied_toast">Error report copied to clipboard</string>
+
+    <!-- Dynamic Color Theming (Item 90) -->
+    <string name="setting_dynamic_color_title">Dynamic color</string>
+    <string name="setting_dynamic_color_desc">Apply colors based on your wallpaper (Android 12+)</string>
 </resources>

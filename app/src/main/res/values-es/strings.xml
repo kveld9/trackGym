@@ -729,4 +729,8 @@
     <string name="error_action_copy">Copiar Informe</string>
     <string name="error_action_close">Cerrar</string>
     <string name="error_copied_toast">Informe de error copiado al portapapeles</string>
+
+    <!-- Dynamic Color Theming (Item 90) -->
+    <string name="setting_dynamic_color_title">Color dinámico</string>
+    <string name="setting_dynamic_color_desc">Aplica colores basados en tu fondo de pantalla (Android 12+)</string>
 </resources>

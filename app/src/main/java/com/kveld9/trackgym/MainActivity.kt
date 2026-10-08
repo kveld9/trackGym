@@ -65,7 +65,8 @@ class MainActivity : ComponentActivity() {
             val selectedTab by selectedTabState
 
             TrackGymTheme(
-                themeMode = themeSettings.themeMode
+                themeMode = themeSettings.themeMode,
+                dynamicColor = themeSettings.dynamicColor
             ) {
                 MainScreen(
                     viewModel = viewModel,
