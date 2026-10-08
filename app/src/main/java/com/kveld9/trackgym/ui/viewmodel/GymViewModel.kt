@@ -40,6 +40,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class GymViewModel(
@@ -419,16 +420,30 @@ class GymViewModel(
     }
 
     fun updateSet(set: WorkoutSet) {
+        _activeWorkout.update { current ->
+            current?.copy(
+                exercises = current.exercises.map { we ->
+                    if (we.id == set.workoutExerciseId) {
+                        we.copy(sets = we.sets.map { s -> if (s.id == set.id) set else s })
+                    } else we
+                }
+            )
+        }
         viewModelScope.launch {
             repository.updateSet(set)
-            setActiveWorkout(repository.getActiveWorkout())
         }
     }
 
     fun updateExerciseNotes(exerciseId: Long, notes: String) {
+        _activeWorkout.update { current ->
+            current?.copy(
+                exercises = current.exercises.map { we ->
+                    if (we.id == exerciseId) we.copy(notes = notes) else we
+                }
+            )
+        }
         viewModelScope.launch {
             repository.updateExerciseNotes(exerciseId, notes)
-            setActiveWorkout(repository.getActiveWorkout())
         }
     }
 
@@ -829,15 +844,32 @@ class GymViewModel(
 
     fun deleteSet(set: WorkoutSet) {
         recentlyDeletedSet = set
+        _activeWorkout.update { current ->
+            current?.copy(
+                exercises = current.exercises.map { we ->
+                    if (we.id == set.workoutExerciseId) {
+                        we.copy(sets = we.sets.filter { it.id != set.id })
+                    } else we
+                }
+            )
+        }
         viewModelScope.launch {
             repository.deleteSet(set.id)
-            setActiveWorkout(repository.getActiveWorkout())
         }
     }
 
     fun restoreRecentlyDeletedSet() {
         val set = recentlyDeletedSet ?: return
         recentlyDeletedSet = null
+        _activeWorkout.update { current ->
+            current?.copy(
+                exercises = current.exercises.map { we ->
+                    if (we.id == set.workoutExerciseId) {
+                        we.copy(sets = (we.sets + set).sortedBy { it.setNumber })
+                    } else we
+                }
+            )
+        }
         viewModelScope.launch {
             repository.restoreSet(set)
             setActiveWorkout(repository.getActiveWorkout())
