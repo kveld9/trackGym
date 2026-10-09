@@ -18,6 +18,7 @@ import com.kveld9.trackgym.domain.calculator.BiomechanicalClassifier
 import com.kveld9.trackgym.domain.calculator.MechanicsClassifier
 import com.kveld9.trackgym.domain.calculator.PersonalRecordDetector
 import com.kveld9.trackgym.domain.calculator.WorkoutComparisonEngine
+import com.kveld9.trackgym.domain.calculator.resolveNewRoutineName
 import com.kveld9.trackgym.domain.model.DefaultExercises
 import com.kveld9.trackgym.domain.model.Exercise
 import com.kveld9.trackgym.domain.model.ExerciseCategory
@@ -846,6 +847,16 @@ class GymRepository(private val database: GymDatabase) {
 
     suspend fun createFolder(name: String): Long = withContext(Dispatchers.IO) {
         routineDao.insertFolder(RoutineFolderEntity(name = name.trim()))
+    }
+
+    suspend fun createEmptyRoutine(name: String, folderId: Long? = null): Long = withContext(Dispatchers.IO) {
+        val resolvedName = resolveNewRoutineName(name) ?: return@withContext -1L
+        val routineEntity = RoutineEntity(
+            folderId = folderId,
+            name = resolvedName,
+            notes = ""
+        )
+        routineDao.insertRoutine(routineEntity)
     }
 
     suspend fun deleteFolder(id: Long) = withContext(Dispatchers.IO) {

@@ -23,6 +23,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Edit
@@ -82,6 +83,7 @@ fun EmptyWorkoutDashboard(
     onStartWorkout: () -> Unit,
     onStartRoutine: (Long) -> Unit,
     onDeleteRoutine: (Long) -> Unit,
+    onCreateRoutine: ((String) -> Unit)? = null,
     onDuplicateRoutine: ((Long) -> Unit)? = null,
     onToggleArchive: ((Long, Boolean) -> Unit)? = null,
     onImportRoutine: ((String, (Boolean) -> Unit) -> Unit)? = null,
@@ -101,6 +103,7 @@ fun EmptyWorkoutDashboard(
     var showReorderFoldersDialog by remember { mutableStateOf(false) }
     var showImportRoutineDialog by remember { mutableStateOf(false) }
     var showProgramFinderDialog by remember { mutableStateOf(false) }
+    var showNewRoutineDialog by remember { mutableStateOf(false) }
     var routineToConfigurePeriodization by remember { mutableStateOf<Routine?>(null) }
     var routineToGenerateDeload by remember { mutableStateOf<Routine?>(null) }
     val baseRoutines = if (showArchived) {
@@ -173,6 +176,28 @@ fun EmptyWorkoutDashboard(
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold
             )
+        }
+
+        if (onCreateRoutine != null) {
+            Spacer(modifier = Modifier.height(10.dp))
+            OutlinedButton(
+                onClick = { showNewRoutineDialog = true },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(54.dp),
+                shape = RoundedCornerShape(14.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = null
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = stringResource(R.string.btn_new_routine),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(32.dp))
@@ -349,6 +374,27 @@ fun EmptyWorkoutDashboard(
                         fontSize = 12.sp,
                         textAlign = TextAlign.Center
                     )
+                    if (onCreateRoutine != null) {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        OutlinedButton(
+                            onClick = { showNewRoutineDialog = true },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(54.dp),
+                            shape = RoundedCornerShape(14.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Add,
+                                contentDescription = null
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = stringResource(R.string.btn_new_routine),
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
                 }
             }
         } else {
@@ -441,6 +487,16 @@ fun EmptyWorkoutDashboard(
                 routineToGenerateDeload = null
             },
             onDismiss = { routineToGenerateDeload = null }
+        )
+    }
+
+    if (showNewRoutineDialog && onCreateRoutine != null) {
+        NewRoutineDialog(
+            onDismiss = { showNewRoutineDialog = false },
+            onConfirm = { name ->
+                showNewRoutineDialog = false
+                onCreateRoutine(name)
+            }
         )
     }
 }

@@ -255,6 +255,7 @@ fun ActiveWorkoutScreen(
             onStartWorkout = { viewModel.startWorkout(defaultWorkoutTitle) },
             onStartRoutine = { routineId -> viewModel.startWorkoutFromRoutine(routineId) },
             onDeleteRoutine = { routineId -> viewModel.deleteRoutine(routineId) },
+            onCreateRoutine = { name -> viewModel.createEmptyRoutineAndStart(name) },
             onDuplicateRoutine = { routineId -> viewModel.duplicateRoutine(routineId, copySuffix) },
             onToggleArchive = { routineId, isArchived -> viewModel.toggleRoutineArchived(routineId, isArchived) },
             onImportRoutine = { rawText, onResult -> viewModel.importRoutineFromText(rawText, onResult) },

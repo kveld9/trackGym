@@ -803,6 +803,15 @@ class GymViewModel(
         }
     }
 
+    fun createEmptyRoutineAndStart(name: String, folderId: Long? = null) {
+        viewModelScope.launch {
+            val routineId = repository.createEmptyRoutine(name, folderId)
+            if (routineId > 0) {
+                startWorkoutFromRoutine(routineId)
+            }
+        }
+    }
+
     fun saveActiveWorkoutAsRoutine(name: String, folderId: Long? = null, onSaved: (() -> Unit)? = null) {
         val active = _activeWorkout.value ?: return
         viewModelScope.launch {

@@ -380,6 +380,9 @@
     <string name="routines_title">Rutinas y Plantillas</string>
     <string name="routines_subtitle">Inicia sesiones desde plantillas personalizadas</string>
     <string name="btn_new_routine">Nueva rutina</string>
+    <string name="dialog_new_routine_title">Nueva rutina</string>
+    <string name="dialog_new_routine_desc">Crea una rutina vacía para empezar a añadir ejercicios y registrar tus sesiones.</string>
+    <string name="btn_create_routine">Crear</string>
     <string name="btn_start_routine">Iniciar</string>
     <string name="dialog_save_routine_title">Guardar como plantilla de rutina</string>
     <string name="dialog_routine_name">Nombre de la rutina</string>

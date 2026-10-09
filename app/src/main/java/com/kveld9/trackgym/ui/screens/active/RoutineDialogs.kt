@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import com.kveld9.trackgym.R
 import com.kveld9.trackgym.domain.model.RoutineFolder
 import androidx.compose.material3.MaterialTheme
+import com.kveld9.trackgym.domain.calculator.resolveNewRoutineName
 
 @Composable
 fun ReorderFoldersDialog(
@@ -169,3 +170,59 @@ fun ImportRoutineDialog(
         }
     )
 }
+
+@Composable
+fun NewRoutineDialog(
+    onDismiss: () -> Unit,
+    onConfirm: (String) -> Unit
+) {
+    var routineName by remember { mutableStateOf("") }
+    val resolvedName = resolveNewRoutineName(routineName)
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = stringResource(R.string.dialog_new_routine_title),
+                fontWeight = FontWeight.Bold
+            )
+        },
+        text = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.dialog_new_routine_desc),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                OutlinedTextField(
+                    value = routineName,
+                    onValueChange = { routineName = it },
+                    label = { Text(stringResource(R.string.dialog_routine_name)) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    if (resolvedName != null) {
+                        onConfirm(resolvedName)
+                    }
+                },
+                enabled = resolvedName != null
+            ) {
+                Text(stringResource(R.string.btn_create_routine))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.action_cancel))
+            }
+        }
+    )
+}
+
