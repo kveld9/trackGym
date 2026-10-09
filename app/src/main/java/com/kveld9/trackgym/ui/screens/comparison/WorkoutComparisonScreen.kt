@@ -51,6 +51,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import com.kveld9.trackgym.domain.calculator.LlmWorkoutPromptGenerator
 import com.kveld9.trackgym.domain.calculator.WorkToRestRatioEngine
+import com.kveld9.trackgym.domain.calculator.WorkToRestRatioResult
 import com.kveld9.trackgym.domain.model.Workout
 import com.kveld9.trackgym.ui.components.WorkoutShareCard
 import com.kveld9.trackgym.ui.components.WorkoutSharePreviewDialog
@@ -71,6 +72,8 @@ import com.kveld9.trackgym.domain.model.ExerciseComparison
 import com.kveld9.trackgym.domain.model.SetComparison
 import com.kveld9.trackgym.domain.model.WeightUnit
 import com.kveld9.trackgym.domain.model.WorkoutComparison
+import com.kveld9.trackgym.ui.navigation.workoutSharedBounds
+import com.kveld9.trackgym.ui.navigation.workoutSharedElementKey
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -154,7 +157,10 @@ fun WorkoutComparisonScreen(
                     durationSeconds = comparison.currentWorkout.durationSeconds,
                     totalVolumeKg = comparison.currentWorkout.totalVolume,
                     recordsCount = comparison.totalRecordsUnlocked.size,
-                    weightUnit = weightUnit
+                    weightUnit = weightUnit,
+                    modifier = Modifier.workoutSharedBounds(
+                        workoutSharedElementKey(comparison.currentWorkout.id)
+                    )
                 )
             }
 
@@ -289,14 +295,15 @@ fun WorkoutSummaryHeader(
     durationSeconds: Long,
     totalVolumeKg: Double,
     recordsCount: Int,
-    weightUnit: WeightUnit = WeightUnit.KG
+    weightUnit: WeightUnit = WeightUnit.KG,
+    modifier: Modifier = Modifier
 ) {
     val workRestRatio = remember(workout, durationSeconds) {
         workout?.let { WorkToRestRatioEngine.calculateRatio(it, durationSeconds) }
     }
 
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
         border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)))
@@ -333,44 +340,49 @@ fun WorkoutSummaryHeader(
             workRestRatio?.let { ratio ->
                 if (ratio.totalSeconds > 0) {
                     Spacer(modifier = Modifier.height(14.dp))
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(
-                                text = stringResource(
-                                    R.string.work_time_label,
-                                    formatDuration(ratio.workSeconds),
-                                    ratio.workPercentage
-                                ),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                            Text(
-                                text = stringResource(
-                                    R.string.rest_time_label,
-                                    formatDuration(ratio.restSeconds),
-                                    ratio.restPercentage
-                                ),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(6.dp))
-                        LinearProgressIndicator(
-                            progress = { (ratio.workPercentage / 100.0).toFloat().coerceIn(0f, 1f) },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(6.dp)
-                                .clip(RoundedCornerShape(3.dp)),
-                            color = MaterialTheme.colorScheme.primary,
-                            trackColor = MaterialTheme.colorScheme.surfaceVariant
-                        )
-                    }
+                    WorkRestRatioIndicator(ratio = ratio)
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun WorkRestRatioIndicator(ratio: WorkToRestRatioResult) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = stringResource(
+                    R.string.work_time_label,
+                    formatDuration(ratio.workSeconds),
+                    ratio.workPercentage
+                ),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Text(
+                text = stringResource(
+                    R.string.rest_time_label,
+                    formatDuration(ratio.restSeconds),
+                    ratio.restPercentage
+                ),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+        Spacer(modifier = Modifier.height(6.dp))
+        LinearProgressIndicator(
+            progress = { (ratio.workPercentage / 100.0).toFloat().coerceIn(0f, 1f) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(6.dp)
+                .clip(RoundedCornerShape(3.dp)),
+            color = MaterialTheme.colorScheme.primary,
+            trackColor = MaterialTheme.colorScheme.surfaceVariant
+        )
     }
 }
 

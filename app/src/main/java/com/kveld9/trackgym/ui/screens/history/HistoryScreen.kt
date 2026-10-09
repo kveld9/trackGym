@@ -19,6 +19,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import com.kveld9.trackgym.ui.navigation.workoutSharedBounds
+import com.kveld9.trackgym.ui.navigation.workoutSharedElementKey
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -319,7 +321,11 @@ fun HistoryScreen(
                             )
                         }
 
-                        items(filteredCompletedWorkouts, key = { it.id }) { workout ->
+                        items(
+                            items = filteredCompletedWorkouts,
+                            key = { it.id },
+                            contentType = { "workout_card" }
+                        ) { workout ->
                             WorkoutHistoryCard(
                                 workout = workout,
                                 weightUnit = weightUnit,
@@ -647,7 +653,6 @@ fun WorkoutHistoryCard(
     onSaveAsRoutine: () -> Unit,
     onShareCard: () -> Unit = {}
 ) {
-    var menuExpanded by remember { mutableStateOf(false) }
     val dateFormat = remember { SimpleDateFormat("EEEE, d MMMM", Locale.getDefault()) }
     val dateString = dateFormat.format(Date(workout.completedAt ?: workout.startedAt)).replaceFirstChar { it.uppercase() }
     val durationMin = workout.durationSeconds / 60
@@ -655,6 +660,7 @@ fun WorkoutHistoryCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
+            .workoutSharedBounds(workoutSharedElementKey(workout.id))
             .clip(RoundedCornerShape(16.dp))
             .clickable { onClick() },
         shape = RoundedCornerShape(16.dp),
@@ -662,95 +668,21 @@ fun WorkoutHistoryCard(
         border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)))
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = workout.name,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        fontSize = 17.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(modifier = Modifier.height(2.dp))
-                    Text(
-                        text = dateString,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        fontSize = 13.sp
-                    )
-                }
-
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box {
-                        IconButton(
-                            onClick = { menuExpanded = true },
-                            modifier = Modifier.size(48.dp)
-                        ) {
-                            Icon(Icons.Default.MoreVert, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
-                        }
-                        DropdownMenu(
-                            expanded = menuExpanded,
-                            onDismissRequest = { menuExpanded = false },
-                            modifier = Modifier.background(MaterialTheme.colorScheme.surfaceContainer)
-                        ) {
-                            DropdownMenuItem(
-                                text = { Text(stringResource(R.string.action_save_as_routine), color = MaterialTheme.colorScheme.onSurface) },
-                                onClick = {
-                                    menuExpanded = false
-                                    onSaveAsRoutine()
-                                }
-                            )
-                            DropdownMenuItem(
-                                text = { Text(stringResource(R.string.action_share_image), color = MaterialTheme.colorScheme.onSurface) },
-                                onClick = {
-                                    menuExpanded = false
-                                    onShareCard()
-                                }
-                            )
-                        }
-                    }
-
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
-            }
+            WorkoutCardHeaderRow(
+                workoutName = workout.name,
+                dateString = dateString,
+                onSaveAsRoutine = onSaveAsRoutine,
+                onShareCard = onShareCard
+            )
 
             Spacer(modifier = Modifier.height(14.dp))
 
-            // Stats row
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(MaterialTheme.colorScheme.surfaceContainerHigh)
-                    .padding(horizontal = 12.dp, vertical = 8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = stringResource(R.string.history_stat_min, durationMin),
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Medium
-                )
-                Text(
-                    text = stringResource(R.string.history_stat_sets, workout.totalCompletedSets),
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Medium
-                )
-                Text(
-                    text = weightUnit.format(workout.totalVolume),
-                    color = MaterialTheme.colorScheme.primary,
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
+            WorkoutCardStatsRow(
+                durationMin = durationMin,
+                totalCompletedSets = workout.totalCompletedSets,
+                totalVolume = workout.totalVolume,
+                weightUnit = weightUnit
+            )
 
             if (workout.exercises.isNotEmpty()) {
                 val context = LocalContext.current
@@ -764,6 +696,110 @@ fun WorkoutHistoryCard(
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun WorkoutCardHeaderRow(
+    workoutName: String,
+    dateString: String,
+    onSaveAsRoutine: () -> Unit,
+    onShareCard: () -> Unit
+) {
+    var menuExpanded by remember { mutableStateOf(false) }
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = workoutName,
+                color = MaterialTheme.colorScheme.onSurface,
+                fontSize = 17.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.height(2.dp))
+            Text(
+                text = dateString,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontSize = 13.sp
+            )
+        }
+
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Box {
+                IconButton(
+                    onClick = { menuExpanded = true },
+                    modifier = Modifier.size(48.dp)
+                ) {
+                    Icon(Icons.Default.MoreVert, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+                DropdownMenu(
+                    expanded = menuExpanded,
+                    onDismissRequest = { menuExpanded = false },
+                    modifier = Modifier.background(MaterialTheme.colorScheme.surfaceContainer)
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.action_save_as_routine), color = MaterialTheme.colorScheme.onSurface) },
+                        onClick = {
+                            menuExpanded = false
+                            onSaveAsRoutine()
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.action_share_image), color = MaterialTheme.colorScheme.onSurface) },
+                        onClick = {
+                            menuExpanded = false
+                            onShareCard()
+                        }
+                    )
+                }
+            }
+
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(20.dp)
+            )
+        }
+    }
+}
+
+@Composable
+private fun WorkoutCardStatsRow(
+    durationMin: Long,
+    totalCompletedSets: Int,
+    totalVolume: Double,
+    weightUnit: WeightUnit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(10.dp))
+            .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+            .padding(horizontal = 12.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = stringResource(R.string.history_stat_min, durationMin),
+            color = MaterialTheme.colorScheme.onSurface,
+            fontSize = 13.sp,
+            fontWeight = FontWeight.Medium
+        )
+        Text(
+            text = stringResource(R.string.history_stat_sets, totalCompletedSets),
+            color = MaterialTheme.colorScheme.onSurface,
+            fontSize = 13.sp,
+            fontWeight = FontWeight.Medium
+        )
+        Text(
+            text = weightUnit.format(totalVolume),
+            color = MaterialTheme.colorScheme.primary,
+            fontSize = 13.sp,
+            fontWeight = FontWeight.Bold
+        )
     }
 }
 
@@ -1032,7 +1068,11 @@ fun HistoryCalendarView(
                 }
             }
 
-            items(selectedDay.workouts, key = { it.id }) { workout ->
+            items(
+                items = selectedDay.workouts,
+                key = { it.id },
+                contentType = { "workout_card" }
+            ) { workout ->
                 WorkoutHistoryCard(
                     workout = workout,
                     weightUnit = weightUnit,
