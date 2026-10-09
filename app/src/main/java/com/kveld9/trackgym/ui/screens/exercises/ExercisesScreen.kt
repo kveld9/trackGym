@@ -9,7 +9,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
+import com.kveld9.trackgym.ui.theme.screenEnterTransition
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -164,7 +166,7 @@ fun ExercisesScreen(
             }
         },
         containerColor = MaterialTheme.colorScheme.background,
-        modifier = modifier
+        modifier = modifier.screenEnterTransition()
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -211,13 +213,23 @@ fun ExercisesScreen(
                         .padding(horizontal = 16.dp),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    items(exercises, key = { it.id }) { exercise ->
-                        ExerciseRowCard(
-                            exercise = exercise,
-                            allExercises = allExercises,
-                            onOpenHistory = { selectedExerciseForHistory = exercise },
-                            onEditTags = { exerciseForTagging = exercise }
-                        )
+                    items(
+                        items = exercises,
+                        key = { it.id },
+                        contentType = { "exercise_card" }
+                    ) { exercise ->
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .animateItem()
+                        ) {
+                            ExerciseRowCard(
+                                exercise = exercise,
+                                allExercises = allExercises,
+                                onOpenHistory = { selectedExerciseForHistory = exercise },
+                                onEditTags = { exerciseForTagging = exercise }
+                            )
+                        }
                     }
 
                     item {
@@ -600,7 +612,9 @@ fun ExerciseRowCard(
             ) {
                 OutlinedButton(
                     onClick = { showTechniqueDialog = true },
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .defaultMinSize(minHeight = 48.dp),
                     shape = RoundedCornerShape(8.dp),
                     colors = ButtonDefaults.outlinedButtonColors(
                         contentColor = MaterialTheme.colorScheme.primary
@@ -621,7 +635,9 @@ fun ExerciseRowCard(
 
                 OutlinedButton(
                     onClick = onOpenHistory,
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .defaultMinSize(minHeight = 48.dp),
                     shape = RoundedCornerShape(8.dp),
                     colors = ButtonDefaults.outlinedButtonColors(
                         contentColor = MaterialTheme.colorScheme.primary
@@ -645,7 +661,9 @@ fun ExerciseRowCard(
 
             OutlinedButton(
                 onClick = onEditTags,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .defaultMinSize(minHeight = 48.dp),
                 shape = RoundedCornerShape(8.dp),
                 colors = ButtonDefaults.outlinedButtonColors(
                     contentColor = MaterialTheme.colorScheme.secondary
@@ -1154,65 +1172,97 @@ fun ManageCategoriesDialog(
                             .heightIn(max = 240.dp),
                         verticalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
-                        items(categories, key = { it.id }) { cat ->
-                            if (editingCategory?.id == cat.id) {
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                                ) {
-                                    OutlinedTextField(
-                                        value = renameText,
-                                        onValueChange = { renameText = it.replace(",", "") },
-                                        singleLine = true,
-                                        modifier = Modifier.weight(1f)
-                                    )
-                                    IconButton(
-                                        onClick = {
-                                            val trimmed = renameText.trim()
-                                            if (trimmed.isNotBlank()) {
-                                                onRename(cat, trimmed)
-                                                editingCategory = null
-                                            }
+                        items(
+                            items = categories,
+                            key = { it.id },
+                            contentType = { "category_row" }
+                        ) { cat ->
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .animateItem()
+                            ) {
+                                if (editingCategory?.id == cat.id) {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                    ) {
+                                        OutlinedTextField(
+                                            value = renameText,
+                                            onValueChange = { renameText = it.replace(",", "") },
+                                            singleLine = true,
+                                            modifier = Modifier.weight(1f)
+                                        )
+                                        IconButton(
+                                            onClick = {
+                                                val trimmed = renameText.trim()
+                                                if (trimmed.isNotBlank()) {
+                                                    onRename(cat, trimmed)
+                                                    editingCategory = null
+                                                }
+                                            },
+                                            modifier = Modifier.size(48.dp)
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Default.Check,
+                                                contentDescription = null,
+                                                tint = MaterialTheme.colorScheme.primary
+                                            )
                                         }
-                                    ) {
-                                        Icon(Icons.Default.Check, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                                        IconButton(
+                                            onClick = { editingCategory = null },
+                                            modifier = Modifier.size(48.dp)
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Default.Close,
+                                                contentDescription = null,
+                                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                            )
+                                        }
                                     }
-                                    IconButton(onClick = { editingCategory = null }) {
-                                        Icon(Icons.Default.Close, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
-                                    }
-                                }
-                            } else {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .clip(RoundedCornerShape(8.dp))
-                                        .background(MaterialTheme.colorScheme.surfaceContainerHighest)
-                                        .padding(horizontal = 10.dp, vertical = 6.dp),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Text(
-                                        text = "#${cat.name}",
-                                        color = MaterialTheme.colorScheme.onSurface,
-                                        fontSize = 13.sp,
-                                        fontWeight = FontWeight.Medium,
-                                        modifier = Modifier.weight(1f)
-                                    )
-                                    IconButton(
-                                        onClick = {
-                                            editingCategory = cat
-                                            renameText = cat.name
-                                        },
-                                        modifier = Modifier.size(32.dp)
+                                } else {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clip(RoundedCornerShape(8.dp))
+                                            .background(MaterialTheme.colorScheme.surfaceContainerHighest)
+                                            .padding(horizontal = 10.dp, vertical = 6.dp),
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically
                                     ) {
-                                        Icon(Icons.Default.Edit, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(16.dp))
-                                    }
-                                    IconButton(
-                                        onClick = { confirmingDeleteCategory = cat },
-                                        modifier = Modifier.size(32.dp)
-                                    ) {
-                                        Icon(Icons.Default.Delete, contentDescription = null, tint = MaterialTheme.colorScheme.error, modifier = Modifier.size(16.dp))
+                                        Text(
+                                            text = "#${cat.name}",
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                            fontSize = 13.sp,
+                                            fontWeight = FontWeight.Medium,
+                                            modifier = Modifier.weight(1f)
+                                        )
+                                        IconButton(
+                                            onClick = {
+                                                editingCategory = cat
+                                                renameText = cat.name
+                                            },
+                                            modifier = Modifier.size(48.dp)
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Default.Edit,
+                                                contentDescription = null,
+                                                tint = MaterialTheme.colorScheme.primary,
+                                                modifier = Modifier.size(16.dp)
+                                            )
+                                        }
+                                        IconButton(
+                                            onClick = { confirmingDeleteCategory = cat },
+                                            modifier = Modifier.size(48.dp)
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Default.Delete,
+                                                contentDescription = null,
+                                                tint = MaterialTheme.colorScheme.error,
+                                                modifier = Modifier.size(16.dp)
+                                            )
+                                        }
                                     }
                                 }
                             }

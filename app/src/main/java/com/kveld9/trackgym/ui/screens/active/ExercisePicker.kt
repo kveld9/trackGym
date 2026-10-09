@@ -38,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kveld9.trackgym.R
@@ -183,9 +184,14 @@ fun ExercisePickerContent(
                         }
                     }
                 } else {
-                    items(recommendedSubstitutes, key = { "sub_${it.exercise.id}" }) { sub ->
+                    items(
+                        items = recommendedSubstitutes,
+                        key = { "sub_${it.exercise.id}" },
+                        contentType = { "substitute_row" }
+                    ) { sub ->
                         Row(
                             modifier = Modifier
+                                .animateItem()
                                 .fillMaxWidth()
                                 .clip(RoundedCornerShape(10.dp))
                                 .background(MaterialTheme.colorScheme.surfaceContainerHigh)
@@ -246,51 +252,78 @@ fun ExercisePickerContent(
                 }
             }
 
-            items(filteredList, key = { it.id }) { exercise ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(MaterialTheme.colorScheme.surfaceContainerHigh)
-                        .clickable { onSelectExercise(exercise) }
-                        .padding(14.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column {
-                        Text(
-                            text = exercise.displayName(),
-                            color = MaterialTheme.colorScheme.onSurface,
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.SemiBold
-                        )
-                        Spacer(modifier = Modifier.height(2.dp))
-                        Text(
-                            text = "${stringResource(exercise.muscleGroup.nameRes)} • ${stringResource(exercise.category.nameRes)} • ${stringResource(exercise.force.nameRes)} • ${stringResource(exercise.level.nameRes)}",
-                            color = MaterialTheme.colorScheme.primary,
-                            fontSize = 12.sp
-                        )
-                    }
-                    if (exercise.isCustom) {
-                        Text(
-                            text = stringResource(R.string.badge_manual),
-                            color = MaterialTheme.colorScheme.primary,
-                            fontSize = 10.sp,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier
-                                .border(1.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(4.dp))
-                                .padding(horizontal = 6.dp, vertical = 2.dp)
-                        )
-                    } else {
-                        Text(
-                            text = stringResource(R.string.badge_preloaded),
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            fontSize = 10.sp,
-                            fontWeight = FontWeight.Medium,
-                            modifier = Modifier
-                                .border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f), RoundedCornerShape(4.dp))
-                                .padding(horizontal = 6.dp, vertical = 2.dp)
-                        )
+            if (filteredList.isEmpty()) {
+                item {
+                    Text(
+                        text = stringResource(R.string.exercises_no_results_title),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 14.sp,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 24.dp)
+                    )
+                }
+            } else {
+                items(
+                    items = filteredList,
+                    key = { it.id },
+                    contentType = { "exercise_row" }
+                ) { exercise ->
+                    Row(
+                        modifier = Modifier
+                            .animateItem()
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                            .clickable { onSelectExercise(exercise) }
+                            .padding(14.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column {
+                            Text(
+                                text = exercise.displayName(),
+                                color = MaterialTheme.colorScheme.onSurface,
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                            Spacer(modifier = Modifier.height(2.dp))
+                            val meta = "${stringResource(exercise.muscleGroup.nameRes)} • " +
+                                "${stringResource(exercise.category.nameRes)} • " +
+                                "${stringResource(exercise.force.nameRes)} • " +
+                                stringResource(exercise.level.nameRes)
+                            Text(
+                                text = meta,
+                                color = MaterialTheme.colorScheme.primary,
+                                fontSize = 12.sp
+                            )
+                        }
+                        if (exercise.isCustom) {
+                            Text(
+                                text = stringResource(R.string.badge_manual),
+                                color = MaterialTheme.colorScheme.primary,
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier
+                                    .border(1.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(4.dp))
+                                    .padding(horizontal = 6.dp, vertical = 2.dp)
+                            )
+                        } else {
+                            Text(
+                                text = stringResource(R.string.badge_preloaded),
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Medium,
+                                modifier = Modifier
+                                    .border(
+                                        width = 1.dp,
+                                        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
+                                        shape = RoundedCornerShape(4.dp)
+                                    )
+                                    .padding(horizontal = 6.dp, vertical = 2.dp)
+                            )
+                        }
                     }
                 }
             }

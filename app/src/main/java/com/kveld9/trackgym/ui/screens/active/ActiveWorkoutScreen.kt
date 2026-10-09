@@ -9,6 +9,7 @@ import kotlinx.coroutines.launch
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -17,6 +18,7 @@ import com.kveld9.trackgym.domain.model.WorkoutContextTagParser
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import com.kveld9.trackgym.ui.theme.screenEnterTransition
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -268,7 +270,7 @@ fun ActiveWorkoutScreen(
             onPreviousCycleWeek = { routineId -> viewModel.previousRoutineCycleWeek(routineId) },
             onInstantiateProgram = { program -> viewModel.instantiateProgram(program) },
             onGenerateDeloadRoutine = { routineId, loadPct, volPct -> viewModel.generateDeloadRoutine(routineId, loadPct, volPct, deloadSuffix) },
-            modifier = modifier
+            modifier = modifier.screenEnterTransition()
         )
     } else {
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -303,7 +305,9 @@ fun ActiveWorkoutScreen(
                 }
             },
             containerColor = MaterialTheme.colorScheme.background,
-            modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+            modifier = modifier
+                .screenEnterTransition()
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
         ) { paddingValues ->
             Column(
                 modifier = Modifier
@@ -349,87 +353,98 @@ fun ActiveWorkoutScreen(
                     }
 
                     val exercisesList = activeWorkout?.exercises.orEmpty()
-                    itemsIndexed(exercisesList, key = { _, it -> it.id }) { index, we ->
-                        WorkoutExerciseCard(
-                            workoutExercise = we,
-                            weightUnit = weightUnit,
-                            distanceUnit = distanceUnit,
-                            userBodyWeightKg = userBodyWeight,
-                            previousSets = previousSetsMap[we.exercise.id].orEmpty(),
-                            getReadySeconds = getReadySeconds,
-                            audioCuePlayer = audioCuePlayer,
-                            timerSoundName = timerSoundName,
-                            canMoveUp = index > 0,
-                            canMoveDown = index < exercisesList.size - 1,
-                            onMoveUp = { viewModel.moveExercise(index, index - 1) },
-                            onMoveDown = { viewModel.moveExercise(index, index + 1) },
-                            onSwapExercise = {
-                                exerciseToSwap = we
-                                showSwapExercisePicker = true
-                            },
-                            onAddSet = {
-                                viewModel.addSet(we.id, 0.0, 0)
-                            },
-                            onDuplicateSet = {
-                                viewModel.duplicateLastSet(we.id)
-                            },
-                            onUpdateSet = { set -> viewModel.updateSet(set) },
-                            onOpenWheelPicker = { targetSet -> wheelPickerTarget = Pair(we, targetSet) },
-                            onUpdateExerciseNotes = { notes ->
-                                viewModel.updateExerciseNotes(we.exercise.id, notes)
-                            },
-                            onToggleComplete = { set, weight, reps ->
-                                if (!set.isCompleted) {
-                                    if (soundFeedbackOnComplete) {
-                                        audioCuePlayer.playSetCompleteClick()
+                    itemsIndexed(
+                        items = exercisesList,
+                        key = { _, it -> it.id },
+                        contentType = { _, _ -> "workout_exercise_card" }
+                    ) { index, we ->
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .animateItem()
+                        ) {
+                            WorkoutExerciseCard(
+                                workoutExercise = we,
+                                weightUnit = weightUnit,
+                                distanceUnit = distanceUnit,
+                                userBodyWeightKg = userBodyWeight,
+                                previousSets = previousSetsMap[we.exercise.id].orEmpty(),
+                                getReadySeconds = getReadySeconds,
+                                audioCuePlayer = audioCuePlayer,
+                                timerSoundName = timerSoundName,
+                                canMoveUp = index > 0,
+                                canMoveDown = index < exercisesList.size - 1,
+                                onMoveUp = { viewModel.moveExercise(index, index - 1) },
+                                onMoveDown = { viewModel.moveExercise(index, index + 1) },
+                                onSwapExercise = {
+                                    exerciseToSwap = we
+                                    showSwapExercisePicker = true
+                                },
+                                onAddSet = {
+                                    viewModel.addSet(we.id, 0.0, 0)
+                                },
+                                onDuplicateSet = {
+                                    viewModel.duplicateLastSet(we.id)
+                                },
+                                onUpdateSet = { set -> viewModel.updateSet(set) },
+                                onOpenWheelPicker = { targetSet -> wheelPickerTarget = Pair(we, targetSet) },
+                                onUpdateExerciseNotes = { notes ->
+                                    viewModel.updateExerciseNotes(we.exercise.id, notes)
+                                },
+                                onToggleComplete = { set, weight, reps ->
+                                    if (!set.isCompleted) {
+                                        if (soundFeedbackOnComplete) {
+                                            audioCuePlayer.playSetCompleteClick()
+                                        }
+                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                     }
-                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                }
-                                activeWorkout?.let { wo ->
-                                    viewModel.toggleCompleteSet(set, wo.id, we.exercise.id, weight, reps)
-                                }
-                            },
-                            onDeleteSet = { set ->
-                                viewModel.deleteSet(set)
-                                coroutineScope.launch {
-                                    snackbarHostState.currentSnackbarData?.dismiss()
-                                    val result = snackbarHostState.showSnackbar(
-                                        message = setDeletedMsg,
-                                        actionLabel = undoMsg,
-                                        duration = SnackbarDuration.Short
-                                    )
-                                    if (result == SnackbarResult.ActionPerformed) {
-                                        viewModel.restoreRecentlyDeletedSet()
+                                    activeWorkout?.let { wo ->
+                                        viewModel.toggleCompleteSet(set, wo.id, we.exercise.id, weight, reps)
                                     }
-                                }
-                            },
-                            onRemoveExercise = { viewModel.removeExerciseFromActiveWorkout(we.id) },
-                            showInlinePlates = showInlinePlates,
-                            onOpenPlateCalculator = {
-                                plateCalcExercise = we
-                                plateCalcInitialWeightKg = null
-                            },
-                            onOpenPlateCalculatorForWeight = { targetKg ->
-                                plateCalcExercise = we
-                                plateCalcInitialWeightKg = targetKg
-                            },
-                            onOpenRpeCalculator = { targetSet ->
-                                rpeCalcExercise = we
-                                rpeCalcSet = targetSet
-                            },
-                            onSetRestDuration = { restConfigExercise = we },
-                            onSetSupersetGroup = { supersetConfigExercise = we },
-                            onAddWarmupSets = {
-                                val workingWeight = we.sets.firstOrNull { it.weightKg > 0.0 && it.setType != SetType.WARMUP }?.weightKg
-                                    ?: we.sets.firstOrNull { it.weightKg > 0.0 }?.weightKg
-                                    ?: DEFAULT_FALLBACK_WEIGHT_KG
-                                viewModel.addWarmupSets(we.id, workingWeight)
-                            },
-                            onConfigureWarmupRamp = { warmupRampExercise = we },
-                            onConfigureAutoProgression = { autoProgressionExercise = we },
-                            onOpenTechniqueGuide = { exerciseForTechniqueGuide = we.exercise },
-                            onOpenExerciseHistory = { exerciseForHistory = we.exercise }
-                        )
+                                },
+                                onDeleteSet = { set ->
+                                    viewModel.deleteSet(set)
+                                    coroutineScope.launch {
+                                        snackbarHostState.currentSnackbarData?.dismiss()
+                                        val result = snackbarHostState.showSnackbar(
+                                            message = setDeletedMsg,
+                                            actionLabel = undoMsg,
+                                            duration = SnackbarDuration.Short
+                                        )
+                                        if (result == SnackbarResult.ActionPerformed) {
+                                            viewModel.restoreRecentlyDeletedSet()
+                                        }
+                                    }
+                                },
+                                onRemoveExercise = { viewModel.removeExerciseFromActiveWorkout(we.id) },
+                                showInlinePlates = showInlinePlates,
+                                onOpenPlateCalculator = {
+                                    plateCalcExercise = we
+                                    plateCalcInitialWeightKg = null
+                                },
+                                onOpenPlateCalculatorForWeight = { targetKg ->
+                                    plateCalcExercise = we
+                                    plateCalcInitialWeightKg = targetKg
+                                },
+                                onOpenRpeCalculator = { targetSet ->
+                                    rpeCalcExercise = we
+                                    rpeCalcSet = targetSet
+                                },
+                                onSetRestDuration = { restConfigExercise = we },
+                                onSetSupersetGroup = { supersetConfigExercise = we },
+                                onAddWarmupSets = {
+                                    val workingWeight = we.sets
+                                        .firstOrNull { it.weightKg > 0.0 && it.setType != SetType.WARMUP }?.weightKg
+                                        ?: we.sets.firstOrNull { it.weightKg > 0.0 }?.weightKg
+                                        ?: DEFAULT_FALLBACK_WEIGHT_KG
+                                    viewModel.addWarmupSets(we.id, workingWeight)
+                                },
+                                onConfigureWarmupRamp = { warmupRampExercise = we },
+                                onConfigureAutoProgression = { autoProgressionExercise = we },
+                                onOpenTechniqueGuide = { exerciseForTechniqueGuide = we.exercise },
+                                onOpenExerciseHistory = { exerciseForHistory = we.exercise }
+                            )
+                        }
                     }
 
                     item {

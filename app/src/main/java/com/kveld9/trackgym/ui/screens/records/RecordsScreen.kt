@@ -44,6 +44,7 @@ import com.kveld9.trackgym.domain.model.PersonalRecord
 import com.kveld9.trackgym.domain.model.RecordType
 import com.kveld9.trackgym.domain.model.WeightUnit
 import androidx.compose.material3.MaterialTheme
+import com.kveld9.trackgym.ui.theme.screenEnterTransition
 import com.kveld9.trackgym.ui.util.displayName
 import com.kveld9.trackgym.ui.viewmodel.GymViewModel
 import java.text.SimpleDateFormat
@@ -82,7 +83,7 @@ fun RecordsScreen(
             )
         },
         containerColor = MaterialTheme.colorScheme.background,
-        modifier = modifier
+        modifier = modifier.screenEnterTransition()
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
@@ -149,13 +150,23 @@ fun RecordsScreen(
                     )
                 }
 
-                items(records, key = { it.id }) { pr ->
+                items(
+                    items = records,
+                    key = { it.id },
+                    contentType = { "record_item" }
+                ) { pr ->
                     val exercise = exercisesMap[pr.exerciseId]
-                    RecordItemCard(
-                        record = pr,
-                        exerciseName = exercise?.displayName() ?: "Exercise",
-                        weightUnit = weightUnit
-                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .animateItem()
+                    ) {
+                        RecordItemCard(
+                            record = pr,
+                            exerciseName = exercise?.displayName() ?: "Exercise",
+                            weightUnit = weightUnit
+                        )
+                    }
                 }
             }
 

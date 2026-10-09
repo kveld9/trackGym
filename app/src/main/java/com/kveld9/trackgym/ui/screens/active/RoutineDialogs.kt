@@ -65,14 +65,14 @@ fun ReorderFoldersDialog(
                             IconButton(
                                 onClick = { onMoveFolderUp(folder.id) },
                                 enabled = index > 0,
-                                modifier = Modifier.size(36.dp)
+                                modifier = Modifier.size(48.dp)
                             ) {
                                 Icon(Icons.Default.KeyboardArrowUp, contentDescription = null)
                             }
                             IconButton(
                                 onClick = { onMoveFolderDown(folder.id) },
                                 enabled = index < folders.size - 1,
-                                modifier = Modifier.size(36.dp)
+                                modifier = Modifier.size(48.dp)
                             ) {
                                 Icon(Icons.Default.KeyboardArrowDown, contentDescription = null)
                             }

@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -330,7 +331,7 @@ fun EmptyWorkoutDashboard(
                 if (folders.size > 1 && (onMoveFolderUp != null || onMoveFolderDown != null)) {
                     IconButton(
                         onClick = { showReorderFoldersDialog = true },
-                        modifier = Modifier.size(36.dp)
+                        modifier = Modifier.size(48.dp)
                     ) {
                         Icon(
                             imageVector = Icons.Default.Edit,
@@ -633,7 +634,7 @@ fun RoutineCardItem(
                     onClick = onStart,
                     shape = RoundedCornerShape(10.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
-                    modifier = Modifier.height(38.dp)
+                    modifier = Modifier.defaultMinSize(minHeight = 48.dp)
                 ) {
                     Text(
                         text = stringResource(R.string.btn_start_routine),

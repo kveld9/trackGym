@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -156,7 +157,7 @@ fun PlateCalculatorDialog(
                         )
                         IconButton(
                             onClick = { showManageProfilesDialog = true },
-                            modifier = Modifier.size(36.dp)
+                            modifier = Modifier.size(48.dp)
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Edit,
@@ -494,19 +495,25 @@ fun ExerciseRestDurationDialog(
                             } else {
                                 MaterialTheme.colorScheme.surfaceContainerHigh
                             },
-                            modifier = Modifier.clickable { textInput = seconds.toString() }
+                            modifier = Modifier
+                                .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
+                                .clickable { textInput = seconds.toString() }
                         ) {
-                            Text(
-                                text = "${seconds}s",
-                                color = if (textInput == seconds.toString()) {
-                                    MaterialTheme.colorScheme.onPrimary
-                                } else {
-                                    MaterialTheme.colorScheme.onSurface
-                                },
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 12.sp,
+                            Box(
+                                contentAlignment = Alignment.Center,
                                 modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
-                            )
+                            ) {
+                                Text(
+                                    text = "${seconds}s",
+                                    color = if (textInput == seconds.toString()) {
+                                        MaterialTheme.colorScheme.onPrimary
+                                    } else {
+                                        MaterialTheme.colorScheme.onSurface
+                                    },
+                                    fontWeight = FontWeight.SemiBold,
+                                    fontSize = 12.sp
+                                )
+                            }
                         }
                     }
                 }

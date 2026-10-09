@@ -16,10 +16,13 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
+import com.kveld9.trackgym.ui.theme.screenEnterTransition
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -229,7 +232,7 @@ fun SettingsScreen(
             )
         },
         containerColor = MaterialTheme.colorScheme.background,
-        modifier = modifier
+        modifier = modifier.screenEnterTransition()
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -745,15 +748,29 @@ fun SettingsScreen(
                                         Surface(
                                             shape = RoundedCornerShape(16.dp),
                                             color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh,
-                                            modifier = Modifier.clickable { viewModel.setTimerSound(id) }
+                                            modifier = Modifier
+                                                .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
+                                                .clickable { viewModel.setTimerSound(id) }
                                         ) {
-                                            Text(
-                                                text = label,
-                                                color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
-                                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                                                fontSize = 12.sp,
+                                            Box(
+                                                contentAlignment = Alignment.Center,
                                                 modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
-                                            )
+                                            ) {
+                                                Text(
+                                                    text = label,
+                                                    color = if (isSelected) {
+                                                        MaterialTheme.colorScheme.onPrimary
+                                                    } else {
+                                                        MaterialTheme.colorScheme.onSurface
+                                                    },
+                                                    fontWeight = if (isSelected) {
+                                                        FontWeight.Bold
+                                                    } else {
+                                                        FontWeight.Medium
+                                                    },
+                                                    fontSize = 12.sp
+                                                )
+                                            }
                                         }
                                     }
                                 }
@@ -792,16 +809,34 @@ fun SettingsScreen(
                                         val isSelected = themeSettings.getReadySeconds == seconds
                                         Surface(
                                             shape = RoundedCornerShape(16.dp),
-                                            color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh,
-                                            modifier = Modifier.clickable { viewModel.setGetReadySeconds(seconds) }
+                                            color = if (isSelected) {
+                                                MaterialTheme.colorScheme.primary
+                                            } else {
+                                                MaterialTheme.colorScheme.surfaceContainerHigh
+                                            },
+                                            modifier = Modifier
+                                                .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
+                                                .clickable { viewModel.setGetReadySeconds(seconds) }
                                         ) {
-                                            Text(
-                                                text = label,
-                                                color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
-                                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                                                fontSize = 12.sp,
+                                            Box(
+                                                contentAlignment = Alignment.Center,
                                                 modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
-                                            )
+                                            ) {
+                                                Text(
+                                                    text = label,
+                                                    color = if (isSelected) {
+                                                        MaterialTheme.colorScheme.onPrimary
+                                                    } else {
+                                                        MaterialTheme.colorScheme.onSurface
+                                                    },
+                                                    fontWeight = if (isSelected) {
+                                                        FontWeight.Bold
+                                                    } else {
+                                                        FontWeight.Medium
+                                                    },
+                                                    fontSize = 12.sp
+                                                )
+                                            }
                                         }
                                     }
                                 }

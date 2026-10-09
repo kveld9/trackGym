@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -181,7 +182,9 @@ fun WorkoutExerciseCard(
                             Surface(
                                 shape = RoundedCornerShape(4.dp),
                                 color = MaterialTheme.colorScheme.secondaryContainer,
-                                modifier = Modifier.clickable { onSetRestDuration() }
+                                modifier = Modifier
+                                    .defaultMinSize(minHeight = 48.dp)
+                                    .clickable { onSetRestDuration() }
                             ) {
                                 Text(
                                     text = stringResource(R.string.exercise_rest_badge, restSec),
@@ -198,7 +201,9 @@ fun WorkoutExerciseCard(
                                 shape = RoundedCornerShape(4.dp),
                                 color = GymWarmupAmber.copy(alpha = 0.2f),
                                 border = BorderStroke(1.dp, GymWarmupAmber),
-                                modifier = Modifier.clickable { onConfigureWarmupRamp() }
+                                modifier = Modifier
+                                    .defaultMinSize(minHeight = 48.dp)
+                                    .clickable { onConfigureWarmupRamp() }
                             ) {
                                 Text(
                                     text = stringResource(R.string.badge_custom_warmup),
@@ -215,7 +220,9 @@ fun WorkoutExerciseCard(
                                 shape = RoundedCornerShape(4.dp),
                                 color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f),
                                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
-                                modifier = Modifier.clickable { onConfigureAutoProgression() }
+                                modifier = Modifier
+                                    .defaultMinSize(minHeight = 48.dp)
+                                    .clickable { onConfigureAutoProgression() }
                             ) {
                                 Text(
                                     text = stringResource(R.string.badge_auto),
@@ -233,7 +240,9 @@ fun WorkoutExerciseCard(
                                 shape = RoundedCornerShape(4.dp),
                                 color = badgeColor.copy(alpha = 0.15f),
                                 border = BorderStroke(1.dp, badgeColor),
-                                modifier = Modifier.clickable { onSetSupersetGroup() }
+                                modifier = Modifier
+                                    .defaultMinSize(minHeight = 48.dp)
+                                    .clickable { onSetSupersetGroup() }
                             ) {
                                 Text(
                                     text = stringResource(R.string.superset_label, groupId),
@@ -640,15 +649,25 @@ fun AutoProgressionBadge(
             Surface(
                 shape = RoundedCornerShape(6.dp),
                 color = badgeColor,
-                modifier = Modifier.clickable { onApplyLoad(result.recommendedWeightKg) }
+                modifier = Modifier
+                    .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
+                    .clickable { onApplyLoad(result.recommendedWeightKg) }
             ) {
-                Text(
-                    text = stringResource(R.string.auto_progression_action_apply_load),
-                    style = MaterialTheme.typography.labelSmall,
-                    fontWeight = FontWeight.Bold,
-                    color = if (isProgression) MaterialTheme.colorScheme.onPrimary else Color.Black,
+                Box(
+                    contentAlignment = Alignment.Center,
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-                )
+                ) {
+                    Text(
+                        text = stringResource(R.string.auto_progression_action_apply_load),
+                        style = MaterialTheme.typography.labelSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = if (isProgression) {
+                            MaterialTheme.colorScheme.onPrimary
+                        } else {
+                            MaterialTheme.colorScheme.onSurface
+                        }
+                    )
+                }
             }
         }
     }
@@ -1068,7 +1087,7 @@ fun SetRowItem(
                         trailingIcon = {
                             IconButton(
                                 onClick = { showQuickAdjust = !showQuickAdjust },
-                                modifier = Modifier.size(32.dp)
+                                modifier = Modifier.size(48.dp)
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Tune,
@@ -1146,7 +1165,7 @@ fun SetRowItem(
                                         isStopwatchRunning = true
                                     }
                                 },
-                                modifier = Modifier.size(32.dp)
+                                modifier = Modifier.size(48.dp)
                             ) {
                                 Icon(
                                     imageVector = if (isStopwatchRunning) Icons.Default.Pause
@@ -1277,28 +1296,41 @@ fun SetRowItem(
                         fontSize = 12.sp
                     )
                 }
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text(
-                        text = stringResource(R.string.rest_timer_skip),
-                        color = MaterialTheme.colorScheme.primary,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 11.sp,
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(
                         modifier = Modifier
+                            .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
                             .clickable {
                                 getReadyCountdown = null
                                 if (isDuration || isCardio) isStopwatchRunning = true
                             }
-                            .padding(4.dp)
-                    )
-                    Text(
-                        text = stringResource(R.string.action_cancel),
-                        color = MaterialTheme.colorScheme.error,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 11.sp,
+                            .padding(4.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = stringResource(R.string.rest_timer_skip),
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 11.sp
+                        )
+                    }
+                    Box(
                         modifier = Modifier
+                            .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
                             .clickable { getReadyCountdown = null }
-                            .padding(4.dp)
-                    )
+                            .padding(4.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = stringResource(R.string.action_cancel),
+                            color = MaterialTheme.colorScheme.error,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 11.sp
+                        )
+                    }
                 }
             }
         }
@@ -1464,6 +1496,7 @@ fun SetRpeChip(
 
     Box(
         modifier = modifier
+            .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
             .clip(RoundedCornerShape(6.dp))
             .background(
                 if (rpe != null) MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
@@ -1504,50 +1537,75 @@ fun MicroLoadChipsRow(
         verticalAlignment = Alignment.CenterVertically
     ) {
         deltas.forEach { delta ->
-            val sign = if (delta > 0) "+" else ""
-            val deltaLabel = "$sign${if (delta % 1.0 == 0.0) delta.toInt().toString() else delta.toString()}"
-            val isPositive = delta > 0
-
-            Surface(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(8.dp))
-                    .clickable {
-                        val updated = (currentWeight + delta).coerceAtLeast(0.0)
-                        val rounded = kotlin.math.round(updated * 100.0) / 100.0
-                        onAdjust(rounded)
-                    },
-                shape = RoundedCornerShape(8.dp),
-                color = if (isPositive) MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
-                        else MaterialTheme.colorScheme.surfaceContainerHigh,
-                border = BorderStroke(
-                    1.dp,
-                    if (isPositive) MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
-                    else MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
-                )
-            ) {
-                Box(
-                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = deltaLabel,
-                        color = if (isPositive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 12.sp
-                    )
-                }
-            }
+            MicroLoadDeltaChip(
+                delta = delta,
+                currentWeight = currentWeight,
+                onAdjust = onAdjust
+            )
         }
 
         IconButton(
             onClick = onClose,
-            modifier = Modifier.size(32.dp)
+            modifier = Modifier.size(48.dp)
         ) {
             Icon(
                 imageVector = Icons.Default.Close,
                 contentDescription = "Close",
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(16.dp)
+            )
+        }
+    }
+}
+
+@Composable
+private fun MicroLoadDeltaChip(
+    delta: Double,
+    currentWeight: Double,
+    onAdjust: (Double) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val sign = if (delta > 0) "+" else ""
+    val deltaLabel = "$sign${if (delta % 1.0 == 0.0) delta.toInt().toString() else delta.toString()}"
+    val isPositive = delta > 0
+
+    Surface(
+        modifier = modifier
+            .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .clickable {
+                val updated = (currentWeight + delta).coerceAtLeast(0.0)
+                val rounded = kotlin.math.round(updated * 100.0) / 100.0
+                onAdjust(rounded)
+            },
+        shape = RoundedCornerShape(8.dp),
+        color = if (isPositive) {
+            MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
+        } else {
+            MaterialTheme.colorScheme.surfaceContainerHigh
+        },
+        border = BorderStroke(
+            1.dp,
+            if (isPositive) {
+                MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
+            } else {
+                MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
+            }
+        )
+    ) {
+        Box(
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = deltaLabel,
+                color = if (isPositive) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.onSurface
+                },
+                fontWeight = FontWeight.Bold,
+                fontSize = 12.sp
             )
         }
     }
