@@ -927,4 +927,14 @@
     <string name="setting_health_connect_unavailable">Health Connect not available on this device</string>
     <string name="setting_health_connect_request_perms">Authorize Permissions</string>
     <string name="setting_health_connect_authorized">Permissions Granted</string>
+
+    <!-- Exercises Screen Redesign -->
+    <string name="exercises_empty_title">No exercises in library</string>
+    <string name="exercises_empty_cta">Create Exercise</string>
+    <string name="exercises_no_results_title">No exercises match your search or filters</string>
+    <string name="exercises_no_results_cta">Clear Filters</string>
+    <string name="action_show_results">Show %1$d results</string>
+    <string name="action_filters">Filters</string>
+    <string name="exercises_result_count">%1$d exercises</string>
+    <string name="label_exercise_origin">Origin</string>
 </resources>

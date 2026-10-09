@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,11 +14,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.FilterChip
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -33,13 +32,6 @@ import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Label
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedButton
-import com.kveld9.trackgym.domain.model.CustomExerciseCategory
-import com.kveld9.trackgym.domain.calculator.ExerciseSubstitutionEngine
-import com.kveld9.trackgym.ui.components.ExerciseHistoryDialog
-import com.kveld9.trackgym.ui.components.ExerciseTechniqueDialog
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -48,18 +40,24 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.ui.window.DialogProperties
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -69,16 +67,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Surface
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.window.DialogProperties
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kveld9.trackgym.R
 import com.kveld9.trackgym.domain.calculator.BiomechanicalClassifier
+import com.kveld9.trackgym.domain.calculator.ExerciseSubstitutionEngine
 import com.kveld9.trackgym.domain.calculator.MuscleAnatomyRegistry
 import com.kveld9.trackgym.domain.model.BodyMuscle
+import com.kveld9.trackgym.domain.model.CustomExerciseCategory
 import com.kveld9.trackgym.domain.model.DifficultyLevel
 import com.kveld9.trackgym.domain.model.Exercise
 import com.kveld9.trackgym.domain.model.ExerciseCategory
@@ -86,6 +85,8 @@ import com.kveld9.trackgym.domain.model.ForceType
 import com.kveld9.trackgym.domain.model.MechanicsType
 import com.kveld9.trackgym.domain.model.MuscleGroup
 import com.kveld9.trackgym.domain.model.MuscleInvolvement
+import com.kveld9.trackgym.ui.components.ExerciseHistoryDialog
+import com.kveld9.trackgym.ui.components.ExerciseTechniqueDialog
 import com.kveld9.trackgym.ui.util.displayName
 import com.kveld9.trackgym.ui.viewmodel.GymViewModel
 
@@ -114,6 +115,28 @@ fun ExercisesScreen(
     var selectedExerciseForHistory by remember { mutableStateOf<Exercise?>(null) }
     var showManageCategoriesDialog by remember { mutableStateOf(false) }
     var exerciseForTagging by remember { mutableStateOf<Exercise?>(null) }
+    var showFilterSheet by remember { mutableStateOf(false) }
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+    val activeFilterCount by remember {
+        derivedStateOf {
+            var count = 0
+            if (selectedOriginFilter != GymViewModel.ExerciseOriginFilter.ALL) count++
+            if (selectedFilter != null) count++
+            if (selectedEquipmentFilter != null) count++
+            if (selectedMechanicsFilter != null) count++
+            if (selectedForceFilter != null) count++
+            if (selectedDifficultyFilter != null) count++
+            if (selectedCustomCategoryFilter != null) count++
+            count
+        }
+    }
+
+    val hasFiltersOrSearch by remember {
+        derivedStateOf {
+            activeFilterCount > 0 || searchQuery.isNotBlank()
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -148,298 +171,86 @@ fun ExercisesScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            // Search Box
-            OutlinedTextField(
-                value = searchQuery,
-                onValueChange = { viewModel.setSearchQuery(it) },
-                placeholder = { Text(stringResource(R.string.search_exercise_placeholder), color = MaterialTheme.colorScheme.onSurfaceVariant) },
-                leadingIcon = {
-                    Icon(Icons.Default.Search, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
-                },
-                singleLine = true,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                shape = RoundedCornerShape(12.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
-                    focusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
-                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
-                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface
-                )
+            ExerciseSearchHeader(
+                searchQuery = searchQuery,
+                onSearchChange = { viewModel.setSearchQuery(it) },
+                activeFilterCount = activeFilterCount,
+                onOpenFilterSheet = { showFilterSheet = true }
             )
 
-            Spacer(modifier = Modifier.height(10.dp))
+            ActiveFilterStrip(
+                activeFilterCount = activeFilterCount,
+                resultCount = exercises.size,
+                selectedOrigin = selectedOriginFilter,
+                onOriginClear = { viewModel.setOriginFilter(GymViewModel.ExerciseOriginFilter.ALL) },
+                selectedMuscle = selectedFilter,
+                onMuscleClear = { viewModel.setMuscleFilter(null) },
+                selectedEquipment = selectedEquipmentFilter,
+                onEquipmentClear = { viewModel.setEquipmentFilter(null) },
+                selectedMechanics = selectedMechanicsFilter,
+                onMechanicsClear = { viewModel.setMechanicsFilter(null) },
+                selectedForce = selectedForceFilter,
+                onForceClear = { viewModel.setForceFilter(null) },
+                selectedDifficulty = selectedDifficultyFilter,
+                onDifficultyClear = { viewModel.setDifficultyFilter(null) },
+                selectedCustomCategory = selectedCustomCategoryFilter,
+                onCustomCategoryClear = { viewModel.setCustomCategoryFilter(null) },
+                onClearAll = { viewModel.clearAllExerciseFilters() }
+            )
 
-            // Origin Filter (All / Preloaded / Manual)
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                val originFilters = listOf(
-                    GymViewModel.ExerciseOriginFilter.ALL to R.string.chip_origin_all,
-                    GymViewModel.ExerciseOriginFilter.PRELOADED to R.string.chip_origin_preloaded,
-                    GymViewModel.ExerciseOriginFilter.CUSTOM to R.string.chip_origin_custom
+            if (exercises.isEmpty()) {
+                ExerciseEmptyState(
+                    hasFiltersOrSearch = hasFiltersOrSearch,
+                    onCreateExercise = { showCreateDialog = true },
+                    onClearFilters = { viewModel.clearAllExerciseFilters() }
                 )
-                originFilters.forEach { (filterType, labelRes) ->
-                    val isSelected = selectedOriginFilter == filterType
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(16.dp))
-                            .background(
-                                if (isSelected) MaterialTheme.colorScheme.secondaryContainer
-                                else MaterialTheme.colorScheme.surfaceContainerHigh
-                            )
-                            .border(
-                                width = 1.dp,
-                                color = if (isSelected) MaterialTheme.colorScheme.secondary else Color.Transparent,
-                                shape = RoundedCornerShape(16.dp)
-                            )
-                            .clickable { viewModel.setOriginFilter(filterType) }
-                            .padding(horizontal = 12.dp, vertical = 6.dp)
-                    ) {
-                        Text(
-                            text = stringResource(labelRes),
-                            color = if (isSelected) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onSurfaceVariant,
-                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                            fontSize = 12.sp
-                        )
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            // Muscle Group Horizontal Scroll
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState())
-                    .padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                MuscleChip(
-                    label = stringResource(R.string.chip_all_muscles),
-                    isSelected = selectedFilter == null,
-                    onClick = { viewModel.setMuscleFilter(null) }
-                )
-                MuscleGroup.entries.filter { it != MuscleGroup.OTHER }.forEach { group ->
-                    MuscleChip(
-                        label = stringResource(group.nameRes),
-                        isSelected = selectedFilter == group,
-                        onClick = { viewModel.setMuscleFilter(group) }
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            // Equipment Category Horizontal Scroll
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState())
-                    .padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                MuscleChip(
-                    label = stringResource(R.string.chip_all_equipment),
-                    isSelected = selectedEquipmentFilter == null,
-                    onClick = { viewModel.setEquipmentFilter(null) }
-                )
-                ExerciseCategory.entries.filter { it != ExerciseCategory.OTHER }.forEach { cat ->
-                    MuscleChip(
-                        label = stringResource(cat.nameRes),
-                        isSelected = selectedEquipmentFilter == cat,
-                        onClick = { viewModel.setEquipmentFilter(cat) }
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            // Mechanics (Compound / Isolation) & Clear Filters
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState())
-                    .padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                MuscleChip(
-                    label = stringResource(R.string.chip_all_mechanics),
-                    isSelected = selectedMechanicsFilter == null,
-                    onClick = { viewModel.setMechanicsFilter(null) }
-                )
-                MechanicsType.entries.forEach { mech ->
-                    MuscleChip(
-                        label = stringResource(mech.nameRes),
-                        isSelected = selectedMechanicsFilter == mech,
-                        onClick = { viewModel.setMechanicsFilter(mech) }
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            // Force Vector (Push / Pull / Static)
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState())
-                    .padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                MuscleChip(
-                    label = stringResource(R.string.chip_all_force),
-                    isSelected = selectedForceFilter == null,
-                    onClick = { viewModel.setForceFilter(null) }
-                )
-                ForceType.entries.filter { it != ForceType.OTHER }.forEach { force ->
-                    MuscleChip(
-                        label = stringResource(force.nameRes),
-                        isSelected = selectedForceFilter == force,
-                        onClick = { viewModel.setForceFilter(force) }
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            // Difficulty Level (Beginner / Intermediate / Expert) & Clear Filters
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState())
-                    .padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                MuscleChip(
-                    label = stringResource(R.string.chip_all_difficulty),
-                    isSelected = selectedDifficultyFilter == null,
-                    onClick = { viewModel.setDifficultyFilter(null) }
-                )
-                DifficultyLevel.entries.forEach { level ->
-                    MuscleChip(
-                        label = stringResource(level.nameRes),
-                        isSelected = selectedDifficultyFilter == level,
-                        onClick = { viewModel.setDifficultyFilter(level) }
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            // User-Defined Categories & Tags Filter Row
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState())
-                    .padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                MuscleChip(
-                    label = stringResource(R.string.chip_all_custom_categories),
-                    isSelected = selectedCustomCategoryFilter == null,
-                    onClick = { viewModel.setCustomCategoryFilter(null) }
-                )
-                allCustomCategories.forEach { category ->
-                    MuscleChip(
-                        label = category.name,
-                        isSelected = selectedCustomCategoryFilter.equals(category.name, ignoreCase = true),
-                        onClick = {
-                            if (selectedCustomCategoryFilter.equals(category.name, ignoreCase = true)) {
-                                viewModel.setCustomCategoryFilter(null)
-                            } else {
-                                viewModel.setCustomCategoryFilter(category.name)
-                            }
-                        }
-                    )
-                }
-                Box(
+            } else {
+                LazyColumn(
                     modifier = Modifier
-                        .clip(RoundedCornerShape(20.dp))
-                        .background(MaterialTheme.colorScheme.surfaceContainerHigh)
-                        .border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f), RoundedCornerShape(20.dp))
-                        .clickable { showManageCategoriesDialog = true }
-                        .padding(horizontal = 12.dp, vertical = 8.dp)
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Label,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(14.dp)
-                        )
-                        Text(
-                            text = stringResource(R.string.action_manage_custom_categories),
-                            color = MaterialTheme.colorScheme.primary,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 12.sp
+                    items(exercises, key = { it.id }) { exercise ->
+                        ExerciseRowCard(
+                            exercise = exercise,
+                            allExercises = allExercises,
+                            onOpenHistory = { selectedExerciseForHistory = exercise },
+                            onEditTags = { exerciseForTagging = exercise }
                         )
                     }
-                }
 
-                val hasActiveFilters = selectedFilter != null ||
-                    selectedOriginFilter != GymViewModel.ExerciseOriginFilter.ALL ||
-                    selectedEquipmentFilter != null ||
-                    selectedMechanicsFilter != null ||
-                    selectedForceFilter != null ||
-                    selectedDifficultyFilter != null ||
-                    selectedCustomCategoryFilter != null ||
-                    searchQuery.isNotBlank()
-
-                if (hasActiveFilters) {
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(20.dp))
-                            .background(MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.5f))
-                            .clickable { viewModel.clearAllExerciseFilters() }
-                            .padding(horizontal = 12.dp, vertical = 8.dp)
-                    ) {
-                        Text(
-                            text = stringResource(R.string.action_clear_filters),
-                            color = MaterialTheme.colorScheme.onErrorContainer,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 12.sp
-                        )
+                    item {
+                        Spacer(modifier = Modifier.height(120.dp))
                     }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // Exercise List
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                items(exercises, key = { it.id }) { exercise ->
-                    ExerciseRowCard(
-                        exercise = exercise,
-                        allExercises = allExercises,
-                        onOpenHistory = { selectedExerciseForHistory = exercise },
-                        onEditTags = { exerciseForTagging = exercise }
-                    )
-                }
-
-                item {
-                    Spacer(modifier = Modifier.height(120.dp))
                 }
             }
         }
+    }
+
+    if (showFilterSheet) {
+        ExerciseFilterSheet(
+            sheetState = sheetState,
+            selectedOrigin = selectedOriginFilter,
+            onOriginSelected = { viewModel.setOriginFilter(it) },
+            selectedMuscle = selectedFilter,
+            onMuscleSelected = { viewModel.setMuscleFilter(it) },
+            selectedEquipment = selectedEquipmentFilter,
+            onEquipmentSelected = { viewModel.setEquipmentFilter(it) },
+            selectedMechanics = selectedMechanicsFilter,
+            onMechanicsSelected = { viewModel.setMechanicsFilter(it) },
+            selectedForce = selectedForceFilter,
+            onForceSelected = { viewModel.setForceFilter(it) },
+            selectedDifficulty = selectedDifficultyFilter,
+            onDifficultySelected = { viewModel.setDifficultyFilter(it) },
+            customCategories = allCustomCategories,
+            selectedCustomCategory = selectedCustomCategoryFilter,
+            onCustomCategorySelected = { viewModel.setCustomCategoryFilter(it) },
+            onManageCategories = { showManageCategoriesDialog = true },
+            resultCount = exercises.size,
+            onClearAll = { viewModel.clearAllExerciseFilters() },
+            onDismiss = { showFilterSheet = false }
+        )
     }
 
     if (showCreateDialog) {
@@ -487,28 +298,6 @@ fun ExercisesScreen(
 }
 
 @Composable
-fun MuscleChip(
-    label: String,
-    isSelected: Boolean,
-    onClick: () -> Unit
-) {
-    Box(
-        modifier = Modifier
-            .clip(RoundedCornerShape(20.dp))
-            .background(if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh)
-            .clickable { onClick() }
-            .padding(horizontal = 14.dp, vertical = 8.dp)
-    ) {
-        Text(
-            text = label,
-            color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
-            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-            fontSize = 13.sp
-        )
-    }
-}
-
-@Composable
 fun ExerciseRowCard(
     exercise: Exercise,
     allExercises: List<Exercise> = emptyList(),
@@ -520,7 +309,6 @@ fun ExerciseRowCard(
     var showTechniqueDialog by remember { mutableStateOf(false) }
     val involvements = remember(exercise) { MuscleAnatomyRegistry.getInvolvementsForExercise(exercise) }
     val primary = remember(involvements) { involvements.firstOrNull { it.isPrimary } ?: involvements.firstOrNull() }
-    val secondaries = remember(involvements) { involvements.filter { !it.isPrimary } }
 
     Column(
         modifier = Modifier
@@ -544,8 +332,10 @@ fun ExerciseRowCard(
                     fontWeight = FontWeight.SemiBold
                 )
                 Spacer(modifier = Modifier.height(3.dp))
+                val muscleLabel = stringResource(exercise.muscleGroup.nameRes)
+                val equipmentLabel = stringResource(exercise.category.nameRes)
                 Text(
-                    text = "${stringResource(exercise.muscleGroup.nameRes)} • ${stringResource(exercise.category.nameRes)} • ${stringResource(exercise.mechanics.nameRes)} • ${stringResource(exercise.force.nameRes)} • ${stringResource(exercise.level.nameRes)}",
+                    text = "$muscleLabel | $equipmentLabel",
                     color = MaterialTheme.colorScheme.primary,
                     fontSize = 12.sp
                 )
@@ -584,68 +374,30 @@ fun ExerciseRowCard(
             }
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // Muscle Involvement Chips Summary
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(6.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            if (primary != null) {
-                Surface(
-                    color = MaterialTheme.colorScheme.primaryContainer,
-                    shape = RoundedCornerShape(6.dp)
-                ) {
-                    Text(
-                        text = stringResource(R.string.badge_primary_muscle, stringResource(primary.muscle.nameRes), primary.percentage),
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
-                    )
-                }
-            }
-            secondaries.take(2).forEach { sec ->
-                Surface(
-                    color = MaterialTheme.colorScheme.surfaceContainerHigh,
-                    shape = RoundedCornerShape(6.dp)
-                ) {
-                    Text(
-                        text = stringResource(R.string.badge_secondary_muscle, stringResource(sec.muscle.nameRes), sec.percentage),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.Medium,
-                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
-                    )
-                }
-            }
-            if (secondaries.size > 2) {
-                Surface(
-                    color = MaterialTheme.colorScheme.surfaceContainerHigh,
-                    shape = RoundedCornerShape(6.dp)
-                ) {
-                    Text(
-                        text = "+${secondaries.size - 2}",
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.Medium,
-                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
-                    )
-                }
+        if (primary != null) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Surface(
+                color = MaterialTheme.colorScheme.primaryContainer,
+                shape = RoundedCornerShape(6.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.badge_primary_muscle, stringResource(primary.muscle.nameRes), primary.percentage),
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                )
             }
         }
 
         if (exercise.customCategories.isNotEmpty()) {
             Spacer(modifier = Modifier.height(6.dp))
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState()),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                exercise.customCategories.forEach { tag ->
+                exercise.customCategories.take(2).forEach { tag ->
                     Surface(
                         color = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.7f),
                         shape = RoundedCornerShape(4.dp)
@@ -655,6 +407,20 @@ fun ExerciseRowCard(
                             color = MaterialTheme.colorScheme.onTertiaryContainer,
                             fontSize = 10.sp,
                             fontWeight = FontWeight.SemiBold,
+                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                        )
+                    }
+                }
+                if (exercise.customCategories.size > 2) {
+                    Surface(
+                        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                        shape = RoundedCornerShape(4.dp)
+                    ) {
+                        Text(
+                            text = "+${exercise.customCategories.size - 2}",
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Medium,
                             modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
                         )
                     }
@@ -725,7 +491,7 @@ fun ExerciseRowCard(
                         color = if (inv.isPrimary) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
-                        textAlign = androidx.compose.ui.text.style.TextAlign.End,
+                        textAlign = TextAlign.End,
                         modifier = Modifier.weight(0.15f)
                     )
                 }
