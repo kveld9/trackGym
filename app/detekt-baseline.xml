@@ -2,15 +2,15 @@
 <SmellBaseline>
   <ManuallySuppressedIssues/>
   <CurrentIssues>
-    <ID>ComplexCondition:ActiveWorkoutScreen.kt:showInlinePlates &amp;&amp; !isCardio &amp;&amp; set.setType != SetType.CARDIO &amp;&amp; set.setType != SetType.DURATION &amp;&amp; set.setType != SetType.BODYWEIGHT_LOAD &amp;&amp; set.setType != SetType.BODYWEIGHT_ASSISTED &amp;&amp; effectiveWeightDisplay &gt; 0.0</ID>
+    <ID>ComplexCondition:ExerciseCards.kt:showInlinePlates &amp;&amp; !isCardio &amp;&amp; set.setType != SetType.CARDIO &amp;&amp; set.setType != SetType.DURATION &amp;&amp; set.setType != SetType.BODYWEIGHT_LOAD &amp;&amp; set.setType != SetType.BODYWEIGHT_ASSISTED &amp;&amp; effectiveWeightDisplay &gt; 0.0</ID>
     <ID>ComplexCondition:CsvWorkoutExporter.kt:CsvWorkoutExporter$!value.contains(',') &amp;&amp; !value.contains('"') &amp;&amp; !value.contains('\n') &amp;&amp; !value.contains('\r')</ID>
     <ID>ComplexCondition:PersonalRecordDetector.kt:PersonalRecordDetector$!currentSet.isCompleted || !currentSet.weightKg.isFinite() || currentSet.weightKg &lt;= 0.0 || currentSet.reps &lt;= 0 || currentSet.setType == SetType.WARMUP</ID>
     <ID>ComplexCondition:RpeTargetWeightCalculator.kt:RpeTargetWeightCalculator$!estimated1RmKg.isFinite() || estimated1RmKg &lt;= 0.0 || targetReps &lt;= 0 || !targetRpe.isFinite()</ID>
-    <ID>CyclomaticComplexMethod:ActiveWorkoutScreen.kt:@Composable fun EmptyWorkoutDashboard</ID>
-    <ID>CyclomaticComplexMethod:ActiveWorkoutScreen.kt:@Composable fun PlateCalculatorDialog</ID>
-    <ID>CyclomaticComplexMethod:ActiveWorkoutScreen.kt:@Composable fun RoutineCardItem</ID>
-    <ID>CyclomaticComplexMethod:ActiveWorkoutScreen.kt:@Composable fun SetRowItem</ID>
-    <ID>CyclomaticComplexMethod:ActiveWorkoutScreen.kt:@Composable fun WorkoutExerciseCard</ID>
+    <ID>CyclomaticComplexMethod:WorkoutDashboard.kt:@Composable fun EmptyWorkoutDashboard</ID>
+    <ID>CyclomaticComplexMethod:WorkoutDialogs.kt:@Composable fun PlateCalculatorDialog</ID>
+    <ID>CyclomaticComplexMethod:WorkoutDashboard.kt:@Composable fun RoutineCardItem</ID>
+    <ID>CyclomaticComplexMethod:ExerciseCards.kt:@Composable fun SetRowItem</ID>
+    <ID>CyclomaticComplexMethod:ExerciseCards.kt:@Composable fun WorkoutExerciseCard</ID>
     <ID>CyclomaticComplexMethod:ActiveWorkoutScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun ActiveWorkoutScreen</ID>
     <ID>CyclomaticComplexMethod:AutoProgressionDialog.kt:@Composable fun AutoProgressionDialog</ID>
     <ID>CyclomaticComplexMethod:CsvWorkoutImporter.kt:CsvWorkoutImporter$fun parseCsvToBackupDto: GymBackupDto</ID>
@@ -34,19 +34,19 @@
     <ID>FunctionNaming:PeriodizedRoutineEngine.kt:PeriodizedRoutineEngine$private fun PeriodizationWeekPhaseOrDefault: PeriodizationPhase</ID>
     <ID>LargeClass:GymRepository.kt:GymRepository</ID>
     <ID>LargeClass:GymViewModel.kt:GymViewModel : ViewModel</ID>
-    <ID>LongMethod:ActiveWorkoutScreen.kt:@Composable fun AutoProgressionBadge</ID>
-    <ID>LongMethod:ActiveWorkoutScreen.kt:@Composable fun EmptyWorkoutDashboard</ID>
-    <ID>LongMethod:ActiveWorkoutScreen.kt:@Composable fun ExercisePickerContent</ID>
-    <ID>LongMethod:ActiveWorkoutScreen.kt:@Composable fun ExerciseRestDurationDialog</ID>
-    <ID>LongMethod:ActiveWorkoutScreen.kt:@Composable fun FloatingRestTimer</ID>
-    <ID>LongMethod:ActiveWorkoutScreen.kt:@Composable fun PlateCalculatorDialog</ID>
-    <ID>LongMethod:ActiveWorkoutScreen.kt:@Composable fun RoutineCardItem</ID>
-    <ID>LongMethod:ActiveWorkoutScreen.kt:@Composable fun SetRowItem</ID>
-    <ID>LongMethod:ActiveWorkoutScreen.kt:@Composable fun SupersetGroupDialog</ID>
-    <ID>LongMethod:ActiveWorkoutScreen.kt:@Composable fun WorkoutExerciseCard</ID>
-    <ID>LongMethod:ActiveWorkoutScreen.kt:@Composable private fun ImportRoutineDialog</ID>
+    <ID>LongMethod:ExerciseCards.kt:@Composable fun AutoProgressionBadge</ID>
+    <ID>LongMethod:WorkoutDashboard.kt:@Composable fun EmptyWorkoutDashboard</ID>
+    <ID>LongMethod:ExercisePicker.kt:@Composable fun ExercisePickerContent</ID>
+    <ID>LongMethod:WorkoutDialogs.kt:@Composable fun ExerciseRestDurationDialog</ID>
+    <ID>LongMethod:WorkoutChrome.kt:@Composable fun FloatingRestTimer</ID>
+    <ID>LongMethod:WorkoutDialogs.kt:@Composable fun PlateCalculatorDialog</ID>
+    <ID>LongMethod:WorkoutDashboard.kt:@Composable fun RoutineCardItem</ID>
+    <ID>LongMethod:ExerciseCards.kt:@Composable fun SetRowItem</ID>
+    <ID>LongMethod:WorkoutDialogs.kt:@Composable fun SupersetGroupDialog</ID>
+    <ID>LongMethod:ExerciseCards.kt:@Composable fun WorkoutExerciseCard</ID>
+    <ID>LongMethod:RoutineDialogs.kt:@Composable fun ImportRoutineDialog</ID>
     <ID>LongMethod:ActiveWorkoutScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun ActiveWorkoutScreen</ID>
-    <ID>LongMethod:ActiveWorkoutScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun ActiveWorkoutTopBar</ID>
+    <ID>LongMethod:WorkoutChrome.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun ActiveWorkoutTopBar</ID>
     <ID>LongMethod:AutoBackupEngine.kt:AutoBackupEngine$suspend fun performAutoBackup: AutoBackupResult</ID>
     <ID>LongMethod:AutoProgressionDialog.kt:@Composable fun AutoProgressionDialog</ID>
     <ID>LongMethod:AutoProgressionEngine.kt:AutoProgressionEngine$fun evaluate: AutoProgressionResult</ID>
@@ -115,10 +115,10 @@
     <ID>LoopWithTooManyJumpStatements:CsvWorkoutImporter.kt:CsvWorkoutImporter$for</ID>
     <ID>LoopWithTooManyJumpStatements:ExerciseSubstitutionEngine.kt:ExerciseSubstitutionEngine$for</ID>
     <ID>LoopWithTooManyJumpStatements:GymViewModel.kt:GymViewModel$while</ID>
-    <ID>MagicNumber:ActiveWorkoutScreen.kt:0.001</ID>
-    <ID>MagicNumber:ActiveWorkoutScreen.kt:1000</ID>
-    <ID>MagicNumber:ActiveWorkoutScreen.kt:15</ID>
-    <ID>MagicNumber:ActiveWorkoutScreen.kt:3</ID>
+    <ID>MagicNumber:ExerciseCards.kt:0.001</ID>
+    <ID>MagicNumber:ExerciseCards.kt:1000</ID>
+    <ID>MagicNumber:WorkoutChrome.kt:15</ID>
+    <ID>MagicNumber:ExerciseCards.kt:3</ID>
     <ID>MagicNumber:AutoProgressionDialog.kt:0.95f</ID>
     <ID>MagicNumber:AutoProgressionDialog.kt:10.0</ID>
     <ID>MagicNumber:AutoProgressionDialog.kt:15.0</ID>
@@ -332,88 +332,93 @@
     <ID>MagicNumber:WorkoutShareCard.kt:0xFF27272A</ID>
     <ID>MagicNumber:WorkoutShareCard.kt:3</ID>
     <ID>MatchingDeclarationName:MainScreen.kt:NavTab</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:.</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)))</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:Icon(Icons.Default.MoreVert, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:SetType.NORMAL -&gt; if (set.isCompleted) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:String.format(java.util.Locale.US, "%.2f %s", calcResult.weightPerSide, weightUnit.symbol)</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:Text(col1Header, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f), textAlign = TextAlign.Center)</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:Text(stringResource(R.string.action_finish), color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Bold)</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:.</ID>
+    <ID>MaxLineLength:ExercisePicker.kt:.</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)))</ID>
+    <ID>MaxLineLength:WorkoutDashboard.kt:Icon(Icons.Default.MoreVert, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)</ID>
+    <ID>MaxLineLength:WorkoutChrome.kt:Icon(Icons.Default.MoreVert, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:Icon(Icons.Default.MoreVert, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:SetType.NORMAL -&gt; if (set.isCompleted) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant</ID>
+    <ID>MaxLineLength:WorkoutDialogs.kt:String.format(java.util.Locale.US, "%.2f %s", calcResult.weightPerSide, weightUnit.symbol)</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:Text(col1Header, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f), textAlign = TextAlign.Center)</ID>
+    <ID>MaxLineLength:WorkoutChrome.kt:Text(stringResource(R.string.action_finish), color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Bold)</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:Text(stringResource(R.string.table_header_complete), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp, fontWeight = FontWeight.Bold, modifier = Modifier.width(48.dp), textAlign = TextAlign.Center)</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:Text(stringResource(R.string.table_header_set), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.width(48.dp), textAlign = TextAlign.Center)</ID>
     <ID>MaxLineLength:ActiveWorkoutScreen.kt:Text(stringResource(R.string.action_keep_original), color = MaterialTheme.colorScheme.onSurfaceVariant)</ID>
     <ID>MaxLineLength:ActiveWorkoutScreen.kt:Text(stringResource(R.string.action_save), color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Bold)</ID>
     <ID>MaxLineLength:ActiveWorkoutScreen.kt:Text(stringResource(R.string.action_update_routine), color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Bold)</ID>
     <ID>MaxLineLength:ActiveWorkoutScreen.kt:Text(stringResource(R.string.btn_save_and_summary), color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Bold)</ID>
     <ID>MaxLineLength:ActiveWorkoutScreen.kt:Text(stringResource(R.string.dialog_finish_workout_msg), color = MaterialTheme.colorScheme.onSurfaceVariant)</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:Text(stringResource(R.string.table_header_complete), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp, fontWeight = FontWeight.Bold, modifier = Modifier.width(48.dp), textAlign = TextAlign.Center)</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:Text(stringResource(R.string.table_header_set), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.width(48.dp), textAlign = TextAlign.Center)</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:barWeightInput = if (newBar % 1.0 == 0.0) newBar.toInt().toString() else newBar.toString()</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:barWeightInput = if (pWeight % 1.0 == 0.0) pWeight.toInt().toString() else pWeight.toString()</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.25f))</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.35f))</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:border = ButtonDefaults.outlinedButtonBorder(enabled = true).copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)))</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)))</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:color = if (balance.isBalanced) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:color = if (balance.isBalanced) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainerHighest</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:color = if (currentConfig.isDeload) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSecondaryContainer</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:color = if (currentConfig.isDeload) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.secondaryContainer</ID>
+    <ID>MaxLineLength:WorkoutDialogs.kt:barWeightInput = if (newBar % 1.0 == 0.0) newBar.toInt().toString() else newBar.toString()</ID>
+    <ID>MaxLineLength:WorkoutDialogs.kt:barWeightInput = if (pWeight % 1.0 == 0.0) pWeight.toInt().toString() else pWeight.toString()</ID>
+    <ID>MaxLineLength:WorkoutDialogs.kt:border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.25f))</ID>
+    <ID>MaxLineLength:WorkoutDialogs.kt:border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.35f))</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:border = ButtonDefaults.outlinedButtonBorder(enabled = true).copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)))</ID>
+    <ID>MaxLineLength:WorkoutChrome.kt:border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)))</ID>
+    <ID>MaxLineLength:WorkoutDashboard.kt:border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)))</ID>
+    <ID>MaxLineLength:WorkoutDashboard.kt:color = if (balance.isBalanced) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant</ID>
+    <ID>MaxLineLength:WorkoutDashboard.kt:color = if (balance.isBalanced) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainerHighest</ID>
+    <ID>MaxLineLength:WorkoutDashboard.kt:color = if (currentConfig.isDeload) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSecondaryContainer</ID>
+    <ID>MaxLineLength:WorkoutDashboard.kt:color = if (currentConfig.isDeload) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.secondaryContainer</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:color = if (isPositive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:color = if (rpe != null) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)</ID>
     <ID>MaxLineLength:ActiveWorkoutScreen.kt:color = if (isBackdated) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:color = if (isPositive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:color = if (rpe != null) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)</ID>
     <ID>MaxLineLength:ActiveWorkoutScreen.kt:colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh)</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:contentDescription</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:contentDescription = if (isRunning) stringResource(R.string.rest_timer_pause) else stringResource(R.string.rest_timer_resume)</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 10.dp, vertical = 6.dp)</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:if</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:label = { Text("${stringResource(R.string.plate_calc_bar_weight)} (${weightUnit.symbol})", fontSize = 11.sp) }</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:label = { Text("${stringResource(R.string.plate_calc_target_weight)} (${weightUnit.symbol})", fontSize = 11.sp) }</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:label = { Text(stringResource(R.string.plate_calc_collars_toggle, collarStr), fontSize = 11.sp) }</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:leadingIcon = { Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null) }</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:contentDescription</ID>
+    <ID>MaxLineLength:WorkoutChrome.kt:contentDescription = if (isRunning) stringResource(R.string.rest_timer_pause) else stringResource(R.string.rest_timer_resume)</ID>
+    <ID>MaxLineLength:WorkoutDashboard.kt:contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 10.dp, vertical = 6.dp)</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:if</ID>
+    <ID>MaxLineLength:WorkoutDialogs.kt:label = { Text("${stringResource(R.string.plate_calc_bar_weight)} (${weightUnit.symbol})", fontSize = 11.sp) }</ID>
+    <ID>MaxLineLength:WorkoutDialogs.kt:label = { Text("${stringResource(R.string.plate_calc_target_weight)} (${weightUnit.symbol})", fontSize = 11.sp) }</ID>
+    <ID>MaxLineLength:WorkoutDialogs.kt:label = { Text(stringResource(R.string.plate_calc_collars_toggle, collarStr), fontSize = 11.sp) }</ID>
+    <ID>MaxLineLength:WorkoutDashboard.kt:leadingIcon = { Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null) }</ID>
+    <ID>MaxLineLength:ExercisePicker.kt:placeholder = { Text(stringResource(R.string.search_exercise_placeholder), color = MaterialTheme.colorScheme.onSurfaceVariant) }</ID>
     <ID>MaxLineLength:ActiveWorkoutScreen.kt:onGenerateDeloadRoutine = { routineId, loadPct, volPct -&gt; viewModel.generateDeloadRoutine(routineId, loadPct, volPct, deloadSuffix) }</ID>
     <ID>MaxLineLength:ActiveWorkoutScreen.kt:onUpdatePeriodization = { routineId, isPeriodized, cycle -&gt; viewModel.updateRoutinePeriodization(routineId, isPeriodized, cycle) }</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:placeholder = { Text(stringResource(R.string.search_exercise_placeholder), color = MaterialTheme.colorScheme.onSurfaceVariant) }</ID>
     <ID>MaxLineLength:ActiveWorkoutScreen.kt:selectedContextTags = WorkoutContextTagParser.toggleTag(selectedContextTags, tag.tagKey)</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:targetValue = if (set.isCompleted) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:text = "${balance.pushCount} ${stringResource(R.string.force_push)} • ${balance.pullCount} ${stringResource(R.string.force_pull)}"</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:text = "${stringResource(exercise.muscleGroup.nameRes)} • ${stringResource(exercise.category.nameRes)} • ${stringResource(exercise.force.nameRes)} • ${stringResource(exercise.level.nameRes)}"</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:text = "${stringResource(sub.exercise.muscleGroup.nameRes)} • ${stringResource(sub.exercise.category.nameRes)} • ${stringResource(sub.exercise.mechanics.nameRes)}"</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:text = "${stringResource(workoutExercise.exercise.muscleGroup.nameRes)} • ${stringResource(workoutExercise.exercise.category.nameRes)}"</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:text = if (exerciseNames.isNotBlank()) exerciseNames else stringResource(R.string.routine_exercises_count, routine.exercises.size)</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:text = stringResource(R.string.badge_periodized_block, currentConfig.weekNumber, routine.periodizedCycle.totalWeeks)</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:targetValue = if (set.isCompleted) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh</ID>
+    <ID>MaxLineLength:WorkoutDashboard.kt:text = "${balance.pushCount} ${stringResource(R.string.force_push)} • ${balance.pullCount} ${stringResource(R.string.force_pull)}"</ID>
+    <ID>MaxLineLength:ExercisePicker.kt:text = "${stringResource(exercise.muscleGroup.nameRes)} • ${stringResource(exercise.category.nameRes)} • ${stringResource(exercise.force.nameRes)} • ${stringResource(exercise.level.nameRes)}"</ID>
+    <ID>MaxLineLength:ExercisePicker.kt:text = "${stringResource(sub.exercise.muscleGroup.nameRes)} • ${stringResource(sub.exercise.category.nameRes)} • ${stringResource(sub.exercise.mechanics.nameRes)}"</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:text = "${stringResource(workoutExercise.exercise.muscleGroup.nameRes)} • ${stringResource(workoutExercise.exercise.category.nameRes)}"</ID>
+    <ID>MaxLineLength:WorkoutDashboard.kt:text = if (exerciseNames.isNotBlank()) exerciseNames else stringResource(R.string.routine_exercises_count, routine.exercises.size)</ID>
+    <ID>MaxLineLength:WorkoutDashboard.kt:text = stringResource(R.string.badge_periodized_block, currentConfig.weekNumber, routine.periodizedCycle.totalWeeks)</ID>
     <ID>MaxLineLength:ActiveWorkoutScreen.kt:text = stringResource(R.string.checkbox_detach_routine, activeWorkout?.name.orEmpty())</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:text = stringResource(R.string.subtitle_substitutes_for, exerciseToSubstitute.displayName(context, keepEnglish))</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:text = { Text(stringResource(R.string.action_add_warmup_sets), color = MaterialTheme.colorScheme.onSurface) }</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:text = { Text(stringResource(R.string.action_discard), color = MaterialTheme.colorScheme.error) }</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:text = { Text(stringResource(R.string.action_exercise_history), color = MaterialTheme.colorScheme.onSurface) }</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:text = { Text(stringResource(R.string.action_plate_calculator), color = MaterialTheme.colorScheme.onSurface) }</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:text = { Text(stringResource(R.string.action_rpe_target_calculator), color = MaterialTheme.colorScheme.onSurface) }</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:text = { Text(stringResource(R.string.action_save_as_routine), color = MaterialTheme.colorScheme.onSurface) }</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:text = { Text(stringResource(R.string.action_technique_guide), color = MaterialTheme.colorScheme.onSurface) }</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:text = { Text(stringResource(R.string.menu_auto_progression_rules), color = MaterialTheme.colorScheme.onSurface) }</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:text = { Text(stringResource(R.string.menu_configure_warmup_ramp), color = MaterialTheme.colorScheme.onSurface) }</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:text = { Text(stringResource(R.string.menu_delete_routine), color = MaterialTheme.colorScheme.error) }</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:text = { Text(stringResource(R.string.menu_move_down), color = MaterialTheme.colorScheme.onSurface) }</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:text = { Text(stringResource(R.string.menu_move_up), color = MaterialTheme.colorScheme.onSurface) }</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:text = { Text(stringResource(R.string.menu_remove_exercise), color = MaterialTheme.colorScheme.error) }</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:text = { Text(stringResource(R.string.menu_set_rest_duration), color = MaterialTheme.colorScheme.onSurface) }</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:text = { Text(stringResource(R.string.menu_swap_exercise), color = MaterialTheme.colorScheme.onSurface) }</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:textStyle = androidx.compose.ui.text.TextStyle(textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onSurface, fontSize = 15.sp)</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:tint = if (set.isCompleted) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:tint = if (showQuickAdjust) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)</ID>
+    <ID>MaxLineLength:ExercisePicker.kt:text = stringResource(R.string.subtitle_substitutes_for, exerciseToSubstitute.displayName(context, keepEnglish))</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:text = { Text(stringResource(R.string.action_add_warmup_sets), color = MaterialTheme.colorScheme.onSurface) }</ID>
+    <ID>MaxLineLength:WorkoutChrome.kt:text = { Text(stringResource(R.string.action_discard), color = MaterialTheme.colorScheme.error) }</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:text = { Text(stringResource(R.string.action_exercise_history), color = MaterialTheme.colorScheme.onSurface) }</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:text = { Text(stringResource(R.string.action_plate_calculator), color = MaterialTheme.colorScheme.onSurface) }</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:text = { Text(stringResource(R.string.action_rpe_target_calculator), color = MaterialTheme.colorScheme.onSurface) }</ID>
+    <ID>MaxLineLength:WorkoutChrome.kt:text = { Text(stringResource(R.string.action_save_as_routine), color = MaterialTheme.colorScheme.onSurface) }</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:text = { Text(stringResource(R.string.action_technique_guide), color = MaterialTheme.colorScheme.onSurface) }</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:text = { Text(stringResource(R.string.menu_auto_progression_rules), color = MaterialTheme.colorScheme.onSurface) }</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:text = { Text(stringResource(R.string.menu_configure_warmup_ramp), color = MaterialTheme.colorScheme.onSurface) }</ID>
+    <ID>MaxLineLength:WorkoutDashboard.kt:text = { Text(stringResource(R.string.menu_delete_routine), color = MaterialTheme.colorScheme.error) }</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:text = { Text(stringResource(R.string.menu_move_down), color = MaterialTheme.colorScheme.onSurface) }</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:text = { Text(stringResource(R.string.menu_move_up), color = MaterialTheme.colorScheme.onSurface) }</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:text = { Text(stringResource(R.string.menu_remove_exercise), color = MaterialTheme.colorScheme.error) }</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:text = { Text(stringResource(R.string.menu_set_rest_duration), color = MaterialTheme.colorScheme.onSurface) }</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:text = { Text(stringResource(R.string.menu_swap_exercise), color = MaterialTheme.colorScheme.onSurface) }</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:textStyle = androidx.compose.ui.text.TextStyle(textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onSurface, fontSize = 15.sp)</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:tint = if (set.isCompleted) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:tint = if (showQuickAdjust) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)</ID>
     <ID>MaxLineLength:ActiveWorkoutScreen.kt:title = { Text(stringResource(R.string.dialog_finish_workout_title), color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold) }</ID>
     <ID>MaxLineLength:ActiveWorkoutScreen.kt:val</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:val cal = if (isCardio) CardioCalculator.calculateCaloriesBurned(parsedSec, userBodyWeightKg) else set.caloriesBurned</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:val calories = set.caloriesBurned ?: if (durationSec &gt; 0) CardioCalculator.calculateCaloriesBurned(durationSec, userBodyWeightKg) else 0</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:val col1Header = if (isCardioExercise) distanceUnit.symbol.uppercase() else weightUnit.symbol.uppercase()</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:val collarStr = if (defaultCollars % 1.0 == 0.0) "${defaultCollars.toInt()}${weightUnit.symbol}" else "$defaultCollars${weightUnit.symbol}"</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:val defaultCollars = remember(weightUnit) { com.kveld9.trackgym.domain.calculator.PlateCalculator.defaultCollarsWeight(weightUnit) }</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:val distanceVal = set.distanceKm ?: distanceText.replace(',', '.').toDoubleOrNull()?.let { distanceUnit.toKm(it) } ?: 0.0</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:val durationSec = if (set.durationSeconds != null &amp;&amp; set.durationSeconds &gt; 0) set.durationSeconds else com.kveld9.trackgym.domain.util.DurationFormatter.parseInputToSeconds(repsText)</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:val exerciseNames = routine.exercises.joinToString(", ") { it.exercise.displayName(context, keepEnglish) }</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:val label = if (plate % 1.0 == 0.0) "${plate.toInt()}${weightUnit.symbol}" else "$plate${weightUnit.symbol}"</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:val pWeightStr = if (pWeight % 1.0 == 0.0) "${pWeight.toInt()}${weightUnit.symbol}" else "$pWeight${weightUnit.symbol}"</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:val parsedSec = com.kveld9.trackgym.domain.util.DurationFormatter.parseInputToSeconds(repsText)</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:val plateLabel = if (item.weight % 1.0 == 0.0) "${item.weight.toInt()} ${weightUnit.symbol}" else "${item.weight} ${weightUnit.symbol}"</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:val remText = String.format(java.util.Locale.US, "%.2f %s", calcResult.remainderPerSide, weightUnit.symbol)</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:val</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:val cal = if (isCardio) CardioCalculator.calculateCaloriesBurned(parsedSec, userBodyWeightKg) else set.caloriesBurned</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:val calories = set.caloriesBurned ?: if (durationSec &gt; 0) CardioCalculator.calculateCaloriesBurned(durationSec, userBodyWeightKg) else 0</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:val col1Header = if (isCardioExercise) distanceUnit.symbol.uppercase() else weightUnit.symbol.uppercase()</ID>
+    <ID>MaxLineLength:WorkoutDialogs.kt:val collarStr = if (defaultCollars % 1.0 == 0.0) "${defaultCollars.toInt()}${weightUnit.symbol}" else "$defaultCollars${weightUnit.symbol}"</ID>
+    <ID>MaxLineLength:WorkoutDialogs.kt:val defaultCollars = remember(weightUnit) { com.kveld9.trackgym.domain.calculator.PlateCalculator.defaultCollarsWeight(weightUnit) }</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:val distanceVal = set.distanceKm ?: distanceText.replace(',', '.').toDoubleOrNull()?.let { distanceUnit.toKm(it) } ?: 0.0</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:val durationSec = if (set.durationSeconds != null &amp;&amp; set.durationSeconds &gt; 0) set.durationSeconds else com.kveld9.trackgym.domain.util.DurationFormatter.parseInputToSeconds(repsText)</ID>
+    <ID>MaxLineLength:WorkoutDashboard.kt:val exerciseNames = routine.exercises.joinToString(", ") { it.exercise.displayName(context, keepEnglish) }</ID>
+    <ID>MaxLineLength:WorkoutDialogs.kt:val label = if (plate % 1.0 == 0.0) "${plate.toInt()}${weightUnit.symbol}" else "$plate${weightUnit.symbol}"</ID>
+    <ID>MaxLineLength:WorkoutDialogs.kt:val pWeightStr = if (pWeight % 1.0 == 0.0) "${pWeight.toInt()}${weightUnit.symbol}" else "$pWeight${weightUnit.symbol}"</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:val parsedSec = com.kveld9.trackgym.domain.util.DurationFormatter.parseInputToSeconds(repsText)</ID>
+    <ID>MaxLineLength:WorkoutDialogs.kt:val plateLabel = if (item.weight % 1.0 == 0.0) "${item.weight.toInt()} ${weightUnit.symbol}" else "${item.weight} ${weightUnit.symbol}"</ID>
+    <ID>MaxLineLength:WorkoutDialogs.kt:val remText = String.format(java.util.Locale.US, "%.2f %s", calcResult.remainderPerSide, weightUnit.symbol)</ID>
     <ID>MaxLineLength:AutoProgressionDialog.kt:color = if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface</ID>
     <ID>MaxLineLength:AutoProgressionDialog.kt:color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh</ID>
     <ID>MaxLineLength:AutoProgressionDialog.kt:text = "Rule: If all sets reach $targetReps reps -&gt; +$incDisplay. If failed $failureThreshold workouts in a row -&gt; -${deloadPercentage.toInt()}% deload."</ID>
@@ -817,7 +822,6 @@
     <ID>TooGenericExceptionCaught:SettingsViewModel.kt:SettingsViewModel$e: Exception</ID>
     <ID>TooGenericExceptionCaught:ShareProvider.kt:ShareProvider$e: Exception</ID>
     <ID>TooGenericExceptionCaught:TrackGymApp.kt:TrackGymApp$t: Throwable</ID>
-    <ID>TooManyFunctions:ActiveWorkoutScreen.kt:com.kveld9.trackgym.ui.screens.active.ActiveWorkoutScreen.kt</ID>
     <ID>TooManyFunctions:ExerciseDao.kt:ExerciseDao</ID>
     <ID>TooManyFunctions:GymRepository.kt:GymRepository</ID>
     <ID>TooManyFunctions:GymViewModel.kt:GymViewModel : ViewModel</ID>
@@ -825,7 +829,7 @@
     <ID>TooManyFunctions:SettingsViewModel.kt:SettingsViewModel : ViewModel</ID>
     <ID>TooManyFunctions:ThemePreferences.kt:ThemePreferences</ID>
     <ID>TooManyFunctions:WorkoutDao.kt:WorkoutDao</ID>
-    <ID>UnusedParameter:ActiveWorkoutScreen.kt:onDeleteSet: () -&gt; Unit</ID>
+    <ID>UnusedParameter:ExerciseCards.kt:onDeleteSet: () -&gt; Unit</ID>
     <ID>UnusedParameter:BiomechanicalClassifier.kt:BiomechanicalClassifier$category: ExerciseCategory = ExerciseCategory.BARBELL</ID>
     <ID>UnusedParameter:BiomechanicalClassifier.kt:BiomechanicalClassifier$muscleGroup: MuscleGroup = MuscleGroup.CHEST</ID>
     <ID>UnusedParameter:ExerciseTechniqueDialog.kt:badgeColor: androidx.compose.ui.graphics.Color</ID>
