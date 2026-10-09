@@ -27,8 +27,48 @@ android {
     namespace = "com.kveld9.trackgym"
     compileSdk = 37
 
-    val appVersionName: String = (project.findProperty("versionName") as? String) ?: "1.0.0"
-    val appVersionCode: Int = (project.findProperty("versionCode") as? String)?.toIntOrNull() ?: 1
+    fun gitOutput(vararg args: String): String? = runCatching {
+        project.providers.exec {
+            commandLine("git", *args)
+            workingDir = project.rootDir
+            isIgnoreExitValue = true
+        }.standardOutput.asText.get().trim().takeIf { it.isNotEmpty() }
+    }.getOrNull()
+
+    fun parseVersionCode(version: String?): Int {
+        if (version == null) return 1
+        val parts = version.split('.')
+        if (parts.size != 3) return 1
+        val major = parts[0].toIntOrNull() ?: return 1
+        val minor = parts[1].toIntOrNull() ?: return 1
+        val patch = parts[2].toIntOrNull() ?: return 1
+        return major * 10000 + minor * 100 + patch
+    }
+
+    fun deriveVersionName(rawTag: String?, fullDesc: String?): String {
+        val base = rawTag?.removePrefix("v") ?: return "1.0.0"
+        if (fullDesc == null || fullDesc == rawTag) return base
+        if (!fullDesc.startsWith("$rawTag-")) return base
+        val suffix = fullDesc.removePrefix("$rawTag-").replace('-', '.')
+        return "$base+$suffix"
+    }
+
+    val propVersionName = project.findProperty("versionName") as? String
+    val propVersionCode = (project.findProperty("versionCode") as? String)?.toIntOrNull()
+
+    val rawTag = if (propVersionName == null || propVersionCode == null) {
+        gitOutput("describe", "--tags", "--abbrev=0")
+    } else {
+        null
+    }
+    val fullDesc = if (propVersionName == null && rawTag != null) {
+        gitOutput("describe", "--tags")
+    } else {
+        null
+    }
+
+    val appVersionName: String = propVersionName ?: deriveVersionName(rawTag, fullDesc)
+    val appVersionCode: Int = propVersionCode ?: parseVersionCode(rawTag?.removePrefix("v"))
 
     defaultConfig {
         applicationId = "com.kveld9.trackgym"
