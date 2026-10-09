@@ -23,7 +23,7 @@ git config core.hooksPath .githooks
 
 ## Checks
 
-Run these before opening a pull request. CI runs them too, and additionally builds the R8-minified release APK (`./gradlew assembleRelease`).
+Run these before opening a pull request. On pull requests, CI runs `testDebugUnitTest` and `detekt` and builds the R8-minified release APK (`./gradlew assembleRelease`) instead of the debug APK.
 
 ```bash
 ./gradlew testDebugUnitTest
