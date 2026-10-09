@@ -1,65 +1,43 @@
 package com.kveld9.trackgym.ui.navigation
 
-import androidx.annotation.StringRes
-import androidx.compose.foundation.BorderStroke
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Surface
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.List
-import androidx.compose.material.icons.filled.EmojiEvents
-import androidx.compose.material.icons.filled.FitnessCenter
-import androidx.compose.material.icons.filled.History
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.NavigationDrawerItemDefaults
+import androidx.compose.material3.NavigationRailItemDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteDefaults
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteItemColors
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.kveld9.trackgym.R
-import com.kveld9.trackgym.ui.screens.active.ActiveWorkoutScreen
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import com.kveld9.trackgym.domain.model.WorkoutComparison
 import com.kveld9.trackgym.ui.screens.comparison.WorkoutComparisonScreen
-import com.kveld9.trackgym.ui.screens.exercises.ExercisesScreen
-import com.kveld9.trackgym.ui.screens.history.HistoryScreen
-import com.kveld9.trackgym.ui.screens.records.RecordsScreen
-import com.kveld9.trackgym.ui.screens.settings.SettingsScreen
 import com.kveld9.trackgym.ui.util.LocalKeepEnglishExerciseNames
 import com.kveld9.trackgym.ui.viewmodel.GymViewModel
 import com.kveld9.trackgym.ui.viewmodel.SettingsViewModel
 
-enum class NavTab(@get:StringRes val titleRes: Int, val icon: ImageVector) {
-    TRAIN(R.string.tab_train, Icons.Default.FitnessCenter),
-    HISTORY(R.string.tab_history, Icons.Default.History),
-    EXERCISES(R.string.tab_exercises, Icons.AutoMirrored.Filled.List),
-    RECORDS(R.string.tab_records, Icons.Default.EmojiEvents),
-    SETTINGS(R.string.tab_settings, Icons.Default.Settings)
-}
+private val ExpandedWidthThreshold = 1200.dp
+private val MediumWidthThreshold = 600.dp
 
 @Composable
 fun MainScreen(
@@ -68,11 +46,16 @@ fun MainScreen(
     initialTab: Int = 0,
     modifier: Modifier = Modifier
 ) {
-    var selectedTab by rememberSaveable { mutableIntStateOf(initialTab) }
+    val navController = rememberNavController()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+    val currentTab = NavTab.entries.firstOrNull { it.name == currentRoute }
+        ?: NavTab.entries.getOrElse(initialTab) { NavTab.TRAIN }
 
     LaunchedEffect(initialTab) {
-        if (initialTab != selectedTab) {
-            selectedTab = initialTab
+        val targetTab = NavTab.entries.getOrNull(initialTab) ?: NavTab.TRAIN
+        if (currentTab != targetTab) {
+            navController.navigateToTab(targetTab)
         }
     }
 
@@ -80,8 +63,8 @@ fun MainScreen(
     val selectedDetailComparison by viewModel.selectedDetailComparison.collectAsStateWithLifecycle()
     val weightUnit by viewModel.weightUnit.collectAsStateWithLifecycle()
 
-    LaunchedEffect(selectedTab) {
-        if (selectedTab == 0) {
+    LaunchedEffect(currentTab) {
+        if (currentTab == NavTab.TRAIN) {
             viewModel.refreshActiveWorkout()
         }
     }
@@ -89,109 +72,135 @@ fun MainScreen(
     val keepExerciseNamesInEnglish by viewModel.keepExerciseNamesInEnglish.collectAsStateWithLifecycle()
 
     CompositionLocalProvider(LocalKeepEnglishExerciseNames provides keepExerciseNamesInEnglish) {
-        // If viewing comparison screen (either after finishing or tapped from history)
         val activeComparison = selectedDetailComparison ?: lastFinishedComparison
         if (activeComparison != null) {
+            val handleDismissComparison = {
+                dismissComparison(selectedDetailComparison, viewModel)
+            }
+
+            BackHandler(onBack = handleDismissComparison)
+
             WorkoutComparisonScreen(
                 comparison = activeComparison,
                 weightUnit = weightUnit,
-                onBackClick = {
-                    if (selectedDetailComparison != null) {
-                        viewModel.clearSelectedDetailComparison()
-                    } else {
-                        viewModel.clearLastFinishedComparison()
-                    }
-                }
+                onBackClick = handleDismissComparison
             )
             return@CompositionLocalProvider
         }
 
-        Box(
+        BoxWithConstraints(
             modifier = modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
         ) {
-            Box(
+            val layoutType = resolveLayoutType(maxWidth)
+            val navItemColors = rememberNavItemColors()
+
+            NavigationSuiteScaffold(
+                layoutType = layoutType,
+                navigationSuiteItems = {
+                    NavTab.entries.forEach { tab ->
+                        val isSelected = currentTab == tab
+                        item(
+                            selected = isSelected,
+                            onClick = {
+                                handleTabClick(currentTab, tab, navController, viewModel)
+                            },
+                            icon = {
+                                Icon(
+                                    imageVector = tab.icon,
+                                    contentDescription = stringResource(tab.titleRes)
+                                )
+                            },
+                            label = {
+                                Text(
+                                    text = stringResource(tab.titleRes),
+                                    fontSize = 10.sp,
+                                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                                )
+                            },
+                            colors = navItemColors,
+                            modifier = Modifier.defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
+                        )
+                    }
+                },
+                containerColor = MaterialTheme.colorScheme.background,
+                contentColor = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.fillMaxSize()
             ) {
-                when (selectedTab) {
-                    0 -> ActiveWorkoutScreen(
-                        viewModel = viewModel,
-                        onWorkoutFinished = {
-                            // Handled by activeComparison trigger
-                        }
-                    )
-                    1 -> HistoryScreen(
-                        viewModel = viewModel,
-                        weightUnit = weightUnit,
-                        onWorkoutClick = { workoutId ->
-                            viewModel.viewWorkoutDetail(workoutId)
-                        }
-                    )
-                    2 -> ExercisesScreen(
-                        viewModel = viewModel
-                    )
-                    3 -> RecordsScreen(
-                        viewModel = viewModel,
-                        weightUnit = weightUnit
-                    )
-                    4 -> SettingsScreen(
-                        viewModel = settingsViewModel
-                    )
-                }
-            }
-
-            // Truly floating Navigation Bar
-            Box(
-                modifier = Modifier
-                    .align(androidx.compose.ui.Alignment.BottomCenter)
-                    .fillMaxWidth()
-                    .navigationBarsPadding()
-                    .padding(start = 16.dp, end = 16.dp, bottom = 12.dp)
-            ) {
-                Surface(
-                    shape = CircleShape,
-                    color = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.95f),
-                    tonalElevation = 6.dp,
-                    shadowElevation = 8.dp,
-                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.25f)),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    NavigationBar(
-                        containerColor = Color.Transparent,
-                        windowInsets = WindowInsets(0, 0, 0, 0),
-                        modifier = Modifier.height(64.dp)
-                    ) {
-                        NavTab.entries.forEachIndexed { index, tab ->
-                            val tabTitle = stringResource(tab.titleRes)
-                            NavigationBarItem(
-                                selected = selectedTab == index,
-                                onClick = { selectedTab = index },
-                                icon = {
-                                    Icon(
-                                        imageVector = tab.icon,
-                                        contentDescription = tabTitle
-                                    )
-                                },
-                                label = {
-                                    Text(
-                                        tabTitle,
-                                        fontSize = 10.sp,
-                                        fontWeight = if (selectedTab == index) FontWeight.Bold else FontWeight.Normal
-                                    )
-                                },
-                                colors = NavigationBarItemDefaults.colors(
-                                    selectedIconColor = MaterialTheme.colorScheme.primary,
-                                    selectedTextColor = MaterialTheme.colorScheme.primary,
-                                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    indicatorColor = MaterialTheme.colorScheme.surfaceContainerHighest
-                                )
-                            )
-                        }
-                    }
-                }
+                TrackGymNavHost(
+                    navController = navController,
+                    viewModel = viewModel,
+                    settingsViewModel = settingsViewModel,
+                    weightUnit = weightUnit,
+                    modifier = Modifier.fillMaxSize()
+                )
             }
         }
     }
 }
+
+private fun resolveLayoutType(maxWidth: Dp): NavigationSuiteType = when {
+    maxWidth >= ExpandedWidthThreshold -> NavigationSuiteType.NavigationDrawer
+    maxWidth >= MediumWidthThreshold -> NavigationSuiteType.NavigationRail
+    else -> NavigationSuiteType.NavigationBar
+}
+
+private fun NavHostController.navigateToTab(tab: NavTab) {
+    navigate(tab.name) {
+        popUpTo(graph.findStartDestination().id) {
+            saveState = true
+        }
+        launchSingleTop = true
+        restoreState = true
+    }
+}
+
+private fun handleTabClick(
+    currentTab: NavTab,
+    clickedTab: NavTab,
+    navController: NavHostController,
+    viewModel: GymViewModel
+) {
+    if (currentTab != clickedTab) {
+        navController.navigateToTab(clickedTab)
+    } else if (clickedTab == NavTab.TRAIN) {
+        viewModel.refreshActiveWorkout()
+    }
+}
+
+private fun dismissComparison(
+    selectedDetailComparison: WorkoutComparison?,
+    viewModel: GymViewModel
+) {
+    if (selectedDetailComparison != null) {
+        viewModel.clearSelectedDetailComparison()
+    } else {
+        viewModel.clearLastFinishedComparison()
+    }
+}
+
+@Composable
+private fun rememberNavItemColors(): NavigationSuiteItemColors = NavigationSuiteDefaults.itemColors(
+    navigationBarItemColors = NavigationBarItemDefaults.colors(
+        selectedIconColor = MaterialTheme.colorScheme.primary,
+        selectedTextColor = MaterialTheme.colorScheme.primary,
+        unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        indicatorColor = MaterialTheme.colorScheme.surfaceContainerHighest
+    ),
+    navigationRailItemColors = NavigationRailItemDefaults.colors(
+        selectedIconColor = MaterialTheme.colorScheme.primary,
+        selectedTextColor = MaterialTheme.colorScheme.primary,
+        unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        indicatorColor = MaterialTheme.colorScheme.surfaceContainerHighest
+    ),
+    navigationDrawerItemColors = NavigationDrawerItemDefaults.colors(
+        selectedIconColor = MaterialTheme.colorScheme.primary,
+        selectedTextColor = MaterialTheme.colorScheme.primary,
+        unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        selectedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest
+    )
+)
