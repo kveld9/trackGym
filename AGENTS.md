@@ -7,16 +7,16 @@
 ## 1. IDENTITY AND OBSERVED STACK
 
 - **Product**: TrackGym — Native Android gym tracker for exercises, weights, reps, sets, before-and-after session comparisons, and automated Personal Record (PR) detection.
-- **Language**: Kotlin 2.2.10 (JVM Target 11 / JVM 21+ compatible).
+- **Language**: Kotlin 2.4.20 (JVM Target 11 / JVM 21+ compatible).
 - **Platform / Runtime**: Android SDK (`minSdk 24`, `targetSdk 35`, `compileSdk 37`).
-- **UI Framework**: Jetpack Compose (Material 3), Compose BOM `2026.06.00`.
-- **Persistence**: Local SQLite via Room Database `2.8.4` with KSP (`GymDatabase`, `ExerciseDao`, `WorkoutDao`, `PersonalRecordDao`).
+- **UI Framework**: Jetpack Compose (Material 3), Compose BOM `2026.09.00`.
+- **Persistence**: Local SQLite via Room Database `2.8.5` with KSP (`GymDatabase`, `ExerciseDao`, `WorkoutDao`, `PersonalRecordDao`).
 - **Concurrency**: Kotlin Coroutines & Flow (`StateFlow`, `Dispatchers.IO`).
 - **Architecture**: Clean Architecture / Reactive MVVM (UDF):
   - `domain`: Pure business logic, calculators (`OneRepMaxCalculator.kt`, `PersonalRecordDetector.kt`, `WorkoutComparisonEngine.kt`).
   - `data`: Repositories and Room local persistence (`GymRepository.kt`, entities, DAOs).
   - `ui`: Jetpack Compose screens (`ActiveWorkoutScreen`, `WorkoutComparisonScreen`, `HistoryScreen`, `ExercisesScreen`, `RecordsScreen`), theme, and `GymViewModel.kt`.
-- **Build System**: Gradle 9.5 (AGP `9.3.1`, Kotlin DSL: `build.gradle.kts`, `app/build.gradle.kts`, `gradle/libs.versions.toml`).
+- **Build System**: Gradle 9.5 (AGP `9.4.1`, Kotlin DSL: `build.gradle.kts`, `app/build.gradle.kts`, `gradle/libs.versions.toml`).
 - **Performance**: AndroidX Baseline Profiles (`:baselineprofile`).
 
 ---
