@@ -195,6 +195,7 @@ fun BodyTelemetryCard(
                                 )
                             )
                         }
+                        Spacer(modifier = Modifier.width(8.dp))
                     }
 
                     // Stats summary card
