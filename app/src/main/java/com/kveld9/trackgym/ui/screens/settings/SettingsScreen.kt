@@ -81,7 +81,6 @@ fun SettingsScreen(
     var showImportFormatDialog by remember { mutableStateOf(false) }
     var showOrmDialog by remember { mutableStateOf(false) }
     var showTimerSoundDialog by remember { mutableStateOf(false) }
-    var showGetReadyDialog by remember { mutableStateOf(false) }
     var showBodyWeightDialog by remember { mutableStateOf(false) }
     var showAgeDialog by remember { mutableStateOf(false) }
 
@@ -226,14 +225,6 @@ fun SettingsScreen(
         )
     }
 
-    if (showGetReadyDialog) {
-        GetReadySelectionDialog(
-            currentSeconds = themeSettings.getReadySeconds,
-            onSelectSeconds = { viewModel.setGetReadySeconds(it) },
-            onDismiss = { showGetReadyDialog = false }
-        )
-    }
-
     if (showBodyWeightDialog) {
         BodyWeightInputDialog(
             initialWeight = themeSettings.userBodyWeightKg,
@@ -330,7 +321,7 @@ fun SettingsScreen(
                 onAutoRestChange = { viewModel.setAutoRestTimer(it) },
                 onDefaultRestChange = { viewModel.setDefaultRestSeconds(it) },
                 onCountdownBeepsChange = { viewModel.setTimerSoundCountdown(it) },
-                onGetReadyClick = { showGetReadyDialog = true }
+                onGetReadyChange = { viewModel.setGetReadySeconds(it) }
             )
 
             // Sound Section

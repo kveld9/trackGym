@@ -59,7 +59,7 @@ fun TimerCard(
     onAutoRestChange: (Boolean) -> Unit,
     onDefaultRestChange: (Int) -> Unit,
     onCountdownBeepsChange: (Boolean) -> Unit,
-    onGetReadyClick: () -> Unit,
+    onGetReadyChange: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -91,18 +91,64 @@ fun TimerCard(
             }
 
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
-            val getReadyText = if (getReadySeconds == 0) {
-                stringResource(R.string.get_ready_off)
-            } else {
-                "${getReadySeconds}s"
-            }
-            SettingsClickableRow(
-                icon = Icons.Default.HourglassTop,
-                title = stringResource(R.string.setting_get_ready_title),
-                description = stringResource(R.string.setting_get_ready_desc),
-                trailingText = getReadyText,
-                onClick = onGetReadyClick
+
+            GetReadyCountdownSection(
+                getReadySeconds = getReadySeconds,
+                onGetReadyChange = onGetReadyChange
             )
+        }
+    }
+}
+
+@Composable
+private fun GetReadyCountdownSection(
+    getReadySeconds: Int,
+    onGetReadyChange: (Int) -> Unit
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                imageVector = Icons.Default.HourglassTop,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = stringResource(R.string.setting_get_ready_title),
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Medium
+                )
+                Text(
+                    text = stringResource(R.string.setting_get_ready_desc),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+
+        val getReadyOptions = listOf(0, 3, 5, 10, 15)
+        SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
+            getReadyOptions.forEachIndexed { index, seconds ->
+                val isSelected = getReadySeconds == seconds
+                val label = if (seconds == 0) {
+                    stringResource(R.string.get_ready_off)
+                } else {
+                    stringResource(R.string.rest_duration_seconds, seconds)
+                }
+                SegmentedButton(
+                    selected = isSelected,
+                    onClick = { onGetReadyChange(seconds) },
+                    shape = SegmentedButtonDefaults.itemShape(index = index, count = getReadyOptions.size),
+                    label = {
+                        Text(
+                            text = label,
+                            style = MaterialTheme.typography.labelSmall,
+                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                        )
+                    }
+                )
+            }
         }
     }
 }
@@ -452,61 +498,6 @@ fun TimerSoundSelectionDialog(
                         Spacer(modifier = Modifier.width(12.dp))
                         Text(
                             text = stringResource(labelRes),
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-                        )
-                    }
-                }
-            }
-        },
-        confirmButton = {},
-        dismissButton = {
-            TextButton(
-                onClick = onDismiss,
-                modifier = Modifier.defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
-            ) {
-                Text(stringResource(R.string.action_cancel))
-            }
-        }
-    )
-}
-
-@Composable
-fun GetReadySelectionDialog(
-    currentSeconds: Int,
-    onSelectSeconds: (Int) -> Unit,
-    onDismiss: () -> Unit
-) {
-    val getReadyOptions = listOf(
-        0 to stringResource(R.string.get_ready_off),
-        3 to "3s",
-        5 to "5s",
-        10 to "10s",
-        15 to "15s"
-    )
-
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.setting_get_ready_dialog_title)) },
-        text = {
-            Column(
-                modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                getReadyOptions.forEach { (seconds, label) ->
-                    val isSelected = currentSeconds == seconds
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .defaultMinSize(minHeight = 48.dp)
-                            .clickable { onSelectSeconds(seconds); onDismiss() }
-                            .padding(vertical = 8.dp, horizontal = 4.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RadioButton(selected = isSelected, onClick = null)
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Text(
-                            text = label,
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
                         )
