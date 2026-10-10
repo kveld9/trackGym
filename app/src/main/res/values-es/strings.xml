@@ -91,7 +91,6 @@
     <!-- Exercises Screen -->
     <string name="exercises_title">Ejercicios</string>
     <string name="search_exercise_placeholder">Buscar ejercicio...</string>
-    <string name="chip_all_muscles">Todos</string>
     <string name="chip_origin_all">Todos</string>
     <string name="chip_origin_preloaded">Precargados</string>
     <string name="chip_origin_custom">Manuales</string>
@@ -160,7 +159,6 @@
 
     <!-- Settings - 1RM Calculation Models -->
     <string name="setting_orm_formula_title">Fórmula de 1RM</string>
-    <string name="setting_orm_formula_desc">Modelo matemático para estimar tu repetición máxima y umbrales de récord</string>
     <string name="orm_formula_epley">Epley</string>
     <string name="orm_formula_brzycki">Brzycki</string>
     <string name="orm_formula_wathan">Wathan</string>
@@ -181,14 +179,6 @@
     <string name="format_json_desc">Copia completa con ejercicios, rutinas y récords</string>
     <string name="format_csv_title">CSV (Hoja de cálculo)</string>
     <string name="format_csv_desc">Historial de entrenamientos para hojas de cálculo</string>
-    <string name="setting_export_backup_title">Exportar Datos (JSON)</string>
-    <string name="setting_export_backup_desc">Genera un respaldo portable de tus entrenamientos, series, ejercicios y récords</string>
-    <string name="setting_export_csv_title">Exportar Historial (CSV)</string>
-    <string name="setting_export_csv_desc">Exporta tus entrenamientos y series a un archivo CSV compatible con hojas de cálculo</string>
-    <string name="setting_import_backup_title">Importar Respaldo (JSON)</string>
-    <string name="setting_import_backup_desc">Restaura tu historial y ejercicios desde un archivo de respaldo JSON</string>
-    <string name="setting_import_csv_title">Importar Historial (CSV)</string>
-    <string name="setting_import_csv_desc">Migra entrenamientos desde aplicaciones compatibles o planillas de cálculo CSV estándar</string>
     <string name="toast_backup_exported_success">Respaldo exportado correctamente</string>
     <string name="toast_backup_export_error">Error al exportar respaldo: %1$s</string>
     <string name="toast_csv_exported_success">Historial de entrenamientos exportado a CSV correctamente</string>
@@ -200,7 +190,6 @@
     <string name="toast_prompt_copied">Prompt de análisis copiado al portapapeles</string>
     <string name="overtraining_warning_title">Alerta de Volumen Excesivo</string>
     <string name="overtraining_warning_message">Has registrado %1$d series efectivas para %2$s en esta sesión. Superar 12 series por músculo puede generar fatiga chatarra (junk volume) sin ganancia hipertrófica adicional.</string>
-    <string name="overload_hint_title">Objetivo de Sobrecarga Progresiva</string>
     <string name="overload_hint_body">Última sesión: %1$s • Sugerido: %2$s</string>
     <string name="setting_double_dumbbell_title">Duplicar Volumen en Mancuernas</string>
     <string name="setting_double_dumbbell_desc">Multiplica el volumen por 2 en ejercicios de mancuernas al ingresar el peso de una mano</string>
@@ -236,23 +225,19 @@
     <string name="set_type_bodyweight_assisted">Asistida (-kg) (B-)</string>
     <string name="set_type_amrap">AMRAP (Máximas Reps) (A+)</string>
     <string name="set_type_cardio">Cardio / Aeróbico (C)</string>
-    <string name="set_type_dialog_title">Seleccionar tipo de serie</string>
     <string name="action_start_stopwatch">Iniciar cronómetro</string>
     <string name="action_stop_stopwatch">Detener cronómetro</string>
     <string name="settings_user_bodyweight_title">Peso corporal del usuario</string>
     <string name="settings_user_bodyweight_desc">Utilizado para calcular tonelaje real en ejercicios corporales y calistenia</string>
     <string name="record_max_amrap_reps">Récord de Reps en AMRAP</string>
     <string name="cardio_time_label">Tiempo</string>
-    <string name="cardio_distance_label">Distancia</string>
     <string name="cardio_pace_format">Ritmo: %1$s</string>
     <string name="cardio_calories_format">%1$d kcal</string>
-    <string name="table_header_cardio">DIST / TIEMPO</string>
 
     <!-- RPE / RIR Selection -->
     <string name="rpe_dialog_title">Seleccionar RPE / RIR</string>
     <string name="rpe_clear">Sin RPE</string>
     <string name="rpe_add">+ RPE</string>
-    <string name="rpe_label_format">RPE %1$s</string>
     <string name="rir_format">RIR %1$s</string>
     <string name="rpe_desc_10">Esfuerzo máximo (0 reps en reserva)</string>
     <string name="rpe_desc_9_5">Tal vez 1 rep más</string>
@@ -288,8 +273,6 @@
     <string name="superset_tag_b">Superserie B</string>
     <string name="superset_tag_c">Superserie C</string>
     <string name="superset_tag_d">Superserie D</string>
-    <string name="superset_transition_rest">Descanso de transición (15s)</string>
-    <string name="superset_round_rest">Descanso de ronda (120s)</string>
 
     <!-- Rest Timer -->
     <string name="rest_timer_title">Temporizador de descanso</string>
@@ -298,8 +281,6 @@
     <string name="rest_timer_resume">Reanudar</string>
     <string name="rest_timer_add_15">+15s</string>
     <string name="rest_timer_minus_15">-15s</string>
-    <string name="rest_timer_add_30">+30s</string>
-    <string name="rest_timer_completed">¡Descanso finalizado!</string>
     <string name="notif_channel_timer_name">Temporizador de descanso</string>
     <string name="notif_channel_timer_desc">Cuenta regresiva en vivo y controles para intervalos de descanso</string>
     <string name="notif_timer_running">%1$d segundos restantes</string>
@@ -307,7 +288,6 @@
     <string name="notif_action_add_30">+30s</string>
     <string name="notif_action_skip">Saltar</string>
     <string name="notif_action_complete_set">Completar serie</string>
-    <string name="setting_rest_timer_section">Temporizador de descanso</string>
     <string name="section_timer">Temporizador</string>
     <string name="section_sound">Sonido</string>
     <string name="section_volume_equipment">Volumen, equipo y cálculo</string>
@@ -354,8 +334,6 @@
     <string name="consistency_legend_more">Más</string>
     <string name="consistency_no_streak">Sin racha activa</string>
     <string name="consistency_best_streak">Máx: %1$d sem</string>
-    <string name="consistency_streak_this_week_done">Entrenado esta semana</string>
-    <string name="consistency_streak_this_week_pending">Pendiente esta semana</string>
 
     <!-- Time-Bucketed Distribution -->
     <string name="time_bucket_last_week">Última semana</string>
@@ -403,7 +381,6 @@
     <string name="dialog_new_routine_desc">Crea una rutina vacía para empezar a añadir ejercicios y registrar tus sesiones.</string>
     <string name="btn_create_routine">Crear</string>
     <string name="btn_start_routine">Iniciar</string>
-    <string name="routine_builder_title">Diseñador de Rutina</string>
     <string name="routine_builder_subtitle">Configura ejercicios, series, repeticiones y pesos de la rutina</string>
     <string name="routine_builder_empty_title">Sin ejercicios en la rutina</string>
     <string name="routine_builder_empty_desc">Añade ejercicios para armar esta plantilla de rutina. Se cargarán automáticamente cada vez que inicies un entrenamiento desde esta rutina.</string>
@@ -415,15 +392,9 @@
     <string name="action_done">Listo</string>
     <string name="dialog_save_routine_title">Guardar como plantilla de rutina</string>
     <string name="dialog_routine_name">Nombre de la rutina</string>
-    <string name="dialog_routine_folder">Carpeta (opcional)</string>
-    <string name="dialog_routine_notes">Notas (opcional)</string>
-    <string name="toast_routine_saved">Rutina guardada correctamente</string>
     <string name="action_save_as_routine">Guardar como rutina</string>
     <string name="routine_folder_all">Todas</string>
     <string name="routine_exercises_count">%1$d ejercicios</string>
-    <string name="dialog_new_folder_title">Nueva carpeta de rutinas</string>
-    <string name="dialog_folder_name">Nombre de la carpeta</string>
-    <string name="btn_create_folder">Crear carpeta</string>
     <string name="menu_delete_routine">Eliminar rutina</string>
     <string name="routine_empty_title">No hay rutinas creadas</string>
     <string name="routine_empty_desc">Guarda tus entrenamientos como plantillas o crea rutinas reutilizables aquí.</string>
@@ -440,7 +411,6 @@
     <string name="dialog_import_routine_title">Importar rutina</string>
     <string name="dialog_import_routine_desc">Pega el texto o código de la rutina compartida a continuación:</string>
     <string name="dialog_import_routine_placeholder">Pega la rutina de TrackGym aquí...</string>
-    <string name="toast_routine_imported">Rutina importada con éxito</string>
     <string name="toast_routine_import_invalid">Formato de rutina no válido</string>
     <string name="setting_routine_update_mode_title">Sincronización de rutinas</string>
     <string name="setting_routine_update_mode_desc">Actualizar la plantilla base con los nuevos pesos y repeticiones al finalizar</string>
@@ -454,15 +424,10 @@
     <string name="dialog_sync_routine_msg">¿Deseas actualizar «%1$s» con las cargas y repeticiones completadas en esta sesión?</string>
     <string name="action_update_routine">Actualizar rutina</string>
     <string name="action_keep_original">Mantener original</string>
-    <string name="toast_routine_synced">Plantilla de rutina actualizada</string>
     <string name="checkbox_detach_routine">Desvincular de la rutina «%1$s»</string>
     <string name="checkbox_detach_routine_desc">Guardar como sesión independiente sin vincular a la plantilla</string>
     <string name="label_completion_date">Fecha y hora de finalización</string>
     <string name="action_backdate_workout">Cambiar fecha y hora de la sesión</string>
-    <string name="btn_select_date">Elegir fecha</string>
-    <string name="btn_select_time">Elegir hora</string>
-    <string name="dialog_select_date_title">Fecha de finalización</string>
-    <string name="dialog_select_time_title">Hora de finalización</string>
     <string name="action_share_image">Exportar imagen del entrenamiento</string>
     <string name="preview_dialog_title">Vista previa del entrenamiento</string>
     <string name="action_save_gallery">Guardar en galería</string>
@@ -486,7 +451,6 @@
     <string name="rpe_calc_action_apply">Aplicar a la serie</string>
     <string name="action_rpe_target_calculator">Calcular según RPE</string>
     <string name="menu_configure_warmup_ramp">Personalizar calentamiento</string>
-    <string name="warmup_ramp_dialog_title">Rampa de calentamiento</string>
     <string name="warmup_ramp_working_weight">Peso de trabajo: %1$s</string>
     <string name="warmup_ramp_presets_label">Preajustes</string>
     <string name="warmup_ramp_preset_standard">Estándar</string>
@@ -517,7 +481,6 @@
     <string name="auto_progression_badge_progression">Sobrecarga: +%1$s</string>
     <string name="auto_progression_badge_deload">Descarga: -%1$s</string>
     <string name="auto_progression_action_apply_load">Aplicar peso objetivo</string>
-    <string name="auto_progression_rule_saved">Regla de sobrecarga actualizada</string>
     <string name="periodized_cycle_title">Ciclo Periodizado en Bloques</string>
     <string name="periodized_cycle_enable_label">Activar bloque periodizado</string>
     <string name="periodized_cycle_enable_desc">Estructura esta rutina en bloques multi-semana con progresiones y descarga programada.</string>
@@ -587,10 +550,8 @@
     <string name="body_muscle_abductors">Abductores</string>
     <string name="body_muscle_neck">Cuello</string>
     <string name="label_primary_muscle">Músculo Principal</string>
-    <string name="label_secondary_muscles">Secundarios y Estabilizadores</string>
     <string name="label_anatomy_breakdown">Desglose de Implicación Muscular</string>
     <string name="badge_primary_muscle">Principal: %1$s (%2$d%%)</string>
-    <string name="badge_secondary_muscle">%1$s (%2$d%%)</string>
 
     <!-- Multifactorial Equipment & Mechanics Filters -->
     <string name="category_smith_machine">Multipower / Smith</string>
@@ -599,8 +560,6 @@
     <string name="mechanics_compound">Compuesto</string>
     <string name="mechanics_isolation">Aislamiento</string>
     <string name="label_mechanics_type">Mecánica</string>
-    <string name="chip_all_equipment">Todo Equipo</string>
-    <string name="chip_all_mechanics">Toda Mecánica</string>
     <string name="action_clear_filters">Limpiar Filtros</string>
     <string name="action_retry">Reintentar</string>
     <string name="error_load_exercises">Error al cargar los ejercicios</string>
@@ -746,12 +705,10 @@
     <string name="label_best_set_volume">Vol. Mejor Serie</string>
     <string name="label_session_volume">Vol. Sesión</string>
     <string name="label_best_time">Mejor Tiempo</string>
-    <string name="label_total_time">Tiempo Total</string>
     <string name="label_total_sessions">Sesiones</string>
     <string name="label_history_sessions">Sesiones Registradas</string>
     <string name="empty_exercise_history_title">Sin historial registrado</string>
     <string name="empty_exercise_history_desc">Completa un entrenamiento con este ejercicio para consultar su progreso, peso máximo y volumen histórico.</string>
-    <string name="exercise_history_sets_count">%1$d series completadas</string>
     <string name="exercise_history_set_row">Serie %1$d</string>
 
     <!-- Biomechanical Force Vector & Technical Difficulty -->
@@ -760,31 +717,22 @@
     <string name="force_static">Estático</string>
     <string name="force_other">Otro</string>
     <string name="label_force_vector">Vector de Fuerza</string>
-    <string name="chip_all_force">Todos los Vectores</string>
 
     <string name="level_beginner">Principiante</string>
     <string name="level_intermediate">Intermedio</string>
     <string name="level_expert">Experto</string>
     <string name="label_difficulty_level">Nivel de Dificultad</string>
-    <string name="chip_all_difficulty">Todos los Niveles</string>
 
-    <string name="routine_biomechanical_balance_title">Balance Biomecánico</string>
-    <string name="routine_biomechanical_balance_desc">Distribución de vectores de fuerza y complejidad técnica</string>
-    <string name="routine_balance_push_pull_ratio">Relación Empuje/Tirón: %1$.2f</string>
     <string name="routine_balance_status_balanced">Biomecánicamente Equilibrado</string>
     <string name="routine_balance_status_push_dominant">Predominio de Empuje</string>
     <string name="routine_balance_status_pull_dominant">Predominio de Tirón</string>
     <string name="routine_balance_status_static_dominant">Predominio Estático</string>
     <string name="routine_balance_status_neutral">Balance Neutro</string>
-    <string name="badge_routine_balanced">Equilibrado</string>
 
     <!-- User-Defined Categories & Tags (Item 103) -->
-    <string name="chip_all_custom_categories">Todas las etiquetas</string>
     <string name="action_manage_custom_categories">Gestionar etiquetas</string>
     <string name="dialog_manage_categories_title">Categorías y Etiquetas</string>
     <string name="dialog_manage_categories_add_placeholder">Nueva etiqueta (ej. Calistenia)</string>
-    <string name="action_add_category">Agregar</string>
-    <string name="dialog_rename_category_title">Renombrar etiqueta</string>
     <string name="dialog_delete_category_confirm">¿Eliminar la etiqueta \"%1$s\"?</string>
     <string name="dialog_edit_tags_title">Etiquetas para %1$s</string>
     <string name="action_edit_exercise_tags">Editar Etiquetas</string>
@@ -812,16 +760,8 @@
     <string name="privacy_offline_verified">Verificado: 100% offline, almacenamiento local SQLite</string>
     <string name="privacy_no_internet_verified">Verificado: sin permiso de INTERNET declarado</string>
     <string name="privacy_no_tracking_verified">Verificado: sin rastreadores, analíticas ni anuncios</string>
-    <string name="privacy_offline_title">100% Offline y Privado</string>
-    <string name="privacy_offline_desc">TrackGym funciona completamente en tu dispositivo. Tu historial de entrenamientos, récords personales y notas se guardan localmente en tu base de datos SQLite.</string>
-    <string name="privacy_no_internet_title">Sin Permiso de Internet</string>
-    <string name="privacy_no_internet_desc">La aplicación no solicita ni declara el permiso de INTERNET. Ningún dato puede salir de tu dispositivo.</string>
-    <string name="privacy_no_tracking_title">Cero Rastreo y Cero Publicidad</string>
-    <string name="privacy_no_tracking_desc">No se incluye ningún SDK de terceros, telemetría, analítica ni publicidad comercial.</string>
     <string name="privacy_storage_title">Almacenamiento y Respaldos</string>
-    <string name="privacy_storage_desc">Se utiliza únicamente cuando decides explícitamente exportar o importar tus datos mediante Storage Access Framework (SAF).</string>
     <string name="privacy_notifications_title">Notificaciones de Descanso</string>
-    <string name="privacy_notifications_desc">Se usan exclusivamente para mostrar el cronómetro y controles interactivos del descanso durante una sesión activa.</string>
 
     <!-- Application Error Recovery (Item 91) -->
     <string name="error_title">Error de la Aplicación</string>
@@ -846,7 +786,6 @@
     <string name="context_tag_competition">Competición</string>
     <string name="context_tag_caloric_deficit">Déficit calórico</string>
     <string name="context_tag_deload">Sensación descarga</string>
-    <string name="filter_by_context_tag">Filtrar por Contexto</string>
     <string name="chip_all_context_tags">Todos los Contextos</string>
 
     <!-- Multiple Gym Equipment Profiles (Item 104) -->
@@ -864,12 +803,6 @@
     <string name="gym_profile_plates">Discos Disponibles</string>
     <string name="gym_profile_set_default">Marcar como predeterminado</string>
     <string name="gym_profile_default_badge">Predeterminado</string>
-    <string name="gym_profile_commercial">Gym Comercial</string>
-    <string name="gym_profile_home">Home Gym</string>
-    <string name="gym_profile_hotel">Gym de Hotel</string>
-    <string name="gym_profile_saved">Perfil guardado</string>
-    <string name="gym_profile_deleted">Perfil eliminado</string>
-    <string name="gym_profile_cannot_delete_last">No se puede eliminar el único perfil de equipamiento</string>
 
     <!-- Haptic NumberPicker / Scroll Wheel (Item 87) -->
     <string name="wheel_picker_title">Valores Serie %1$d</string>
@@ -882,8 +815,6 @@
     <!-- Strength Level Benchmarks (Item 71) -->
     <string name="strength_benchmarks_title">Estándares de Fuerza</string>
     <string name="strength_benchmarks_subtitle">Compara tu 1RM contra estándares poblacionales según peso corporal</string>
-    <string name="strength_benchmarks_tab_title">Estándares</string>
-    <string name="strength_records_tab_title">Récords</string>
     <string name="strength_sex_male">Hombre</string>
     <string name="strength_sex_female">Mujer</string>
     <string name="strength_level_beginner">Principiante</string>
@@ -911,16 +842,10 @@
     <!-- Auto-Backup via SAF (Item 108) -->
     <string name="setting_auto_backup_title">Respaldo automático</string>
     <string name="setting_auto_backup_desc">Exporta automáticamente una copia silenciosa en JSON a una carpeta local al finalizar entrenamientos</string>
-    <string name="setting_auto_backup_folder_title">Carpeta de Respaldo Automático</string>
-    <string name="setting_auto_backup_folder_none">Ninguna carpeta seleccionada (Desactivado)</string>
     <string name="setting_auto_backup_select_folder">Seleccionar Carpeta Local</string>
     <string name="setting_auto_backup_disable">Desactivar Respaldo Automático</string>
     <string name="setting_auto_backup_disabled">Desactivado</string>
-    <string name="setting_auto_backup_rotation_title">Máximo de Copias a Conservar</string>
-    <string name="setting_auto_backup_rotation_desc">Las copias automáticas más antiguas se purgarán automáticamente</string>
     <string name="setting_auto_backup_rotation_count">%1$d archivos</string>
-    <string name="setting_auto_backup_success">Respaldo automático silencioso guardado: %1$s</string>
-    <string name="setting_auto_backup_failed">Fallo en el respaldo automático: %1$s</string>
 
     <!-- Body Measurements & Telemetry (Items 59 & 60) -->
     <string name="body_telemetry_title">Medidas Corporales</string>
@@ -942,12 +867,9 @@
     <string name="body_meas_right_calf">Pantorrilla Derecha</string>
     <string name="body_meas_log_entry">Registrar Medida</string>
     <string name="body_meas_value_label">Valor</string>
-    <string name="body_meas_trend_title">Tendencia &amp; Media Móvil</string>
     <string name="body_meas_no_data">Sin registros para esta métrica aún</string>
     <string name="body_meas_latest">Último: %1$.1f %2$s</string>
     <string name="body_meas_net_delta">Δ Neto: %1$+.1f %2$s (%3$+.1f%%)</string>
-    <string name="body_meas_saved">Medida guardada</string>
-    <string name="body_meas_deleted">Medida eliminada</string>
 
     <!-- Progress Photos & Visual Comparison (Items 61, 62, 63) -->
     <string name="progress_photos_title">Fotos de Progreso</string>
@@ -962,8 +884,6 @@
     <string name="action_ghost_silhouette">Guía de Silueta</string>
     <string name="progress_photos_empty">Sin fotos de progreso registradas aún</string>
     <string name="progress_photo_notes_label">Notas (opcional)</string>
-    <string name="progress_photo_saved">Foto de progreso guardada</string>
-    <string name="progress_photo_deleted">Foto de progreso eliminada</string>
     <string name="progress_compare_title">Comparativa Antes &amp; Después</string>
     <string name="progress_compare_before">Antes</string>
     <string name="progress_compare_after">Después</string>
@@ -974,8 +894,6 @@
     <string name="setting_health_connect_title">Sincronización con Health Connect</string>
     <string name="setting_health_connect_desc">Sincroniza en privado tus sesiones y calorías quemadas directamente con Health Connect en el dispositivo</string>
     <string name="setting_health_connect_unavailable">Health Connect no disponible en este dispositivo</string>
-    <string name="setting_health_connect_request_perms">Autorizar Permisos</string>
-    <string name="setting_health_connect_authorized">Permisos Otorgados</string>
 
     <!-- Exercises Screen Redesign -->
     <string name="exercises_empty_title">No hay ejercicios en la biblioteca</string>

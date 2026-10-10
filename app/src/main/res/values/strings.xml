@@ -91,7 +91,6 @@
     <!-- Exercises Screen -->
     <string name="exercises_title">Exercises</string>
     <string name="search_exercise_placeholder">Search exercise...</string>
-    <string name="chip_all_muscles">All</string>
     <string name="chip_origin_all">All Origin</string>
     <string name="chip_origin_preloaded">System</string>
     <string name="chip_origin_custom">Custom</string>
@@ -160,7 +159,6 @@
 
     <!-- Settings - 1RM Calculation Models -->
     <string name="setting_orm_formula_title">1RM Formula</string>
-    <string name="setting_orm_formula_desc">Mathematical model used to estimate One Rep Max and PR thresholds</string>
     <string name="orm_formula_epley">Epley</string>
     <string name="orm_formula_brzycki">Brzycki</string>
     <string name="orm_formula_wathan">Wathan</string>
@@ -181,14 +179,6 @@
     <string name="format_json_desc">Complete backup including exercises, routines, and records</string>
     <string name="format_csv_title">CSV (Spreadsheet)</string>
     <string name="format_csv_desc">Workout history compatible with spreadsheets</string>
-    <string name="setting_export_backup_title">Export Data (JSON)</string>
-    <string name="setting_export_backup_desc">Generate a portable backup of your workouts, sets, exercises, and records</string>
-    <string name="setting_export_csv_title">Export Workout History (CSV)</string>
-    <string name="setting_export_csv_desc">Export your completed workouts and sets to a spreadsheet-compatible CSV file</string>
-    <string name="setting_import_backup_title">Import Backup (JSON)</string>
-    <string name="setting_import_backup_desc">Restore your workout history and exercises from a JSON backup file</string>
-    <string name="setting_import_csv_title">Import Workout History (CSV)</string>
-    <string name="setting_import_csv_desc">Migrate workout logs from supported apps or standard CSV spreadsheets</string>
     <string name="toast_backup_exported_success">Backup exported successfully</string>
     <string name="toast_backup_export_error">Error exporting backup: %1$s</string>
     <string name="toast_csv_exported_success">Workout history exported to CSV successfully</string>
@@ -200,7 +190,6 @@
     <string name="toast_prompt_copied">AI analysis prompt copied to clipboard</string>
     <string name="overtraining_warning_title">Excessive Volume Warning</string>
     <string name="overtraining_warning_message">You have logged %1$d effective sets for %2$s in this session. Exceeding 12 sets per muscle group may cause junk volume and excessive fatigue without additional hypertrophic stimulus.</string>
-    <string name="overload_hint_title">Progressive Overload Target</string>
     <string name="overload_hint_body">Last session: %1$s • Target: %2$s</string>
     <string name="setting_double_dumbbell_title">Double Dumbbell Volume</string>
     <string name="setting_double_dumbbell_desc">Multiply volume by 2 for dumbbell exercises when logging weight per hand</string>
@@ -236,23 +225,19 @@
     <string name="set_type_bodyweight_assisted">Assisted (-kg) (B-)</string>
     <string name="set_type_amrap">AMRAP (Max Reps) (A+)</string>
     <string name="set_type_cardio">Cardio / Aerobic (C)</string>
-    <string name="set_type_dialog_title">Select Set Type</string>
     <string name="action_start_stopwatch">Start stopwatch</string>
     <string name="action_stop_stopwatch">Stop stopwatch</string>
     <string name="settings_user_bodyweight_title">User Body Weight</string>
     <string name="settings_user_bodyweight_desc">Used to calculate real tonnage for bodyweight and calisthenics exercises</string>
     <string name="record_max_amrap_reps">AMRAP Rep Record</string>
     <string name="cardio_time_label">Time</string>
-    <string name="cardio_distance_label">Distance</string>
     <string name="cardio_pace_format">Pace: %1$s</string>
     <string name="cardio_calories_format">%1$d kcal</string>
-    <string name="table_header_cardio">DIST / TIME</string>
 
     <!-- RPE / RIR Selection -->
     <string name="rpe_dialog_title">Select RPE / RIR</string>
     <string name="rpe_clear">No RPE</string>
     <string name="rpe_add">+ RPE</string>
-    <string name="rpe_label_format">RPE %1$s</string>
     <string name="rir_format">RIR %1$s</string>
     <string name="rpe_desc_10">Max Effort (0 reps in reserve)</string>
     <string name="rpe_desc_9_5">Could maybe do 1 more rep</string>
@@ -288,8 +273,6 @@
     <string name="superset_tag_b">Superset B</string>
     <string name="superset_tag_c">Superset C</string>
     <string name="superset_tag_d">Superset D</string>
-    <string name="superset_transition_rest">Transition rest (15s)</string>
-    <string name="superset_round_rest">Round rest (120s)</string>
 
     <!-- Rest Timer -->
     <string name="rest_timer_title">Rest Timer</string>
@@ -298,8 +281,6 @@
     <string name="rest_timer_resume">Resume</string>
     <string name="rest_timer_add_15">+15s</string>
     <string name="rest_timer_minus_15">-15s</string>
-    <string name="rest_timer_add_30">+30s</string>
-    <string name="rest_timer_completed">Rest finished!</string>
     <string name="notif_channel_timer_name">Rest Timer</string>
     <string name="notif_channel_timer_desc">Live countdown and controls for rest intervals</string>
     <string name="notif_timer_running">%1$d seconds remaining</string>
@@ -307,7 +288,6 @@
     <string name="notif_action_add_30">+30s</string>
     <string name="notif_action_skip">Skip</string>
     <string name="notif_action_complete_set">Complete Set</string>
-    <string name="setting_rest_timer_section">Rest Timer</string>
     <string name="section_timer">Timer</string>
     <string name="section_sound">Sound</string>
     <string name="section_volume_equipment">Volume, Equipment &amp; Calculation</string>
@@ -354,8 +334,6 @@
     <string name="consistency_legend_more">More</string>
     <string name="consistency_no_streak">No active streak</string>
     <string name="consistency_best_streak">Best: %1$d w</string>
-    <string name="consistency_streak_this_week_done">Trained this week</string>
-    <string name="consistency_streak_this_week_pending">Pending this week</string>
 
     <!-- Time-Bucketed Distribution -->
     <string name="time_bucket_last_week">Last Week</string>
@@ -403,7 +381,6 @@
     <string name="dialog_new_routine_desc">Create an empty routine to start adding exercises and tracking your sessions.</string>
     <string name="btn_create_routine">Create</string>
     <string name="btn_start_routine">Start</string>
-    <string name="routine_builder_title">Routine Builder</string>
     <string name="routine_builder_subtitle">Configure exercises, sets, reps and target weights</string>
     <string name="routine_builder_empty_title">No exercises in routine</string>
     <string name="routine_builder_empty_desc">Add exercises to build this routine template. They will be automatically loaded when you start a workout from this routine.</string>
@@ -415,15 +392,9 @@
     <string name="action_done">Done</string>
     <string name="dialog_save_routine_title">Save as Routine Template</string>
     <string name="dialog_routine_name">Routine name</string>
-    <string name="dialog_routine_folder">Folder name (optional)</string>
-    <string name="dialog_routine_notes">Notes (optional)</string>
-    <string name="toast_routine_saved">Routine saved successfully</string>
     <string name="action_save_as_routine">Save as Routine</string>
     <string name="routine_folder_all">All</string>
     <string name="routine_exercises_count">%1$d exercises</string>
-    <string name="dialog_new_folder_title">New Routine Folder</string>
-    <string name="dialog_folder_name">Folder name</string>
-    <string name="btn_create_folder">Create Folder</string>
     <string name="menu_delete_routine">Delete Routine</string>
     <string name="routine_empty_title">No routines yet</string>
     <string name="routine_empty_desc">Save any workout as a template or create reusable routines here.</string>
@@ -440,7 +411,6 @@
     <string name="dialog_import_routine_title">Import Routine</string>
     <string name="dialog_import_routine_desc">Paste the shared routine text or code below:</string>
     <string name="dialog_import_routine_placeholder">Paste TrackGym routine here...</string>
-    <string name="toast_routine_imported">Routine imported successfully</string>
     <string name="toast_routine_import_invalid">Invalid routine format</string>
     <string name="setting_routine_update_mode_title">Routine Auto-Sync</string>
     <string name="setting_routine_update_mode_desc">Update base routine template with completed workout weights &amp; reps</string>
@@ -454,15 +424,10 @@
     <string name="dialog_sync_routine_msg">Would you like to update \"%1$s\" with the new weights and reps completed in this session?</string>
     <string name="action_update_routine">Update Template</string>
     <string name="action_keep_original">Keep Original</string>
-    <string name="toast_routine_synced">Routine template updated</string>
     <string name="checkbox_detach_routine">Detach from routine \"%1$s\"</string>
     <string name="checkbox_detach_routine_desc">Save as independent workout without modifying routine history</string>
     <string name="label_completion_date">Date &amp; Time Completed</string>
     <string name="action_backdate_workout">Change completion date &amp; time</string>
-    <string name="btn_select_date">Select Date</string>
-    <string name="btn_select_time">Select Time</string>
-    <string name="dialog_select_date_title">Completion Date</string>
-    <string name="dialog_select_time_title">Completion Time</string>
     <string name="action_share_image">Export Workout Image</string>
     <string name="preview_dialog_title">Workout Summary Preview</string>
     <string name="action_save_gallery">Save to Gallery</string>
@@ -486,7 +451,6 @@
     <string name="rpe_calc_action_apply">Apply to Set</string>
     <string name="action_rpe_target_calculator">Calculate from RPE</string>
     <string name="menu_configure_warmup_ramp">Configure Warmup Ramp</string>
-    <string name="warmup_ramp_dialog_title">Warmup Ramp</string>
     <string name="warmup_ramp_working_weight">Working Weight: %1$s</string>
     <string name="warmup_ramp_presets_label">Presets</string>
     <string name="warmup_ramp_preset_standard">Standard</string>
@@ -517,7 +481,6 @@
     <string name="auto_progression_badge_progression">Auto-Progression: +%1$s</string>
     <string name="auto_progression_badge_deload">Auto-Deload: -%1$s</string>
     <string name="auto_progression_action_apply_load">Apply Target Weight</string>
-    <string name="auto_progression_rule_saved">Auto-progression rule updated</string>
     <string name="periodized_cycle_title">Periodized Block &amp; Cycle</string>
     <string name="periodized_cycle_enable_label">Enable Periodized Block</string>
     <string name="periodized_cycle_enable_desc">Structure this routine into multi-week progressive blocks with programmed deloads.</string>
@@ -587,10 +550,8 @@
     <string name="body_muscle_abductors">Abductors</string>
     <string name="body_muscle_neck">Neck</string>
     <string name="label_primary_muscle">Primary Target</string>
-    <string name="label_secondary_muscles">Secondary &amp; Stabilizers</string>
     <string name="label_anatomy_breakdown">Anatomical Muscle Mapping</string>
     <string name="badge_primary_muscle">Primary: %1$s (%2$d%%)</string>
-    <string name="badge_secondary_muscle">%1$s (%2$d%%)</string>
 
     <!-- Multifactorial Equipment & Mechanics Filters -->
     <string name="category_smith_machine">Smith Machine</string>
@@ -599,8 +560,6 @@
     <string name="mechanics_compound">Compound</string>
     <string name="mechanics_isolation">Isolation</string>
     <string name="label_mechanics_type">Mechanics</string>
-    <string name="chip_all_equipment">All Equipment</string>
-    <string name="chip_all_mechanics">All Mechanics</string>
     <string name="action_clear_filters">Clear Filters</string>
     <string name="action_retry">Retry</string>
     <string name="error_load_exercises">Failed to load exercises</string>
@@ -746,12 +705,10 @@
     <string name="label_best_set_volume">Best Set Vol</string>
     <string name="label_session_volume">Session Vol</string>
     <string name="label_best_time">Best Time</string>
-    <string name="label_total_time">Total Time</string>
     <string name="label_total_sessions">Sessions</string>
     <string name="label_history_sessions">Logged Sessions</string>
     <string name="empty_exercise_history_title">No Workout History</string>
     <string name="empty_exercise_history_desc">Complete a workout with this exercise to view historical performance, 1RM progression, and total volume.</string>
-    <string name="exercise_history_sets_count">%1$d completed sets</string>
     <string name="exercise_history_set_row">Set %1$d</string>
 
     <!-- Biomechanical Force Vector & Technical Difficulty -->
@@ -760,31 +717,22 @@
     <string name="force_static">Static</string>
     <string name="force_other">Other</string>
     <string name="label_force_vector">Force Vector</string>
-    <string name="chip_all_force">All Vectors</string>
 
     <string name="level_beginner">Beginner</string>
     <string name="level_intermediate">Intermediate</string>
     <string name="level_expert">Expert</string>
     <string name="label_difficulty_level">Difficulty Level</string>
-    <string name="chip_all_difficulty">All Levels</string>
 
-    <string name="routine_biomechanical_balance_title">Biomechanical Balance</string>
-    <string name="routine_biomechanical_balance_desc">Force vector and technical complexity distribution</string>
-    <string name="routine_balance_push_pull_ratio">Push/Pull Ratio: %1$.2f</string>
     <string name="routine_balance_status_balanced">Biomechanically Balanced</string>
     <string name="routine_balance_status_push_dominant">Push Dominant</string>
     <string name="routine_balance_status_pull_dominant">Pull Dominant</string>
     <string name="routine_balance_status_static_dominant">Static Dominant</string>
     <string name="routine_balance_status_neutral">Neutral Balance</string>
-    <string name="badge_routine_balanced">Balanced</string>
 
     <!-- User-Defined Categories & Tags (Item 103) -->
-    <string name="chip_all_custom_categories">All Tags</string>
     <string name="action_manage_custom_categories">Manage Tags</string>
     <string name="dialog_manage_categories_title">Categories &amp; Tags</string>
     <string name="dialog_manage_categories_add_placeholder">New tag (e.g. Calisthenics)</string>
-    <string name="action_add_category">Add</string>
-    <string name="dialog_rename_category_title">Rename Tag</string>
     <string name="dialog_delete_category_confirm">Delete tag \"%1$s\"?</string>
     <string name="dialog_edit_tags_title">Tags for %1$s</string>
     <string name="action_edit_exercise_tags">Edit Tags</string>
@@ -812,16 +760,8 @@
     <string name="privacy_offline_verified">Verified: 100% offline, local SQLite storage</string>
     <string name="privacy_no_internet_verified">Verified: no INTERNET permission declared</string>
     <string name="privacy_no_tracking_verified">Verified: zero trackers, analytics, or ads</string>
-    <string name="privacy_offline_title">100% Offline &amp; Private</string>
-    <string name="privacy_offline_desc">TrackGym operates entirely on your device. Your workout history, personal records, and notes are stored locally in your private SQLite database.</string>
-    <string name="privacy_no_internet_title">Zero Internet Permission</string>
-    <string name="privacy_no_internet_desc">The application does not declare or request the INTERNET permission. No data can ever leave your device.</string>
-    <string name="privacy_no_tracking_title">Zero Tracking &amp; Zero Ads</string>
-    <string name="privacy_no_tracking_desc">No third-party SDKs, analytics, trackers, or commercial advertising libraries are included.</string>
     <string name="privacy_storage_title">Storage &amp; Backups</string>
-    <string name="privacy_storage_desc">Used strictly when you explicitly choose to export or import your data via the Android Storage Access Framework (SAF).</string>
     <string name="privacy_notifications_title">Rest Timer Notifications</string>
-    <string name="privacy_notifications_desc">Used solely to display the countdown and interactive controls for rest timers during an active session.</string>
 
     <!-- Application Error Recovery (Item 91) -->
     <string name="error_title">Application Error</string>
@@ -846,7 +786,6 @@
     <string name="context_tag_competition">Competition</string>
     <string name="context_tag_caloric_deficit">Caloric Deficit</string>
     <string name="context_tag_deload">Deload Feeling</string>
-    <string name="filter_by_context_tag">Filter by Context</string>
     <string name="chip_all_context_tags">All Contexts</string>
 
     <!-- Multiple Gym Equipment Profiles (Item 104) -->
@@ -864,12 +803,6 @@
     <string name="gym_profile_plates">Available Plates</string>
     <string name="gym_profile_set_default">Set as default</string>
     <string name="gym_profile_default_badge">Default</string>
-    <string name="gym_profile_commercial">Commercial Gym</string>
-    <string name="gym_profile_home">Home Gym</string>
-    <string name="gym_profile_hotel">Hotel Gym</string>
-    <string name="gym_profile_saved">Profile saved</string>
-    <string name="gym_profile_deleted">Profile deleted</string>
-    <string name="gym_profile_cannot_delete_last">Cannot delete the only equipment profile</string>
 
     <!-- Haptic NumberPicker / Scroll Wheel (Item 87) -->
     <string name="wheel_picker_title">Set %1$d Values</string>
@@ -882,8 +815,6 @@
     <!-- Strength Level Benchmarks (Item 71) -->
     <string name="strength_benchmarks_title">Strength Standards</string>
     <string name="strength_benchmarks_subtitle">Compare your 1RM against population standards by bodyweight</string>
-    <string name="strength_benchmarks_tab_title">Standards</string>
-    <string name="strength_records_tab_title">Records</string>
     <string name="strength_sex_male">Male</string>
     <string name="strength_sex_female">Female</string>
     <string name="strength_level_beginner">Beginner</string>
@@ -911,16 +842,10 @@
     <!-- Auto-Backup via SAF (Item 108) -->
     <string name="setting_auto_backup_title">Automatic Backup</string>
     <string name="setting_auto_backup_desc">Automatically export a silent JSON backup to a local folder when completing workouts</string>
-    <string name="setting_auto_backup_folder_title">Auto-Backup Folder</string>
-    <string name="setting_auto_backup_folder_none">No folder selected (Disabled)</string>
     <string name="setting_auto_backup_select_folder">Select Local Folder</string>
     <string name="setting_auto_backup_disable">Disable Auto-Backup</string>
     <string name="setting_auto_backup_disabled">Disabled</string>
-    <string name="setting_auto_backup_rotation_title">Max Backups to Retain</string>
-    <string name="setting_auto_backup_rotation_desc">Oldest automatic backups will be automatically pruned</string>
     <string name="setting_auto_backup_rotation_count">%1$d files</string>
-    <string name="setting_auto_backup_success">Silent auto-backup saved: %1$s</string>
-    <string name="setting_auto_backup_failed">Auto-backup failed: %1$s</string>
 
     <!-- Body Measurements & Telemetry (Items 59 & 60) -->
     <string name="body_telemetry_title">Body Telemetry</string>
@@ -942,12 +867,9 @@
     <string name="body_meas_right_calf">Right Calf</string>
     <string name="body_meas_log_entry">Log Measurement</string>
     <string name="body_meas_value_label">Value</string>
-    <string name="body_meas_trend_title">Trend &amp; Moving Average</string>
     <string name="body_meas_no_data">No measurements logged for this metric yet</string>
     <string name="body_meas_latest">Latest: %1$.1f %2$s</string>
     <string name="body_meas_net_delta">Net Δ: %1$+.1f %2$s (%3$+.1f%%)</string>
-    <string name="body_meas_saved">Measurement saved</string>
-    <string name="body_meas_deleted">Measurement deleted</string>
 
     <!-- Progress Photos & Visual Comparison (Items 61, 62, 63) -->
     <string name="progress_photos_title">Progress Pictures</string>
@@ -962,8 +884,6 @@
     <string name="action_ghost_silhouette">Silhouette Guide</string>
     <string name="progress_photos_empty">No progress pictures logged yet</string>
     <string name="progress_photo_notes_label">Notes (optional)</string>
-    <string name="progress_photo_saved">Progress picture saved</string>
-    <string name="progress_photo_deleted">Progress picture deleted</string>
     <string name="progress_compare_title">Before &amp; After Comparison</string>
     <string name="progress_compare_before">Before</string>
     <string name="progress_compare_after">After</string>
@@ -974,8 +894,6 @@
     <string name="setting_health_connect_title">Google Health Connect Sync</string>
     <string name="setting_health_connect_desc">Privately sync completed workouts and calories burned directly to Android Health Connect on device</string>
     <string name="setting_health_connect_unavailable">Health Connect not available on this device</string>
-    <string name="setting_health_connect_request_perms">Authorize Permissions</string>
-    <string name="setting_health_connect_authorized">Permissions Granted</string>
 
     <!-- Exercises Screen Redesign -->
     <string name="exercises_empty_title">No exercises in library</string>
