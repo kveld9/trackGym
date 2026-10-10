@@ -70,9 +70,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.lifecycleScope
+import androidx.compose.ui.graphics.Color
 import com.kveld9.trackgym.R
 import com.kveld9.trackgym.TrackGymApp
 import com.kveld9.trackgym.data.ThemeSettings
+import com.kveld9.trackgym.ui.theme.TrackGymNeonGreen
 import com.kveld9.trackgym.ui.theme.TrackGymTheme
 import com.kveld9.trackgym.ui.theme.subtleBorder
 import kotlinx.coroutines.launch
@@ -417,49 +419,41 @@ private fun NotificationPermissionRow(
     areNotificationsEnabled: Boolean,
     onManageNotifications: () -> Unit
 ) {
-    Column(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp)
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = Icons.Default.Notifications,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary
+        Icon(
+            imageVector = Icons.Default.Notifications,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = stringResource(R.string.privacy_notifications_title),
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Medium
             )
-            Spacer(modifier = Modifier.width(16.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = stringResource(R.string.privacy_notifications_title),
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Medium
-                )
-                Text(
-                    text = stringResource(R.string.privacy_notifications_compact_desc),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
+            Text(
+                text = stringResource(R.string.privacy_notifications_compact_desc),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .defaultMinSize(minHeight = 48.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+        Spacer(modifier = Modifier.width(8.dp))
+        Column(
+            horizontalAlignment = Alignment.End,
+            verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
             PermissionBadge(
                 text = stringResource(
                     if (areNotificationsEnabled) R.string.permission_status_granted
                     else R.string.permission_status_denied
                 ),
-                isPositive = areNotificationsEnabled
+                style = if (areNotificationsEnabled) PermissionBadgeStyle.SUCCESS else PermissionBadgeStyle.SOFT_ERROR
             )
             OutlinedButton(
                 onClick = onManageNotifications,
@@ -505,7 +499,7 @@ private fun StoragePermissionRow() {
         Spacer(modifier = Modifier.width(8.dp))
         PermissionBadge(
             text = stringResource(R.string.permission_status_not_required),
-            isNeutral = true
+            style = PermissionBadgeStyle.NEUTRAL_OUTLINE
         )
     }
 }
@@ -523,105 +517,113 @@ private fun HealthConnectPermissionRow(
         isGranted -> stringResource(R.string.permission_status_granted)
         else -> stringResource(R.string.permission_status_available)
     }
+    val badgeStyle = when {
+        !isAvailable -> PermissionBadgeStyle.NEUTRAL
+        isGranted -> PermissionBadgeStyle.SUCCESS
+        else -> PermissionBadgeStyle.NEUTRAL_OUTLINE
+    }
     val showConnectAction = isAvailable && !isEnabled
 
-    Column(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp)
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.ic_health_connect),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary
+        Icon(
+            painter = painterResource(R.drawable.ic_health_connect),
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = stringResource(R.string.setting_health_connect_title),
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Medium
             )
-            Spacer(modifier = Modifier.width(16.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = stringResource(R.string.setting_health_connect_title),
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Medium
-                )
-                Text(
-                    text = stringResource(R.string.privacy_health_connect_compact_desc),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-            if (!showConnectAction) {
-                Spacer(modifier = Modifier.width(8.dp))
-                PermissionBadge(
-                    text = statusText,
-                    isPositive = isGranted,
-                    isNeutral = isAvailable && !isGranted
-                )
-            }
-        }
-
-        if (showConnectAction) {
-            HealthConnectActionRow(
-                statusText = statusText,
-                onConnectHealth = onConnectHealth
+            Text(
+                text = stringResource(R.string.privacy_health_connect_compact_desc),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
+        Spacer(modifier = Modifier.width(8.dp))
+        HealthConnectActionBlock(
+            statusText = statusText,
+            badgeStyle = badgeStyle,
+            showConnectAction = showConnectAction,
+            onConnectHealth = onConnectHealth
+        )
     }
 }
 
 @Composable
-private fun HealthConnectActionRow(
+private fun HealthConnectActionBlock(
     statusText: String,
+    badgeStyle: PermissionBadgeStyle,
+    showConnectAction: Boolean,
     onConnectHealth: () -> Unit
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .defaultMinSize(minHeight = 48.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
+    if (showConnectAction) {
+        Column(
+            horizontalAlignment = Alignment.End,
+            verticalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            PermissionBadge(
+                text = statusText,
+                style = badgeStyle
+            )
+            OutlinedButton(
+                onClick = onConnectHealth,
+                shape = RoundedCornerShape(8.dp),
+                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 0.dp),
+                modifier = Modifier.defaultMinSize(minHeight = 48.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.permission_action_connect),
+                    fontSize = 12.sp
+                )
+            }
+        }
+    } else {
         PermissionBadge(
             text = statusText,
-            isPositive = false,
-            isNeutral = true
+            style = badgeStyle
         )
-        OutlinedButton(
-            onClick = onConnectHealth,
-            shape = RoundedCornerShape(8.dp),
-            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 0.dp),
-            modifier = Modifier.defaultMinSize(minHeight = 48.dp)
-        ) {
-            Text(
-                text = stringResource(R.string.permission_action_connect),
-                fontSize = 12.sp
-            )
-        }
     }
+}
+
+private enum class PermissionBadgeStyle {
+    SUCCESS,
+    NEUTRAL_OUTLINE,
+    SOFT_ERROR,
+    NEUTRAL
 }
 
 @Composable
 private fun PermissionBadge(
     text: String,
-    isPositive: Boolean = true,
-    isNeutral: Boolean = false
+    style: PermissionBadgeStyle
 ) {
-    val containerColor = when {
-        isNeutral -> MaterialTheme.colorScheme.surfaceContainerHighest
-        isPositive -> MaterialTheme.colorScheme.primaryContainer
-        else -> MaterialTheme.colorScheme.errorContainer
+    val containerColor: Color = when (style) {
+        PermissionBadgeStyle.SUCCESS -> TrackGymNeonGreen.copy(alpha = 0.15f)
+        PermissionBadgeStyle.NEUTRAL_OUTLINE -> Color.Transparent
+        PermissionBadgeStyle.SOFT_ERROR -> MaterialTheme.colorScheme.errorContainer
+        PermissionBadgeStyle.NEUTRAL -> MaterialTheme.colorScheme.surfaceContainerHighest
     }
-    val contentColor = when {
-        isNeutral -> MaterialTheme.colorScheme.onSurfaceVariant
-        isPositive -> MaterialTheme.colorScheme.onPrimaryContainer
-        else -> MaterialTheme.colorScheme.onErrorContainer
+    val contentColor: Color = when (style) {
+        PermissionBadgeStyle.SUCCESS -> TrackGymNeonGreen
+        PermissionBadgeStyle.NEUTRAL_OUTLINE -> MaterialTheme.colorScheme.onSurfaceVariant
+        PermissionBadgeStyle.SOFT_ERROR -> MaterialTheme.colorScheme.onErrorContainer
+        PermissionBadgeStyle.NEUTRAL -> MaterialTheme.colorScheme.onSurfaceVariant
     }
-    val border = if (isNeutral) {
-        BorderStroke(1.dp, MaterialTheme.colorScheme.subtleBorder)
-    } else null
+    val border: BorderStroke? = when (style) {
+        PermissionBadgeStyle.SUCCESS -> BorderStroke(1.dp, TrackGymNeonGreen.copy(alpha = 0.35f))
+        PermissionBadgeStyle.NEUTRAL_OUTLINE -> BorderStroke(1.dp, MaterialTheme.colorScheme.subtleBorder)
+        PermissionBadgeStyle.SOFT_ERROR,
+        PermissionBadgeStyle.NEUTRAL -> null
+    }
 
     Surface(
         shape = RoundedCornerShape(8.dp),
