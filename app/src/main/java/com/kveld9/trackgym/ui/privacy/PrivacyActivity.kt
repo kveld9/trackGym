@@ -333,7 +333,8 @@ fun PrivacyScreen(
             confirmButton = {
                 Button(
                     onClick = onConfirmRationale,
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                    modifier = Modifier.defaultMinSize(minHeight = 48.dp)
                 ) {
                     Text(
                         text = stringResource(R.string.permission_notifications_rationale_confirm),
@@ -343,7 +344,10 @@ fun PrivacyScreen(
                 }
             },
             dismissButton = {
-                TextButton(onClick = onDismissRationale) {
+                TextButton(
+                    onClick = onDismissRationale,
+                    modifier = Modifier.defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
+                ) {
                     Text(
                         text = stringResource(R.string.action_cancel),
                         color = MaterialTheme.colorScheme.onSurfaceVariant
