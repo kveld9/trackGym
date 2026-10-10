@@ -221,9 +221,9 @@ fun RecordItemCard(
                 ) {
                     Text(
                         text = exerciseName,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Bold
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Medium
                     )
                     Text(
                         text = dateStr,
@@ -233,15 +233,6 @@ fun RecordItemCard(
                 }
 
                 Spacer(modifier = Modifier.height(2.dp))
-
-                Text(
-                    text = stringResource(record.recordType.nameRes),
-                    color = MaterialTheme.colorScheme.tertiary,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.SemiBold
-                )
-
-                Spacer(modifier = Modifier.height(4.dp))
 
                 val recordDescription = when (record.recordType) {
                     RecordType.MAX_WEIGHT -> "${weightUnit.format(record.weightKg)} (${record.reps} reps)"
@@ -253,8 +244,18 @@ fun RecordItemCard(
 
                 Text(
                     text = recordDescription,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontSize = 13.sp
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Spacer(modifier = Modifier.height(2.dp))
+
+                Text(
+                    text = stringResource(record.recordType.nameRes),
+                    color = MaterialTheme.colorScheme.tertiary,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.SemiBold
                 )
             }
         }
