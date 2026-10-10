@@ -5,7 +5,10 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.view.WindowManager
 import java.util.Locale
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -13,6 +16,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.shape.CircleShape
+import com.kveld9.trackgym.ui.theme.subtleBorder
 import com.kveld9.trackgym.domain.model.StandardContextTag
 import com.kveld9.trackgym.domain.model.WorkoutContextTagParser
 import androidx.compose.foundation.layout.Row
@@ -102,6 +108,8 @@ import com.kveld9.trackgym.ui.util.displayName
 import com.kveld9.trackgym.ui.viewmodel.GymViewModel
 
 private const val DEFAULT_FALLBACK_WEIGHT_KG = 60.0
+private const val HYDRATION_TIMEOUT_MS = 180L
+private const val HYDRATION_TRANSITION_MS = 150
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -246,8 +254,28 @@ fun ActiveWorkoutScreen(
         }
     }
 
+    var isHydrating by remember { mutableStateOf(activeWorkout == null) }
+
+    LaunchedEffect(Unit) {
+        delay(HYDRATION_TIMEOUT_MS)
+        isHydrating = false
+    }
+
+    LaunchedEffect(activeWorkout) {
+        if (activeWorkout != null) {
+            isHydrating = false
+        }
+    }
+
     CompositionLocalProvider(LocalActiveGymProfile provides activeGymProfile) {
-        if (activeWorkout == null) {
+        Crossfade(
+            targetState = isHydrating && activeWorkout == null,
+            animationSpec = tween(durationMillis = HYDRATION_TRANSITION_MS),
+            label = "ActiveWorkoutHydrationCrossfade"
+        ) { hydrating ->
+            if (hydrating) {
+                ActiveWorkoutSkeleton(modifier = modifier)
+            } else if (activeWorkout == null) {
             val copySuffix = stringResource(R.string.routine_copy_suffix)
         val defaultWorkoutTitle = stringResource(R.string.workout_default_title)
         val deloadSuffix = stringResource(R.string.deload_routine_suffix)
@@ -487,6 +515,7 @@ fun ActiveWorkoutScreen(
                 }
             }
         }
+        }
     }
 
     if (showExercisePicker) {
@@ -605,7 +634,7 @@ fun ActiveWorkoutScreen(
                         modifier = Modifier.fillMaxWidth(),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = MaterialTheme.colorScheme.primary,
-                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                            unfocusedBorderColor = MaterialTheme.colorScheme.subtleBorder,
                             focusedTextColor = MaterialTheme.colorScheme.onSurface,
                             unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                         )
@@ -648,7 +677,7 @@ fun ActiveWorkoutScreen(
                         modifier = Modifier.fillMaxWidth(),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = MaterialTheme.colorScheme.primary,
-                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                            unfocusedBorderColor = MaterialTheme.colorScheme.subtleBorder,
                             focusedTextColor = MaterialTheme.colorScheme.onSurface,
                             unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                         )
@@ -1126,3 +1155,56 @@ private tailrec fun Context.findActivity(): Activity? = when (this) {
     is ContextWrapper -> baseContext.findActivity()
     else -> null
 }
+
+@Composable
+private fun ActiveWorkoutSkeleton(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .statusBarsPadding()
+            .background(MaterialTheme.colorScheme.background)
+            .padding(horizontal = 20.dp, vertical = 12.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = Modifier.height(12.dp))
+        Box(
+            modifier = Modifier
+                .size(80.dp)
+                .clip(CircleShape)
+                .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Box(
+            modifier = Modifier
+                .width(180.dp)
+                .height(28.dp)
+                .clip(RoundedCornerShape(6.dp))
+                .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Box(
+            modifier = Modifier
+                .width(240.dp)
+                .height(16.dp)
+                .clip(RoundedCornerShape(4.dp))
+                .background(MaterialTheme.colorScheme.surfaceContainerLow)
+        )
+        Spacer(modifier = Modifier.height(24.dp))
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(72.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(MaterialTheme.colorScheme.surfaceContainerLow)
+        )
+    }
+}
+

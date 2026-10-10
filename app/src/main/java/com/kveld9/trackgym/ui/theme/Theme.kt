@@ -2,6 +2,7 @@ package com.kveld9.trackgym.ui.theme
 
 import android.app.Activity
 import android.os.Build
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
@@ -146,3 +147,10 @@ fun TrackGymTheme(
         content = content
     )
 }
+
+/**
+ * Subtle border token for card and dialog boundaries per DESIGN.md.
+ */
+val ColorScheme.subtleBorder: Color
+    get() = outlineVariant.copy(alpha = 0.5f)
+
