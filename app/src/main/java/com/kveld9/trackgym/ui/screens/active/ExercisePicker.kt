@@ -1,5 +1,6 @@
 package com.kveld9.trackgym.ui.screens.active
 
+import com.kveld9.trackgym.ui.theme.subtleBorder
 import com.kveld9.trackgym.domain.calculator.FuzzyExerciseSearchEngine
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -145,7 +146,7 @@ fun ExercisePickerContent(
             shape = RoundedCornerShape(12.dp),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = MaterialTheme.colorScheme.primary,
-                unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                unfocusedBorderColor = MaterialTheme.colorScheme.subtleBorder,
                 focusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
                 unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
                 focusedTextColor = MaterialTheme.colorScheme.onSurface,

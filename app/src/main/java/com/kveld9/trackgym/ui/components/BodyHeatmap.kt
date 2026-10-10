@@ -1,5 +1,6 @@
 package com.kveld9.trackgym.ui.components
 
+import com.kveld9.trackgym.ui.theme.subtleBorder
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -56,7 +57,7 @@ fun MuscleHeatmapCard(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
         border = CardDefaults.outlinedCardBorder().copy(
             brush = androidx.compose.ui.graphics.SolidColor(
-                MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+                MaterialTheme.colorScheme.subtleBorder
             )
         )
     ) {

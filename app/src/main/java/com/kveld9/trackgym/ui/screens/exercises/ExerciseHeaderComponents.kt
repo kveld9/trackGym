@@ -1,5 +1,6 @@
 package com.kveld9.trackgym.ui.screens.exercises
 
+import com.kveld9.trackgym.ui.theme.subtleBorder
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -132,7 +133,7 @@ private fun SearchTextField(
         shape = RoundedCornerShape(12.dp),
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = MaterialTheme.colorScheme.primary,
-            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+            unfocusedBorderColor = MaterialTheme.colorScheme.subtleBorder,
             focusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
             unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
             focusedTextColor = MaterialTheme.colorScheme.onSurface,

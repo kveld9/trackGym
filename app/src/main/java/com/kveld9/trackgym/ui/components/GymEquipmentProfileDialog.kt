@@ -1,5 +1,6 @@
 package com.kveld9.trackgym.ui.components
 
+import com.kveld9.trackgym.ui.theme.subtleBorder
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -465,7 +466,7 @@ fun GymEquipmentProfileEditDialog(
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = MaterialTheme.colorScheme.primary,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+                        unfocusedBorderColor = MaterialTheme.colorScheme.subtleBorder
                     ),
                     shape = RoundedCornerShape(10.dp)
                 )
@@ -488,7 +489,7 @@ fun GymEquipmentProfileEditDialog(
                         modifier = Modifier.weight(1f),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = MaterialTheme.colorScheme.primary,
-                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+                            unfocusedBorderColor = MaterialTheme.colorScheme.subtleBorder
                         ),
                         shape = RoundedCornerShape(10.dp)
                     )
@@ -507,7 +508,7 @@ fun GymEquipmentProfileEditDialog(
                         modifier = Modifier.weight(1f),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = MaterialTheme.colorScheme.primary,
-                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+                            unfocusedBorderColor = MaterialTheme.colorScheme.subtleBorder
                         ),
                         shape = RoundedCornerShape(10.dp)
                     )

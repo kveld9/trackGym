@@ -1,5 +1,6 @@
 package com.kveld9.trackgym.ui.components
 
+import com.kveld9.trackgym.ui.theme.subtleBorder
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -121,7 +122,7 @@ fun RpeTargetWeightDialog(
                         modifier = Modifier.fillMaxWidth().height(48.dp),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = MaterialTheme.colorScheme.primary,
-                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                            unfocusedBorderColor = MaterialTheme.colorScheme.subtleBorder,
                             focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                             unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh
                         ),

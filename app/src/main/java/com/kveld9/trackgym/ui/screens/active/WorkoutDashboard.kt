@@ -1,5 +1,6 @@
 package com.kveld9.trackgym.ui.screens.active
 
+import com.kveld9.trackgym.ui.theme.subtleBorder
 import android.content.Intent
 import com.kveld9.trackgym.domain.calculator.RoutineBiomechanicalBalanceEngine
 import com.kveld9.trackgym.domain.util.RoutineShareCodec
@@ -357,7 +358,9 @@ fun EmptyWorkoutDashboard(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(14.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
-                border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)))
+                border = CardDefaults.outlinedCardBorder().copy(
+            brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.subtleBorder)
+        )
             ) {
                 Column(
                     modifier = Modifier.padding(20.dp),
@@ -562,7 +565,9 @@ fun RoutineCardItem(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(14.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
-        border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)))
+        border = CardDefaults.outlinedCardBorder().copy(
+            brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.subtleBorder)
+        )
     ) {
         Row(
             modifier = Modifier

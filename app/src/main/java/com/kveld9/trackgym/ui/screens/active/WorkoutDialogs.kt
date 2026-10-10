@@ -1,5 +1,6 @@
 package com.kveld9.trackgym.ui.screens.active
 
+import com.kveld9.trackgym.ui.theme.subtleBorder
 import java.util.Locale
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -208,7 +209,7 @@ fun PlateCalculatorDialog(
                         modifier = Modifier.weight(1f),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = MaterialTheme.colorScheme.primary,
-                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                            unfocusedBorderColor = MaterialTheme.colorScheme.subtleBorder,
                             focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                             unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh
                         ),
@@ -224,7 +225,7 @@ fun PlateCalculatorDialog(
                         modifier = Modifier.weight(1f),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = MaterialTheme.colorScheme.primary,
-                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                            unfocusedBorderColor = MaterialTheme.colorScheme.subtleBorder,
                             focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                             unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh
                         ),

@@ -1,5 +1,6 @@
 package com.kveld9.trackgym.ui.privacy
 
+import com.kveld9.trackgym.ui.theme.subtleBorder
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -374,7 +375,7 @@ private fun PermissionBadge(
         else -> MaterialTheme.colorScheme.onErrorContainer
     }
     val border = if (isNeutral) {
-        BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f))
+        BorderStroke(1.dp, MaterialTheme.colorScheme.subtleBorder)
     } else null
 
     Surface(

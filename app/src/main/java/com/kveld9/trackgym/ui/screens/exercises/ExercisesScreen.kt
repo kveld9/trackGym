@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import com.kveld9.trackgym.ui.theme.GymMotionTokens
+import com.kveld9.trackgym.ui.theme.errorBorder
 import com.kveld9.trackgym.ui.theme.subtleBorder
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -1488,7 +1489,7 @@ private fun ExerciseInlineError(
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(16.dp))
                 .background(MaterialTheme.colorScheme.surfaceContainer)
-                .border(1.dp, MaterialTheme.colorScheme.error.copy(alpha = 0.5f), RoundedCornerShape(16.dp))
+                .border(1.dp, MaterialTheme.colorScheme.errorBorder, RoundedCornerShape(16.dp))
                 .padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(12.dp)

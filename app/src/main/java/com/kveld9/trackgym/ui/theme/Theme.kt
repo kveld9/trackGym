@@ -154,3 +154,8 @@ fun TrackGymTheme(
 val ColorScheme.subtleBorder: Color
     get() = outlineVariant.copy(alpha = 0.5f)
 
+/**
+ * Error border token for destructive/error dialog boundaries.
+ */
+val ColorScheme.errorBorder: Color
+    get() = error.copy(alpha = 0.5f)

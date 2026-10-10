@@ -1,5 +1,6 @@
 package com.kveld9.trackgym.ui.screens.active
 
+import com.kveld9.trackgym.ui.theme.subtleBorder
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -247,7 +248,7 @@ private fun RoutineBuilderEmptyState() {
         ),
         border = CardDefaults.outlinedCardBorder().copy(
             brush = SolidColor(
-                MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+                MaterialTheme.colorScheme.subtleBorder
             )
         )
     ) {
