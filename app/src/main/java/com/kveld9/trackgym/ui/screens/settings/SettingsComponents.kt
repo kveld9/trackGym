@@ -37,6 +37,8 @@ fun SectionHeader(
         letterSpacing = 0.8.sp,
         fontWeight = FontWeight.SemiBold,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
+        maxLines = 1,
+        softWrap = false,
         modifier = modifier.padding(start = 4.dp)
     )
 }
