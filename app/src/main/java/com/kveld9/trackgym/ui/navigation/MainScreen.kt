@@ -30,6 +30,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -67,11 +70,17 @@ fun MainScreen(
     val currentTab = NavTab.entries.firstOrNull { it.name == currentRoute }
         ?: NavTab.entries.getOrElse(initialTab) { NavTab.TRAIN }
 
-    LaunchedEffect(initialTab) {
+    var lastHandledTab by rememberSaveable { mutableIntStateOf(-1) }
+
+    LaunchedEffect(initialTab, currentRoute) {
+        if (currentRoute == null || initialTab == lastHandledTab) {
+            return@LaunchedEffect
+        }
         val targetTab = NavTab.entries.getOrNull(initialTab) ?: NavTab.TRAIN
         if (currentTab != targetTab) {
             navController.navigateToTab(targetTab)
         }
+        lastHandledTab = initialTab
     }
 
     val lastFinishedComparison by viewModel.lastFinishedComparison.collectAsStateWithLifecycle()

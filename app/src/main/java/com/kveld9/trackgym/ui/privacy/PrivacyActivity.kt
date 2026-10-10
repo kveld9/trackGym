@@ -71,6 +71,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.compose.ui.graphics.Color
+import com.kveld9.trackgym.MainActivity
 import com.kveld9.trackgym.R
 import com.kveld9.trackgym.TrackGymApp
 import com.kveld9.trackgym.data.ThemeSettings
@@ -138,6 +139,7 @@ class PrivacyActivity : ComponentActivity() {
                     isHealthConnectEnabled = themeSettings.healthConnectSync,
                     onManageNotifications = { handleManageNotifications() },
                     onConnectHealth = { handleConnectHealth() },
+                    onNavigateBackups = { handleNavigateBackups() },
                     onBackClick = { finish() },
                     areNotificationsEnabled = areNotificationsEnabled,
                     hasHealthConnectPermissions = hasHealthConnectPermissions,
@@ -153,6 +155,15 @@ class PrivacyActivity : ComponentActivity() {
                 )
             }
         }
+    }
+
+    private fun handleNavigateBackups() {
+        val intent = Intent(this, MainActivity::class.java).apply {
+            action = Intent.ACTION_APPLICATION_PREFERENCES
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+        }
+        startActivity(intent)
+        finish()
     }
 
     private fun handleConnectHealth() {
@@ -231,6 +242,7 @@ fun PrivacyScreen(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
     onConnectHealth: () -> Unit = {},
+    onNavigateBackups: () -> Unit = {},
     areNotificationsEnabled: Boolean = NotificationManagerCompat.from(LocalContext.current).areNotificationsEnabled(),
     hasHealthConnectPermissions: Boolean = false,
     showRationaleDialog: Boolean = false,
@@ -304,7 +316,8 @@ fun PrivacyScreen(
                 isHealthConnectEnabled = isHealthConnectEnabled,
                 hasHealthConnectPermissions = hasHealthConnectPermissions,
                 onManageNotifications = onManageNotifications,
-                onConnectHealth = onConnectHealth
+                onConnectHealth = onConnectHealth,
+                onNavigateBackups = onNavigateBackups
             )
 
             PrivacySectionHeader(title = stringResource(R.string.privacy_section_statement))
@@ -383,7 +396,8 @@ private fun PermissionStatusCard(
     hasHealthConnectPermissions: Boolean,
     onManageNotifications: () -> Unit,
     modifier: Modifier = Modifier,
-    onConnectHealth: () -> Unit = {}
+    onConnectHealth: () -> Unit = {},
+    onNavigateBackups: () -> Unit = {}
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -400,7 +414,7 @@ private fun PermissionStatusCard(
 
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
 
-            StoragePermissionRow()
+            StoragePermissionRow(onNavigateBackups = onNavigateBackups)
 
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
 
@@ -471,7 +485,9 @@ private fun NotificationPermissionRow(
 }
 
 @Composable
-private fun StoragePermissionRow() {
+private fun StoragePermissionRow(
+    onNavigateBackups: () -> Unit = {}
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -497,10 +513,26 @@ private fun StoragePermissionRow() {
             )
         }
         Spacer(modifier = Modifier.width(8.dp))
-        PermissionBadge(
-            text = stringResource(R.string.permission_status_not_required),
-            style = PermissionBadgeStyle.NEUTRAL_OUTLINE
-        )
+        Column(
+            horizontalAlignment = Alignment.End,
+            verticalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            PermissionBadge(
+                text = stringResource(R.string.permission_status_not_required),
+                style = PermissionBadgeStyle.NEUTRAL_OUTLINE
+            )
+            OutlinedButton(
+                onClick = onNavigateBackups,
+                shape = RoundedCornerShape(8.dp),
+                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 0.dp),
+                modifier = Modifier.defaultMinSize(minHeight = 48.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.permission_action_backups),
+                    fontSize = 12.sp
+                )
+            }
+        }
     }
 }
 

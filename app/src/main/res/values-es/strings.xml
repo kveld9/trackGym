@@ -755,6 +755,7 @@
     <string name="permission_status_unavailable">No disponible</string>
     <string name="permission_action_manage">Gestionar</string>
     <string name="permission_action_connect">Conectar</string>
+    <string name="permission_action_backups">Respaldos</string>
     <string name="privacy_storage_compact_desc">Acceso a archivos solo al exportar o importar</string>
     <string name="privacy_notifications_compact_desc">Cronómetro y controles durante sesiones activas</string>
     <string name="privacy_health_connect_compact_desc">Sincronización opcional con Android Health Connect</string>
