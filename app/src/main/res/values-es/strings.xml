@@ -806,6 +806,8 @@
     <string name="gym_profile_plates">Discos Disponibles</string>
     <string name="gym_profile_set_default">Marcar como predeterminado</string>
     <string name="gym_profile_default_badge">Predeterminado</string>
+    <string name="gym_profile_delete_dialog_title">Eliminar Perfil</string>
+    <string name="gym_profile_delete_dialog_msg">¿Estás seguro de que deseas eliminar \"%1$s\"? Esta acción no se puede deshacer.</string>
 
     <!-- Haptic NumberPicker / Scroll Wheel (Item 87) -->
     <string name="wheel_picker_title">Valores Serie %1$d</string>

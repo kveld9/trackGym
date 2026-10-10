@@ -806,6 +806,8 @@
     <string name="gym_profile_plates">Available Plates</string>
     <string name="gym_profile_set_default">Set as default</string>
     <string name="gym_profile_default_badge">Default</string>
+    <string name="gym_profile_delete_dialog_title">Delete Profile</string>
+    <string name="gym_profile_delete_dialog_msg">Are you sure you want to delete \"%1$s\"? This action cannot be undone.</string>
 
     <!-- Haptic NumberPicker / Scroll Wheel (Item 87) -->
     <string name="wheel_picker_title">Set %1$d Values</string>

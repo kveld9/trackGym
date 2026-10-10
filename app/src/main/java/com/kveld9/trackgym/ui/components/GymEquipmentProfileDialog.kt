@@ -21,12 +21,12 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.HomeRepairService
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -78,6 +78,7 @@ fun GymEquipmentProfilesManageDialog(
 ) {
     var editingProfile by remember { mutableStateOf<GymEquipmentProfile?>(null) }
     var showCreateDialog by remember { mutableStateOf(false) }
+    var profileToDelete by remember { mutableStateOf<GymEquipmentProfile?>(null) }
 
     if (showCreateDialog || editingProfile != null) {
         GymEquipmentProfileEditDialog(
@@ -92,6 +93,17 @@ fun GymEquipmentProfilesManageDialog(
                 showCreateDialog = false
                 editingProfile = null
             }
+        )
+    }
+
+    profileToDelete?.let { profile ->
+        GymProfileDeleteConfirmDialog(
+            profile = profile,
+            onConfirm = {
+                onDeleteProfile(profile.id)
+                profileToDelete = null
+            },
+            onDismiss = { profileToDelete = null }
         )
     }
 
@@ -116,7 +128,7 @@ fun GymEquipmentProfilesManageDialog(
                 weightUnit = weightUnit,
                 onSelectProfile = onSelectProfile,
                 onEditProfile = { editingProfile = it },
-                onDeleteProfile = onDeleteProfile
+                onDeleteProfile = { profileToDelete = it }
             )
         }
     }
@@ -176,7 +188,7 @@ private fun GymProfilesList(
     weightUnit: WeightUnit,
     onSelectProfile: (String) -> Unit,
     onEditProfile: (GymEquipmentProfile) -> Unit,
-    onDeleteProfile: (String) -> Unit
+    onDeleteProfile: (GymEquipmentProfile) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -193,7 +205,7 @@ private fun GymProfilesList(
                 canDelete = profiles.size > 1,
                 onSelectProfile = onSelectProfile,
                 onEditProfile = { onEditProfile(profile) },
-                onDeleteProfile = { onDeleteProfile(profile.id) }
+                onDeleteProfile = { onDeleteProfile(profile) }
             )
         }
     }
@@ -219,6 +231,7 @@ private fun GymProfileActions(
         }
 
         if (canDelete) {
+            Spacer(modifier = Modifier.width(16.dp))
             IconButton(
                 onClick = onDeleteProfile,
                 modifier = Modifier.size(48.dp)
@@ -318,46 +331,21 @@ private fun GymProfileSpecs(
 
 @Composable
 private fun GymProfileFooter(
-    isActive: Boolean,
     profileId: String,
     onSelectProfile: (String) -> Unit
 ) {
-    if (!isActive) {
-        OutlinedButton(
-            onClick = { onSelectProfile(profileId) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .defaultMinSize(minHeight = 48.dp),
-            shape = RoundedCornerShape(8.dp)
-        ) {
-            Text(
-                text = stringResource(R.string.gym_profile_select),
-                fontSize = 12.sp,
-                fontWeight = FontWeight.SemiBold
-            )
-        }
-    } else {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .defaultMinSize(minHeight = 48.dp),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = Icons.Default.Check,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(16.dp)
-            )
-            Spacer(modifier = Modifier.width(4.dp))
-            Text(
-                text = stringResource(R.string.gym_profile_active),
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
-            )
-        }
+    OutlinedButton(
+        onClick = { onSelectProfile(profileId) },
+        modifier = Modifier
+            .fillMaxWidth()
+            .defaultMinSize(minHeight = 48.dp),
+        shape = RoundedCornerShape(8.dp)
+    ) {
+        Text(
+            text = stringResource(R.string.gym_profile_select),
+            fontSize = 12.sp,
+            fontWeight = FontWeight.SemiBold
+        )
     }
 }
 
@@ -396,10 +384,57 @@ private fun GymProfileCard(
             GymProfileHeader(profile, isActive, canDelete, onEditProfile, onDeleteProfile)
             Spacer(modifier = Modifier.height(4.dp))
             GymProfileSpecs(profile, weightUnit)
-            Spacer(modifier = Modifier.height(8.dp))
-            GymProfileFooter(isActive, profile.id, onSelectProfile)
+            if (!isActive) {
+                Spacer(modifier = Modifier.height(8.dp))
+                GymProfileFooter(profile.id, onSelectProfile)
+            }
         }
     }
+}
+
+@Composable
+private fun GymProfileDeleteConfirmDialog(
+    profile: GymEquipmentProfile,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = stringResource(R.string.gym_profile_delete_dialog_title),
+                fontWeight = FontWeight.Bold
+            )
+        },
+        text = {
+            Text(
+                text = stringResource(R.string.gym_profile_delete_dialog_msg, profile.name)
+            )
+        },
+        confirmButton = {
+            Button(
+                onClick = onConfirm,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.error,
+                    contentColor = MaterialTheme.colorScheme.onError
+                ),
+                modifier = Modifier.defaultMinSize(minHeight = 48.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.action_delete),
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = onDismiss,
+                modifier = Modifier.defaultMinSize(minHeight = 48.dp)
+            ) {
+                Text(text = stringResource(R.string.action_cancel))
+            }
+        }
+    )
 }
 
 @Composable
