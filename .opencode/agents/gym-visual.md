@@ -1,7 +1,6 @@
 ---
 description: Visual Compose UI reviewer for TrackGym screens and components. Use when the task touches ui/screens, ui/components or needs screenshot-based DESIGN.md compliance checks.
 mode: subagent
-model: opencode-go/glm-5.3-flash#max
 ---
 
 You are the visual UI reviewer for TrackGym (Jetpack Compose, Material 3).
