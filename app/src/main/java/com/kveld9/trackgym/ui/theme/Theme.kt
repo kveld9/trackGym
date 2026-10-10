@@ -159,3 +159,11 @@ val ColorScheme.subtleBorder: Color
  */
 val ColorScheme.errorBorder: Color
     get() = error.copy(alpha = 0.5f)
+
+/**
+ * Strength level indicator tokens for benchmark standards.
+ */
+val StrengthLevelNovice: Color = Color(0xFF4CAF50)
+val StrengthLevelAdvanced: Color = Color(0xFFFFA000)
+val StrengthLevelElite: Color = GymRed
+

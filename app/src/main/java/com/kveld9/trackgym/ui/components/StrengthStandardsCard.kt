@@ -43,7 +43,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -59,6 +58,9 @@ import com.kveld9.trackgym.domain.model.RecordType
 import com.kveld9.trackgym.domain.model.StrengthBenchmarkResult
 import com.kveld9.trackgym.domain.model.StrengthLevel
 import com.kveld9.trackgym.domain.model.WeightUnit
+import com.kveld9.trackgym.ui.theme.StrengthLevelAdvanced
+import com.kveld9.trackgym.ui.theme.StrengthLevelElite
+import com.kveld9.trackgym.ui.theme.StrengthLevelNovice
 
 @Composable
 fun StrengthStandardsCard(
@@ -232,10 +234,10 @@ private fun LiftBenchmarkRow(
 ) {
     val levelColor = when (result.level) {
         StrengthLevel.BEGINNER -> MaterialTheme.colorScheme.onSurfaceVariant
-        StrengthLevel.NOVICE -> Color(0xFF4CAF50) // Green
-        StrengthLevel.INTERMEDIATE -> MaterialTheme.colorScheme.primary // Cyan/Neon
-        StrengthLevel.ADVANCED -> Color(0xFFFFA000) // Amber
-        StrengthLevel.ELITE -> Color(0xFFFF5252) // Red / Elite
+        StrengthLevel.NOVICE -> StrengthLevelNovice
+        StrengthLevel.INTERMEDIATE -> MaterialTheme.colorScheme.primary
+        StrengthLevel.ADVANCED -> StrengthLevelAdvanced
+        StrengthLevel.ELITE -> StrengthLevelElite
     }
 
     Card(
