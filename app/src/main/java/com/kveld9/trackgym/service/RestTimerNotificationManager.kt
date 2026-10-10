@@ -1,12 +1,17 @@
 package com.kveld9.trackgym.service
 
+import android.Manifest
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import com.kveld9.trackgym.MainActivity
 import com.kveld9.trackgym.R
 
@@ -38,8 +43,23 @@ object RestTimerNotificationManager {
         remainingSeconds: Int,
         totalSeconds: Int
     ) {
-        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager ?: return
+        if (!canPostNotifications(context)) return
 
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE)
+            as? NotificationManager ?: return
+
+        val notification = buildTimerNotification(context, remainingSeconds, totalSeconds)
+
+        runCatching {
+            notificationManager.notify(NOTIFICATION_ID, notification)
+        }
+    }
+
+    private fun buildTimerNotification(
+        context: Context,
+        remainingSeconds: Int,
+        totalSeconds: Int
+    ): Notification {
         val contentIntent = PendingIntent.getActivity(
             context,
             0,
@@ -49,25 +69,12 @@ object RestTimerNotificationManager {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        val add30PendingIntent = PendingIntent.getBroadcast(
-            context,
-            1,
-            Intent(ACTION_ADD_30).setPackage(context.packageName),
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-
-        val skipPendingIntent = PendingIntent.getBroadcast(
-            context,
-            2,
-            Intent(ACTION_SKIP).setPackage(context.packageName),
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-
-        val completeSetPendingIntent = PendingIntent.getBroadcast(
+        val add30PendingIntent = createActionPendingIntent(context, 1, ACTION_ADD_30)
+        val skipPendingIntent = createActionPendingIntent(context, 2, ACTION_SKIP)
+        val completeSetPendingIntent = createActionPendingIntent(
             context,
             3,
-            Intent(ACTION_COMPLETE_CURRENT_SET).setPackage(context.packageName),
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            ACTION_COMPLETE_CURRENT_SET
         )
 
         val title = context.getString(R.string.rest_timer_title)
@@ -77,7 +84,7 @@ object RestTimerNotificationManager {
             context.getString(R.string.notif_timer_finished)
         }
 
-        val notification = NotificationCompat.Builder(context, CHANNEL_ID)
+        return NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
             .setContentTitle(title)
             .setContentText(contentText)
@@ -101,12 +108,34 @@ object RestTimerNotificationManager {
                 completeSetPendingIntent
             )
             .build()
-
-        notificationManager.notify(NOTIFICATION_ID, notification)
     }
 
+    private fun createActionPendingIntent(
+        context: Context,
+        requestCode: Int,
+        action: String
+    ): PendingIntent = PendingIntent.getBroadcast(
+        context,
+        requestCode,
+        Intent(action).setPackage(context.packageName),
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+    )
+
     fun dismissNotification(context: Context) {
-        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager ?: return
-        notificationManager.cancel(NOTIFICATION_ID)
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE)
+            as? NotificationManager ?: return
+        runCatching {
+            notificationManager.cancel(NOTIFICATION_ID)
+        }
+    }
+
+    private fun canPostNotifications(context: Context): Boolean {
+        val notificationsEnabled = NotificationManagerCompat.from(context).areNotificationsEnabled()
+        val permissionGranted = Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+        return notificationsEnabled && permissionGranted
     }
 }

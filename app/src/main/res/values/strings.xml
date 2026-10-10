@@ -762,6 +762,9 @@
     <string name="privacy_no_tracking_verified">Verified: zero trackers, analytics, or ads</string>
     <string name="privacy_storage_title">Storage &amp; Backups</string>
     <string name="privacy_notifications_title">Rest Timer Notifications</string>
+    <string name="permission_notifications_rationale_title">Rest Timer Notifications</string>
+    <string name="permission_notifications_rationale_desc">TrackGym uses notifications to show the rest timer countdown and controls during active workout sessions.</string>
+    <string name="permission_notifications_rationale_confirm">Continue</string>
 
     <!-- Application Error Recovery (Item 91) -->
     <string name="error_title">Application Error</string>

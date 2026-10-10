@@ -762,6 +762,9 @@
     <string name="privacy_no_tracking_verified">Verificado: sin rastreadores, analíticas ni anuncios</string>
     <string name="privacy_storage_title">Almacenamiento y Respaldos</string>
     <string name="privacy_notifications_title">Notificaciones de Descanso</string>
+    <string name="permission_notifications_rationale_title">Notificaciones de Descanso</string>
+    <string name="permission_notifications_rationale_desc">TrackGym utiliza notificaciones para mostrar la cuenta regresiva y controles del temporizador durante los entrenamientos activos.</string>
+    <string name="permission_notifications_rationale_confirm">Continuar</string>
 
     <!-- Application Error Recovery (Item 91) -->
     <string name="error_title">Error de la Aplicación</string>

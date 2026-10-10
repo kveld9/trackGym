@@ -1,6 +1,7 @@
 package com.kveld9.trackgym.ui.privacy
 
-import com.kveld9.trackgym.ui.theme.subtleBorder
+import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -9,6 +10,7 @@ import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,6 +32,9 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.FolderShared
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -41,11 +46,16 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -55,12 +65,37 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.app.NotificationManagerCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import com.kveld9.trackgym.R
 import com.kveld9.trackgym.TrackGymApp
 import com.kveld9.trackgym.data.ThemeSettings
 import com.kveld9.trackgym.ui.theme.TrackGymTheme
+import com.kveld9.trackgym.ui.theme.subtleBorder
+import kotlinx.coroutines.launch
 
 class PrivacyActivity : ComponentActivity() {
+
+    private val areNotificationsEnabledState = mutableStateOf(false)
+    private val hasHealthConnectPermissionsState = mutableStateOf(false)
+    private val showRationaleDialogState = mutableStateOf(false)
+
+    private val privacyPrefs by lazy {
+        getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+    }
+
+    private var hasRequestedNotificationPermission: Boolean
+        get() = privacyPrefs.getBoolean(KEY_POST_NOTIFICATIONS_REQUESTED, false)
+        set(value) = privacyPrefs.edit().putBoolean(KEY_POST_NOTIFICATIONS_REQUESTED, value).apply()
+
+    private val requestNotificationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { _ ->
+        hasRequestedNotificationPermission = true
+        refreshPermissionStatuses()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
@@ -72,6 +107,9 @@ class PrivacyActivity : ComponentActivity() {
 
         setContent {
             val themeSettings by themePreferences.themeSettings.collectAsState(initial = ThemeSettings())
+            val areNotificationsEnabled by areNotificationsEnabledState
+            val hasHealthConnectPermissions by hasHealthConnectPermissionsState
+            val showRationaleDialog by showRationaleDialogState
 
             TrackGymTheme(
                 themeMode = themeSettings.themeMode,
@@ -80,9 +118,60 @@ class PrivacyActivity : ComponentActivity() {
                 PrivacyScreen(
                     isHealthConnectAvailable = isHealthConnectAvailable,
                     isHealthConnectEnabled = themeSettings.healthConnectSync,
-                    onManageNotifications = { openNotificationSettings() },
-                    onBackClick = { finish() }
+                    onManageNotifications = { handleManageNotifications() },
+                    onBackClick = { finish() },
+                    areNotificationsEnabled = areNotificationsEnabled,
+                    hasHealthConnectPermissions = hasHealthConnectPermissions,
+                    showRationaleDialog = showRationaleDialog,
+                    onConfirmRationale = {
+                        showRationaleDialogState.value = false
+                        hasRequestedNotificationPermission = true
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        }
+                    },
+                    onDismissRationale = { showRationaleDialogState.value = false }
                 )
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        refreshPermissionStatuses()
+    }
+
+    private fun refreshPermissionStatuses() {
+        areNotificationsEnabledState.value = NotificationManagerCompat.from(this).areNotificationsEnabled()
+        val app = application as TrackGymApp
+        lifecycleScope.launch {
+            hasHealthConnectPermissionsState.value = runCatching {
+                app.healthConnectSyncManager?.hasAllPermissions() == true
+            }.getOrDefault(false)
+        }
+    }
+
+    private fun handleManageNotifications() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            openNotificationSettings()
+            return
+        }
+
+        if (NotificationManagerCompat.from(this).areNotificationsEnabled()) {
+            openNotificationSettings()
+            return
+        }
+
+        val permission = Manifest.permission.POST_NOTIFICATIONS
+        val isPermanentlyDenied = hasRequestedNotificationPermission &&
+            !shouldShowRequestPermissionRationale(permission)
+
+        when {
+            isPermanentlyDenied -> openNotificationSettings()
+            shouldShowRequestPermissionRationale(permission) -> showRationaleDialogState.value = true
+            else -> {
+                hasRequestedNotificationPermission = true
+                requestNotificationPermissionLauncher.launch(permission)
             }
         }
     }
@@ -99,6 +188,11 @@ class PrivacyActivity : ComponentActivity() {
         }
         runCatching { startActivity(intent) }
     }
+
+    companion object {
+        private const val PREFS_NAME = "privacy_prefs"
+        private const val KEY_POST_NOTIFICATIONS_REQUESTED = "post_notifications_requested"
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -108,10 +202,35 @@ fun PrivacyScreen(
     isHealthConnectEnabled: Boolean,
     onManageNotifications: () -> Unit,
     onBackClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    areNotificationsEnabled: Boolean = NotificationManagerCompat.from(LocalContext.current).areNotificationsEnabled(),
+    hasHealthConnectPermissions: Boolean = false,
+    showRationaleDialog: Boolean = false,
+    onConfirmRationale: () -> Unit = {},
+    onDismissRationale: () -> Unit = {}
 ) {
     val context = LocalContext.current
-    val areNotificationsEnabled = NotificationManagerCompat.from(context).areNotificationsEnabled()
+    val lifecycleOwner = LocalLifecycleOwner.current
+    var currentNotificationsEnabled by remember {
+        mutableStateOf(areNotificationsEnabled)
+    }
+
+    DisposableEffect(areNotificationsEnabled) {
+        currentNotificationsEnabled = areNotificationsEnabled
+        onDispose {}
+    }
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                currentNotificationsEnabled = NotificationManagerCompat.from(context).areNotificationsEnabled()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -152,9 +271,10 @@ fun PrivacyScreen(
             PrivacySectionHeader(title = stringResource(R.string.privacy_section_permissions))
 
             PermissionStatusCard(
-                areNotificationsEnabled = areNotificationsEnabled,
+                areNotificationsEnabled = currentNotificationsEnabled,
                 isHealthConnectAvailable = isHealthConnectAvailable,
                 isHealthConnectEnabled = isHealthConnectEnabled,
+                hasHealthConnectPermissions = hasHealthConnectPermissions,
                 onManageNotifications = onManageNotifications
             )
 
@@ -164,6 +284,46 @@ fun PrivacyScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
         }
+    }
+
+    if (showRationaleDialog) {
+        AlertDialog(
+            onDismissRequest = onDismissRationale,
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+            title = {
+                Text(
+                    text = stringResource(R.string.permission_notifications_rationale_title),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            text = {
+                Text(
+                    text = stringResource(R.string.permission_notifications_rationale_desc),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = onConfirmRationale,
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                ) {
+                    Text(
+                        text = stringResource(R.string.permission_notifications_rationale_confirm),
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = onDismissRationale) {
+                    Text(
+                        text = stringResource(R.string.action_cancel),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+        )
     }
 }
 
@@ -187,6 +347,7 @@ private fun PermissionStatusCard(
     areNotificationsEnabled: Boolean,
     isHealthConnectAvailable: Boolean,
     isHealthConnectEnabled: Boolean,
+    hasHealthConnectPermissions: Boolean,
     onManageNotifications: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -211,7 +372,8 @@ private fun PermissionStatusCard(
 
             HealthConnectPermissionRow(
                 isAvailable = isHealthConnectAvailable,
-                isEnabled = isHealthConnectEnabled
+                isEnabled = isHealthConnectEnabled,
+                hasAllPermissions = hasHealthConnectPermissions
             )
         }
     }
@@ -318,11 +480,13 @@ private fun StoragePermissionRow() {
 @Composable
 private fun HealthConnectPermissionRow(
     isAvailable: Boolean,
-    isEnabled: Boolean
+    isEnabled: Boolean,
+    hasAllPermissions: Boolean
 ) {
+    val isGranted = isEnabled && hasAllPermissions
     val statusText = when {
         !isAvailable -> stringResource(R.string.permission_status_unavailable)
-        isEnabled -> stringResource(R.string.permission_status_granted)
+        isGranted -> stringResource(R.string.permission_status_granted)
         else -> stringResource(R.string.permission_status_available)
     }
 
@@ -353,7 +517,8 @@ private fun HealthConnectPermissionRow(
         Spacer(modifier = Modifier.width(8.dp))
         PermissionBadge(
             text = statusText,
-            isPositive = isAvailable
+            isPositive = isGranted,
+            isNeutral = isAvailable && !isGranted
         )
     }
 }
