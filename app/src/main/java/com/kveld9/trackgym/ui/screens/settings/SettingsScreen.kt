@@ -237,6 +237,7 @@ fun SettingsScreen(
     if (showBodyWeightDialog) {
         BodyWeightInputDialog(
             initialWeight = themeSettings.userBodyWeightKg,
+            weightUnit = weightUnit,
             onDismiss = { showBodyWeightDialog = false },
             onConfirm = {
                 viewModel.setUserBodyWeight(it)
@@ -304,6 +305,7 @@ fun SettingsScreen(
                 bodyWeightKg = themeSettings.userBodyWeightKg,
                 sex = themeSettings.userBiologicalSex,
                 age = themeSettings.userAge,
+                weightUnit = weightUnit,
                 onWeightClick = { showBodyWeightDialog = true },
                 onSexChanged = { viewModel.setUserBiologicalSex(it) },
                 onAgeClick = { showAgeDialog = true }
@@ -340,7 +342,7 @@ fun SettingsScreen(
                 onSoundFeedbackChange = { viewModel.setSoundFeedbackOnComplete(it) }
             )
 
-            // Volume & Equipment Section
+            // Volume, Equipment & Calculation Section
             SectionHeader(title = stringResource(R.string.section_volume_equipment))
             VolumeEquipmentCard(
                 doubleDumbbell = themeSettings.doubleDumbbellVolume,
@@ -348,10 +350,12 @@ fun SettingsScreen(
                 showInlinePlates = themeSettings.showInlinePlates,
                 activeProfile = activeGymProfile,
                 weightUnit = weightUnit,
+                activeOrmFormula = activeOrmFormula,
                 onDoubleDumbbellChange = { viewModel.setDoubleDumbbellVolume(it) },
                 onExcludeWarmupChange = { viewModel.setExcludeWarmupFromVolume(it) },
                 onShowInlinePlatesChange = { viewModel.setShowInlinePlates(it) },
-                onManageProfilesClick = { showGymProfilesDialog = true }
+                onManageProfilesClick = { showGymProfilesDialog = true },
+                onOrmFormulaClick = { showOrmDialog = true }
             )
 
             // Session Section
@@ -361,13 +365,6 @@ fun SettingsScreen(
                 routineUpdateMode = themeSettings.routineUpdateMode,
                 onKeepScreenOnChange = { viewModel.setKeepScreenOn(it) },
                 onRoutineUpdateModeChange = { viewModel.setRoutineUpdateMode(it) }
-            )
-
-            // 1RM Models Section
-            SectionHeader(title = stringResource(R.string.section_orm_models))
-            OneRepMaxCard(
-                activeFormula = activeOrmFormula,
-                onClick = { showOrmDialog = true }
             )
 
             // Backup & Portability Section

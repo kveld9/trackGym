@@ -17,11 +17,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
+import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.FileDownload
 import androidx.compose.material.icons.filled.FileUpload
-import androidx.compose.material.icons.filled.Functions
-import androidx.compose.material.icons.filled.MonitorHeart
 import androidx.compose.material.icons.filled.Security
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
@@ -38,6 +37,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -45,27 +45,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kveld9.trackgym.R
 import com.kveld9.trackgym.domain.calculator.OneRepMaxFormula
-
-@Composable
-fun OneRepMaxCard(
-    activeFormula: OneRepMaxFormula,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.large,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer)
-    ) {
-        SettingsClickableRow(
-            icon = Icons.Default.Functions,
-            title = stringResource(R.string.setting_orm_formula_title),
-            description = "${stringResource(activeFormula.displayNameRes)} • ${activeFormula.formulaExpression}",
-            trailingText = stringResource(activeFormula.displayNameRes),
-            onClick = onClick
-        )
-    }
-}
 
 @Composable
 fun OneRepMaxSelectionDialog(
@@ -179,30 +158,82 @@ private fun AutoBackupRow(
         stringResource(R.string.setting_auto_backup_disabled)
     }
 
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .defaultMinSize(minHeight = 48.dp)
+                .clickable(onClick = onSelectFolder),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.Default.Security,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = stringResource(R.string.setting_auto_backup_title),
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Medium
+                )
+                Text(
+                    text = stringResource(R.string.setting_auto_backup_desc),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            Spacer(modifier = Modifier.width(8.dp))
+            Icon(
+                imageVector = Icons.Default.ChevronRight,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+
+        AutoBackupActionRow(
+            folderName = folderName,
+            hasFolder = hasFolder,
+            maxAutoBackups = maxAutoBackups,
+            onSelectFolder = onSelectFolder,
+            onDisableAutoBackup = onDisableAutoBackup
+        )
+    }
+}
+
+@Composable
+private fun AutoBackupActionRow(
+    folderName: String,
+    hasFolder: Boolean,
+    maxAutoBackups: Int,
+    onSelectFolder: () -> Unit,
+    onDisableAutoBackup: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .defaultMinSize(minHeight = 48.dp)
-            .clickable(onClick = onSelectFolder)
-            .padding(16.dp),
+            .defaultMinSize(minHeight = 48.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            imageVector = Icons.Default.Security,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary
-        )
-        Spacer(modifier = Modifier.width(16.dp))
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = stringResource(R.string.setting_auto_backup_title),
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Medium
-            )
-            Text(
-                text = stringResource(R.string.setting_auto_backup_desc),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                text = folderName,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = if (hasFolder) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                },
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
             if (hasFolder) {
                 Text(
@@ -213,57 +244,25 @@ private fun AutoBackupRow(
             }
         }
         Spacer(modifier = Modifier.width(8.dp))
-        AutoBackupTrailing(
-            folderName = folderName,
-            hasFolder = hasFolder,
-            onSelectFolder = onSelectFolder,
-            onDisableAutoBackup = onDisableAutoBackup
-        )
-    }
-}
-
-@Composable
-private fun AutoBackupTrailing(
-    folderName: String,
-    hasFolder: Boolean,
-    onSelectFolder: () -> Unit,
-    onDisableAutoBackup: () -> Unit
-) {
-    Column(
-        horizontalAlignment = Alignment.End,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = folderName,
-            style = MaterialTheme.typography.bodyMedium,
-            fontWeight = FontWeight.SemiBold,
-            color = if (hasFolder) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
-        if (hasFolder) {
-            TextButton(
-                onClick = onDisableAutoBackup,
-                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
-                modifier = Modifier.defaultMinSize(minHeight = 48.dp)
-            ) {
-                Text(
-                    text = stringResource(R.string.setting_auto_backup_disable),
-                    color = MaterialTheme.colorScheme.error,
-                    fontSize = 12.sp
-                )
-            }
+        val (btnText, btnColor, btnAction) = if (hasFolder) {
+            Triple(
+                stringResource(R.string.setting_auto_backup_disable),
+                MaterialTheme.colorScheme.error,
+                onDisableAutoBackup
+            )
         } else {
-            TextButton(
-                onClick = onSelectFolder,
-                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
-                modifier = Modifier.defaultMinSize(minHeight = 48.dp)
-            ) {
-                Text(
-                    text = stringResource(R.string.setting_auto_backup_select_folder),
-                    fontSize = 12.sp
-                )
-            }
+            Triple(
+                stringResource(R.string.setting_auto_backup_select_folder),
+                MaterialTheme.colorScheme.primary,
+                onSelectFolder
+            )
+        }
+        TextButton(
+            onClick = btnAction,
+            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+            modifier = Modifier.defaultMinSize(minHeight = 48.dp)
+        ) {
+            Text(text = btnText, color = btnColor, fontSize = 12.sp)
         }
     }
 }
@@ -381,7 +380,7 @@ fun IntegrationsCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
-                    imageVector = Icons.Default.MonitorHeart,
+                    painter = painterResource(R.drawable.ic_health_connect),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary
                 )

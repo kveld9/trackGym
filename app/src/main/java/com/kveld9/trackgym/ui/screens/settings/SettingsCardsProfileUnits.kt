@@ -15,19 +15,21 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Scale
 import androidx.compose.material.icons.filled.Straighten
 import androidx.compose.material.icons.filled.Wc
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,6 +51,7 @@ fun UserProfileCard(
     bodyWeightKg: Double,
     sex: String,
     age: Int,
+    weightUnit: WeightUnit,
     onWeightClick: () -> Unit,
     onSexChanged: (String) -> Unit,
     onAgeClick: () -> Unit,
@@ -65,11 +68,12 @@ fun UserProfileCard(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            val weightDisplay = "${weightUnit.formatValue(bodyWeightKg)} ${weightUnit.symbol}"
             SettingsClickableRow(
                 icon = Icons.Default.Person,
                 title = stringResource(R.string.settings_user_bodyweight_title),
                 description = stringResource(R.string.settings_user_bodyweight_desc),
-                trailingText = "$bodyWeightKg kg",
+                trailingText = weightDisplay,
                 onClick = onWeightClick
             )
 
@@ -274,55 +278,62 @@ private fun DistanceUnitRow(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BodyWeightInputDialog(
     initialWeight: Double,
+    weightUnit: WeightUnit = WeightUnit.KG,
     onDismiss: () -> Unit,
     onConfirm: (Double) -> Unit
 ) {
-    var weightText by remember { mutableStateOf(initialWeight.toString()) }
+    val displayInitial = remember(initialWeight, weightUnit) {
+        weightUnit.formatValue(initialWeight)
+    }
+    var weightText by remember { mutableStateOf(displayInitial) }
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    AlertDialog(
+    ModalBottomSheet(
         onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.settings_user_bodyweight_title)) },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text(
-                    text = stringResource(R.string.settings_user_bodyweight_desc),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                OutlinedTextField(
-                    value = weightText,
-                    onValueChange = { weightText = it },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-        },
-        confirmButton = {
-            Button(
-                onClick = {
-                    val parsed = weightText.toDoubleOrNull() ?: initialWeight
-                    onConfirm(parsed)
-                },
-                modifier = Modifier.defaultMinSize(minHeight = 48.dp)
-            ) {
-                Text(stringResource(android.R.string.ok))
-            }
-        },
-        dismissButton = {
-            TextButton(
-                onClick = onDismiss,
-                modifier = Modifier.defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
-            ) {
-                Text(stringResource(R.string.action_cancel))
-            }
+        sheetState = sheetState,
+        containerColor = MaterialTheme.colorScheme.surfaceContainer
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp)
+                .padding(bottom = 32.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Text(
+                text = stringResource(R.string.settings_user_bodyweight_title),
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = stringResource(R.string.settings_user_bodyweight_desc),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            OutlinedTextField(
+                value = weightText,
+                onValueChange = { weightText = it },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                singleLine = true,
+                suffix = { Text(weightUnit.symbol) },
+                modifier = Modifier.fillMaxWidth()
+            )
+            DialogActionButtons(
+                onDismiss = onDismiss,
+                onConfirm = {
+                    val validKg = parseWeightInput(weightText, weightUnit)
+                    if (validKg != null) onConfirm(validKg) else onDismiss()
+                }
+            )
         }
-    )
+    }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AgeInputDialog(
     initialAge: Int,
@@ -330,44 +341,76 @@ fun AgeInputDialog(
     onConfirm: (Int) -> Unit
 ) {
     var ageText by remember { mutableStateOf(initialAge.toString()) }
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    AlertDialog(
+    ModalBottomSheet(
         onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.settings_user_age_title)) },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text(
-                    text = stringResource(R.string.settings_user_age_desc),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                OutlinedTextField(
-                    value = ageText,
-                    onValueChange = { ageText = it.filter { ch -> ch.isDigit() } },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-        },
-        confirmButton = {
-            Button(
-                onClick = {
+        sheetState = sheetState,
+        containerColor = MaterialTheme.colorScheme.surfaceContainer
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp)
+                .padding(bottom = 32.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Text(
+                text = stringResource(R.string.settings_user_age_title),
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = stringResource(R.string.settings_user_age_desc),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            OutlinedTextField(
+                value = ageText,
+                onValueChange = { ageText = it.filter { ch -> ch.isDigit() } },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                singleLine = true,
+                suffix = { Text(stringResource(R.string.unit_years)) },
+                modifier = Modifier.fillMaxWidth()
+            )
+            DialogActionButtons(
+                onDismiss = onDismiss,
+                onConfirm = {
                     val parsed = ageText.toIntOrNull()?.coerceIn(12, 100) ?: initialAge
                     onConfirm(parsed)
-                },
-                modifier = Modifier.defaultMinSize(minHeight = 48.dp)
-            ) {
-                Text(stringResource(android.R.string.ok))
-            }
-        },
-        dismissButton = {
-            TextButton(
-                onClick = onDismiss,
-                modifier = Modifier.defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
-            ) {
-                Text(stringResource(R.string.action_cancel))
-            }
+                }
+            )
         }
-    )
+    }
+}
+
+@Composable
+private fun DialogActionButtons(
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.End,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        TextButton(
+            onClick = onDismiss,
+            modifier = Modifier.defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
+        ) {
+            Text(stringResource(R.string.action_cancel))
+        }
+        Spacer(modifier = Modifier.width(8.dp))
+        Button(
+            onClick = onConfirm,
+            modifier = Modifier.defaultMinSize(minHeight = 48.dp)
+        ) {
+            Text(stringResource(android.R.string.ok))
+        }
+    }
+}
+
+private fun parseWeightInput(text: String, unit: WeightUnit): Double? {
+    val parsed = text.replace(',', '.').toDoubleOrNull() ?: return null
+    return if (!parsed.isNaN() && parsed > 0.0) unit.toKg(parsed) else null
 }

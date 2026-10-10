@@ -8,6 +8,7 @@ import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -27,7 +28,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.FolderShared
-import androidx.compose.material.icons.filled.MonitorHeart
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -48,6 +48,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -220,49 +221,61 @@ private fun NotificationPermissionRow(
     areNotificationsEnabled: Boolean,
     onManageNotifications: () -> Unit
 ) {
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        Icon(
-            imageVector = Icons.Default.Notifications,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary
-        )
-        Spacer(modifier = Modifier.width(16.dp))
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = stringResource(R.string.privacy_notifications_title),
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Medium
-            )
-            Text(
-                text = stringResource(R.string.privacy_notifications_compact_desc),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-        Spacer(modifier = Modifier.width(8.dp))
-        PermissionBadge(
-            text = stringResource(
-                if (areNotificationsEnabled) R.string.permission_status_granted
-                else R.string.permission_status_denied
-            ),
-            isPositive = areNotificationsEnabled
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        OutlinedButton(
-            onClick = onManageNotifications,
-            shape = RoundedCornerShape(8.dp),
-            contentPadding = PaddingValues(horizontal = 10.dp, vertical = 0.dp),
-            modifier = Modifier.defaultMinSize(minHeight = 48.dp)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = stringResource(R.string.permission_action_manage),
-                fontSize = 12.sp
+            Icon(
+                imageVector = Icons.Default.Notifications,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary
             )
+            Spacer(modifier = Modifier.width(16.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = stringResource(R.string.privacy_notifications_title),
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Medium
+                )
+                Text(
+                    text = stringResource(R.string.privacy_notifications_compact_desc),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .defaultMinSize(minHeight = 48.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            PermissionBadge(
+                text = stringResource(
+                    if (areNotificationsEnabled) R.string.permission_status_granted
+                    else R.string.permission_status_denied
+                ),
+                isPositive = areNotificationsEnabled
+            )
+            OutlinedButton(
+                onClick = onManageNotifications,
+                shape = RoundedCornerShape(8.dp),
+                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 0.dp),
+                modifier = Modifier.defaultMinSize(minHeight = 48.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.permission_action_manage),
+                    fontSize = 12.sp
+                )
+            }
         }
     }
 }
@@ -296,7 +309,7 @@ private fun StoragePermissionRow() {
         Spacer(modifier = Modifier.width(8.dp))
         PermissionBadge(
             text = stringResource(R.string.permission_status_not_required),
-            isPositive = true
+            isNeutral = true
         )
     }
 }
@@ -319,7 +332,7 @@ private fun HealthConnectPermissionRow(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            imageVector = Icons.Default.MonitorHeart,
+            painter = painterResource(R.drawable.ic_health_connect),
             contentDescription = null,
             tint = MaterialTheme.colorScheme.primary
         )
@@ -347,22 +360,27 @@ private fun HealthConnectPermissionRow(
 @Composable
 private fun PermissionBadge(
     text: String,
-    isPositive: Boolean
+    isPositive: Boolean = true,
+    isNeutral: Boolean = false
 ) {
-    val containerColor = if (isPositive) {
-        MaterialTheme.colorScheme.primaryContainer
-    } else {
-        MaterialTheme.colorScheme.errorContainer
+    val containerColor = when {
+        isNeutral -> MaterialTheme.colorScheme.surfaceContainerHighest
+        isPositive -> MaterialTheme.colorScheme.primaryContainer
+        else -> MaterialTheme.colorScheme.errorContainer
     }
-    val contentColor = if (isPositive) {
-        MaterialTheme.colorScheme.onPrimaryContainer
-    } else {
-        MaterialTheme.colorScheme.onErrorContainer
+    val contentColor = when {
+        isNeutral -> MaterialTheme.colorScheme.onSurfaceVariant
+        isPositive -> MaterialTheme.colorScheme.onPrimaryContainer
+        else -> MaterialTheme.colorScheme.onErrorContainer
     }
+    val border = if (isNeutral) {
+        BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f))
+    } else null
 
     Surface(
         shape = RoundedCornerShape(8.dp),
         color = containerColor,
+        border = border,
         modifier = Modifier.defaultMinSize(minHeight = 28.dp)
     ) {
         Text(

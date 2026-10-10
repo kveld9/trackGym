@@ -156,6 +156,7 @@
     <string name="unit_pounds">Libras (lb)</string>
     <string name="unit_kilometers">Kilómetros (km)</string>
     <string name="unit_miles">Millas (mi)</string>
+    <string name="unit_years">años</string>
 
     <!-- Settings - 1RM Calculation Models -->
     <string name="section_orm_models">Modelos de Cálculo 1RM</string>
@@ -172,9 +173,9 @@
     <!-- Settings - Backup -->
     <string name="section_backup">Respaldo y Portabilidad</string>
     <string name="setting_export_data_title">Exportar datos</string>
-    <string name="setting_export_data_desc">Copia de seguridad o exportar a hoja de cálculo</string>
+    <string name="setting_export_data_desc">Respaldar base completa o exportar planilla</string>
     <string name="setting_import_data_title">Importar datos</string>
-    <string name="setting_import_data_desc">Restaurar desde copia o planilla</string>
+    <string name="setting_import_data_desc">Restaurar desde respaldo o planilla</string>
     <string name="export_format_dialog_title">Seleccionar formato de exportación</string>
     <string name="import_format_dialog_title">Seleccionar formato de importación</string>
     <string name="format_json_title">JSON (Copia completa)</string>
@@ -310,7 +311,7 @@
     <string name="setting_rest_timer_section">Temporizador de descanso</string>
     <string name="section_timer">Temporizador</string>
     <string name="section_sound">Sonido</string>
-    <string name="section_volume_equipment">Volumen y equipo</string>
+    <string name="section_volume_equipment">Volumen, equipo y cálculo</string>
     <string name="section_session">Sesión</string>
     <string name="section_integrations">Integraciones</string>
     <string name="setting_auto_rest_timer_title">Temporizador automático</string>

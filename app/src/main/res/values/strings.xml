@@ -156,6 +156,7 @@
     <string name="unit_pounds">Pounds (lb)</string>
     <string name="unit_kilometers">Kilometers (km)</string>
     <string name="unit_miles">Miles (mi)</string>
+    <string name="unit_years">years</string>
 
     <!-- Settings - 1RM Calculation Models -->
     <string name="section_orm_models">1RM Calculation Models</string>
@@ -172,9 +173,9 @@
     <!-- Settings - Backup -->
     <string name="section_backup">Backup &amp; Portability</string>
     <string name="setting_export_data_title">Export Data</string>
-    <string name="setting_export_data_desc">Backup database or export to spreadsheet</string>
+    <string name="setting_export_data_desc">Back up full database or export sheet</string>
     <string name="setting_import_data_title">Import Data</string>
-    <string name="setting_import_data_desc">Restore from backup or spreadsheet</string>
+    <string name="setting_import_data_desc">Restore from backup or sheet</string>
     <string name="export_format_dialog_title">Select Export Format</string>
     <string name="import_format_dialog_title">Select Import Format</string>
     <string name="format_json_title">JSON (Full Backup)</string>
@@ -310,7 +311,7 @@
     <string name="setting_rest_timer_section">Rest Timer</string>
     <string name="section_timer">Timer</string>
     <string name="section_sound">Sound</string>
-    <string name="section_volume_equipment">Volume &amp; Equipment</string>
+    <string name="section_volume_equipment">Volume, Equipment &amp; Calculation</string>
     <string name="section_session">Session</string>
     <string name="section_integrations">Integrations</string>
     <string name="setting_auto_rest_timer_title">Auto Rest Timer</string>

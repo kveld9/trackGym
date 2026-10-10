@@ -14,8 +14,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.VolumeUp
-import androidx.compose.material.icons.filled.ExposurePlus1
+import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.FilterAlt
+import androidx.compose.material.icons.filled.Functions
+import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.HomeRepairService
 import androidx.compose.material.icons.filled.HourglassTop
 import androidx.compose.material.icons.filled.Layers
@@ -23,7 +25,6 @@ import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.StayCurrentPortrait
 import androidx.compose.material.icons.filled.Timer
-import androidx.compose.material.icons.filled.TouchApp
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -45,6 +46,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kveld9.trackgym.R
+import com.kveld9.trackgym.domain.calculator.OneRepMaxFormula
 import com.kveld9.trackgym.domain.model.GymEquipmentProfile
 import com.kveld9.trackgym.domain.model.WeightUnit
 
@@ -203,7 +205,7 @@ fun SoundCard(
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
 
             SettingsSwitchRow(
-                icon = Icons.Default.TouchApp,
+                icon = Icons.Default.GraphicEq,
                 title = stringResource(R.string.setting_sound_complete_title),
                 description = stringResource(R.string.setting_sound_complete_desc),
                 checked = soundFeedbackOnComplete,
@@ -220,10 +222,12 @@ fun VolumeEquipmentCard(
     showInlinePlates: Boolean,
     activeProfile: GymEquipmentProfile,
     weightUnit: WeightUnit,
+    activeOrmFormula: OneRepMaxFormula,
     onDoubleDumbbellChange: (Boolean) -> Unit,
     onExcludeWarmupChange: (Boolean) -> Unit,
     onShowInlinePlatesChange: (Boolean) -> Unit,
     onManageProfilesClick: () -> Unit,
+    onOrmFormulaClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -238,7 +242,7 @@ fun VolumeEquipmentCard(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             SettingsSwitchRow(
-                icon = Icons.Default.ExposurePlus1,
+                icon = Icons.Default.ContentCopy,
                 title = stringResource(R.string.setting_double_dumbbell_title),
                 description = stringResource(R.string.setting_double_dumbbell_desc),
                 checked = doubleDumbbell,
@@ -265,6 +269,15 @@ fun VolumeEquipmentCard(
                 activeProfile = activeProfile,
                 weightUnit = weightUnit,
                 onManageProfilesClick = onManageProfilesClick
+            )
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
+            val formulaName = stringResource(activeOrmFormula.displayNameRes)
+            SettingsClickableRow(
+                icon = Icons.Default.Functions,
+                title = stringResource(R.string.setting_orm_formula_title),
+                description = "$formulaName • ${activeOrmFormula.formulaExpression}",
+                trailingText = formulaName,
+                onClick = onOrmFormulaClick
             )
         }
     }
