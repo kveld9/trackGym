@@ -42,12 +42,15 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
+import android.util.Log
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+
+private const val TAG = "GymViewModel"
 
 class GymViewModel(
     private val repository: GymRepository,
@@ -307,6 +310,7 @@ class GymViewModel(
                 _exercisesError.value = null
             }
             .catch { throwable ->
+                Log.e(TAG, "Failed to load exercises", throwable)
                 _exercisesError.value = throwable.localizedMessage?.takeIf { it.isNotBlank() } ?: ""
                 emit(emptyList())
             }

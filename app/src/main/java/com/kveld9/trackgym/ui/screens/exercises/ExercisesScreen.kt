@@ -249,9 +249,7 @@ fun ExercisesScreen(
                             isLoading = true
                             viewModel.clearExercisesError()
                             retryKey++
-                        },
-                        errorMessage = queryError?.takeIf { it.isNotBlank() }
-                            ?: stringResource(R.string.error_load_exercises)
+                        }
                     )
                 }
                 isLoading -> {
@@ -1475,8 +1473,7 @@ private fun ExerciseListSkeleton(modifier: Modifier = Modifier) {
 @Composable
 private fun ExerciseInlineError(
     onRetry: () -> Unit,
-    modifier: Modifier = Modifier,
-    errorMessage: String? = null
+    modifier: Modifier = Modifier
 ) {
     Box(
         modifier = modifier
@@ -1508,7 +1505,7 @@ private fun ExerciseInlineError(
                 textAlign = TextAlign.Center
             )
             Text(
-                text = errorMessage?.takeIf { it.isNotBlank() } ?: stringResource(R.string.error_load_exercises),
+                text = stringResource(R.string.error_load_exercises),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center
