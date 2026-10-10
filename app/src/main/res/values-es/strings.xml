@@ -846,6 +846,7 @@
     <string name="setting_auto_backup_disable">Desactivar Respaldo Automático</string>
     <string name="setting_auto_backup_disabled">Desactivado</string>
     <string name="setting_auto_backup_rotation_count">%1$d archivos</string>
+    <string name="setting_auto_backup_location">Ubicación: %1$s</string>
 
     <!-- Body Measurements & Telemetry (Items 59 & 60) -->
     <string name="body_telemetry_title">Medidas Corporales</string>

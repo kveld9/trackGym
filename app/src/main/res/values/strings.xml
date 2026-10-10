@@ -846,6 +846,7 @@
     <string name="setting_auto_backup_disable">Disable Auto-Backup</string>
     <string name="setting_auto_backup_disabled">Disabled</string>
     <string name="setting_auto_backup_rotation_count">%1$d files</string>
+    <string name="setting_auto_backup_location">Location: %1$s</string>
 
     <!-- Body Measurements & Telemetry (Items 59 & 60) -->
     <string name="body_telemetry_title">Body Telemetry</string>
