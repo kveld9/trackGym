@@ -4,8 +4,10 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import com.kveld9.trackgym.ui.theme.GymMotionTokens
 import com.kveld9.trackgym.ui.theme.subtleBorder
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -99,7 +101,6 @@ import com.kveld9.trackgym.ui.components.ExerciseTechniqueDialog
 import com.kveld9.trackgym.ui.util.displayName
 import com.kveld9.trackgym.ui.viewmodel.GymViewModel
 
-private const val HYDRATION_TIMEOUT_MS = 180L
 private const val EXERCISE_SKELETON_COUNT = 5
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -141,11 +142,25 @@ fun ExercisesScreen(
     val weightUnit by viewModel.weightUnit.collectAsStateWithLifecycle()
     val userBodyWeight by viewModel.userBodyWeight.collectAsStateWithLifecycle()
 
-    var isLoading by remember { mutableStateOf(allExercises.isEmpty()) }
+    var isLoading by rememberSaveable { mutableStateOf(allExercises.isEmpty()) }
 
-    LaunchedEffect(Unit) {
-        delay(HYDRATION_TIMEOUT_MS)
-        isLoading = false
+    LaunchedEffect(retryKey) {
+        launch {
+            exercisesFlow.collect {
+                isLoading = false
+            }
+        }
+        launch {
+            viewModel.allExercises.collect { list ->
+                if (list.isNotEmpty()) {
+                    isLoading = false
+                }
+            }
+        }
+        launch {
+            delay(GymMotionTokens.HydrationTimeoutMs)
+            isLoading = false
+        }
     }
 
     LaunchedEffect(allExercises) {

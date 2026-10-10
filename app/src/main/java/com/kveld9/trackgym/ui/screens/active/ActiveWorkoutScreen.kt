@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
+import com.kveld9.trackgym.ui.theme.GymMotionTokens
 import com.kveld9.trackgym.ui.theme.subtleBorder
 import com.kveld9.trackgym.domain.model.StandardContextTag
 import com.kveld9.trackgym.domain.model.WorkoutContextTagParser
@@ -108,8 +109,6 @@ import com.kveld9.trackgym.ui.util.displayName
 import com.kveld9.trackgym.ui.viewmodel.GymViewModel
 
 private const val DEFAULT_FALLBACK_WEIGHT_KG = 60.0
-private const val HYDRATION_TIMEOUT_MS = 180L
-private const val HYDRATION_TRANSITION_MS = 150
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -254,11 +253,34 @@ fun ActiveWorkoutScreen(
         }
     }
 
-    var isHydrating by remember { mutableStateOf(activeWorkout == null) }
+    var isHydrating by rememberSaveable {
+        mutableStateOf(activeWorkout == null && routines.isEmpty() && allExercises.isEmpty())
+    }
 
     LaunchedEffect(Unit) {
-        delay(HYDRATION_TIMEOUT_MS)
-        isHydrating = false
+        launch {
+            viewModel.routines.collect {
+                isHydrating = false
+            }
+        }
+        launch {
+            viewModel.allExercises.collect { list ->
+                if (list.isNotEmpty()) {
+                    isHydrating = false
+                }
+            }
+        }
+        launch {
+            viewModel.activeWorkout.collect { workout ->
+                if (workout != null) {
+                    isHydrating = false
+                }
+            }
+        }
+        launch {
+            delay(GymMotionTokens.HydrationTimeoutMs)
+            isHydrating = false
+        }
     }
 
     LaunchedEffect(activeWorkout) {
@@ -270,7 +292,7 @@ fun ActiveWorkoutScreen(
     CompositionLocalProvider(LocalActiveGymProfile provides activeGymProfile) {
         Crossfade(
             targetState = isHydrating && activeWorkout == null,
-            animationSpec = tween(durationMillis = HYDRATION_TRANSITION_MS),
+            animationSpec = tween(durationMillis = GymMotionTokens.HydrationTransitionMs),
             label = "ActiveWorkoutHydrationCrossfade"
         ) { hydrating ->
             if (hydrating) {

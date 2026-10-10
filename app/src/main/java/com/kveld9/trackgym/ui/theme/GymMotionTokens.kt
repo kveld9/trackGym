@@ -23,6 +23,8 @@ import androidx.compose.ui.unit.sp
 object GymMotionTokens {
     const val DurationFastMs: Int = 150
     const val DurationDefaultMs: Int = 200
+    const val HydrationTimeoutMs: Long = 180L
+    const val HydrationTransitionMs: Int = 150
 
     val EmphasizedEasing: Easing = CubicBezierEasing(0.2f, 0.0f, 0.0f, 1.0f)
     val EmphasizedDecelerateEasing: Easing = CubicBezierEasing(0.05f, 0.7f, 0.1f, 1.0f)
