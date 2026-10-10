@@ -14,7 +14,7 @@ enum class OneRepMaxFormula(
     BRZYCKI(R.string.orm_formula_brzycki, "w × 36 / (37 − r)"),
     WATHAN(R.string.orm_formula_wathan, "100·w / (48.8 + 53.8·e⁻⁰·⁰⁷⁵·ʳ)"),
     LANDER(R.string.orm_formula_lander, "100·w / (101.3 − 2.67·r)"),
-    LOMBARDI(R.string.orm_formula_lombardi, "w × r⁰·¹⁰"),
+    LOMBARDI(R.string.orm_formula_lombardi, "w × r⁰·¹"),
     MAYHEW(R.string.orm_formula_mayhew, "100·w / (52.2 + 41.9·e⁻⁰·⁰⁵⁵·ʳ)"),
     OCONNER(R.string.orm_formula_oconner, "w × (1 + 0.025·r)")
 }
