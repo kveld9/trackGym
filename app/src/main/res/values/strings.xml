@@ -159,7 +159,6 @@
     <string name="unit_years">years</string>
 
     <!-- Settings - 1RM Calculation Models -->
-    <string name="section_orm_models">1RM Calculation Models</string>
     <string name="setting_orm_formula_title">1RM Formula</string>
     <string name="setting_orm_formula_desc">Mathematical model used to estimate One Rep Max and PR thresholds</string>
     <string name="orm_formula_epley">Epley</string>

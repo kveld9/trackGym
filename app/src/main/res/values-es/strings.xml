@@ -159,7 +159,6 @@
     <string name="unit_years">años</string>
 
     <!-- Settings - 1RM Calculation Models -->
-    <string name="section_orm_models">Modelos de Cálculo 1RM</string>
     <string name="setting_orm_formula_title">Fórmula de 1RM</string>
     <string name="setting_orm_formula_desc">Modelo matemático para estimar tu repetición máxima y umbrales de récord</string>
     <string name="orm_formula_epley">Epley</string>
