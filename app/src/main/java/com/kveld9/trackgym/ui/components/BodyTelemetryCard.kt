@@ -61,6 +61,8 @@ import com.kveld9.trackgym.domain.calculator.BodyMeasurementTrendEngine
 import com.kveld9.trackgym.domain.calculator.MeasurementTrendSeries
 import com.kveld9.trackgym.domain.model.BodyMeasurement
 import com.kveld9.trackgym.domain.model.BodyMeasurementType
+import com.kveld9.trackgym.ui.theme.StrengthLevelAdvanced
+import com.kveld9.trackgym.ui.theme.StrengthLevelNovice
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -214,9 +216,9 @@ fun BodyTelemetryCard(
 
                             if (trendSeries.points.size > 1) {
                                 val deltaColor = if (selectedType == BodyMeasurementType.WEIGHT || selectedType == BodyMeasurementType.WAIST) {
-                                    if (trendSeries.netDelta <= 0.0) Color(0xFF4CAF50) else Color(0xFFFFA000)
+                                    if (trendSeries.netDelta <= 0.0) StrengthLevelNovice else StrengthLevelAdvanced
                                 } else {
-                                    if (trendSeries.netDelta >= 0.0) Color(0xFF4CAF50) else Color(0xFFFFA000)
+                                    if (trendSeries.netDelta >= 0.0) StrengthLevelNovice else StrengthLevelAdvanced
                                 }
                                 Text(
                                     text = stringResource(R.string.body_meas_net_delta, trendSeries.netDelta, selectedType.defaultUnit, trendSeries.percentDelta),
@@ -319,7 +321,7 @@ private fun BodyMeasurementTrendCanvas(
     modifier: Modifier = Modifier
 ) {
     val lineColor = MaterialTheme.colorScheme.primary
-    val movingAvgColor = Color(0xFFFFA000) // Amber moving average
+    val movingAvgColor = StrengthLevelAdvanced // Amber moving average
 
     val points = series.points
     if (points.size < 2) return
