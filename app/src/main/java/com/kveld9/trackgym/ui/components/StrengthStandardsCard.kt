@@ -50,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kveld9.trackgym.R
 import com.kveld9.trackgym.domain.calculator.StrengthBenchmarkEngine
+import com.kveld9.trackgym.domain.model.AgeRange
 import com.kveld9.trackgym.domain.model.BiologicalSex
 import com.kveld9.trackgym.domain.model.CoreLift
 import com.kveld9.trackgym.domain.model.Exercise
@@ -430,7 +431,7 @@ private fun StrengthProfileDialog(
         confirmButton = {
             TextButton(
                 onClick = {
-                    val parsedAge = ageText.toIntOrNull()?.coerceIn(12, 100) ?: currentAge
+                    val parsedAge = ageText.toIntOrNull()?.coerceIn(AgeRange.MIN, AgeRange.MAX) ?: currentAge
                     onConfirm(selectedSex, parsedAge)
                 }
             ) {

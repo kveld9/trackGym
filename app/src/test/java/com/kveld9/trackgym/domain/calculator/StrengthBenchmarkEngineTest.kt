@@ -1,5 +1,6 @@
 package com.kveld9.trackgym.domain.calculator
 
+import com.kveld9.trackgym.domain.model.AgeRange
 import com.kveld9.trackgym.domain.model.BiologicalSex
 import com.kveld9.trackgym.domain.model.CoreLift
 import com.kveld9.trackgym.domain.model.StrengthLevel
@@ -10,6 +11,13 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class StrengthBenchmarkEngineTest {
+
+    @Test
+    fun testAgeRangeBounds() {
+        assertEquals(12, AgeRange.MIN)
+        assertEquals(100, AgeRange.MAX)
+        assertTrue(AgeRange.MIN < AgeRange.MAX)
+    }
 
     @Test
     fun testMatchCoreLift() {

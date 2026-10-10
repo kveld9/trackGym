@@ -42,6 +42,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.kveld9.trackgym.R
+import com.kveld9.trackgym.domain.model.AgeRange
 import com.kveld9.trackgym.domain.model.BiologicalSex
 import com.kveld9.trackgym.domain.model.DistanceUnit
 import com.kveld9.trackgym.domain.model.WeightUnit
@@ -376,7 +377,7 @@ fun AgeInputDialog(
             DialogActionButtons(
                 onDismiss = onDismiss,
                 onConfirm = {
-                    val parsed = ageText.toIntOrNull()?.coerceIn(12, 100) ?: initialAge
+                    val parsed = ageText.toIntOrNull()?.coerceIn(AgeRange.MIN, AgeRange.MAX) ?: initialAge
                     onConfirm(parsed)
                 }
             )

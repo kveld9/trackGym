@@ -4,6 +4,14 @@ import androidx.annotation.StringRes
 import com.kveld9.trackgym.R
 
 /**
+ * Permitted age range boundaries for user profile and strength benchmark calculations.
+ */
+object AgeRange {
+    const val MIN = 12
+    const val MAX = 100
+}
+
+/**
  * Biological sex classification used for normative strength benchmark baselines.
  */
 enum class BiologicalSex(@get:StringRes val displayNameRes: Int) {
