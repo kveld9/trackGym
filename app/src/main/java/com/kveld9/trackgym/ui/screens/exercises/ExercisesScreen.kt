@@ -111,11 +111,12 @@ fun ExercisesScreen(
 ) {
     var retryKey by rememberSaveable { mutableIntStateOf(0) }
     var queryError by rememberSaveable { mutableStateOf<String?>(null) }
+    val defaultLoadError = stringResource(R.string.error_occurred_desc)
 
-    val exercisesFlow = remember(viewModel, retryKey) {
+    val exercisesFlow = remember(viewModel, retryKey, defaultLoadError) {
         viewModel.filteredExercises
             .catch { throwable ->
-                queryError = throwable.localizedMessage?.takeIf { it.isNotBlank() } ?: "Error loading exercises"
+                queryError = throwable.localizedMessage?.takeIf { it.isNotBlank() } ?: defaultLoadError
                 emit(emptyList())
             }
     }
@@ -130,10 +131,10 @@ fun ExercisesScreen(
     val allCustomCategories by viewModel.allCustomCategories.collectAsStateWithLifecycle()
     val selectedCustomCategoryFilter by viewModel.selectedCustomCategoryFilter.collectAsStateWithLifecycle()
 
-    val allExercisesFlow = remember(viewModel, retryKey) {
+    val allExercisesFlow = remember(viewModel, retryKey, defaultLoadError) {
         viewModel.allExercises
             .catch { throwable ->
-                queryError = throwable.localizedMessage?.takeIf { it.isNotBlank() } ?: "Error loading exercises"
+                queryError = throwable.localizedMessage?.takeIf { it.isNotBlank() } ?: defaultLoadError
                 emit(emptyList())
             }
     }
