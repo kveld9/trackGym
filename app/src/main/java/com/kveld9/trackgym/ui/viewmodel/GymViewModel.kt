@@ -803,12 +803,47 @@ class GymViewModel(
         }
     }
 
-    fun createEmptyRoutineAndStart(name: String, folderId: Long? = null) {
+    fun createEmptyRoutine(name: String, folderId: Long? = null, onCreated: ((Long) -> Unit)? = null) {
         viewModelScope.launch {
             val routineId = repository.createEmptyRoutine(name, folderId)
             if (routineId > 0) {
-                startWorkoutFromRoutine(routineId)
+                onCreated?.invoke(routineId)
             }
+        }
+    }
+
+    fun addExerciseToRoutine(
+        routineId: Long,
+        exerciseId: Long,
+        targetSets: Int = 3,
+        defaultWeightKg: Double = 0.0,
+        defaultReps: Int = 10
+    ) {
+        viewModelScope.launch {
+            repository.addExerciseToRoutine(routineId, exerciseId, targetSets, defaultWeightKg, defaultReps)
+        }
+    }
+
+    fun removeExerciseFromRoutine(routineExerciseId: Long) {
+        viewModelScope.launch {
+            repository.removeExerciseFromRoutine(routineExerciseId)
+        }
+    }
+
+    fun updateRoutineExercise(
+        routineExerciseId: Long,
+        targetSets: Int,
+        defaultWeightKg: Double,
+        defaultReps: Int
+    ) {
+        viewModelScope.launch {
+            repository.updateRoutineExercise(routineExerciseId, targetSets, defaultWeightKg, defaultReps)
+        }
+    }
+
+    fun moveRoutineExercise(routineId: Long, fromIndex: Int, toIndex: Int) {
+        viewModelScope.launch {
+            repository.moveRoutineExercise(routineId, fromIndex, toIndex)
         }
     }
 

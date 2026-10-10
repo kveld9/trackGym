@@ -70,6 +70,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kveld9.trackgym.R
+import com.kveld9.trackgym.domain.model.Exercise
 import com.kveld9.trackgym.domain.model.Routine
 import com.kveld9.trackgym.domain.model.RoutineFolder
 import androidx.compose.material3.MaterialTheme
@@ -84,7 +85,7 @@ fun EmptyWorkoutDashboard(
     onStartWorkout: () -> Unit,
     onStartRoutine: (Long) -> Unit,
     onDeleteRoutine: (Long) -> Unit,
-    onCreateRoutine: ((String) -> Unit)? = null,
+    onCreateRoutine: ((String, (Long) -> Unit) -> Unit)? = null,
     onDuplicateRoutine: ((Long) -> Unit)? = null,
     onToggleArchive: ((Long, Boolean) -> Unit)? = null,
     onImportRoutine: ((String, (Boolean) -> Unit) -> Unit)? = null,
@@ -97,6 +98,11 @@ fun EmptyWorkoutDashboard(
     onPreviousCycleWeek: ((Long) -> Unit)? = null,
     onInstantiateProgram: ((ProgramRecommendation) -> Unit)? = null,
     onGenerateDeloadRoutine: ((Long, Double, Double) -> Unit)? = null,
+    allExercises: List<Exercise> = emptyList(),
+    onAddExerciseToRoutine: ((Long, Long) -> Unit)? = null,
+    onRemoveExerciseFromRoutine: ((Long) -> Unit)? = null,
+    onUpdateRoutineExercise: ((Long, Int, Double, Int) -> Unit)? = null,
+    onMoveRoutineExercise: ((Long, Int, Int) -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     var selectedFolderId by remember { mutableStateOf<Long?>(null) }
@@ -105,6 +111,8 @@ fun EmptyWorkoutDashboard(
     var showImportRoutineDialog by remember { mutableStateOf(false) }
     var showProgramFinderDialog by remember { mutableStateOf(false) }
     var showNewRoutineDialog by remember { mutableStateOf(false) }
+    var routineIdForBuilder by remember { mutableStateOf<Long?>(null) }
+    var pendingBuilderRoutine by remember { mutableStateOf<Routine?>(null) }
     var routineToConfigurePeriodization by remember { mutableStateOf<Routine?>(null) }
     var routineToGenerateDeload by remember { mutableStateOf<Routine?>(null) }
     val baseRoutines = if (showArchived) {
@@ -430,7 +438,8 @@ fun EmptyWorkoutDashboard(
                         canMoveUp = index > 0,
                         canMoveDown = index < filteredRoutines.size - 1,
                         onMoveUp = { onMoveRoutineUp?.invoke(routine.id) },
-                        onMoveDown = { onMoveRoutineDown?.invoke(routine.id) }
+                        onMoveDown = { onMoveRoutineDown?.invoke(routine.id) },
+                        onEdit = { routineIdForBuilder = routine.id }
                     )
                 }
             }
@@ -496,7 +505,34 @@ fun EmptyWorkoutDashboard(
             onDismiss = { showNewRoutineDialog = false },
             onConfirm = { name ->
                 showNewRoutineDialog = false
-                onCreateRoutine(name)
+                onCreateRoutine(name) { newRoutineId ->
+                    routineIdForBuilder = newRoutineId
+                    pendingBuilderRoutine = Routine(id = newRoutineId, name = name)
+                }
+            }
+        )
+    }
+
+    val routineToBuild = routines.find { it.id == routineIdForBuilder } ?: pendingBuilderRoutine
+    if (routineToBuild != null && onAddExerciseToRoutine != null) {
+        RoutineBuilderDialog(
+            routine = routineToBuild,
+            allExercises = allExercises,
+            onAddExercise = { exerciseId ->
+                onAddExerciseToRoutine(routineToBuild.id, exerciseId)
+            },
+            onRemoveExercise = { routineExerciseId ->
+                onRemoveExerciseFromRoutine?.invoke(routineExerciseId)
+            },
+            onUpdateExercise = { routineExerciseId, targetSets, defaultWeightKg, defaultReps ->
+                onUpdateRoutineExercise?.invoke(routineExerciseId, targetSets, defaultWeightKg, defaultReps)
+            },
+            onMoveExercise = { fromIndex, toIndex ->
+                onMoveRoutineExercise?.invoke(routineToBuild.id, fromIndex, toIndex)
+            },
+            onDismiss = {
+                routineIdForBuilder = null
+                pendingBuilderRoutine = null
             }
         )
     }
@@ -517,7 +553,8 @@ fun RoutineCardItem(
     canMoveUp: Boolean = false,
     canMoveDown: Boolean = false,
     onMoveUp: (() -> Unit)? = null,
-    onMoveDown: (() -> Unit)? = null
+    onMoveDown: (() -> Unit)? = null,
+    onEdit: (() -> Unit)? = null
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
 
@@ -656,6 +693,16 @@ fun RoutineCardItem(
                         onDismissRequest = { menuExpanded = false },
                         modifier = Modifier.background(MaterialTheme.colorScheme.surfaceContainer)
                     ) {
+                        if (onEdit != null) {
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.menu_edit_routine)) },
+                                leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
+                                onClick = {
+                                    menuExpanded = false
+                                    onEdit()
+                                }
+                            )
+                        }
                         if (canMoveUp && onMoveUp != null) {
                             DropdownMenuItem(
                                 text = { Text(stringResource(R.string.menu_move_up)) },

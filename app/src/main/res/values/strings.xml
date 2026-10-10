@@ -384,6 +384,16 @@
     <string name="dialog_new_routine_desc">Create an empty routine to start adding exercises and tracking your sessions.</string>
     <string name="btn_create_routine">Create</string>
     <string name="btn_start_routine">Start</string>
+    <string name="routine_builder_title">Routine Builder</string>
+    <string name="routine_builder_subtitle">Configure exercises, sets, reps and target weights</string>
+    <string name="routine_builder_empty_title">No exercises in routine</string>
+    <string name="routine_builder_empty_desc">Add exercises to build this routine template. They will be automatically loaded when you start a workout from this routine.</string>
+    <string name="routine_builder_add_exercise">Add Exercise</string>
+    <string name="routine_builder_target_sets">Sets</string>
+    <string name="routine_builder_target_reps">Reps</string>
+    <string name="routine_builder_default_weight">Weight</string>
+    <string name="menu_edit_routine">Edit Routine</string>
+    <string name="action_done">Done</string>
     <string name="dialog_save_routine_title">Save as Routine Template</string>
     <string name="dialog_routine_name">Routine name</string>
     <string name="dialog_routine_folder">Folder name (optional)</string>

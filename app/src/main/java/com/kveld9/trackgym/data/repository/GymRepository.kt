@@ -19,6 +19,9 @@ import com.kveld9.trackgym.domain.calculator.MechanicsClassifier
 import com.kveld9.trackgym.domain.calculator.PersonalRecordDetector
 import com.kveld9.trackgym.domain.calculator.WorkoutComparisonEngine
 import com.kveld9.trackgym.domain.calculator.resolveNewRoutineName
+import com.kveld9.trackgym.domain.calculator.sanitizeRoutineDefaultReps
+import com.kveld9.trackgym.domain.calculator.sanitizeRoutineDefaultWeight
+import com.kveld9.trackgym.domain.calculator.sanitizeRoutineTargetSets
 import com.kveld9.trackgym.domain.model.DefaultExercises
 import com.kveld9.trackgym.domain.model.Exercise
 import com.kveld9.trackgym.domain.model.ExerciseCategory
@@ -867,13 +870,15 @@ class GymRepository(private val database: GymDatabase) {
         return combine(
             routineDao.getAllRoutines(),
             routineDao.getAllFolders(),
-            exerciseDao.getAllExercises()
-        ) { routines, folders, exercises ->
+            exerciseDao.getAllExercises(),
+            routineDao.getAllRoutineExercisesFlow()
+        ) { routines, folders, exercises, routineExercises ->
             val folderMap = folders.associateBy { it.id }
             val exerciseMap = exercises.associateBy { it.id }
+            val exercisesByRoutine = routineExercises.groupBy { it.routineId }
 
             routines.map { entity ->
-                val exercisesForRoutine = routineDao.getExercisesForRoutine(entity.id)
+                val exercisesForRoutine = exercisesByRoutine[entity.id].orEmpty()
                 val mappedExercises = exercisesForRoutine.mapNotNull { re ->
                     val ex = exerciseMap[re.exerciseId]?.toDomain() ?: return@mapNotNull null
                     RoutineExercise(
@@ -904,6 +909,53 @@ class GymRepository(private val database: GymDatabase) {
                 )
             }
         }.flowOn(Dispatchers.IO)
+    }
+
+    suspend fun addExerciseToRoutine(
+        routineId: Long,
+        exerciseId: Long,
+        targetSets: Int = 3,
+        defaultWeightKg: Double = 0.0,
+        defaultReps: Int = 10
+    ): Long = withContext(Dispatchers.IO) {
+        val existing = routineDao.getExercisesForRoutine(routineId)
+        val entity = RoutineExerciseEntity(
+            routineId = routineId,
+            exerciseId = exerciseId,
+            orderIndex = existing.size,
+            targetSets = sanitizeRoutineTargetSets(targetSets),
+            defaultWeightKg = sanitizeRoutineDefaultWeight(defaultWeightKg),
+            defaultReps = sanitizeRoutineDefaultReps(defaultReps)
+        )
+        routineDao.insertRoutineExercise(entity)
+    }
+
+    suspend fun removeExerciseFromRoutine(routineExerciseId: Long) = withContext(Dispatchers.IO) {
+        routineDao.deleteRoutineExercise(routineExerciseId)
+    }
+
+    suspend fun updateRoutineExercise(
+        routineExerciseId: Long,
+        targetSets: Int,
+        defaultWeightKg: Double,
+        defaultReps: Int
+    ) = withContext(Dispatchers.IO) {
+        routineDao.updateRoutineExerciseDetails(
+            id = routineExerciseId,
+            targetSets = sanitizeRoutineTargetSets(targetSets),
+            defaultWeightKg = sanitizeRoutineDefaultWeight(defaultWeightKg),
+            defaultReps = sanitizeRoutineDefaultReps(defaultReps)
+        )
+    }
+
+    suspend fun moveRoutineExercise(routineId: Long, fromIndex: Int, toIndex: Int) = withContext(Dispatchers.IO) {
+        val exercises = routineDao.getExercisesForRoutine(routineId).toMutableList()
+        if (fromIndex !in exercises.indices || toIndex !in exercises.indices || fromIndex == toIndex) return@withContext
+        val item = exercises.removeAt(fromIndex)
+        exercises.add(toIndex, item)
+        exercises.forEachIndexed { index, re ->
+            routineDao.updateRoutineExerciseOrder(re.id, index)
+        }
     }
 
     suspend fun updateRoutinesOrder(orderedRoutineIds: List<Long>) = withContext(Dispatchers.IO) {

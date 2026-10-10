@@ -61,9 +61,28 @@ interface RoutineDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRoutineExercises(exercises: List<RoutineExerciseEntity>)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertRoutineExercise(exercise: RoutineExerciseEntity): Long
+
+    @Query("SELECT * FROM routine_exercises ORDER BY orderIndex ASC")
+    fun getAllRoutineExercisesFlow(): Flow<List<RoutineExerciseEntity>>
+
     @Query("SELECT * FROM routine_exercises WHERE routineId = :routineId ORDER BY orderIndex ASC")
     suspend fun getExercisesForRoutine(routineId: Long): List<RoutineExerciseEntity>
 
     @Query("DELETE FROM routine_exercises WHERE routineId = :routineId")
     suspend fun deleteExercisesForRoutine(routineId: Long)
+
+    @Query("DELETE FROM routine_exercises WHERE id = :id")
+    suspend fun deleteRoutineExercise(id: Long)
+
+    @Query(
+        "UPDATE routine_exercises SET targetSets = :targetSets, " +
+            "defaultWeightKg = :defaultWeightKg, defaultReps = :defaultReps WHERE id = :id"
+    )
+    suspend fun updateRoutineExerciseDetails(id: Long, targetSets: Int, defaultWeightKg: Double, defaultReps: Int)
+
+    @Query("UPDATE routine_exercises SET orderIndex = :orderIndex WHERE id = :id")
+    suspend fun updateRoutineExerciseOrder(id: Long, orderIndex: Int)
 }
+

@@ -384,6 +384,16 @@
     <string name="dialog_new_routine_desc">Crea una rutina vacía para empezar a añadir ejercicios y registrar tus sesiones.</string>
     <string name="btn_create_routine">Crear</string>
     <string name="btn_start_routine">Iniciar</string>
+    <string name="routine_builder_title">Diseñador de Rutina</string>
+    <string name="routine_builder_subtitle">Configura ejercicios, series, repeticiones y pesos de la rutina</string>
+    <string name="routine_builder_empty_title">Sin ejercicios en la rutina</string>
+    <string name="routine_builder_empty_desc">Añade ejercicios para armar esta plantilla de rutina. Se cargarán automáticamente cada vez que inicies un entrenamiento desde esta rutina.</string>
+    <string name="routine_builder_add_exercise">Añadir ejercicio</string>
+    <string name="routine_builder_target_sets">Series</string>
+    <string name="routine_builder_target_reps">Reps</string>
+    <string name="routine_builder_default_weight">Peso</string>
+    <string name="menu_edit_routine">Editar rutina</string>
+    <string name="action_done">Listo</string>
     <string name="dialog_save_routine_title">Guardar como plantilla de rutina</string>
     <string name="dialog_routine_name">Nombre de la rutina</string>
     <string name="dialog_routine_folder">Carpeta (opcional)</string>

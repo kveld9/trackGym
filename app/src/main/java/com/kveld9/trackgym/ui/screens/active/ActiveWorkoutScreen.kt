@@ -254,10 +254,13 @@ fun ActiveWorkoutScreen(
         EmptyWorkoutDashboard(
             routines = routines,
             folders = folders,
+            allExercises = allExercises,
             onStartWorkout = { viewModel.startWorkout(defaultWorkoutTitle) },
             onStartRoutine = { routineId -> viewModel.startWorkoutFromRoutine(routineId) },
             onDeleteRoutine = { routineId -> viewModel.deleteRoutine(routineId) },
-            onCreateRoutine = { name -> viewModel.createEmptyRoutineAndStart(name) },
+            onCreateRoutine = { name, onCreated ->
+                viewModel.createEmptyRoutine(name, onCreated = onCreated)
+            },
             onDuplicateRoutine = { routineId -> viewModel.duplicateRoutine(routineId, copySuffix) },
             onToggleArchive = { routineId, isArchived -> viewModel.toggleRoutineArchived(routineId, isArchived) },
             onImportRoutine = { rawText, onResult -> viewModel.importRoutineFromText(rawText, onResult) },
@@ -270,6 +273,18 @@ fun ActiveWorkoutScreen(
             onPreviousCycleWeek = { routineId -> viewModel.previousRoutineCycleWeek(routineId) },
             onInstantiateProgram = { program -> viewModel.instantiateProgram(program) },
             onGenerateDeloadRoutine = { routineId, loadPct, volPct -> viewModel.generateDeloadRoutine(routineId, loadPct, volPct, deloadSuffix) },
+            onAddExerciseToRoutine = { routineId, exerciseId ->
+                viewModel.addExerciseToRoutine(routineId, exerciseId)
+            },
+            onRemoveExerciseFromRoutine = { routineExerciseId ->
+                viewModel.removeExerciseFromRoutine(routineExerciseId)
+            },
+            onUpdateRoutineExercise = { routineExerciseId, sets, weight, reps ->
+                viewModel.updateRoutineExercise(routineExerciseId, sets, weight, reps)
+            },
+            onMoveRoutineExercise = { routineId, fromIndex, toIndex ->
+                viewModel.moveRoutineExercise(routineId, fromIndex, toIndex)
+            },
             modifier = modifier.screenEnterTransition()
         )
     } else {

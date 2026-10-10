@@ -14,6 +14,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -28,9 +29,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.kveld9.trackgym.R
-import com.kveld9.trackgym.domain.model.RoutineFolder
-import androidx.compose.material3.MaterialTheme
 import com.kveld9.trackgym.domain.calculator.resolveNewRoutineName
+import com.kveld9.trackgym.domain.model.RoutineFolder
 
 @Composable
 fun ReorderFoldersDialog(
@@ -225,4 +225,3 @@ fun NewRoutineDialog(
         }
     )
 }
-
