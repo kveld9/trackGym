@@ -11,12 +11,12 @@ enum class OneRepMaxFormula(
     val formulaExpression: String
 ) {
     EPLEY(R.string.orm_formula_epley, "w × (1 + r / 30)"),
-    BRZYCKI(R.string.orm_formula_brzycki, "w × 36 / (37 - r)"),
-    WATHAN(R.string.orm_formula_wathan, "100w / (48.8 + 53.8e^-0.075r)"),
-    LANDER(R.string.orm_formula_lander, "100w / (101.3 - 2.67r)"),
-    LOMBARDI(R.string.orm_formula_lombardi, "w × r^0.10"),
-    MAYHEW(R.string.orm_formula_mayhew, "100w / (52.2 + 41.9e^-0.055r)"),
-    OCONNER(R.string.orm_formula_oconner, "w × (1 + 0.025r)")
+    BRZYCKI(R.string.orm_formula_brzycki, "w × 36 / (37 − r)"),
+    WATHAN(R.string.orm_formula_wathan, "100·w / (48.8 + 53.8·e⁻⁰·⁰⁷⁵·ʳ)"),
+    LANDER(R.string.orm_formula_lander, "100·w / (101.3 − 2.67·r)"),
+    LOMBARDI(R.string.orm_formula_lombardi, "w × r⁰·¹⁰"),
+    MAYHEW(R.string.orm_formula_mayhew, "100·w / (52.2 + 41.9·e⁻⁰·⁰⁵⁵·ʳ)"),
+    OCONNER(R.string.orm_formula_oconner, "w × (1 + 0.025·r)")
 }
 
 object OneRepMaxCalculator {

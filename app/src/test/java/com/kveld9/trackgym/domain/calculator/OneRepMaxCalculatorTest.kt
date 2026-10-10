@@ -73,4 +73,18 @@ class OneRepMaxCalculatorTest {
         val result = OneRepMaxCalculator.calculate1RM(100.0, 10, OneRepMaxFormula.OCONNER)
         assertEquals(125.0, result, 0.1)
     }
+
+    @Test
+    fun `formulaExpression provides polished unicode expressions for all formulas`() {
+        OneRepMaxFormula.entries.forEach { formula ->
+            assert(formula.formulaExpression.isNotBlank()) { "Formula $formula expression must not be blank" }
+        }
+        assertEquals("w × (1 + r / 30)", OneRepMaxFormula.EPLEY.formulaExpression)
+        assertEquals("w × 36 / (37 − r)", OneRepMaxFormula.BRZYCKI.formulaExpression)
+        assertEquals("100·w / (48.8 + 53.8·e⁻⁰·⁰⁷⁵·ʳ)", OneRepMaxFormula.WATHAN.formulaExpression)
+        assertEquals("100·w / (101.3 − 2.67·r)", OneRepMaxFormula.LANDER.formulaExpression)
+        assertEquals("w × r⁰·¹⁰", OneRepMaxFormula.LOMBARDI.formulaExpression)
+        assertEquals("100·w / (52.2 + 41.9·e⁻⁰·⁰⁵⁵·ʳ)", OneRepMaxFormula.MAYHEW.formulaExpression)
+        assertEquals("w × (1 + 0.025·r)", OneRepMaxFormula.OCONNER.formulaExpression)
+    }
 }
