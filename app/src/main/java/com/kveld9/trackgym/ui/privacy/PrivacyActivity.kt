@@ -65,6 +65,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.app.NotificationManagerCompat
+import androidx.health.connect.client.PermissionController
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -97,6 +98,21 @@ class PrivacyActivity : ComponentActivity() {
         refreshPermissionStatuses()
     }
 
+    private val healthConnectPermissionLauncher = registerForActivityResult(
+        PermissionController.createRequestPermissionResultContract()
+    ) { grantedPermissions ->
+        val app = application as TrackGymApp
+        val syncManager = app.healthConnectSyncManager
+        if (syncManager != null && grantedPermissions.containsAll(syncManager.permissions)) {
+            lifecycleScope.launch {
+                app.themePreferences.setHealthConnectSync(true)
+                refreshPermissionStatuses()
+            }
+        } else {
+            refreshPermissionStatuses()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
@@ -119,6 +135,7 @@ class PrivacyActivity : ComponentActivity() {
                     isHealthConnectAvailable = isHealthConnectAvailable,
                     isHealthConnectEnabled = themeSettings.healthConnectSync,
                     onManageNotifications = { handleManageNotifications() },
+                    onConnectHealth = { handleConnectHealth() },
                     onBackClick = { finish() },
                     areNotificationsEnabled = areNotificationsEnabled,
                     hasHealthConnectPermissions = hasHealthConnectPermissions,
@@ -133,6 +150,14 @@ class PrivacyActivity : ComponentActivity() {
                     onDismissRationale = { showRationaleDialogState.value = false }
                 )
             }
+        }
+    }
+
+    private fun handleConnectHealth() {
+        val app = application as TrackGymApp
+        val syncManager = app.healthConnectSyncManager
+        if (syncManager != null && syncManager.isAvailable()) {
+            healthConnectPermissionLauncher.launch(syncManager.permissions)
         }
     }
 
@@ -203,6 +228,7 @@ fun PrivacyScreen(
     onManageNotifications: () -> Unit,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
+    onConnectHealth: () -> Unit = {},
     areNotificationsEnabled: Boolean = NotificationManagerCompat.from(LocalContext.current).areNotificationsEnabled(),
     hasHealthConnectPermissions: Boolean = false,
     showRationaleDialog: Boolean = false,
@@ -275,7 +301,8 @@ fun PrivacyScreen(
                 isHealthConnectAvailable = isHealthConnectAvailable,
                 isHealthConnectEnabled = isHealthConnectEnabled,
                 hasHealthConnectPermissions = hasHealthConnectPermissions,
-                onManageNotifications = onManageNotifications
+                onManageNotifications = onManageNotifications,
+                onConnectHealth = onConnectHealth
             )
 
             PrivacySectionHeader(title = stringResource(R.string.privacy_section_statement))
@@ -349,7 +376,8 @@ private fun PermissionStatusCard(
     isHealthConnectEnabled: Boolean,
     hasHealthConnectPermissions: Boolean,
     onManageNotifications: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onConnectHealth: () -> Unit = {}
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -373,7 +401,8 @@ private fun PermissionStatusCard(
             HealthConnectPermissionRow(
                 isAvailable = isHealthConnectAvailable,
                 isEnabled = isHealthConnectEnabled,
-                hasAllPermissions = hasHealthConnectPermissions
+                hasAllPermissions = hasHealthConnectPermissions,
+                onConnectHealth = onConnectHealth
             )
         }
     }
@@ -481,7 +510,8 @@ private fun StoragePermissionRow() {
 private fun HealthConnectPermissionRow(
     isAvailable: Boolean,
     isEnabled: Boolean,
-    hasAllPermissions: Boolean
+    hasAllPermissions: Boolean,
+    onConnectHealth: () -> Unit = {}
 ) {
     val isGranted = isEnabled && hasAllPermissions
     val statusText = when {
@@ -489,37 +519,83 @@ private fun HealthConnectPermissionRow(
         isGranted -> stringResource(R.string.permission_status_granted)
         else -> stringResource(R.string.permission_status_available)
     }
+    val showConnectAction = isAvailable && !isEnabled
 
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        Icon(
-            painter = painterResource(R.drawable.ic_health_connect),
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary
-        )
-        Spacer(modifier = Modifier.width(16.dp))
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = stringResource(R.string.setting_health_connect_title),
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Medium
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.ic_health_connect),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary
             )
-            Text(
-                text = stringResource(R.string.privacy_health_connect_compact_desc),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+            Spacer(modifier = Modifier.width(16.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = stringResource(R.string.setting_health_connect_title),
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Medium
+                )
+                Text(
+                    text = stringResource(R.string.privacy_health_connect_compact_desc),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            if (!showConnectAction) {
+                Spacer(modifier = Modifier.width(8.dp))
+                PermissionBadge(
+                    text = statusText,
+                    isPositive = isGranted,
+                    isNeutral = isAvailable && !isGranted
+                )
+            }
+        }
+
+        if (showConnectAction) {
+            HealthConnectActionRow(
+                statusText = statusText,
+                onConnectHealth = onConnectHealth
             )
         }
-        Spacer(modifier = Modifier.width(8.dp))
+    }
+}
+
+@Composable
+private fun HealthConnectActionRow(
+    statusText: String,
+    onConnectHealth: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .defaultMinSize(minHeight = 48.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         PermissionBadge(
             text = statusText,
-            isPositive = isGranted,
-            isNeutral = isAvailable && !isGranted
+            isPositive = false,
+            isNeutral = true
         )
+        OutlinedButton(
+            onClick = onConnectHealth,
+            shape = RoundedCornerShape(8.dp),
+            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 0.dp),
+            modifier = Modifier.defaultMinSize(minHeight = 48.dp)
+        ) {
+            Text(
+                text = stringResource(R.string.permission_action_connect),
+                fontSize = 12.sp
+            )
+        }
     }
 }
 
