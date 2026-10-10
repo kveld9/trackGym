@@ -14,8 +14,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.VolumeUp
-import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.FilterAlt
+import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.Functions
 import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.HomeRepairService
@@ -242,7 +242,7 @@ fun VolumeEquipmentCard(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             SettingsSwitchRow(
-                icon = Icons.Default.ContentCopy,
+                icon = Icons.Default.FitnessCenter,
                 title = stringResource(R.string.setting_double_dumbbell_title),
                 description = stringResource(R.string.setting_double_dumbbell_desc),
                 checked = doubleDumbbell,
