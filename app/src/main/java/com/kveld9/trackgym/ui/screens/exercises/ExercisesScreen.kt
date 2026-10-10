@@ -65,9 +65,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import kotlinx.coroutines.flow.catch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -105,7 +108,17 @@ fun ExercisesScreen(
     viewModel: GymViewModel,
     modifier: Modifier = Modifier
 ) {
-    val exercises by viewModel.filteredExercises.collectAsStateWithLifecycle()
+    var retryKey by rememberSaveable { mutableIntStateOf(0) }
+    var queryError by rememberSaveable { mutableStateOf<String?>(null) }
+
+    val exercisesFlow = remember(viewModel, retryKey) {
+        viewModel.filteredExercises
+            .catch { throwable ->
+                queryError = throwable.localizedMessage?.takeIf { it.isNotBlank() } ?: "Error loading exercises"
+                emit(emptyList())
+            }
+    }
+    val exercises by exercisesFlow.collectAsStateWithLifecycle(initialValue = emptyList())
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
     val selectedFilter by viewModel.selectedMuscleFilter.collectAsStateWithLifecycle()
     val selectedOriginFilter by viewModel.selectedOriginFilter.collectAsStateWithLifecycle()
@@ -115,13 +128,20 @@ fun ExercisesScreen(
     val selectedDifficultyFilter by viewModel.selectedDifficultyFilter.collectAsStateWithLifecycle()
     val allCustomCategories by viewModel.allCustomCategories.collectAsStateWithLifecycle()
     val selectedCustomCategoryFilter by viewModel.selectedCustomCategoryFilter.collectAsStateWithLifecycle()
-    val allExercises by viewModel.allExercises.collectAsStateWithLifecycle()
+
+    val allExercisesFlow = remember(viewModel, retryKey) {
+        viewModel.allExercises
+            .catch { throwable ->
+                queryError = throwable.localizedMessage?.takeIf { it.isNotBlank() } ?: "Error loading exercises"
+                emit(emptyList())
+            }
+    }
+    val allExercises by allExercisesFlow.collectAsStateWithLifecycle(initialValue = emptyList())
     val completedWorkouts by viewModel.completedWorkouts.collectAsStateWithLifecycle()
     val weightUnit by viewModel.weightUnit.collectAsStateWithLifecycle()
     val userBodyWeight by viewModel.userBodyWeight.collectAsStateWithLifecycle()
 
     var isLoading by remember { mutableStateOf(allExercises.isEmpty()) }
-    var queryError by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(Unit) {
         delay(HYDRATION_TIMEOUT_MS)
@@ -226,8 +246,10 @@ fun ExercisesScreen(
                     ExerciseInlineError(
                         onRetry = {
                             queryError = null
+                            retryKey++
                             viewModel.clearAllExerciseFilters()
-                        }
+                        },
+                        errorMessage = queryError
                     )
                 }
                 isLoading -> {
@@ -1451,7 +1473,8 @@ private fun ExerciseListSkeleton(modifier: Modifier = Modifier) {
 @Composable
 private fun ExerciseInlineError(
     onRetry: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    errorMessage: String? = null
 ) {
     Box(
         modifier = modifier
@@ -1483,7 +1506,7 @@ private fun ExerciseInlineError(
                 textAlign = TextAlign.Center
             )
             Text(
-                text = stringResource(R.string.error_occurred_desc),
+                text = errorMessage?.takeIf { it.isNotBlank() } ?: stringResource(R.string.error_occurred_desc),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center
@@ -1494,7 +1517,7 @@ private fun ExerciseInlineError(
                 modifier = Modifier.defaultMinSize(minHeight = 48.dp)
             ) {
                 Text(
-                    text = stringResource(R.string.action_clear_filters),
+                    text = stringResource(R.string.action_retry),
                     fontWeight = FontWeight.SemiBold
                 )
             }

@@ -603,6 +603,7 @@
     <string name="chip_all_equipment">All Equipment</string>
     <string name="chip_all_mechanics">All Mechanics</string>
     <string name="action_clear_filters">Clear Filters</string>
+    <string name="action_retry">Retry</string>
 
     <!-- Alternative Exercise Engine -->
     <string name="title_substitutes">Alternative Exercises</string>
