@@ -41,14 +41,15 @@ import androidx.compose.ui.unit.sp
 import com.kveld9.trackgym.R
 import com.kveld9.trackgym.domain.model.WeightUnit
 import com.kveld9.trackgym.domain.model.WorkoutComparison
+import com.kveld9.trackgym.ui.theme.GymGold
+import com.kveld9.trackgym.ui.theme.TrackGymNeonGreen
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+// Standalone share-bitmap canvas tokens (justified-intrinsic: offscreen bitmap rendering requires fixed dark palette)
 private val CardBackground = Color(0xFF0F0F11)
-private val NeonGreen = Color(0xFF00E676)
-private val GoldAccent = Color(0xFFFFD700)
 private val MutedText = Color(0xFF8E8E93)
 
 @Composable
@@ -104,7 +105,7 @@ fun WorkoutShareCard(
             shape = RoundedCornerShape(24.dp),
             colors = CardDefaults.cardColors(containerColor = CardBackground),
             border = CardDefaults.outlinedCardBorder().copy(
-                brush = androidx.compose.ui.graphics.SolidColor(NeonGreen.copy(alpha = 0.35f))
+                brush = androidx.compose.ui.graphics.SolidColor(TrackGymNeonGreen.copy(alpha = 0.35f))
             )
         ) {
             Column(
@@ -121,13 +122,13 @@ fun WorkoutShareCard(
                     Box(
                         modifier = Modifier
                             .clip(CircleShape)
-                            .background(NeonGreen.copy(alpha = 0.15f))
-                            .border(1.dp, NeonGreen.copy(alpha = 0.4f), CircleShape)
+                            .background(TrackGymNeonGreen.copy(alpha = 0.15f))
+                            .border(1.dp, TrackGymNeonGreen.copy(alpha = 0.4f), CircleShape)
                             .padding(horizontal = 12.dp, vertical = 4.dp)
                     ) {
                         Text(
                             text = "TRACKGYM",
-                            color = NeonGreen,
+                            color = TrackGymNeonGreen,
                             fontSize = 11.sp,
                             fontWeight = FontWeight.ExtraBold,
                             letterSpacing = 1.5.sp
@@ -208,7 +209,7 @@ fun WorkoutShareCard(
                         ShareMetricItem(
                             label = stringResource(R.string.share_card_records),
                             value = "${comparison.totalRecordsUnlocked.size}",
-                            valueColor = GoldAccent
+                            valueColor = GymGold
                         )
                     }
                 }
@@ -220,8 +221,8 @@ fun WorkoutShareCard(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(14.dp))
-                            .background(GoldAccent.copy(alpha = 0.08f))
-                            .border(1.dp, GoldAccent.copy(alpha = 0.25f), RoundedCornerShape(14.dp))
+                            .background(GymGold.copy(alpha = 0.08f))
+                            .border(1.dp, GymGold.copy(alpha = 0.25f), RoundedCornerShape(14.dp))
                             .padding(12.dp),
                         verticalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
@@ -229,13 +230,13 @@ fun WorkoutShareCard(
                             Icon(
                                 imageVector = Icons.Default.EmojiEvents,
                                 contentDescription = null,
-                                tint = GoldAccent,
+                                tint = GymGold,
                                 modifier = Modifier.size(16.dp)
                             )
                             Spacer(modifier = Modifier.width(6.dp))
                             Text(
                                 text = stringResource(R.string.comparison_unlocked_prs_section, comparison.totalRecordsUnlocked.size),
-                                color = GoldAccent,
+                                color = GymGold,
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.Bold
                             )
@@ -255,7 +256,7 @@ fun WorkoutShareCard(
                                 )
                                 Text(
                                     text = record.description,
-                                    color = GoldAccent,
+                                    color = GymGold,
                                     fontSize = 12.sp,
                                     fontWeight = FontWeight.Bold
                                 )
@@ -298,7 +299,7 @@ fun WorkoutShareCard(
             Icon(
                 imageVector = Icons.Default.PhotoCamera,
                 contentDescription = stringResource(R.string.action_share_image),
-                tint = NeonGreen
+                tint = TrackGymNeonGreen
             )
         }
     }
