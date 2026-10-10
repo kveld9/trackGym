@@ -9,3 +9,9 @@
 
 # Agent skill tooling is vendored third-party JS, exclude from GitHub language stats
 .opencode/skills/impeccable/scripts/** linguist-vendored=true
+
+gradle/wrapper/gradle-wrapper.jar linguist-vendored=true
+.github/** linguist-vendored=true
+*.md linguist-documentation=true
+docs/** linguist-documentation=true
+app/detekt-baseline.xml linguist-generated=true
