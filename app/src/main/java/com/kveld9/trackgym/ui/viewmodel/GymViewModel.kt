@@ -44,6 +44,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -302,6 +303,9 @@ class GymViewModel(
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _rawExercises = _exercisesRetryTrigger.flatMapLatest {
         repository.getAllExercises()
+            .onEach {
+                _exercisesError.value = null
+            }
             .catch { throwable ->
                 _exercisesError.value = throwable.localizedMessage?.takeIf { it.isNotBlank() } ?: ""
                 emit(emptyList())

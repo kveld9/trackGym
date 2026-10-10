@@ -245,6 +245,7 @@ fun ExercisesScreen(
                 queryError != null -> {
                     ExerciseInlineError(
                         onRetry = {
+                            isLoading = true
                             viewModel.clearExercisesError()
                             retryKey++
                         },
