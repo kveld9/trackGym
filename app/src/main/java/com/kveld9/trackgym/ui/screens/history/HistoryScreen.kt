@@ -22,6 +22,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import com.kveld9.trackgym.ui.navigation.workoutSharedBounds
 import com.kveld9.trackgym.ui.navigation.workoutSharedElementKey
+import com.kveld9.trackgym.ui.theme.subtleBorder
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -65,6 +66,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -411,7 +413,7 @@ fun HistoryScreen(
                         modifier = Modifier.fillMaxWidth(),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = MaterialTheme.colorScheme.primary,
-                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                            unfocusedBorderColor = MaterialTheme.colorScheme.subtleBorder,
                             focusedTextColor = MaterialTheme.colorScheme.onSurface,
                             unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                         )
@@ -499,7 +501,9 @@ fun TrainingConsistencyHeader(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
-        border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)))
+        border = CardDefaults.outlinedCardBorder().copy(
+            brush = SolidColor(MaterialTheme.colorScheme.subtleBorder)
+        )
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             // Header: Title and Streak Badge
@@ -627,7 +631,8 @@ fun ActivityHeatmapGrid(days: List<DayActivity>) {
             Text(
                 text = stringResource(R.string.consistency_legend_less),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                fontSize = 10.sp
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Medium
             )
             Spacer(modifier = Modifier.width(4.dp))
             listOf(
@@ -647,7 +652,8 @@ fun ActivityHeatmapGrid(days: List<DayActivity>) {
             Text(
                 text = stringResource(R.string.consistency_legend_more),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                fontSize = 10.sp
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Medium
             )
         }
     }
@@ -673,7 +679,9 @@ fun WorkoutHistoryCard(
             .clickable { onClick() },
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
-        border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)))
+        border = CardDefaults.outlinedCardBorder().copy(
+            brush = SolidColor(MaterialTheme.colorScheme.subtleBorder)
+        )
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             WorkoutCardHeaderRow(
