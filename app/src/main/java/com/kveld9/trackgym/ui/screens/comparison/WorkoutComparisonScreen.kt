@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -558,14 +559,15 @@ fun SetComparisonRow(
             Text(
                 text = deltaText.trim(),
                 color = MaterialTheme.colorScheme.primary,
-                fontSize = 12.sp,
+                fontSize = 15.sp,
                 fontWeight = FontWeight.Bold
             )
         } else {
             Text(
                 text = "=",
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                fontSize = 12.sp
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold
             )
         }
     }
@@ -647,7 +649,9 @@ fun LlmPromptExportCard(
                         clipboardManager.setText(AnnotatedString(promptText))
                         Toast.makeText(context, R.string.toast_prompt_copied, Toast.LENGTH_SHORT).show()
                     },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
+                        .defaultMinSize(minHeight = 48.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Default.ContentCopy,
@@ -667,7 +671,9 @@ fun LlmPromptExportCard(
                         }
                         runCatching { context.startActivity(Intent.createChooser(sendIntent, null)) }
                     },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
+                        .defaultMinSize(minHeight = 48.dp)
                 ) {
                     Text(text = stringResource(R.string.action_share_prompt), maxLines = 1)
                 }
