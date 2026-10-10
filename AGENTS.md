@@ -42,7 +42,7 @@ The verdict is the exit code plus the `BUILD` line, never the filtered text alon
 
 ### On-device verification (ADB)
 
-Only when the user explicitly requests on-device verification for the current task, the agent may verify the freshly built debug build on an attached device. Scope is strictly limited to the debug package `com.kveld9.trackgym.debug`:
+Standing policy: the agent MUST verify on the attached physical device as corrections land, for every UI task and every feature or fix test. Build the freshly built debug build, install it, launch it, and visually check the touched screens on-device (screens, navigation, logcat verdict) instead of relying on static inspection alone. When no device is attached, report it as an unverified risk and proceed. Scope is strictly limited to the debug package `com.kveld9.trackgym.debug`:
 
 - `adb devices` discovery (honor `ANDROID_SERIAL` when set; with several devices, target one explicitly via `-s`);
 - `adb install -r` of the freshly built debug APK (`app/build/outputs/apk/debug/`);
