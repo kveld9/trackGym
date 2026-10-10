@@ -6,3 +6,6 @@
 
 # Git hooks are POSIX shell scripts and must use LF
 /.githooks/*    text eol=lf
+
+# Agent skill tooling is vendored third-party JS, exclude from GitHub language stats
+.opencode/skills/impeccable/scripts/** linguist-vendored=true
