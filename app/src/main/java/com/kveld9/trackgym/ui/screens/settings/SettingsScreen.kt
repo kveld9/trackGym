@@ -2,110 +2,66 @@ package com.kveld9.trackgym.ui.screens.settings
 
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.widget.Toast
-import com.kveld9.trackgym.data.ThemePreferences
-import com.kveld9.trackgym.domain.model.DistanceUnit
-import com.kveld9.trackgym.domain.model.WeightUnit
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
-import com.kveld9.trackgym.ui.theme.screenEnterTransition
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.ui.unit.sp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.OpenInNew
-import androidx.compose.material.icons.automirrored.filled.VolumeUp
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Code
-import androidx.compose.material.icons.filled.Contrast
-import androidx.compose.material.icons.filled.DarkMode
-import androidx.compose.material.icons.filled.FileDownload
-import androidx.compose.material.icons.filled.FileUpload
-import androidx.compose.material.icons.filled.FilterAlt
-import androidx.compose.material.icons.filled.FitnessCenter
-import androidx.compose.material.icons.filled.Language
-import androidx.compose.material.icons.filled.Layers
-import androidx.compose.material.icons.filled.LightMode
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Palette
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.Security
-import androidx.compose.material.icons.filled.StayCurrentPortrait
-import androidx.compose.material.icons.filled.Straighten
-import androidx.compose.material.icons.filled.Timer
-import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.MilitaryTech
 import androidx.compose.material3.AlertDialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import com.kveld9.trackgym.domain.calculator.OneRepMaxFormula
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
 import androidx.core.net.toUri
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kveld9.trackgym.BuildConfig
 import com.kveld9.trackgym.R
+import com.kveld9.trackgym.TrackGymApp
 import com.kveld9.trackgym.data.backup.DuplicatePolicy
+import com.kveld9.trackgym.domain.calculator.OneRepMaxFormula
+import com.kveld9.trackgym.domain.model.WeightUnit
 import com.kveld9.trackgym.ui.components.GymEquipmentProfilesManageDialog
+import com.kveld9.trackgym.ui.privacy.PrivacyActivity
+import com.kveld9.trackgym.ui.theme.screenEnterTransition
 import com.kveld9.trackgym.ui.viewmodel.SettingsUiEvent
 import com.kveld9.trackgym.ui.viewmodel.SettingsViewModel
 
+/**
+ * UI Selector Pattern Rule:
+ * - Options with <= 3 short labels must use [androidx.compose.material3.SingleChoiceSegmentedButtonRow].
+ * - Options with > 3 items or long labels must use a clickable dialog row displaying the active
+ *   value in the subtitle, which triggers an [AlertDialog] single-choice list.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
@@ -119,7 +75,21 @@ fun SettingsScreen(
     val gymProfiles by viewModel.gymProfiles.collectAsStateWithLifecycle()
     val activeGymProfile by viewModel.activeGymProfile.collectAsStateWithLifecycle()
     val weightUnit = remember(themeSettings.weightUnit) { WeightUnit.fromString(themeSettings.weightUnit) }
+
     var showGymProfilesDialog by remember { mutableStateOf(false) }
+    var showExportFormatDialog by remember { mutableStateOf(false) }
+    var showImportFormatDialog by remember { mutableStateOf(false) }
+    var showOrmDialog by remember { mutableStateOf(false) }
+    var showTimerSoundDialog by remember { mutableStateOf(false) }
+    var showGetReadyDialog by remember { mutableStateOf(false) }
+    var showBodyWeightDialog by remember { mutableStateOf(false) }
+    var showAgeDialog by remember { mutableStateOf(false) }
+
+    val activeOrmFormula = remember(themeSettings.ormFormula) {
+        OneRepMaxFormula.entries.firstOrNull {
+            it.name.equals(themeSettings.ormFormula, ignoreCase = true)
+        } ?: OneRepMaxFormula.EPLEY
+    }
 
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
@@ -192,7 +162,7 @@ fun SettingsScreen(
     }
 
     val healthConnectSyncManager = remember {
-        (context.applicationContext as? com.kveld9.trackgym.TrackGymApp)?.healthConnectSyncManager
+        (context.applicationContext as? TrackGymApp)?.healthConnectSyncManager
     }
     val healthConnectLauncher = rememberLauncherForActivityResult(
         contract = androidx.health.connect.client.PermissionController.createRequestPermissionResultContract()
@@ -214,13 +184,88 @@ fun SettingsScreen(
         )
     }
 
+    if (showExportFormatDialog) {
+        ExportFormatDialog(
+            onDismiss = { showExportFormatDialog = false },
+            onSelectJson = {
+                val fileName = "trackgym_backup_${System.currentTimeMillis()}.json"
+                exportLauncher.launch(fileName)
+            },
+            onSelectCsv = {
+                val fileName = "trackgym_workouts_${System.currentTimeMillis()}.csv"
+                exportCsvLauncher.launch(fileName)
+            }
+        )
+    }
+
+    if (showImportFormatDialog) {
+        ImportFormatDialog(
+            onDismiss = { showImportFormatDialog = false },
+            onSelectJson = {
+                importLauncher.launch(arrayOf("application/json", "*/*"))
+            },
+            onSelectCsv = {
+                importCsvLauncher.launch(arrayOf("text/comma-separated-values", "text/csv", "application/csv", "*/*"))
+            }
+        )
+    }
+
+    if (showOrmDialog) {
+        OneRepMaxSelectionDialog(
+            currentFormula = themeSettings.ormFormula,
+            onSelectFormula = { viewModel.setOrmFormula(it) },
+            onDismiss = { showOrmDialog = false }
+        )
+    }
+
+    if (showTimerSoundDialog) {
+        TimerSoundSelectionDialog(
+            currentSound = themeSettings.timerSound,
+            onSelectSound = { viewModel.setTimerSound(it) },
+            onDismiss = { showTimerSoundDialog = false }
+        )
+    }
+
+    if (showGetReadyDialog) {
+        GetReadySelectionDialog(
+            currentSeconds = themeSettings.getReadySeconds,
+            onSelectSeconds = { viewModel.setGetReadySeconds(it) },
+            onDismiss = { showGetReadyDialog = false }
+        )
+    }
+
+    if (showBodyWeightDialog) {
+        BodyWeightInputDialog(
+            initialWeight = themeSettings.userBodyWeightKg,
+            onDismiss = { showBodyWeightDialog = false },
+            onConfirm = {
+                viewModel.setUserBodyWeight(it)
+                showBodyWeightDialog = false
+            }
+        )
+    }
+
+    if (showAgeDialog) {
+        AgeInputDialog(
+            initialAge = themeSettings.userAge,
+            onDismiss = { showAgeDialog = false },
+            onConfirm = {
+                viewModel.setUserAge(it)
+                showAgeDialog = false
+            }
+        )
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.action_settings), fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     if (onNavigateBack != null) {
-                        IconButton(onClick = onNavigateBack) {
+                        IconButton(
+                            onClick = onNavigateBack,
+                            modifier = Modifier.defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
+                        ) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = stringResource(R.string.action_back)
@@ -240,1203 +285,137 @@ fun SettingsScreen(
                 .padding(innerPadding)
                 .verticalScroll(rememberScrollState())
                 .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             // Appearance Section
-            Text(
-                text = stringResource(R.string.section_appearance),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
+            SectionHeader(title = stringResource(R.string.section_appearance))
+            AppearanceCard(
+                themeMode = themeSettings.themeMode,
+                dynamicColor = themeSettings.dynamicColor,
+                exerciseLanguage = themeSettings.exerciseLanguage,
+                onSetThemeMode = { viewModel.setThemeMode(it) },
+                onSetDynamicColor = { viewModel.setDynamicColor(it) },
+                onSetExerciseLanguage = { viewModel.setExerciseLanguage(it) }
             )
 
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = MaterialTheme.shapes.large,
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer)
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    // Theme Mode Header
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Palette,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                        Spacer(modifier = Modifier.width(16.dp))
-                        Text(
-                            text = stringResource(R.string.setting_theme_title),
-                            style = MaterialTheme.typography.bodyLarge,
-                            fontWeight = FontWeight.Medium
-                        )
-                    }
-
-                    // Segmented Button Row (Blanco, Oscuro normal, AMOLED)
-                    val themeOptions = listOf(
-                        Triple(ThemePreferences.MODE_LIGHT, stringResource(R.string.theme_mode_light), Icons.Default.LightMode),
-                        Triple(ThemePreferences.MODE_DARK, stringResource(R.string.theme_mode_dark), Icons.Default.DarkMode),
-                        Triple(ThemePreferences.MODE_AMOLED, stringResource(R.string.theme_mode_amoled), Icons.Default.Contrast)
-                    )
-
-                    SingleChoiceSegmentedButtonRow(
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        themeOptions.forEachIndexed { index, (mode, label, icon) ->
-                            val isSelected = themeSettings.themeMode == mode
-                            SegmentedButton(
-                                selected = isSelected,
-                                onClick = { viewModel.setThemeMode(mode) },
-                                shape = SegmentedButtonDefaults.itemShape(index = index, count = themeOptions.size),
-                                icon = {
-                                    SegmentedButtonDefaults.Icon(active = isSelected) {
-                                        Icon(
-                                            imageVector = icon,
-                                            contentDescription = null,
-                                            modifier = Modifier.size(SegmentedButtonDefaults.IconSize)
-                                        )
-                                    }
-                                },
-                                label = {
-                                    Text(
-                                        text = label,
-                                        style = MaterialTheme.typography.labelMedium,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-                                    )
-                                }
-                            )
-                        }
-                    }
-
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
-
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Palette,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primary
-                            )
-                            Spacer(modifier = Modifier.width(16.dp))
-                            Column(modifier = Modifier.weight(1f)) {
-                                Text(
-                                    text = stringResource(R.string.setting_dynamic_color_title),
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    fontWeight = FontWeight.Medium
-                                )
-                                Text(
-                                    text = stringResource(R.string.setting_dynamic_color_desc),
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Switch(
-                                checked = themeSettings.dynamicColor,
-                                onCheckedChange = { viewModel.setDynamicColor(it) }
-                            )
-                        }
-                    }
-                }
-            }
-
-            // Exercise Names Language Section
-            Text(
-                text = stringResource(R.string.exercises_title),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
+            // User Profile Section
+            SectionHeader(title = stringResource(R.string.section_profile))
+            UserProfileCard(
+                bodyWeightKg = themeSettings.userBodyWeightKg,
+                sex = themeSettings.userBiologicalSex,
+                age = themeSettings.userAge,
+                onWeightClick = { showBodyWeightDialog = true },
+                onSexChanged = { viewModel.setUserBiologicalSex(it) },
+                onAgeClick = { showAgeDialog = true }
             )
 
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = MaterialTheme.shapes.large,
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer)
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Language,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                        Spacer(modifier = Modifier.width(16.dp))
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = stringResource(R.string.setting_exercise_language_title),
-                                style = MaterialTheme.typography.bodyLarge,
-                                fontWeight = FontWeight.Medium
-                            )
-                            Text(
-                                text = stringResource(R.string.setting_exercise_language_desc),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    }
-
-                    val languageOptions = listOf(
-                        ThemePreferences.EXERCISE_LANG_SYSTEM to stringResource(R.string.exercise_lang_system),
-                        ThemePreferences.EXERCISE_LANG_ENGLISH to stringResource(R.string.exercise_lang_english)
-                    )
-
-                    SingleChoiceSegmentedButtonRow(
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        languageOptions.forEachIndexed { index, (lang, label) ->
-                            val isSelected = themeSettings.exerciseLanguage.equals(lang, ignoreCase = true)
-                            SegmentedButton(
-                                selected = isSelected,
-                                onClick = { viewModel.setExerciseLanguage(lang) },
-                                shape = SegmentedButtonDefaults.itemShape(index = index, count = languageOptions.size),
-                                label = {
-                                    Text(
-                                        text = label,
-                                        style = MaterialTheme.typography.labelMedium,
-                                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-                                    )
-                                }
-                            )
-                        }
-                    }
-                }
-            }
-
-            // Measurement Units Section
-            Text(
-                text = stringResource(R.string.section_units),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
+            // Units Section
+            SectionHeader(title = stringResource(R.string.section_units))
+            UnitsCard(
+                weightUnit = themeSettings.weightUnit,
+                distanceUnit = themeSettings.distanceUnit,
+                onSetWeightUnit = { viewModel.setWeightUnit(it) },
+                onSetDistanceUnit = { viewModel.setDistanceUnit(it) }
             )
 
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = MaterialTheme.shapes.large,
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer)
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    // Weight Unit Row
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.FitnessCenter,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                        Spacer(modifier = Modifier.width(16.dp))
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = stringResource(R.string.setting_weight_unit_title),
-                                style = MaterialTheme.typography.bodyLarge,
-                                fontWeight = FontWeight.Medium
-                            )
-                            Text(
-                                text = stringResource(R.string.setting_weight_unit_desc),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    }
-
-                    val weightOptions = listOf(
-                        WeightUnit.KG.name to stringResource(R.string.unit_kilograms),
-                        WeightUnit.LB.name to stringResource(R.string.unit_pounds)
-                    )
-
-                    SingleChoiceSegmentedButtonRow(
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        weightOptions.forEachIndexed { index, (unit, label) ->
-                            val isSelected = themeSettings.weightUnit.equals(unit, ignoreCase = true)
-                            SegmentedButton(
-                                selected = isSelected,
-                                onClick = { viewModel.setWeightUnit(unit) },
-                                shape = SegmentedButtonDefaults.itemShape(index = index, count = weightOptions.size),
-                                label = {
-                                    Text(
-                                        text = label,
-                                        style = MaterialTheme.typography.labelMedium,
-                                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-                                    )
-                                }
-                            )
-                        }
-                    }
-
-                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
-
-                    // Distance Unit Row
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Straighten,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                        Spacer(modifier = Modifier.width(16.dp))
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = stringResource(R.string.setting_distance_unit_title),
-                                style = MaterialTheme.typography.bodyLarge,
-                                fontWeight = FontWeight.Medium
-                            )
-                            Text(
-                                text = stringResource(R.string.setting_distance_unit_desc),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    }
-
-                    val distanceOptions = listOf(
-                        DistanceUnit.KM.name to stringResource(R.string.unit_kilometers),
-                        DistanceUnit.MI.name to stringResource(R.string.unit_miles)
-                    )
-
-                    SingleChoiceSegmentedButtonRow(
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        distanceOptions.forEachIndexed { index, (unit, label) ->
-                            val isSelected = themeSettings.distanceUnit.equals(unit, ignoreCase = true)
-                            SegmentedButton(
-                                selected = isSelected,
-                                onClick = { viewModel.setDistanceUnit(unit) },
-                                shape = SegmentedButtonDefaults.itemShape(index = index, count = distanceOptions.size),
-                                label = {
-                                    Text(
-                                        text = label,
-                                        style = MaterialTheme.typography.labelMedium,
-                                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-                                    )
-                                }
-                            )
-                        }
-                    }
-
-                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
-
-                    // User Body Weight Row
-                    BodyWeightSettingRow(
-                        bodyWeightKg = themeSettings.userBodyWeightKg,
-                        onWeightChanged = { viewModel.setUserBodyWeight(it) }
-                    )
-
-                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
-
-                    // User Biological Sex Row
-                    BiologicalSexSettingRow(
-                        sex = themeSettings.userBiologicalSex,
-                        onSexChanged = { viewModel.setUserBiologicalSex(it) }
-                    )
-
-                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
-
-                    // User Age Row
-                    AgeSettingRow(
-                        age = themeSettings.userAge,
-                        onAgeChanged = { viewModel.setUserAge(it) }
-                    )
-                }
-            }
-
-            // Rest Timer Section
-            Text(
-                text = stringResource(R.string.setting_rest_timer_section),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
+            // Timer Section
+            SectionHeader(title = stringResource(R.string.section_timer))
+            TimerCard(
+                autoRestTimer = themeSettings.autoRestTimer,
+                defaultRestSeconds = themeSettings.defaultRestSeconds,
+                timerSoundCountdown = themeSettings.timerSoundCountdown,
+                getReadySeconds = themeSettings.getReadySeconds,
+                onAutoRestChange = { viewModel.setAutoRestTimer(it) },
+                onDefaultRestChange = { viewModel.setDefaultRestSeconds(it) },
+                onCountdownBeepsChange = { viewModel.setTimerSoundCountdown(it) },
+                onGetReadyClick = { showGetReadyDialog = true }
             )
 
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = MaterialTheme.shapes.large,
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer)
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    // Auto Rest Timer Row
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Timer,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                        Spacer(modifier = Modifier.width(16.dp))
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = stringResource(R.string.setting_auto_rest_timer_title),
-                                style = MaterialTheme.typography.bodyLarge,
-                                fontWeight = FontWeight.Medium
-                            )
-                            Text(
-                                text = stringResource(R.string.setting_auto_rest_timer_desc),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Switch(
-                            checked = themeSettings.autoRestTimer,
-                            onCheckedChange = { viewModel.setAutoRestTimer(it) }
-                        )
-                    }
-
-                    if (themeSettings.autoRestTimer) {
-                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
-
-                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Text(
-                                text = stringResource(R.string.setting_default_rest_duration_title),
-                                style = MaterialTheme.typography.bodyMedium,
-                                fontWeight = FontWeight.Medium
-                            )
-                            Text(
-                                text = stringResource(R.string.setting_default_rest_duration_desc),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-
-                            val restOptions = listOf(30, 60, 90, 120, 180)
-                            SingleChoiceSegmentedButtonRow(
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                restOptions.forEachIndexed { index, durationSec ->
-                                    val isSelected = themeSettings.defaultRestSeconds == durationSec
-                                    SegmentedButton(
-                                        selected = isSelected,
-                                        onClick = { viewModel.setDefaultRestSeconds(durationSec) },
-                                        shape = SegmentedButtonDefaults.itemShape(index = index, count = restOptions.size),
-                                        label = {
-                                            Text(
-                                                text = stringResource(R.string.rest_duration_seconds, durationSec),
-                                                style = MaterialTheme.typography.labelSmall,
-                                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-                                            )
-                                        }
-                                    )
-                                }
-                            }
-
-                            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.2f))
-
-                            // 3-2-1 Countdown Beeps
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Notifications,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.primary
-                                )
-                                Spacer(modifier = Modifier.width(16.dp))
-                                Column(modifier = Modifier.weight(1f)) {
-                                    Text(
-                                        text = stringResource(R.string.setting_timer_countdown_title),
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        fontWeight = FontWeight.Medium
-                                    )
-                                    Text(
-                                        text = stringResource(R.string.setting_timer_countdown_desc),
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                }
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Switch(
-                                    checked = themeSettings.timerSoundCountdown,
-                                    onCheckedChange = { viewModel.setTimerSoundCountdown(it) }
-                                )
-                            }
-
-                            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.2f))
-
-                            // Set Completion Click
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Filled.VolumeUp,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.primary
-                                )
-                                Spacer(modifier = Modifier.width(16.dp))
-                                Column(modifier = Modifier.weight(1f)) {
-                                    Text(
-                                        text = stringResource(R.string.setting_sound_complete_title),
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        fontWeight = FontWeight.Medium
-                                    )
-                                    Text(
-                                        text = stringResource(R.string.setting_sound_complete_desc),
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                }
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Switch(
-                                    checked = themeSettings.soundFeedbackOnComplete,
-                                    onCheckedChange = { viewModel.setSoundFeedbackOnComplete(it) }
-                                )
-                            }
-
-                            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.2f))
-
-                            // Sound Catalog Selection
-                            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                                Text(
-                                    text = stringResource(R.string.setting_timer_sound_title),
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    fontWeight = FontWeight.Medium
-                                )
-                                Text(
-                                    text = stringResource(R.string.setting_timer_sound_desc),
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-
-                                val soundOptions = listOf(
-                                    "DIGITAL_BEEP" to stringResource(R.string.sound_digital_beep),
-                                    "BOXING_BELL" to stringResource(R.string.sound_boxing_bell),
-                                    "TING_TING" to stringResource(R.string.sound_ting_ting),
-                                    "ALARM" to stringResource(R.string.sound_alarm),
-                                    "SILENT" to stringResource(R.string.sound_silent)
-                                )
-
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .horizontalScroll(rememberScrollState()),
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                ) {
-                                    soundOptions.forEach { (id, label) ->
-                                        val isSelected = themeSettings.timerSound == id
-                                        Surface(
-                                            shape = RoundedCornerShape(16.dp),
-                                            color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh,
-                                            modifier = Modifier
-                                                .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
-                                                .clickable { viewModel.setTimerSound(id) }
-                                        ) {
-                                            Box(
-                                                contentAlignment = Alignment.Center,
-                                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
-                                            ) {
-                                                Text(
-                                                    text = label,
-                                                    color = if (isSelected) {
-                                                        MaterialTheme.colorScheme.onPrimary
-                                                    } else {
-                                                        MaterialTheme.colorScheme.onSurface
-                                                    },
-                                                    fontWeight = if (isSelected) {
-                                                        FontWeight.Bold
-                                                    } else {
-                                                        FontWeight.Medium
-                                                    },
-                                                    fontSize = 12.sp
-                                                )
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.2f))
-
-                            // Get Ready Countdown Selector
-                            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                                Text(
-                                    text = stringResource(R.string.setting_get_ready_title),
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    fontWeight = FontWeight.Medium
-                                )
-                                Text(
-                                    text = stringResource(R.string.setting_get_ready_desc),
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-
-                                val getReadyOptions = listOf(
-                                    0 to stringResource(R.string.get_ready_off),
-                                    3 to "3s",
-                                    5 to "5s",
-                                    10 to "10s",
-                                    15 to "15s"
-                                )
-
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .horizontalScroll(rememberScrollState()),
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                ) {
-                                    getReadyOptions.forEach { (seconds, label) ->
-                                        val isSelected = themeSettings.getReadySeconds == seconds
-                                        Surface(
-                                            shape = RoundedCornerShape(16.dp),
-                                            color = if (isSelected) {
-                                                MaterialTheme.colorScheme.primary
-                                            } else {
-                                                MaterialTheme.colorScheme.surfaceContainerHigh
-                                            },
-                                            modifier = Modifier
-                                                .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
-                                                .clickable { viewModel.setGetReadySeconds(seconds) }
-                                        ) {
-                                            Box(
-                                                contentAlignment = Alignment.Center,
-                                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
-                                            ) {
-                                                Text(
-                                                    text = label,
-                                                    color = if (isSelected) {
-                                                        MaterialTheme.colorScheme.onPrimary
-                                                    } else {
-                                                        MaterialTheme.colorScheme.onSurface
-                                                    },
-                                                    fontWeight = if (isSelected) {
-                                                        FontWeight.Bold
-                                                    } else {
-                                                        FontWeight.Medium
-                                                    },
-                                                    fontSize = 12.sp
-                                                )
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
-
-                    // Double Dumbbell Volume Toggle
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.FitnessCenter,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                        Spacer(modifier = Modifier.width(16.dp))
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = stringResource(R.string.setting_double_dumbbell_title),
-                                style = MaterialTheme.typography.bodyLarge,
-                                fontWeight = FontWeight.Medium
-                            )
-                            Text(
-                                text = stringResource(R.string.setting_double_dumbbell_desc),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Switch(
-                            checked = themeSettings.doubleDumbbellVolume,
-                            onCheckedChange = { viewModel.setDoubleDumbbellVolume(it) }
-                        )
-                    }
-
-                    HorizontalDivider()
-
-                    // Exclude Warmup from Volume
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.FilterAlt,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                        Spacer(modifier = Modifier.width(16.dp))
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = stringResource(R.string.setting_exclude_warmup_title),
-                                style = MaterialTheme.typography.bodyLarge,
-                                fontWeight = FontWeight.Medium
-                            )
-                            Text(
-                                text = stringResource(R.string.setting_exclude_warmup_desc),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Switch(
-                            checked = themeSettings.excludeWarmupFromVolume,
-                            onCheckedChange = { viewModel.setExcludeWarmupFromVolume(it) }
-                        )
-                    }
-
-                    HorizontalDivider()
-
-                    // Inline Plate Indicator
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Layers,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                        Spacer(modifier = Modifier.width(16.dp))
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = stringResource(R.string.setting_inline_plates_title),
-                                style = MaterialTheme.typography.bodyLarge,
-                                fontWeight = FontWeight.Medium
-                            )
-                            Text(
-                                text = stringResource(R.string.setting_inline_plates_desc),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Switch(
-                            checked = themeSettings.showInlinePlates,
-                            onCheckedChange = { viewModel.setShowInlinePlates(it) }
-                        )
-                    }
-
-                    HorizontalDivider()
-
-                    // Equipment Profiles Setting
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.FitnessCenter,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                        Spacer(modifier = Modifier.width(16.dp))
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = stringResource(R.string.gym_profiles_title),
-                                style = MaterialTheme.typography.bodyLarge,
-                                fontWeight = FontWeight.Medium
-                            )
-                            val barDisplay = "${activeGymProfile.barWeight(weightUnit)} ${weightUnit.symbol}"
-                            Text(
-                                text = "${activeGymProfile.name} • $barDisplay",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(8.dp))
-                        OutlinedButton(
-                            onClick = { showGymProfilesDialog = true },
-                            shape = RoundedCornerShape(8.dp)
-                        ) {
-                            Text(
-                                text = stringResource(R.string.gym_profile_select),
-                                fontSize = 12.sp
-                            )
-                        }
-                    }
-
-                    HorizontalDivider()
-
-                    // Keep Screen On during active workout
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.StayCurrentPortrait,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                        Spacer(modifier = Modifier.width(16.dp))
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = stringResource(R.string.setting_keep_screen_on_title),
-                                style = MaterialTheme.typography.bodyLarge,
-                                fontWeight = FontWeight.Medium
-                            )
-                            Text(
-                                text = stringResource(R.string.setting_keep_screen_on_desc),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Switch(
-                            checked = themeSettings.keepScreenOn,
-                            onCheckedChange = { viewModel.setKeepScreenOn(it) }
-                        )
-                    }
-
-                    HorizontalDivider()
-
-                    // Routine Auto-Sync Mode
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Refresh,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primary
-                            )
-                            Spacer(modifier = Modifier.width(16.dp))
-                            Column(modifier = Modifier.weight(1f)) {
-                                Text(
-                                    text = stringResource(R.string.setting_routine_update_mode_title),
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    fontWeight = FontWeight.Medium
-                                )
-                                Text(
-                                    text = stringResource(R.string.setting_routine_update_mode_desc),
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
-                        }
-
-                        val routineModes = listOf(
-                            "ALWAYS" to stringResource(R.string.routine_update_mode_always_title),
-                            "ASK" to stringResource(R.string.routine_update_mode_ask_title),
-                            "NEVER" to stringResource(R.string.routine_update_mode_never_title)
-                        )
-
-                        SingleChoiceSegmentedButtonRow(
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            routineModes.forEachIndexed { index, (mode, label) ->
-                                val isSelected = themeSettings.routineUpdateMode.equals(mode, ignoreCase = true)
-                                SegmentedButton(
-                                    selected = isSelected,
-                                    onClick = { viewModel.setRoutineUpdateMode(mode) },
-                                    shape = SegmentedButtonDefaults.itemShape(index = index, count = routineModes.size),
-                                    label = {
-                                        Text(
-                                            text = label,
-                                            style = MaterialTheme.typography.labelMedium,
-                                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-                                        )
-                                    }
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-
-            // 1RM Calculation Models Section
-            Text(
-                text = stringResource(R.string.section_orm_models),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
+            // Sound Section
+            SectionHeader(title = stringResource(R.string.section_sound))
+            SoundCard(
+                timerSound = themeSettings.timerSound,
+                soundFeedbackOnComplete = themeSettings.soundFeedbackOnComplete,
+                onTimerSoundClick = { showTimerSoundDialog = true },
+                onSoundFeedbackChange = { viewModel.setSoundFeedbackOnComplete(it) }
             )
 
-            OneRepMaxModelsCard(
-                selectedFormula = themeSettings.ormFormula,
-                onSelectFormula = { viewModel.setOrmFormula(it) }
+            // Volume & Equipment Section
+            SectionHeader(title = stringResource(R.string.section_volume_equipment))
+            VolumeEquipmentCard(
+                doubleDumbbell = themeSettings.doubleDumbbellVolume,
+                excludeWarmup = themeSettings.excludeWarmupFromVolume,
+                showInlinePlates = themeSettings.showInlinePlates,
+                activeProfile = activeGymProfile,
+                weightUnit = weightUnit,
+                onDoubleDumbbellChange = { viewModel.setDoubleDumbbellVolume(it) },
+                onExcludeWarmupChange = { viewModel.setExcludeWarmupFromVolume(it) },
+                onShowInlinePlatesChange = { viewModel.setShowInlinePlates(it) },
+                onManageProfilesClick = { showGymProfilesDialog = true }
+            )
+
+            // Session Section
+            SectionHeader(title = stringResource(R.string.section_session))
+            SessionCard(
+                keepScreenOn = themeSettings.keepScreenOn,
+                routineUpdateMode = themeSettings.routineUpdateMode,
+                onKeepScreenOnChange = { viewModel.setKeepScreenOn(it) },
+                onRoutineUpdateModeChange = { viewModel.setRoutineUpdateMode(it) }
+            )
+
+            // 1RM Models Section
+            SectionHeader(title = stringResource(R.string.section_orm_models))
+            OneRepMaxCard(
+                activeFormula = activeOrmFormula,
+                onClick = { showOrmDialog = true }
             )
 
             // Backup & Portability Section
-            Text(
-                text = stringResource(R.string.section_backup),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
+            SectionHeader(title = stringResource(R.string.section_backup))
+            BackupCard(
+                autoBackupUri = themeSettings.autoBackupUri,
+                maxAutoBackups = themeSettings.maxAutoBackups,
+                onExportClick = { showExportFormatDialog = true },
+                onImportClick = { showImportFormatDialog = true },
+                onSelectFolder = { autoBackupFolderLauncher.launch(null) },
+                onDisableAutoBackup = { viewModel.setAutoBackupUri(null) }
             )
 
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = MaterialTheme.shapes.large,
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer)
-            ) {
-                Column {
-                    // Export
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                val fileName = "trackgym_backup_${System.currentTimeMillis()}.json"
-                                exportLauncher.launch(fileName)
-                            }
-                            .padding(16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(Icons.Default.FileUpload, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
-                        Spacer(modifier = Modifier.width(16.dp))
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = stringResource(R.string.setting_export_backup_title),
-                                style = MaterialTheme.typography.bodyLarge,
-                                fontWeight = FontWeight.Medium
-                            )
-                            Text(
-                                text = stringResource(R.string.setting_export_backup_desc),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
+            // Integrations Section
+            SectionHeader(title = stringResource(R.string.section_integrations))
+            IntegrationsCard(
+                healthConnectSync = themeSettings.healthConnectSync,
+                isAvailable = healthConnectSyncManager?.isAvailable() == true,
+                onSyncChange = { enabled ->
+                    if (enabled) {
+                        if (healthConnectSyncManager?.isAvailable() == true) {
+                            healthConnectLauncher.launch(healthConnectSyncManager.permissions)
+                        } else {
+                            Toast.makeText(
+                                context,
+                                context.getString(R.string.setting_health_connect_unavailable),
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
-                    }
-
-                    HorizontalDivider()
-
-                    // Export CSV
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                val fileName = "trackgym_workouts_${System.currentTimeMillis()}.csv"
-                                exportCsvLauncher.launch(fileName)
-                            }
-                            .padding(16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(Icons.Default.FileUpload, contentDescription = null, tint = MaterialTheme.colorScheme.secondary)
-                        Spacer(modifier = Modifier.width(16.dp))
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = stringResource(R.string.setting_export_csv_title),
-                                style = MaterialTheme.typography.bodyLarge,
-                                fontWeight = FontWeight.Medium
-                            )
-                            Text(
-                                text = stringResource(R.string.setting_export_csv_desc),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    }
-
-                    HorizontalDivider()
-
-                    // Import
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                importLauncher.launch(arrayOf("application/json", "*/*"))
-                            }
-                            .padding(16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(Icons.Default.FileDownload, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
-                        Spacer(modifier = Modifier.width(16.dp))
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = stringResource(R.string.setting_import_backup_title),
-                                style = MaterialTheme.typography.bodyLarge,
-                                fontWeight = FontWeight.Medium
-                            )
-                            Text(
-                                text = stringResource(R.string.setting_import_backup_desc),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    }
-
-                    HorizontalDivider()
-
-                    // Import CSV
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                importCsvLauncher.launch(arrayOf("text/comma-separated-values", "text/csv", "application/csv", "*/*"))
-                            }
-                            .padding(16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(Icons.Default.FileDownload, contentDescription = null, tint = MaterialTheme.colorScheme.secondary)
-                        Spacer(modifier = Modifier.width(16.dp))
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = stringResource(R.string.setting_import_csv_title),
-                                style = MaterialTheme.typography.bodyLarge,
-                                fontWeight = FontWeight.Medium
-                            )
-                            Text(
-                                text = stringResource(R.string.setting_import_csv_desc),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    }
-
-                    HorizontalDivider()
-
-                    // Silent Auto-Backup via SAF (Item 108)
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(10.dp)
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Icon(Icons.Default.Security, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
-                            Spacer(modifier = Modifier.width(16.dp))
-                            Column(modifier = Modifier.weight(1f)) {
-                                Text(
-                                    text = stringResource(R.string.setting_auto_backup_title),
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    fontWeight = FontWeight.Medium
-                                )
-                                Text(
-                                    text = stringResource(R.string.setting_auto_backup_desc),
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
-                        }
-
-                        // Folder selector row
-                        val hasFolder = !themeSettings.autoBackupUri.isNullOrBlank()
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clip(RoundedCornerShape(8.dp))
-                                .background(MaterialTheme.colorScheme.surfaceContainerHigh)
-                                .clickable { autoBackupFolderLauncher.launch(null) }
-                                .padding(12.dp)
-                        ) {
-                            Column(modifier = Modifier.weight(1f)) {
-                                Text(
-                                    text = stringResource(R.string.setting_auto_backup_folder_title),
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    fontWeight = FontWeight.SemiBold
-                                )
-                                Text(
-                                    text = if (hasFolder) {
-                                        Uri.parse(themeSettings.autoBackupUri).lastPathSegment ?: themeSettings.autoBackupUri.orEmpty()
-                                    } else {
-                                        stringResource(R.string.setting_auto_backup_folder_none)
-                                    },
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = if (hasFolder) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                            }
-                            FilledTonalButton(onClick = { autoBackupFolderLauncher.launch(null) }) {
-                                Text(stringResource(R.string.setting_auto_backup_select_folder), fontSize = 12.sp)
-                            }
-                        }
-
-                        if (hasFolder) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                TextButton(onClick = { viewModel.setAutoBackupUri(null) }) {
-                                    Text(
-                                        text = stringResource(R.string.setting_auto_backup_disable),
-                                        color = MaterialTheme.colorScheme.error,
-                                        fontSize = 12.sp
-                                    )
-                                }
-
-                                Text(
-                                    text = stringResource(R.string.setting_auto_backup_rotation_count, themeSettings.maxAutoBackups),
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
-                        }
+                    } else {
+                        viewModel.setHealthConnectSync(false)
                     }
                 }
-            }
+            )
 
-            // Google Health Connect Local Sync Section (Item 107)
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = MaterialTheme.shapes.large,
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer)
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.FitnessCenter,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                        Spacer(modifier = Modifier.width(16.dp))
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = stringResource(R.string.setting_health_connect_title),
-                                style = MaterialTheme.typography.bodyLarge,
-                                fontWeight = FontWeight.Medium
-                            )
-                            Text(
-                                text = stringResource(R.string.setting_health_connect_desc),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Switch(
-                            checked = themeSettings.healthConnectSync,
-                            onCheckedChange = { enabled ->
-                                if (enabled) {
-                                    if (healthConnectSyncManager?.isAvailable() == true) {
-                                        healthConnectLauncher.launch(healthConnectSyncManager.permissions)
-                                    } else {
-                                        Toast.makeText(
-                                            context,
-                                            context.getString(R.string.setting_health_connect_unavailable),
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                } else {
-                                    viewModel.setHealthConnectSync(false)
-                                }
-                            }
-                        )
+            // About Section
+            AboutCard(
+                versionName = BuildConfig.VERSION_NAME,
+                onGitHubClick = {
+                    runCatching {
+                        val intent = Intent(Intent.ACTION_VIEW, "https://github.com/kveld9/trackGym".toUri())
+                        context.startActivity(intent)
                     }
-
-                    if (healthConnectSyncManager?.isAvailable() != true) {
-                        Text(
-                            text = stringResource(R.string.setting_health_connect_unavailable),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.error
-                        )
-                    }
+                },
+                onPrivacyClick = {
+                    context.startActivity(Intent(context, PrivacyActivity::class.java))
                 }
-            }
-
-            // App info & Author / GitHub Section
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = MaterialTheme.shapes.large,
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow)
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = stringResource(R.string.app_version_info, BuildConfig.VERSION_NAME),
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = stringResource(R.string.app_author_info, "kveld9"),
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.Medium,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                    Spacer(modifier = Modifier.height(2.dp))
-                    Text(
-                        text = stringResource(R.string.app_tagline),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-
-                    Spacer(modifier = Modifier.height(14.dp))
-
-                    FilledTonalButton(
-                        onClick = {
-                            runCatching {
-                                val intent = Intent(Intent.ACTION_VIEW, "https://github.com/kveld9/trackGym".toUri())
-                                context.startActivity(intent)
-                            }
-                        },
-                        shape = MaterialTheme.shapes.medium
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Code,
-                            contentDescription = "GitHub",
-                            modifier = Modifier.size(18.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(stringResource(R.string.view_on_github, "kveld9/trackGym"))
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.OpenInNew,
-                            contentDescription = null,
-                            modifier = Modifier.size(14.dp)
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    OutlinedButton(
-                        onClick = {
-                            context.startActivity(Intent(context, com.kveld9.trackgym.ui.privacy.PrivacyActivity::class.java))
-                        },
-                        shape = MaterialTheme.shapes.medium
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Security,
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(stringResource(R.string.privacy_title))
-                    }
-                }
-            }
+            )
 
             Spacer(modifier = Modifier.height(120.dp))
         }
@@ -1444,370 +423,59 @@ fun SettingsScreen(
 
     // Duplicate Policy Dialog
     if (uiState.pendingImportBackup != null) {
-        AlertDialog(
-            onDismissRequest = { viewModel.dismissImportPrompt() },
-            properties = DialogProperties(dismissOnClickOutside = false),
-            title = { Text(stringResource(R.string.duplicate_policy_title)) },
-            text = {
-                Text(stringResource(R.string.duplicate_policy_prompt))
-            },
-            confirmButton = {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Button(
-                        onClick = { viewModel.applyImportPolicy(DuplicatePolicy.SKIP_EXISTING) },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(stringResource(R.string.duplicate_policy_skip))
-                    }
-
-                    OutlinedButton(
-                        onClick = { viewModel.applyImportPolicy(DuplicatePolicy.OVERWRITE_ALL) },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(stringResource(R.string.duplicate_policy_overwrite))
-                    }
-
-                    OutlinedButton(
-                        onClick = { viewModel.applyImportPolicy(DuplicatePolicy.DUPLICATE_ALL) },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(stringResource(R.string.duplicate_policy_allow_duplicates))
-                    }
-
-                    TextButton(
-                        onClick = { viewModel.dismissImportPrompt() },
-                        modifier = Modifier.align(Alignment.End)
-                    ) {
-                        Text(stringResource(R.string.action_cancel))
-                    }
-                }
-            },
-            dismissButton = null
+        DuplicatePolicyDialog(
+            onDismiss = { viewModel.dismissImportPrompt() },
+            onApplyPolicy = { policy -> viewModel.applyImportPolicy(policy) }
         )
     }
 }
 
 @Composable
-fun OneRepMaxModelsCard(
-    selectedFormula: String,
-    onSelectFormula: (String) -> Unit,
+fun DuplicatePolicyDialog(
+    onDismiss: () -> Unit,
+    onApplyPolicy: (DuplicatePolicy) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.large,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(14.dp)
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    imageVector = Icons.Default.FitnessCenter,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = stringResource(R.string.setting_orm_formula_title),
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Medium
-                    )
-                    Text(
-                        text = stringResource(R.string.setting_orm_formula_desc),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-            }
-
-            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                OneRepMaxFormula.entries.forEach { formula ->
-                    val isSelected = selectedFormula.equals(formula.name, ignoreCase = true)
-                    Surface(
-                        shape = MaterialTheme.shapes.medium,
-                        color = if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.12f) else MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.4f),
-                        border = if (isSelected) BorderStroke(1.5.dp, MaterialTheme.colorScheme.primary) else null,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { onSelectFormula(formula.name) }
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 14.dp, vertical = 10.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Column(modifier = Modifier.weight(1f)) {
-                                Text(
-                                    text = stringResource(formula.displayNameRes),
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                                    color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
-                                )
-                                Text(
-                                    text = formula.formulaExpression,
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
-                            if (isSelected) {
-                                Icon(
-                                    imageVector = Icons.Default.Check,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.primary,
-                                    modifier = Modifier.size(20.dp)
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun BodyWeightSettingRow(
-    bodyWeightKg: Double,
-    onWeightChanged: (Double) -> Unit
-) {
-    var showDialog by remember { mutableStateOf(false) }
-
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { showDialog = true }
-    ) {
-        Icon(
-            imageVector = Icons.Default.FitnessCenter,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary
-        )
-        Spacer(modifier = Modifier.width(16.dp))
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = stringResource(R.string.settings_user_bodyweight_title),
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Medium
-            )
-            Text(
-                text = stringResource(R.string.settings_user_bodyweight_desc),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-        Text(
-            text = "$bodyWeightKg kg",
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary
-        )
-    }
-
-    if (showDialog) {
-        BodyWeightInputDialog(
-            initialWeight = bodyWeightKg,
-            onDismiss = { showDialog = false },
-            onConfirm = {
-                onWeightChanged(it)
-                showDialog = false
-            }
-        )
-    }
-}
-
-@Composable
-private fun BodyWeightInputDialog(
-    initialWeight: Double,
-    onDismiss: () -> Unit,
-    onConfirm: (Double) -> Unit
-) {
-    var weightText by remember { mutableStateOf(initialWeight.toString()) }
-
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.settings_user_bodyweight_title)) },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text(
-                    text = stringResource(R.string.settings_user_bodyweight_desc),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                OutlinedTextField(
-                    value = weightText,
-                    onValueChange = { weightText = it },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-        },
+        properties = DialogProperties(dismissOnClickOutside = false),
+        title = { Text(stringResource(R.string.duplicate_policy_title)) },
+        text = { Text(stringResource(R.string.duplicate_policy_prompt)) },
         confirmButton = {
-            Button(
-                onClick = {
-                    val parsed = weightText.toDoubleOrNull() ?: initialWeight
-                    onConfirm(parsed)
-                }
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Text(stringResource(android.R.string.ok))
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text(stringResource(R.string.action_cancel))
-            }
-        }
-    )
-}
-
-@Composable
-private fun BiologicalSexSettingRow(
-    sex: String,
-    onSexChanged: (String) -> Unit
-) {
-    val currentSex = if (sex == "FEMALE") com.kveld9.trackgym.domain.model.BiologicalSex.FEMALE else com.kveld9.trackgym.domain.model.BiologicalSex.MALE
-
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Icon(
-            imageVector = Icons.Default.MilitaryTech,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary
-        )
-        Spacer(modifier = Modifier.width(16.dp))
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = stringResource(R.string.settings_user_sex_title),
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Medium
-            )
-            Text(
-                text = stringResource(R.string.settings_user_sex_desc),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            com.kveld9.trackgym.domain.model.BiologicalSex.entries.forEach { s ->
-                FilterChip(
-                    selected = currentSex == s,
-                    onClick = { onSexChanged(s.name) },
-                    label = { Text(stringResource(s.displayNameRes)) },
-                    colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
-                        selectedLabelColor = MaterialTheme.colorScheme.primary
-                    )
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun AgeSettingRow(
-    age: Int,
-    onAgeChanged: (Int) -> Unit
-) {
-    var showDialog by remember { mutableStateOf(false) }
-
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { showDialog = true }
-    ) {
-        Icon(
-            imageVector = Icons.Default.CalendarMonth,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary
-        )
-        Spacer(modifier = Modifier.width(16.dp))
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = stringResource(R.string.settings_user_age_title),
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Medium
-            )
-            Text(
-                text = stringResource(R.string.settings_user_age_desc),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-        Text(
-            text = stringResource(R.string.strength_user_age_years, age),
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary
-        )
-    }
-
-    if (showDialog) {
-        AgeInputDialog(
-            initialAge = age,
-            onDismiss = { showDialog = false },
-            onConfirm = {
-                onAgeChanged(it)
-                showDialog = false
-            }
-        )
-    }
-}
-
-@Composable
-private fun AgeInputDialog(
-    initialAge: Int,
-    onDismiss: () -> Unit,
-    onConfirm: (Int) -> Unit
-) {
-    var ageText by remember { mutableStateOf(initialAge.toString()) }
-
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.settings_user_age_title)) },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text(
-                    text = stringResource(R.string.settings_user_age_desc),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                OutlinedTextField(
-                    value = ageText,
-                    onValueChange = { ageText = it.filter { ch -> ch.isDigit() } },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-        },
-        confirmButton = {
-            Button(
-                onClick = {
-                    val parsed = ageText.toIntOrNull()?.coerceIn(12, 100) ?: initialAge
-                    onConfirm(parsed)
+                Button(
+                    onClick = { onApplyPolicy(DuplicatePolicy.SKIP_EXISTING) },
+                    modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = 48.dp)
+                ) {
+                    Text(stringResource(R.string.duplicate_policy_skip))
                 }
-            ) {
-                Text(stringResource(android.R.string.ok))
+
+                OutlinedButton(
+                    onClick = { onApplyPolicy(DuplicatePolicy.OVERWRITE_ALL) },
+                    modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = 48.dp)
+                ) {
+                    Text(stringResource(R.string.duplicate_policy_overwrite))
+                }
+
+                OutlinedButton(
+                    onClick = { onApplyPolicy(DuplicatePolicy.DUPLICATE_ALL) },
+                    modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = 48.dp)
+                ) {
+                    Text(stringResource(R.string.duplicate_policy_allow_duplicates))
+                }
+
+                TextButton(
+                    onClick = onDismiss,
+                    modifier = Modifier.align(Alignment.End).defaultMinSize(minHeight = 48.dp)
+                ) {
+                    Text(stringResource(R.string.action_cancel))
+                }
             }
         },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text(stringResource(R.string.action_cancel))
-            }
-        }
+        dismissButton = null,
+        modifier = modifier
     )
 }

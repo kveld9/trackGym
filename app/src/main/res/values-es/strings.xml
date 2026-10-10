@@ -136,6 +136,7 @@
 
     <!-- Settings - Appearance -->
     <string name="section_appearance">Apariencia</string>
+    <string name="section_profile">Perfil de usuario</string>
     <string name="setting_theme_title">Tema</string>
     <string name="theme_mode_dark">Oscuro</string>
     <string name="theme_mode_light">Claro</string>
@@ -170,6 +171,16 @@
 
     <!-- Settings - Backup -->
     <string name="section_backup">Respaldo y Portabilidad</string>
+    <string name="setting_export_data_title">Exportar datos</string>
+    <string name="setting_export_data_desc">Copia de seguridad o exportar a hoja de cálculo</string>
+    <string name="setting_import_data_title">Importar datos</string>
+    <string name="setting_import_data_desc">Restaurar desde copia o planilla</string>
+    <string name="export_format_dialog_title">Seleccionar formato de exportación</string>
+    <string name="import_format_dialog_title">Seleccionar formato de importación</string>
+    <string name="format_json_title">JSON (Copia completa)</string>
+    <string name="format_json_desc">Copia completa con ejercicios, rutinas y récords</string>
+    <string name="format_csv_title">CSV (Hoja de cálculo)</string>
+    <string name="format_csv_desc">Historial de entrenamientos para hojas de cálculo</string>
     <string name="setting_export_backup_title">Exportar Datos (JSON)</string>
     <string name="setting_export_backup_desc">Genera un respaldo portable de tus entrenamientos, series, ejercicios y récords</string>
     <string name="setting_export_csv_title">Exportar Historial (CSV)</string>
@@ -297,10 +308,15 @@
     <string name="notif_action_skip">Saltar</string>
     <string name="notif_action_complete_set">Completar serie</string>
     <string name="setting_rest_timer_section">Temporizador de descanso</string>
+    <string name="section_timer">Temporizador</string>
+    <string name="section_sound">Sonido</string>
+    <string name="section_volume_equipment">Volumen y equipo</string>
+    <string name="section_session">Sesión</string>
+    <string name="section_integrations">Integraciones</string>
     <string name="setting_auto_rest_timer_title">Temporizador automático</string>
-    <string name="setting_auto_rest_timer_desc">Iniciar cuenta regresiva automáticamente al completar una serie</string>
+    <string name="setting_auto_rest_timer_desc">Inicia el conteo al completar una serie</string>
     <string name="setting_default_rest_duration_title">Duración por defecto</string>
-    <string name="setting_default_rest_duration_desc">Duración del intervalo de descanso entre series</string>
+    <string name="setting_default_rest_duration_desc">Se aplica a ejercicios sin tiempo propio</string>
     <string name="rest_duration_seconds">%1$ds</string>
     <string name="menu_set_rest_duration">Configurar descanso</string>
     <string name="dialog_set_exercise_rest_title">Descanso del ejercicio</string>
@@ -309,18 +325,21 @@
     <string name="exercise_rest_use_global">Usar Global (%1$ds)</string>
     <string name="exercise_rest_badge">%1$ds descanso</string>
     <string name="setting_timer_sound_title">Sonido de fin de descanso</string>
-    <string name="setting_timer_sound_desc">Tono reproducido al llegar a cero en la cuenta regresiva</string>
+    <string name="setting_timer_sound_desc">Tono al llegar a cero</string>
+    <string name="setting_timer_sound_dialog_title">Seleccionar sonido del temporizador</string>
     <string name="setting_timer_countdown_title">Beeps de cuenta regresiva (3-2-1)</string>
     <string name="setting_timer_countdown_desc">Tonos cortos de advertencia en los últimos 3 segundos</string>
     <string name="setting_sound_complete_title">Sonido al completar serie</string>
-    <string name="setting_sound_complete_desc">Clic sonoro y sutil de confirmación al marcar una serie</string>
+    <string name="setting_sound_complete_desc">Clic breve al completar una serie</string>
     <string name="sound_digital_beep">Beep Digital</string>
     <string name="sound_boxing_bell">Campana de Boxeo</string>
     <string name="sound_ting_ting">Ting-Ting</string>
     <string name="sound_alarm">Alarma Tradicional</string>
     <string name="sound_silent">Cero Silencioso</string>
     <string name="setting_get_ready_title">Temporizador de preparación pre-serie</string>
-    <string name="setting_get_ready_desc">Cuenta regresiva corta antes de iniciar series cronometradas o pesadas</string>
+    <string name="setting_get_ready_desc">Cuenta breve antes de series cronometradas</string>
+    <string name="setting_get_ready_dialog_title">Cuenta regresiva previa</string>
+    <string name="setting_orm_formula_dialog_title">Seleccionar fórmula 1RM</string>
     <string name="get_ready_off">Desactivado</string>
     <string name="get_ready_countdown_active">Prepararse: %1$ds</string>
     <string name="action_get_ready_timer">Cuenta de preparación</string>
@@ -777,6 +796,20 @@
 
     <!-- Privacy & Permissions (Item 92) -->
     <string name="privacy_title">Privacidad y Permisos</string>
+    <string name="privacy_section_permissions">Estado de permisos</string>
+    <string name="privacy_section_statement">Declaración de privacidad</string>
+    <string name="permission_status_granted">Concedido</string>
+    <string name="permission_status_denied">Denegado</string>
+    <string name="permission_status_not_required">No requerido</string>
+    <string name="permission_status_available">Disponible</string>
+    <string name="permission_status_unavailable">No disponible</string>
+    <string name="permission_action_manage">Gestionar</string>
+    <string name="privacy_storage_compact_desc">Acceso a archivos solo al exportar o importar</string>
+    <string name="privacy_notifications_compact_desc">Cronómetro y controles durante sesiones activas</string>
+    <string name="privacy_health_connect_compact_desc">Sincronización opcional con Android Health Connect</string>
+    <string name="privacy_offline_verified">Verificado: 100% offline, almacenamiento local SQLite</string>
+    <string name="privacy_no_internet_verified">Verificado: sin permiso de INTERNET declarado</string>
+    <string name="privacy_no_tracking_verified">Verificado: sin rastreadores, analíticas ni anuncios</string>
     <string name="privacy_offline_title">100% Offline y Privado</string>
     <string name="privacy_offline_desc">TrackGym funciona completamente en tu dispositivo. Tu historial de entrenamientos, récords personales y notas se guardan localmente en tu base de datos SQLite.</string>
     <string name="privacy_no_internet_title">Sin Permiso de Internet</string>
@@ -874,12 +907,13 @@
     <string name="settings_user_sex_desc">Base para las tablas de estándares poblacionales</string>
 
     <!-- Auto-Backup via SAF (Item 108) -->
-    <string name="setting_auto_backup_title">Respaldo Automático Silencioso (SAF)</string>
+    <string name="setting_auto_backup_title">Respaldo automático</string>
     <string name="setting_auto_backup_desc">Exporta automáticamente una copia silenciosa en JSON a una carpeta local al finalizar entrenamientos</string>
     <string name="setting_auto_backup_folder_title">Carpeta de Respaldo Automático</string>
     <string name="setting_auto_backup_folder_none">Ninguna carpeta seleccionada (Desactivado)</string>
     <string name="setting_auto_backup_select_folder">Seleccionar Carpeta Local</string>
     <string name="setting_auto_backup_disable">Desactivar Respaldo Automático</string>
+    <string name="setting_auto_backup_disabled">Desactivado</string>
     <string name="setting_auto_backup_rotation_title">Máximo de Copias a Conservar</string>
     <string name="setting_auto_backup_rotation_desc">Las copias automáticas más antiguas se purgarán automáticamente</string>
     <string name="setting_auto_backup_rotation_count">%1$d archivos</string>

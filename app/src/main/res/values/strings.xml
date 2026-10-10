@@ -136,6 +136,7 @@
 
     <!-- Settings - Appearance -->
     <string name="section_appearance">Appearance</string>
+    <string name="section_profile">User Profile</string>
     <string name="setting_theme_title">Theme</string>
     <string name="theme_mode_dark">Dark</string>
     <string name="theme_mode_light">Light</string>
@@ -170,6 +171,16 @@
 
     <!-- Settings - Backup -->
     <string name="section_backup">Backup &amp; Portability</string>
+    <string name="setting_export_data_title">Export Data</string>
+    <string name="setting_export_data_desc">Backup database or export to spreadsheet</string>
+    <string name="setting_import_data_title">Import Data</string>
+    <string name="setting_import_data_desc">Restore from backup or spreadsheet</string>
+    <string name="export_format_dialog_title">Select Export Format</string>
+    <string name="import_format_dialog_title">Select Import Format</string>
+    <string name="format_json_title">JSON (Full Backup)</string>
+    <string name="format_json_desc">Complete backup including exercises, routines, and records</string>
+    <string name="format_csv_title">CSV (Spreadsheet)</string>
+    <string name="format_csv_desc">Workout history compatible with spreadsheets</string>
     <string name="setting_export_backup_title">Export Data (JSON)</string>
     <string name="setting_export_backup_desc">Generate a portable backup of your workouts, sets, exercises, and records</string>
     <string name="setting_export_csv_title">Export Workout History (CSV)</string>
@@ -297,10 +308,15 @@
     <string name="notif_action_skip">Skip</string>
     <string name="notif_action_complete_set">Complete Set</string>
     <string name="setting_rest_timer_section">Rest Timer</string>
+    <string name="section_timer">Timer</string>
+    <string name="section_sound">Sound</string>
+    <string name="section_volume_equipment">Volume &amp; Equipment</string>
+    <string name="section_session">Session</string>
+    <string name="section_integrations">Integrations</string>
     <string name="setting_auto_rest_timer_title">Auto Rest Timer</string>
-    <string name="setting_auto_rest_timer_desc">Automatically start rest countdown when completing a set</string>
+    <string name="setting_auto_rest_timer_desc">Start countdown when completing a set</string>
     <string name="setting_default_rest_duration_title">Default Rest Duration</string>
-    <string name="setting_default_rest_duration_desc">Default interval duration for exercises</string>
+    <string name="setting_default_rest_duration_desc">Applies to exercises without custom time</string>
     <string name="rest_duration_seconds">%1$ds</string>
     <string name="menu_set_rest_duration">Set Rest Duration</string>
     <string name="dialog_set_exercise_rest_title">Exercise Rest Duration</string>
@@ -309,18 +325,21 @@
     <string name="exercise_rest_use_global">Use Default (%1$ds)</string>
     <string name="exercise_rest_badge">%1$ds rest</string>
     <string name="setting_timer_sound_title">Timer Finish Sound</string>
-    <string name="setting_timer_sound_desc">Sound played when the rest countdown reaches zero</string>
+    <string name="setting_timer_sound_desc">Tone when rest reaches zero</string>
+    <string name="setting_timer_sound_dialog_title">Select Timer Sound</string>
     <string name="setting_timer_countdown_title">3-2-1 Countdown Beeps</string>
     <string name="setting_timer_countdown_desc">Audio warning beeps on the last 3 seconds of rest</string>
     <string name="setting_sound_complete_title">Set Completion Click</string>
-    <string name="setting_sound_complete_desc">Audio feedback when marking a set as completed</string>
+    <string name="setting_sound_complete_desc">Short click when completing a set</string>
     <string name="sound_digital_beep">Digital Beep</string>
     <string name="sound_boxing_bell">Boxing Bell</string>
     <string name="sound_ting_ting">Ting-Ting</string>
     <string name="sound_alarm">Traditional Alarm</string>
     <string name="sound_silent">Silent / Mute</string>
     <string name="setting_get_ready_title">Pre-Set \"Get Ready\" Countdown</string>
-    <string name="setting_get_ready_desc">Short countdown before starting timed or heavy sets</string>
+    <string name="setting_get_ready_desc">Brief countdown before timed sets</string>
+    <string name="setting_get_ready_dialog_title">Pre-Set Countdown</string>
+    <string name="setting_orm_formula_dialog_title">Select 1RM Formula</string>
     <string name="get_ready_off">Off</string>
     <string name="get_ready_countdown_active">Get Ready: %1$ds</string>
     <string name="action_get_ready_timer">Get Ready Countdown</string>
@@ -777,6 +796,20 @@
 
     <!-- Privacy & Permissions (Item 92) -->
     <string name="privacy_title">Privacy &amp; Permissions</string>
+    <string name="privacy_section_permissions">Permission Status</string>
+    <string name="privacy_section_statement">Privacy Statement</string>
+    <string name="permission_status_granted">Granted</string>
+    <string name="permission_status_denied">Denied</string>
+    <string name="permission_status_not_required">Not required</string>
+    <string name="permission_status_available">Available</string>
+    <string name="permission_status_unavailable">Not available</string>
+    <string name="permission_action_manage">Manage</string>
+    <string name="privacy_storage_compact_desc">File access only when you export or import</string>
+    <string name="privacy_notifications_compact_desc">Countdown and controls during active sessions</string>
+    <string name="privacy_health_connect_compact_desc">Optional sync with Android Health Connect</string>
+    <string name="privacy_offline_verified">Verified: 100% offline, local SQLite storage</string>
+    <string name="privacy_no_internet_verified">Verified: no INTERNET permission declared</string>
+    <string name="privacy_no_tracking_verified">Verified: zero trackers, analytics, or ads</string>
     <string name="privacy_offline_title">100% Offline &amp; Private</string>
     <string name="privacy_offline_desc">TrackGym operates entirely on your device. Your workout history, personal records, and notes are stored locally in your private SQLite database.</string>
     <string name="privacy_no_internet_title">Zero Internet Permission</string>
@@ -874,12 +907,13 @@
     <string name="settings_user_sex_desc">Baseline used for strength standard tables</string>
 
     <!-- Auto-Backup via SAF (Item 108) -->
-    <string name="setting_auto_backup_title">Silent Auto-Backup (SAF)</string>
+    <string name="setting_auto_backup_title">Automatic Backup</string>
     <string name="setting_auto_backup_desc">Automatically export a silent JSON backup to a local folder when completing workouts</string>
     <string name="setting_auto_backup_folder_title">Auto-Backup Folder</string>
     <string name="setting_auto_backup_folder_none">No folder selected (Disabled)</string>
     <string name="setting_auto_backup_select_folder">Select Local Folder</string>
     <string name="setting_auto_backup_disable">Disable Auto-Backup</string>
+    <string name="setting_auto_backup_disabled">Disabled</string>
     <string name="setting_auto_backup_rotation_title">Max Backups to Retain</string>
     <string name="setting_auto_backup_rotation_desc">Oldest automatic backups will be automatically pruned</string>
     <string name="setting_auto_backup_rotation_count">%1$d files</string>
