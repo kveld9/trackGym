@@ -129,8 +129,10 @@ fun ExercisesScreen(
 
     LaunchedEffect(retryKey) {
         launch {
-            viewModel.filteredExercises.collect {
-                isLoading = false
+            viewModel.filteredExercises.collect { list ->
+                if (list.isNotEmpty()) {
+                    isLoading = false
+                }
             }
         }
         launch {
@@ -245,7 +247,6 @@ fun ExercisesScreen(
                         onRetry = {
                             viewModel.clearExercisesError()
                             retryKey++
-                            viewModel.clearAllExerciseFilters()
                         },
                         errorMessage = queryError?.takeIf { it.isNotBlank() }
                             ?: stringResource(R.string.error_load_exercises)

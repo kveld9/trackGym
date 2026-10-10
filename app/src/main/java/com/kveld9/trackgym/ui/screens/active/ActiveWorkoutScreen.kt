@@ -259,8 +259,10 @@ fun ActiveWorkoutScreen(
 
     LaunchedEffect(Unit) {
         launch {
-            viewModel.routines.collect {
-                isHydrating = false
+            viewModel.routines.collect { list ->
+                if (list.isNotEmpty()) {
+                    isHydrating = false
+                }
             }
         }
         launch {
