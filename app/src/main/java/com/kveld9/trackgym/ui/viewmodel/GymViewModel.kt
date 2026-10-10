@@ -37,8 +37,11 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -286,7 +289,24 @@ class GymViewModel(
         }
     }
 
-    private val _rawExercises = repository.getAllExercises()
+    private val _exercisesError = MutableStateFlow<String?>(null)
+    val exercisesError: StateFlow<String?> = _exercisesError.asStateFlow()
+
+    private val _exercisesRetryTrigger = MutableStateFlow(0)
+
+    fun clearExercisesError() {
+        _exercisesError.value = null
+        _exercisesRetryTrigger.value++
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val _rawExercises = _exercisesRetryTrigger.flatMapLatest {
+        repository.getAllExercises()
+            .catch { throwable ->
+                _exercisesError.value = throwable.localizedMessage?.takeIf { it.isNotBlank() } ?: ""
+                emit(emptyList())
+            }
+    }
     val allExercises: StateFlow<List<Exercise>> = _rawExercises
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
     private val _searchQuery = MutableStateFlow("")
@@ -324,7 +344,7 @@ class GymViewModel(
 
     val filteredExercises: StateFlow<List<Exercise>> = combine(
         listOf(
-            _rawExercises,
+            allExercises,
             _searchQuery,
             _selectedMuscleFilter,
             _selectedOriginFilter,

@@ -604,6 +604,7 @@
     <string name="chip_all_mechanics">All Mechanics</string>
     <string name="action_clear_filters">Clear Filters</string>
     <string name="action_retry">Retry</string>
+    <string name="error_load_exercises">Failed to load exercises</string>
 
     <!-- Alternative Exercise Engine -->
     <string name="title_substitutes">Alternative Exercises</string>

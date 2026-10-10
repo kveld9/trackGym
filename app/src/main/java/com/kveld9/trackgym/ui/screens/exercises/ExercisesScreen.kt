@@ -72,7 +72,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import kotlinx.coroutines.flow.catch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -110,17 +109,7 @@ fun ExercisesScreen(
     modifier: Modifier = Modifier
 ) {
     var retryKey by rememberSaveable { mutableIntStateOf(0) }
-    var queryError by rememberSaveable { mutableStateOf<String?>(null) }
-    val defaultLoadError = stringResource(R.string.error_occurred_desc)
-
-    val exercisesFlow = remember(viewModel, retryKey, defaultLoadError) {
-        viewModel.filteredExercises
-            .catch { throwable ->
-                queryError = throwable.localizedMessage?.takeIf { it.isNotBlank() } ?: defaultLoadError
-                emit(emptyList())
-            }
-    }
-    val exercises by exercisesFlow.collectAsStateWithLifecycle(initialValue = emptyList())
+    val exercises by viewModel.filteredExercises.collectAsStateWithLifecycle()
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
     val selectedFilter by viewModel.selectedMuscleFilter.collectAsStateWithLifecycle()
     val selectedOriginFilter by viewModel.selectedOriginFilter.collectAsStateWithLifecycle()
@@ -130,24 +119,17 @@ fun ExercisesScreen(
     val selectedDifficultyFilter by viewModel.selectedDifficultyFilter.collectAsStateWithLifecycle()
     val allCustomCategories by viewModel.allCustomCategories.collectAsStateWithLifecycle()
     val selectedCustomCategoryFilter by viewModel.selectedCustomCategoryFilter.collectAsStateWithLifecycle()
-
-    val allExercisesFlow = remember(viewModel, retryKey, defaultLoadError) {
-        viewModel.allExercises
-            .catch { throwable ->
-                queryError = throwable.localizedMessage?.takeIf { it.isNotBlank() } ?: defaultLoadError
-                emit(emptyList())
-            }
-    }
-    val allExercises by allExercisesFlow.collectAsStateWithLifecycle(initialValue = emptyList())
+    val allExercises by viewModel.allExercises.collectAsStateWithLifecycle()
     val completedWorkouts by viewModel.completedWorkouts.collectAsStateWithLifecycle()
     val weightUnit by viewModel.weightUnit.collectAsStateWithLifecycle()
     val userBodyWeight by viewModel.userBodyWeight.collectAsStateWithLifecycle()
+    val queryError by viewModel.exercisesError.collectAsStateWithLifecycle()
 
     var isLoading by rememberSaveable { mutableStateOf(allExercises.isEmpty()) }
 
     LaunchedEffect(retryKey) {
         launch {
-            exercisesFlow.collect {
+            viewModel.filteredExercises.collect {
                 isLoading = false
             }
         }
@@ -261,11 +243,12 @@ fun ExercisesScreen(
                 queryError != null -> {
                     ExerciseInlineError(
                         onRetry = {
-                            queryError = null
+                            viewModel.clearExercisesError()
                             retryKey++
                             viewModel.clearAllExerciseFilters()
                         },
-                        errorMessage = queryError
+                        errorMessage = queryError?.takeIf { it.isNotBlank() }
+                            ?: stringResource(R.string.error_load_exercises)
                     )
                 }
                 isLoading -> {
@@ -1522,7 +1505,7 @@ private fun ExerciseInlineError(
                 textAlign = TextAlign.Center
             )
             Text(
-                text = errorMessage?.takeIf { it.isNotBlank() } ?: stringResource(R.string.error_occurred_desc),
+                text = errorMessage?.takeIf { it.isNotBlank() } ?: stringResource(R.string.error_load_exercises),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center
