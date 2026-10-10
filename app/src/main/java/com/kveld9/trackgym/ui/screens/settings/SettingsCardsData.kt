@@ -17,8 +17,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
-import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Code
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.FileDownload
 import androidx.compose.material.icons.filled.FileUpload
 import androidx.compose.material.icons.filled.Security
@@ -28,6 +28,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
@@ -164,105 +165,73 @@ private fun AutoBackupRow(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .defaultMinSize(minHeight = 48.dp)
-                .clickable(onClick = onSelectFolder),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = Icons.Default.Security,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary
-            )
-            Spacer(modifier = Modifier.width(16.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = stringResource(R.string.setting_auto_backup_title),
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Medium
-                )
-                Text(
-                    text = stringResource(R.string.setting_auto_backup_desc),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+        SettingsSwitchRow(
+            icon = Icons.Default.Security,
+            title = stringResource(R.string.setting_auto_backup_title),
+            description = if (hasFolder) {
+                stringResource(R.string.setting_auto_backup_desc)
+            } else {
+                stringResource(R.string.setting_auto_backup_disabled)
+            },
+            checked = hasFolder,
+            onCheckedChange = { isChecked ->
+                if (isChecked) {
+                    onSelectFolder()
+                } else {
+                    onDisableAutoBackup()
+                }
             }
-            Spacer(modifier = Modifier.width(8.dp))
-            Icon(
-                imageVector = Icons.Default.ChevronRight,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+
+        if (hasFolder) {
+            AutoBackupDetailsRow(
+                folderName = folderName,
+                maxAutoBackups = maxAutoBackups,
+                onSelectFolder = onSelectFolder
             )
         }
-
-        AutoBackupActionRow(
-            folderName = folderName,
-            hasFolder = hasFolder,
-            maxAutoBackups = maxAutoBackups,
-            onSelectFolder = onSelectFolder,
-            onDisableAutoBackup = onDisableAutoBackup
-        )
     }
 }
 
 @Composable
-private fun AutoBackupActionRow(
+private fun AutoBackupDetailsRow(
     folderName: String,
-    hasFolder: Boolean,
     maxAutoBackups: Int,
-    onSelectFolder: () -> Unit,
-    onDisableAutoBackup: () -> Unit
+    onSelectFolder: () -> Unit
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(start = 40.dp)
             .defaultMinSize(minHeight = 48.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = folderName,
+                text = stringResource(R.string.setting_auto_backup_location, folderName),
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.SemiBold,
-                color = if (hasFolder) {
-                    MaterialTheme.colorScheme.primary
-                } else {
-                    MaterialTheme.colorScheme.onSurfaceVariant
-                },
+                color = MaterialTheme.colorScheme.primary,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
-            if (hasFolder) {
-                Text(
-                    text = stringResource(R.string.setting_auto_backup_rotation_count, maxAutoBackups),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
+            Text(
+                text = stringResource(R.string.setting_auto_backup_rotation_count, maxAutoBackups),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
         Spacer(modifier = Modifier.width(8.dp))
-        val (btnText, btnColor, btnAction) = if (hasFolder) {
-            Triple(
-                stringResource(R.string.setting_auto_backup_disable),
-                MaterialTheme.colorScheme.error,
-                onDisableAutoBackup
-            )
-        } else {
-            Triple(
-                stringResource(R.string.setting_auto_backup_select_folder),
-                MaterialTheme.colorScheme.primary,
-                onSelectFolder
-            )
-        }
-        TextButton(
-            onClick = btnAction,
-            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
-            modifier = Modifier.defaultMinSize(minHeight = 48.dp)
+        IconButton(
+            onClick = onSelectFolder,
+            modifier = Modifier.size(48.dp)
         ) {
-            Text(text = btnText, color = btnColor, fontSize = 12.sp)
+            Icon(
+                imageVector = Icons.Default.Edit,
+                contentDescription = stringResource(R.string.setting_auto_backup_select_folder),
+                tint = MaterialTheme.colorScheme.primary
+            )
         }
     }
 }
