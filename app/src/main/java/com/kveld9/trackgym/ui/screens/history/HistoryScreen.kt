@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -50,6 +51,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import com.kveld9.trackgym.domain.model.StandardContextTag
@@ -189,10 +191,13 @@ fun HistoryScreen(
                         color = if (!isCalendarView) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh,
                         modifier = Modifier
                             .weight(1f)
+                            .defaultMinSize(minHeight = 48.dp)
                             .clickable { isCalendarView = false }
                     ) {
                         Row(
-                            modifier = Modifier.padding(vertical = 10.dp),
+                            modifier = Modifier
+                                .defaultMinSize(minHeight = 48.dp)
+                                .padding(vertical = 12.dp),
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -217,10 +222,13 @@ fun HistoryScreen(
                         color = if (isCalendarView) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh,
                         modifier = Modifier
                             .weight(1f)
+                            .defaultMinSize(minHeight = 48.dp)
                             .clickable { isCalendarView = true }
                     ) {
                         Row(
-                            modifier = Modifier.padding(vertical = 10.dp),
+                            modifier = Modifier
+                                .defaultMinSize(minHeight = 48.dp)
+                                .padding(vertical = 12.dp),
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -978,6 +986,7 @@ fun HistoryCalendarView(
                                 Box(
                                     modifier = Modifier
                                         .weight(1f)
+                                        .defaultMinSize(minHeight = 48.dp)
                                         .aspectRatio(1f),
                                     contentAlignment = Alignment.Center
                                 ) {
@@ -988,6 +997,7 @@ fun HistoryCalendarView(
                                         Box(
                                             modifier = Modifier
                                                 .fillMaxSize()
+                                                .defaultMinSize(minHeight = 48.dp)
                                                 .clip(RoundedCornerShape(8.dp))
                                                 .then(
                                                     if (hasWorkouts) {
@@ -1002,6 +1012,7 @@ fun HistoryCalendarView(
                                                                     RoundedCornerShape(8.dp)
                                                                 ) else Modifier
                                                             )
+                                                            .minimumInteractiveComponentSize()
                                                             .clickable { onSelectDate(item.dateKey) }
                                                     } else {
                                                         Modifier
