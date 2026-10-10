@@ -157,7 +157,7 @@ private fun GymProfilesSheetHeader(onAddClick: () -> Unit) {
             Text(
                 text = stringResource(R.string.gym_profiles_title),
                 fontWeight = FontWeight.Bold,
-                fontSize = 18.sp
+                fontSize = 20.sp
             )
         }
 
