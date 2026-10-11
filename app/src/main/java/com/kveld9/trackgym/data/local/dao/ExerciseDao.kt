@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.kveld9.trackgym.data.local.entity.ExerciseEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -37,6 +38,9 @@ interface ExerciseDao {
 
     @Delete
     suspend fun deleteExercise(exercise: ExerciseEntity)
+
+    @Update
+    suspend fun updateExercise(exercise: ExerciseEntity)
 
     @Query("DELETE FROM exercises")
     suspend fun deleteAllExercises()

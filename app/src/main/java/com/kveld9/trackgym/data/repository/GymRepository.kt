@@ -25,6 +25,7 @@ import com.kveld9.trackgym.domain.model.DefaultExercises
 import com.kveld9.trackgym.domain.model.DuplicateExerciseNameException
 import com.kveld9.trackgym.domain.model.Exercise
 import com.kveld9.trackgym.domain.model.normalizeExerciseName
+import com.kveld9.trackgym.domain.model.validateExerciseRename
 import com.kveld9.trackgym.domain.model.ExerciseCategory
 import com.kveld9.trackgym.domain.model.ExerciseComparison
 import com.kveld9.trackgym.domain.model.MechanicsType
@@ -200,8 +201,99 @@ class GymRepository(private val database: GymDatabase) {
         id
     }
 
+    suspend fun renameExercise(
+        exerciseId: Long,
+        newName: String,
+        muscleGroup: MuscleGroup? = null,
+        category: ExerciseCategory? = null,
+        notes: String? = null,
+        primaryMuscle: com.kveld9.trackgym.domain.model.BodyMuscle? = null,
+        secondaryMuscles: List<com.kveld9.trackgym.domain.model.MuscleInvolvement>? = null,
+        mechanics: MechanicsType? = null,
+        force: com.kveld9.trackgym.domain.model.ForceType? = null,
+        level: com.kveld9.trackgym.domain.model.DifficultyLevel? = null,
+        customCategories: List<String>? = null
+    ): Exercise = withContext(Dispatchers.IO) {
+        val trimmedName = normalizeExerciseName(newName)
+        val existing = exerciseDao.getExerciseByName(trimmedName)
+        validateExerciseRename(
+            targetExerciseId = exerciseId,
+            candidateName = trimmedName,
+            existingMatchId = existing?.id,
+            existingMatchName = existing?.name
+        )
+
+        val current = exerciseDao.getExerciseById(exerciseId)
+            ?: throw IllegalArgumentException("Exercise with id $exerciseId not found")
+
+        val updated = mergeExerciseEdits(
+            current = current,
+            muscleGroup = muscleGroup,
+            category = category,
+            notes = notes,
+            primaryMuscle = primaryMuscle,
+            secondaryMuscles = secondaryMuscles,
+            mechanics = mechanics,
+            force = force,
+            level = level,
+            customCategories = customCategories,
+            trimmedName = trimmedName
+        )
+        exerciseDao.updateExercise(updated)
+        if (customCategories != null) {
+            for (cat in customCategories) {
+                val trimmed = cat.trim()
+                if (trimmed.isNotBlank()) {
+                    customCategoryDao.insertCategory(com.kveld9.trackgym.data.local.entity.CustomExerciseCategoryEntity(name = trimmed))
+                }
+            }
+        }
+        updated.toDomain()
+    }
+
+    private fun mergeExerciseEdits(
+        current: ExerciseEntity,
+        muscleGroup: MuscleGroup?,
+        category: ExerciseCategory?,
+        notes: String?,
+        primaryMuscle: com.kveld9.trackgym.domain.model.BodyMuscle?,
+        secondaryMuscles: List<com.kveld9.trackgym.domain.model.MuscleInvolvement>?,
+        mechanics: MechanicsType?,
+        force: com.kveld9.trackgym.domain.model.ForceType?,
+        level: com.kveld9.trackgym.domain.model.DifficultyLevel?,
+        customCategories: List<String>?,
+        trimmedName: String
+    ): ExerciseEntity {
+        val serializedSecondaries = secondaryMuscles?.let {
+            com.kveld9.trackgym.domain.calculator.MuscleAnatomyRegistry.serializeSecondaryMuscles(it)
+                .ifBlank { null }
+        } ?: current.secondaryMuscles
+
+        val serializedCustomCategories = customCategories?.let {
+            com.kveld9.trackgym.domain.util.CustomCategoryCodec.serialize(it)
+        } ?: current.customCategories
+
+        return current.copy(
+            name = trimmedName,
+            muscleGroup = muscleGroup?.name ?: current.muscleGroup,
+            category = category?.name ?: current.category,
+            notes = notes?.trim() ?: current.notes,
+            primaryMuscle = primaryMuscle?.name ?: current.primaryMuscle,
+            secondaryMuscles = serializedSecondaries,
+            mechanics = mechanics?.name ?: current.mechanics,
+            force = force?.name ?: current.force,
+            level = level?.name ?: current.level,
+            customCategories = serializedCustomCategories
+        )
+    }
+
     suspend fun deleteExercise(exercise: Exercise) = withContext(Dispatchers.IO) {
         exerciseDao.deleteExercise(ExerciseEntity.fromDomain(exercise))
+    }
+
+    suspend fun deleteExerciseById(exerciseId: Long) = withContext(Dispatchers.IO) {
+        val entity = exerciseDao.getExerciseById(exerciseId) ?: return@withContext
+        exerciseDao.deleteExercise(entity)
     }
 
     suspend fun updateExerciseNotes(exerciseId: Long, notes: String) = withContext(Dispatchers.IO) {

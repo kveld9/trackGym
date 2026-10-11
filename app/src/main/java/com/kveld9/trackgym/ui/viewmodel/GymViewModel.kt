@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import android.database.sqlite.SQLiteConstraintException
+import android.database.sqlite.SQLiteException
 import com.kveld9.trackgym.data.repository.GymRepository
 import com.kveld9.trackgym.domain.calculator.BiomechanicalClassifier
 import com.kveld9.trackgym.domain.calculator.FuzzyExerciseSearchEngine
@@ -272,6 +273,20 @@ class GymViewModel(
 
     fun clearCreateExerciseError() {
         _createExerciseError.value = null
+    }
+
+    private val _renameExerciseError = MutableStateFlow<String?>(null)
+    val renameExerciseError: StateFlow<String?> = _renameExerciseError.asStateFlow()
+
+    fun clearRenameExerciseError() {
+        _renameExerciseError.value = null
+    }
+
+    private val _exerciseDeleteError = MutableStateFlow<String?>(null)
+    val exerciseDeleteError: StateFlow<String?> = _exerciseDeleteError.asStateFlow()
+
+    fun clearExerciseDeleteError() {
+        _exerciseDeleteError.value = null
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -1164,6 +1179,75 @@ class GymViewModel(
             } catch (e: SQLiteConstraintException) {
                 Log.w(TAG, "Create exercise failed with constraint", e)
                 _createExerciseError.value = name.trim()
+            }
+        }
+    }
+
+    fun renameExercise(
+        exerciseId: Long,
+        newName: String,
+        muscleGroup: MuscleGroup? = null,
+        category: ExerciseCategory? = null,
+        notes: String? = null,
+        primaryMuscle: com.kveld9.trackgym.domain.model.BodyMuscle? = null,
+        secondaryMuscles: List<com.kveld9.trackgym.domain.model.MuscleInvolvement> = emptyList(),
+        mechanics: MechanicsType = MechanicsType.COMPOUND,
+        force: ForceType? = null,
+        level: DifficultyLevel? = null,
+        customCategories: List<String> = emptyList(),
+        onSuccess: (() -> Unit)? = null
+    ) {
+        val resolvedForce = force ?: (muscleGroup?.let { group ->
+            category?.let { cat ->
+                BiomechanicalClassifier.classifyForce(newName, cat, group)
+            }
+        })
+        val resolvedLevel = level ?: (muscleGroup?.let { group ->
+            category?.let { cat ->
+                BiomechanicalClassifier.classifyDifficulty(newName, cat, group, mechanics)
+            }
+        })
+        viewModelScope.launch {
+            try {
+                repository.renameExercise(
+                    exerciseId = exerciseId,
+                    newName = newName,
+                    muscleGroup = muscleGroup,
+                    category = category,
+                    notes = notes,
+                    primaryMuscle = primaryMuscle,
+                    secondaryMuscles = secondaryMuscles,
+                    mechanics = mechanics,
+                    force = resolvedForce,
+                    level = resolvedLevel,
+                    customCategories = customCategories
+                )
+                _renameExerciseError.value = null
+                _createExerciseError.value = null
+                onSuccess?.invoke()
+            } catch (e: DuplicateExerciseNameException) {
+                _renameExerciseError.value = e.conflictingName
+                _createExerciseError.value = e.conflictingName
+            } catch (e: SQLiteConstraintException) {
+                Log.w(TAG, "Rename exercise failed with constraint", e)
+                _renameExerciseError.value = newName.trim()
+                _createExerciseError.value = newName.trim()
+            }
+        }
+    }
+
+    fun deleteExercise(exerciseId: Long, onSuccess: (() -> Unit)? = null) {
+        viewModelScope.launch {
+            try {
+                repository.deleteExerciseById(exerciseId)
+                _exerciseDeleteError.value = null
+                onSuccess?.invoke()
+            } catch (e: SQLiteConstraintException) {
+                Log.w(TAG, "Delete exercise failed: exercise is in use", e)
+                _exerciseDeleteError.value = "IN_USE"
+            } catch (e: SQLiteException) {
+                Log.w(TAG, "Delete exercise failed", e)
+                _exerciseDeleteError.value = e.message ?: "UNKNOWN"
             }
         }
     }

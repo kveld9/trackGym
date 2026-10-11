@@ -93,6 +93,10 @@
     <string name="chip_origin_custom">Custom</string>
     <string name="action_create_exercise">Create Exercise</string>
     <string name="dialog_create_exercise_title">Create Custom Exercise</string>
+    <string name="dialog_edit_exercise_title">Edit Exercise</string>
+    <string name="action_delete_exercise">Delete Exercise</string>
+    <string name="dialog_delete_exercise_confirm">Delete exercise \"%1$s\"?</string>
+    <string name="error_exercise_in_use">Cannot delete an exercise that is used in workouts or routines</string>
     <string name="label_exercise_name">Exercise name</string>
     <string name="placeholder_exercise_name">e.g. Incline Smith Press</string>
     <string name="label_muscle_group">Muscle Group</string>

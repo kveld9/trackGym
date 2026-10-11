@@ -79,6 +79,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
@@ -128,6 +129,11 @@ fun ExercisesScreen(
     val createExerciseErrorMessage = createExerciseError?.let {
         stringResource(R.string.error_exercise_duplicate_name, it)
     }
+    val renameExerciseError by viewModel.renameExerciseError.collectAsStateWithLifecycle()
+    val renameExerciseErrorMessage = renameExerciseError?.let {
+        stringResource(R.string.error_exercise_duplicate_name, it)
+    }
+    val deleteError by viewModel.exerciseDeleteError.collectAsStateWithLifecycle()
 
     var isLoading by rememberSaveable { mutableStateOf(allExercises.isEmpty()) }
 
@@ -159,6 +165,8 @@ fun ExercisesScreen(
     }
 
     var showCreateDialog by remember { mutableStateOf(false) }
+    var exerciseToEdit by remember { mutableStateOf<Exercise?>(null) }
+    var exerciseToDelete by remember { mutableStateOf<Exercise?>(null) }
     var selectedExerciseForHistory by remember { mutableStateOf<Exercise?>(null) }
     var showManageCategoriesDialog by remember { mutableStateOf(false) }
     var exerciseForTagging by remember { mutableStateOf<Exercise?>(null) }
@@ -292,7 +300,16 @@ fun ExercisesScreen(
                                     exercise = exercise,
                                     allExercises = allExercises,
                                     onOpenHistory = { selectedExerciseForHistory = exercise },
-                                    onEditTags = { exerciseForTagging = exercise }
+                                    onEditTags = { exerciseForTagging = exercise },
+                                    onEditExercise = {
+                                        viewModel.clearRenameExerciseError()
+                                        viewModel.clearCreateExerciseError()
+                                        exerciseToEdit = exercise
+                                    },
+                                    onDeleteExercise = {
+                                        viewModel.clearExerciseDeleteError()
+                                        exerciseToDelete = exercise
+                                    }
                                 )
                             }
                         }
@@ -360,6 +377,118 @@ fun ExercisesScreen(
         )
     }
 
+    if (exerciseToEdit != null) {
+        val target = exerciseToEdit!!
+        CreateExerciseDialog(
+            allCategories = allCustomCategories,
+            errorMessage = renameExerciseErrorMessage ?: createExerciseErrorMessage,
+            title = stringResource(R.string.dialog_edit_exercise_title),
+            initialExercise = target,
+            onDismiss = {
+                viewModel.clearRenameExerciseError()
+                viewModel.clearCreateExerciseError()
+                exerciseToEdit = null
+            },
+            onClearError = {
+                viewModel.clearRenameExerciseError()
+                viewModel.clearCreateExerciseError()
+            },
+            onCreate = { name, group, category, notes, primaryMuscle, secondaryMuscles, mechanics, force, level, customCategories ->
+                viewModel.renameExercise(
+                    exerciseId = target.id,
+                    newName = name,
+                    muscleGroup = group,
+                    category = category,
+                    notes = notes,
+                    primaryMuscle = primaryMuscle,
+                    secondaryMuscles = secondaryMuscles,
+                    mechanics = mechanics,
+                    force = force,
+                    level = level,
+                    customCategories = customCategories,
+                    onSuccess = {
+                        viewModel.clearRenameExerciseError()
+                        viewModel.clearCreateExerciseError()
+                        exerciseToEdit = null
+                    }
+                )
+            }
+        )
+    }
+
+    if (exerciseToDelete != null) {
+        val target = exerciseToDelete!!
+        AlertDialog(
+            onDismissRequest = {
+                viewModel.clearExerciseDeleteError()
+                exerciseToDelete = null
+            },
+            properties = DialogProperties(dismissOnClickOutside = false),
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+            title = {
+                Text(
+                    text = stringResource(R.string.action_delete_exercise),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        text = stringResource(R.string.dialog_delete_exercise_confirm, target.displayName()),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    if (deleteError != null) {
+                        Text(
+                            text = stringResource(R.string.error_exercise_in_use),
+                            color = MaterialTheme.colorScheme.error,
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                }
+            },
+            confirmButton = {
+                if (deleteError == null) {
+                    TextButton(
+                        onClick = {
+                            viewModel.deleteExercise(
+                                exerciseId = target.id,
+                                onSuccess = {
+                                    viewModel.clearExerciseDeleteError()
+                                    exerciseToDelete = null
+                                }
+                            )
+                        }
+                    ) {
+                        Text(
+                            text = stringResource(R.string.action_delete),
+                            color = MaterialTheme.colorScheme.error,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        viewModel.clearExerciseDeleteError()
+                        exerciseToDelete = null
+                    }
+                ) {
+                    Text(
+                        text = if (deleteError != null) {
+                            stringResource(R.string.action_close)
+                        } else {
+                            stringResource(R.string.action_cancel)
+                        },
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+        )
+    }
+
     if (showManageCategoriesDialog) {
         ManageCategoriesDialog(
             categories = allCustomCategories,
@@ -398,7 +527,9 @@ fun ExerciseRowCard(
     exercise: Exercise,
     allExercises: List<Exercise> = emptyList(),
     onOpenHistory: () -> Unit = {},
-    onEditTags: () -> Unit = {}
+    onEditTags: () -> Unit = {},
+    onEditExercise: () -> Unit = {},
+    onDeleteExercise: () -> Unit = {}
 ) {
     var expanded by remember { mutableStateOf(false) }
     var showAlternatives by remember { mutableStateOf(false) }
@@ -714,7 +845,8 @@ fun ExerciseRowCard(
                         text = stringResource(R.string.action_exercise_history),
                         fontSize = 12.sp,
                         fontWeight = FontWeight.SemiBold,
-                        maxLines = 1
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
 
@@ -734,6 +866,42 @@ fun ExerciseRowCard(
                         )
                     }
                 }
+
+                if (exercise.isCustom) {
+                    Surface(
+                        onClick = onEditExercise,
+                        modifier = Modifier.size(48.dp),
+                        shape = RoundedCornerShape(8.dp),
+                        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.subtleBorder)
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Icon(
+                                imageVector = Icons.Default.Edit,
+                                contentDescription = stringResource(R.string.dialog_edit_exercise_title),
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                    }
+
+                    Surface(
+                        onClick = onDeleteExercise,
+                        modifier = Modifier.size(48.dp),
+                        shape = RoundedCornerShape(8.dp),
+                        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.subtleBorder)
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = stringResource(R.string.action_delete_exercise),
+                                tint = MaterialTheme.colorScheme.error,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                    }
+                }
             }
         }
     }
@@ -744,24 +912,39 @@ fun ExerciseRowCard(
 fun CreateExerciseDialog(
     allCategories: List<CustomExerciseCategory> = emptyList(),
     errorMessage: String? = null,
+    title: String? = null,
+    initialExercise: Exercise? = null,
+    initialName: String = initialExercise?.name ?: "",
+    initialGroup: MuscleGroup = initialExercise?.muscleGroup ?: MuscleGroup.CHEST,
+    initialCategory: ExerciseCategory = initialExercise?.category ?: ExerciseCategory.BARBELL,
+    initialNotes: String = initialExercise?.notes ?: "",
+    initialPrimaryMuscle: BodyMuscle? = initialExercise?.primaryMuscle,
+    initialMechanics: MechanicsType = initialExercise?.mechanics ?: MechanicsType.COMPOUND,
+    initialForce: ForceType = initialExercise?.force ?: ForceType.PUSH,
+    initialLevel: DifficultyLevel = initialExercise?.level ?: DifficultyLevel.BEGINNER,
+    initialCustomCategories: List<String> = initialExercise?.customCategories ?: emptyList(),
     onDismiss: () -> Unit,
     onClearError: () -> Unit = {},
     onCreate: (String, MuscleGroup, ExerciseCategory, String, BodyMuscle?, List<MuscleInvolvement>, MechanicsType, ForceType, DifficultyLevel, List<String>) -> Unit
 ) {
-    var name by remember { mutableStateOf("") }
-    var selectedGroup by remember { mutableStateOf(MuscleGroup.CHEST) }
-    var selectedCategory by remember { mutableStateOf(ExerciseCategory.BARBELL) }
-    var selectedMechanics by remember { mutableStateOf(MechanicsType.COMPOUND) }
-    var selectedForce by remember { mutableStateOf(ForceType.PUSH) }
-    var selectedLevel by remember { mutableStateOf(DifficultyLevel.BEGINNER) }
-    var userModifiedForce by remember { mutableStateOf(false) }
-    var userModifiedLevel by remember { mutableStateOf(false) }
-    var selectedCategories by remember { mutableStateOf(setOf<String>()) }
+    var name by remember(initialExercise) { mutableStateOf(initialName) }
+    var selectedGroup by remember(initialExercise) { mutableStateOf(initialGroup) }
+    var selectedCategory by remember(initialExercise) { mutableStateOf(initialCategory) }
+    var selectedMechanics by remember(initialExercise) { mutableStateOf(initialMechanics) }
+    var selectedForce by remember(initialExercise) { mutableStateOf(initialForce) }
+    var selectedLevel by remember(initialExercise) { mutableStateOf(initialLevel) }
+    var userModifiedForce by remember(initialExercise) { mutableStateOf(initialExercise != null) }
+    var userModifiedLevel by remember(initialExercise) { mutableStateOf(initialExercise != null) }
+    var selectedCategories by remember(initialExercise) { mutableStateOf(initialCustomCategories.toSet()) }
     var newTagText by remember { mutableStateOf("") }
-    var primaryMuscle by remember(selectedGroup) {
-        mutableStateOf(BodyMuscle.entries.firstOrNull { it.muscleGroup == selectedGroup } ?: BodyMuscle.CHEST)
+    var primaryMuscle by remember(initialExercise, selectedGroup) {
+        mutableStateOf(
+            initialPrimaryMuscle?.takeIf { it.muscleGroup == selectedGroup }
+                ?: BodyMuscle.entries.firstOrNull { it.muscleGroup == selectedGroup }
+                ?: BodyMuscle.CHEST
+        )
     }
-    var notes by remember { mutableStateOf("") }
+    var notes by remember(initialExercise) { mutableStateOf(initialNotes) }
 
     var groupExpanded by remember { mutableStateOf(false) }
     var categoryExpanded by remember { mutableStateOf(false) }
@@ -784,7 +967,11 @@ fun CreateExerciseDialog(
         properties = DialogProperties(dismissOnClickOutside = false),
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
         title = {
-            Text(stringResource(R.string.dialog_create_exercise_title), color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold)
+            Text(
+                text = title ?: stringResource(R.string.dialog_create_exercise_title),
+                color = MaterialTheme.colorScheme.onSurface,
+                fontWeight = FontWeight.Bold
+            )
         },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -1117,10 +1304,22 @@ fun CreateExerciseDialog(
             }
         },
         confirmButton = {
+            val existingSecondaries = initialExercise?.secondaryMuscles ?: emptyList()
             Button(
                 onClick = {
                     if (name.isNotBlank()) {
-                        onCreate(name.trim(), selectedGroup, selectedCategory, notes.trim(), primaryMuscle, emptyList(), selectedMechanics, selectedForce, selectedLevel, selectedCategories.toList())
+                        onCreate(
+                            name.trim(),
+                            selectedGroup,
+                            selectedCategory,
+                            notes.trim(),
+                            primaryMuscle,
+                            existingSecondaries,
+                            selectedMechanics,
+                            selectedForce,
+                            selectedLevel,
+                            selectedCategories.toList()
+                        )
                     }
                 },
                 enabled = name.isNotBlank(),

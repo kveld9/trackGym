@@ -67,4 +67,103 @@ class ExerciseNamingTest {
         assertEquals("Plank", exception.conflictingName)
         assertTrue(exception.message?.contains("Plank") == true)
     }
+
+    @Test
+    fun validateExerciseRename_withSameRowDifferentCase_isAllowed() {
+        val result = validateExerciseRename(
+            targetExerciseId = 10L,
+            candidateName = "bench press",
+            existingMatchId = 10L,
+            existingMatchName = "Bench Press"
+        )
+        assertEquals("bench press", result)
+    }
+
+    @Test
+    fun validateExerciseRename_withSameRowExactCase_isAllowed() {
+        val result = validateExerciseRename(
+            targetExerciseId = 10L,
+            candidateName = "Bench Press",
+            existingMatchId = 10L,
+            existingMatchName = "Bench Press"
+        )
+        assertEquals("Bench Press", result)
+    }
+
+    @Test
+    fun validateExerciseRename_withNoExistingMatch_isAllowed() {
+        val result = validateExerciseRename(
+            targetExerciseId = 10L,
+            candidateName = "  Incline Dumbbell Fly  ",
+            existingMatchId = null
+        )
+        assertEquals("Incline Dumbbell Fly", result)
+    }
+
+    @Test(expected = DuplicateExerciseNameException::class)
+    fun validateExerciseRename_withDifferentRowConflict_throwsDuplicateException() {
+        validateExerciseRename(
+            targetExerciseId = 10L,
+            candidateName = "Squat",
+            existingMatchId = 20L,
+            existingMatchName = "Squat"
+        )
+    }
+
+    @Test
+    fun validateExerciseRename_withDifferentRowConflict_preservesConflictingNameAndMessage() {
+        try {
+            validateExerciseRename(
+                targetExerciseId = 10L,
+                candidateName = "deadlift",
+                existingMatchId = 99L,
+                existingMatchName = "Deadlift"
+            )
+            org.junit.Assert.fail("Expected DuplicateExerciseNameException")
+        } catch (e: DuplicateExerciseNameException) {
+            assertEquals("Deadlift", e.conflictingName)
+            assertTrue(e.message?.contains("Deadlift") == true)
+        }
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun validateExerciseRename_withBlankName_throwsIllegalArgumentException() {
+        validateExerciseRename(
+            targetExerciseId = 10L,
+            candidateName = "   ",
+            existingMatchId = null
+        )
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun validateExerciseRename_withEmptyName_throwsIllegalArgumentException() {
+        validateExerciseRename(
+            targetExerciseId = 10L,
+            candidateName = "",
+            existingMatchId = null
+        )
+    }
+
+    @Test
+    fun isExerciseRenameConflicting_sameRowDifferentCase_returnsFalse() {
+        assertFalse(isExerciseRenameConflicting(targetExerciseId = 5L, candidateName = "plank", existingMatchId = 5L))
+    }
+
+    @Test
+    fun isExerciseRenameConflicting_differentRowMatch_returnsTrue() {
+        assertTrue(isExerciseRenameConflicting(targetExerciseId = 5L, candidateName = "Plank", existingMatchId = 12L))
+    }
+
+    @Test
+    fun isExerciseRenameConflicting_noMatchOrBlank_returnsFalse() {
+        assertFalse(
+            isExerciseRenameConflicting(
+                targetExerciseId = 5L,
+                candidateName = "Unique Exercise",
+                existingMatchId = null
+            )
+        )
+        assertFalse(isExerciseRenameConflicting(targetExerciseId = 5L, candidateName = "   ", existingMatchId = 12L))
+    }
 }
+
