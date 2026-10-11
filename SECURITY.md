@@ -12,7 +12,8 @@ Include:
 
 - the affected app version and Android version;
 - steps to reproduce, or a proof of concept;
-- the impact you observed (for example, data exposure through backups, exports or Health Connect sync).
+- the impact you observed (for example, data exposure through backups, exports or Health Connect sync);
+- do not include secrets or hardware identifiers (private keystores, API tokens, serial numbers, IMEI, MAC addresses, personal identifiers) in reports.
 
 Do not include real personal workout or body data in the report.
 
