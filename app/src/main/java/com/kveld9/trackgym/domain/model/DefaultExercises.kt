@@ -189,7 +189,6 @@ object DefaultExercises {
         Exercise(name = "Australian pull-ups", muscleGroup = MuscleGroup.ARMS, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Axle Deadlift", muscleGroup = MuscleGroup.BACK, category = ExerciseCategory.OTHER),
         Exercise(name = "Back bridge", muscleGroup = MuscleGroup.BACK, category = ExerciseCategory.BODYWEIGHT),
-        Exercise(name = "Back extensión", muscleGroup = MuscleGroup.BACK, category = ExerciseCategory.OTHER),
         Exercise(
             name = "Back Flyes - With Bands",
             muscleGroup = MuscleGroup.SHOULDERS,
@@ -309,11 +308,6 @@ object DefaultExercises {
         ),
         Exercise(name = "Barbell Clean Pull", muscleGroup = MuscleGroup.FULL_BODY, category = ExerciseCategory.BARBELL),
         Exercise(name = "Barbell Curl", muscleGroup = MuscleGroup.ARMS, category = ExerciseCategory.BARBELL),
-        Exercise(
-            name = "Barbell Curl De Muñeca Con Barra",
-            muscleGroup = MuscleGroup.ARMS,
-            category = ExerciseCategory.BARBELL
-        ),
         Exercise(
             name = "Barbell Curls Lying Against An Incline",
             muscleGroup = MuscleGroup.ARMS,
@@ -994,11 +988,6 @@ object DefaultExercises {
             category = ExerciseCategory.CABLE
         ),
         Exercise(name = "Cable Iron Cross", muscleGroup = MuscleGroup.CHEST, category = ExerciseCategory.CABLE),
-        Exercise(
-            name = "Cable Jalón al pecho con agarre ancho",
-            muscleGroup = MuscleGroup.BACK,
-            category = ExerciseCategory.CABLE
-        ),
         Exercise(name = "Cable Judo Flip", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.CABLE),
         Exercise(name = "Cable Kickback II", muscleGroup = MuscleGroup.ARMS, category = ExerciseCategory.CABLE),
         Exercise(name = "Cable Kneeling Crunch", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.CABLE),
@@ -1130,11 +1119,6 @@ object DefaultExercises {
         Exercise(
             name = "Cable Rear-Delt Fly (single arm)",
             muscleGroup = MuscleGroup.SHOULDERS,
-            category = ExerciseCategory.CABLE
-        ),
-        Exercise(
-            name = "Cable Remo alto polea alta",
-            muscleGroup = MuscleGroup.BACK,
             category = ExerciseCategory.CABLE
         ),
         Exercise(name = "Cable Reverse Cable Flye", muscleGroup = MuscleGroup.BACK, category = ExerciseCategory.CABLE),
@@ -2069,11 +2053,6 @@ object DefaultExercises {
             category = ExerciseCategory.DUMBBELL
         ),
         Exercise(
-            name = "Dumbbell Jalon caballero unialteral",
-            muscleGroup = MuscleGroup.BACK,
-            category = ExerciseCategory.DUMBBELL
-        ),
-        Exercise(
             name = "Dumbbell Kettlebell One Legged Deadlift",
             muscleGroup = MuscleGroup.LEGS,
             category = ExerciseCategory.DUMBBELL
@@ -2547,11 +2526,6 @@ object DefaultExercises {
         ),
         Exercise(name = "Elbows Back", muscleGroup = MuscleGroup.CHEST, category = ExerciseCategory.OTHER),
         Exercise(name = "Elephant Walks", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BODYWEIGHT),
-        Exercise(
-            name = "Elevación lateral polea",
-            muscleGroup = MuscleGroup.BACK,
-            category = ExerciseCategory.BODYWEIGHT
-        ),
         Exercise(name = "Elevated Back Lunge", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BARBELL),
         Exercise(name = "Elevated Cable Rows", muscleGroup = MuscleGroup.BACK, category = ExerciseCategory.CABLE),
         Exercise(
@@ -4300,16 +4274,6 @@ object DefaultExercises {
         Exercise(
             name = "Relaxed Diaphragmatic Breathing",
             muscleGroup = MuscleGroup.CORE,
-            category = ExerciseCategory.OTHER
-        ),
-        Exercise(
-            name = "Remo maquina agarre estrecho",
-            muscleGroup = MuscleGroup.BACK,
-            category = ExerciseCategory.OTHER
-        ),
-        Exercise(
-            name = "Remo maquina agarre estrecho supino",
-            muscleGroup = MuscleGroup.BACK,
             category = ExerciseCategory.OTHER
         ),
         Exercise(
@@ -6827,7 +6791,6 @@ object DefaultExercises {
             category = ExerciseCategory.BODYWEIGHT
         ),
         Exercise(name = "Hanging Toes To Bar", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.BODYWEIGHT),
-        Exercise(name = "Hardstyle Pank", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.BODYWEIGHT),
         Exercise(
             name = "Hatfield Squat (Safety Squat Bar)",
             muscleGroup = MuscleGroup.LEGS,
