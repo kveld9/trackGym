@@ -402,7 +402,7 @@ private fun SubstituteEquipmentFilterRow(
             onClick = { onEquipmentSelected(null) },
             label = { Text(stringResource(R.string.chip_filter_all_equipment), fontSize = 12.sp) }
         )
-        ExerciseCategory.entries.filter { it != ExerciseCategory.OTHER }.forEach { cat ->
+        ExerciseCategory.entries.forEach { cat ->
             FilterChip(
                 selected = selectedEquipmentFilter == cat,
                 onClick = { onEquipmentSelected(cat) },
@@ -431,7 +431,7 @@ private fun AddModeFilterRows(
             onClick = { onMuscleSelected(null) },
             label = { Text(stringResource(R.string.routine_folder_all), fontSize = 12.sp) }
         )
-        MuscleGroup.entries.filter { it != MuscleGroup.OTHER }.forEach { group ->
+        MuscleGroup.entries.forEach { group ->
             FilterChip(
                 selected = selectedMuscleFilter == group,
                 onClick = { onMuscleSelected(if (selectedMuscleFilter == group) null else group) },
@@ -452,7 +452,7 @@ private fun AddModeFilterRows(
             onClick = { onEquipmentSelected(null) },
             label = { Text(stringResource(R.string.chip_filter_all_equipment), fontSize = 12.sp) }
         )
-        ExerciseCategory.entries.filter { it != ExerciseCategory.OTHER }.forEach { cat ->
+        ExerciseCategory.entries.forEach { cat ->
             FilterChip(
                 selected = selectedEquipmentFilter == cat,
                 onClick = { onEquipmentSelected(if (selectedEquipmentFilter == cat) null else cat) },

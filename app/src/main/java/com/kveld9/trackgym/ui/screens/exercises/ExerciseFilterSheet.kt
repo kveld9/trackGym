@@ -216,7 +216,7 @@ private fun MuscleFilterSection(
     onMuscleSelected: (MuscleGroup?) -> Unit
 ) {
     FilterSectionHeader(title = stringResource(R.string.label_muscle_group))
-    val muscles = remember { MuscleGroup.entries.filter { it != MuscleGroup.OTHER } }
+    val muscles = remember { MuscleGroup.entries }
     FlowRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -239,7 +239,7 @@ private fun EquipmentFilterSection(
     onEquipmentSelected: (ExerciseCategory?) -> Unit
 ) {
     FilterSectionHeader(title = stringResource(R.string.label_equipment_category))
-    val categories = remember { ExerciseCategory.entries.filter { it != ExerciseCategory.OTHER } }
+    val categories = remember { ExerciseCategory.entries }
     FlowRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -284,7 +284,7 @@ private fun ForceFilterSection(
     onForceSelected: (ForceType?) -> Unit
 ) {
     FilterSectionHeader(title = stringResource(R.string.label_force_vector))
-    val forces = remember { ForceType.entries.filter { it != ForceType.OTHER } }
+    val forces = remember { ForceType.entries }
     FlowRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
