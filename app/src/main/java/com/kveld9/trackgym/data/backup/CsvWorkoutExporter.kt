@@ -9,7 +9,7 @@ import java.util.Locale
 
 /**
  * Standard CSV exporter formatting completed workout sessions and sets
- * into a universally compatible tabular structure for Excel, Google Sheets, Strong, and Hevy.
+ * into a universally compatible tabular structure for spreadsheets and generic CSV consumers.
  */
 object CsvWorkoutExporter {
 
