@@ -730,24 +730,6 @@ class GymViewModel(
         }
     }
 
-    suspend fun evaluateAutoProgression(
-        exerciseId: Long,
-        currentWorkoutId: Long,
-        workingWeightKg: Double
-    ): com.kveld9.trackgym.domain.calculator.AutoProgressionResult? {
-        val exercise = _activeWorkout.value?.exercises?.find { it.exercise.id == exerciseId }?.exercise
-            ?: repository.getExerciseById(exerciseId) ?: return null
-        val rule = com.kveld9.trackgym.domain.calculator.AutoProgressionEngine.decode(exercise.autoProgressionRule)
-            ?: return null
-        if (!rule.enabled) return null
-
-        val recentSessions = repository.getRecentSessionsSetsForExercise(exerciseId, currentWorkoutId, 5)
-        return com.kveld9.trackgym.domain.calculator.AutoProgressionEngine.evaluate(
-            rule = rule,
-            recentSessionsSets = recentSessions,
-            currentWeightKg = workingWeightKg
-        )
-    }
 
     fun startRestTimer(seconds: Int? = null) {
         val duration = seconds ?: _restTimerTotalSeconds.value
@@ -1113,7 +1095,10 @@ class GymViewModel(
                 val backupUri = themePreferences?.themeSettings?.firstOrNull()?.autoBackupUri
                 val maxBackups = themePreferences?.themeSettings?.firstOrNull()?.maxAutoBackups ?: 10
                 if (!backupUri.isNullOrBlank() && autoBackupEngine != null) {
-                    autoBackupEngine.performAutoBackup(backupUri, maxBackups)
+                    val result = autoBackupEngine.performAutoBackup(backupUri, maxBackups)
+                    if (!result.isSuccess) {
+                        Log.w(TAG, "Auto-backup failed: ${result.errorMessage}")
+                    }
                 }
 
                 // Native Google Health Connect Local Sync (Item 107)

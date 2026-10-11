@@ -42,7 +42,6 @@
   - Time-bucketed muscle and exercise stimulus distribution (`TimeBucketedDistributionEngine`) comparing sets, tonnage, and reps across overlapping windows (*Last Week, Last Month, Last Year, All Time*).
   - Direct weekly muscle set volume versus hypertrophy landmarks (`HypertrophyVolumeEngine`) comparing direct sets against evidence-based ranges (10–20 weekly sets).
   - Configurable volume metrics: dumbbell volume doubling and optional warm-up set exclusion.
-  - Workout export as a structured prompt for LLM analysis.
   - High-contrast OLED shareable workout cards (`WorkoutShareCard` & `WorkoutSharePreviewDialog`) with full metrics breakdown, PR highlights, and one-tap Gallery export or system share sheet.
 - **Automated Personal Record (PR) Detection & Strength Standards**:
   - Real-time detection upon checking off each completed set.
@@ -72,7 +71,7 @@
   - Storage Access Framework (SAF) JSON export/import with bounded stream parsing (10 MB limit).
   - **Silent Auto-Backup via SAF (`AutoBackupEngine`)**: Unattended local JSON backups saved automatically to a user-designated folder upon completing every workout, with automatic FIFO rotation of the oldest backup files.
   - Duplicate conflict resolution policy (*Skip*, *Overwrite*, or *Duplicate*).
-  - CSV workout history export and import.
+  - CSV workout history export.
 - **Localization (i18n)**:
   - English as base/default language.
   - Full Spanish translation included out of the box.

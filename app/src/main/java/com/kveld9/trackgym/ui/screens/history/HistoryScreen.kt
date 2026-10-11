@@ -446,7 +446,6 @@ fun HistoryScreen(
         val dummyComparison = remember(workout) {
             WorkoutComparison(
                 currentWorkout = workout,
-                previousWorkout = null,
                 exerciseComparisons = emptyList(),
                 totalRecordsUnlocked = emptyList(),
                 totalVolumeDeltaKg = 0.0

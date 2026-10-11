@@ -18,7 +18,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.filled.Code
-import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.FolderOpen
 import androidx.compose.material.icons.filled.FileDownload
 import androidx.compose.material.icons.filled.FileUpload
 import androidx.compose.material.icons.filled.Security
@@ -228,7 +228,7 @@ private fun AutoBackupDetailsRow(
             modifier = Modifier.size(48.dp)
         ) {
             Icon(
-                imageVector = Icons.Default.Edit,
+                imageVector = Icons.Default.FolderOpen,
                 contentDescription = stringResource(R.string.setting_auto_backup_select_folder),
                 tint = MaterialTheme.colorScheme.primary
             )
@@ -281,50 +281,6 @@ fun ExportFormatDialog(
     )
 }
 
-@Composable
-fun ImportFormatDialog(
-    onDismiss: () -> Unit,
-    onSelectJson: () -> Unit,
-    onSelectCsv: () -> Unit
-) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.import_format_dialog_title)) },
-        text = {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                FormatOptionRow(
-                    title = stringResource(R.string.format_json_title),
-                    description = stringResource(R.string.format_json_desc),
-                    onClick = {
-                        onSelectJson()
-                        onDismiss()
-                    }
-                )
-                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
-                FormatOptionRow(
-                    title = stringResource(R.string.format_csv_title),
-                    description = stringResource(R.string.format_csv_desc),
-                    onClick = {
-                        onSelectCsv()
-                        onDismiss()
-                    }
-                )
-            }
-        },
-        confirmButton = {},
-        dismissButton = {
-            TextButton(
-                onClick = onDismiss,
-                modifier = Modifier.defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
-            ) {
-                Text(stringResource(R.string.action_cancel))
-            }
-        }
-    )
-}
 
 @Composable
 fun IntegrationsCard(

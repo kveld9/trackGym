@@ -174,7 +174,6 @@
     <string name="setting_import_data_title">Importar datos</string>
     <string name="setting_import_data_desc">Restaurar desde respaldo o planilla</string>
     <string name="export_format_dialog_title">Seleccionar formato de exportación</string>
-    <string name="import_format_dialog_title">Seleccionar formato de importación</string>
     <string name="format_json_title">JSON (Copia completa)</string>
     <string name="format_json_desc">Copia completa con ejercicios, rutinas y récords</string>
     <string name="format_csv_title">CSV (Hoja de cálculo)</string>
@@ -183,11 +182,6 @@
     <string name="toast_backup_export_error">Error al exportar respaldo: %1$s</string>
     <string name="toast_csv_exported_success">Historial de entrenamientos exportado a CSV correctamente</string>
     <string name="toast_csv_export_error">Error al exportar CSV: %1$s</string>
-    <string name="llm_export_title">Análisis de Sesión con IA</string>
-    <string name="llm_export_desc">Exporta el resumen estructurado en Markdown para recibir feedback de ChatGPT, Claude o DeepSeek</string>
-    <string name="action_copy_prompt">Copiar Prompt</string>
-    <string name="action_share_prompt">Compartir Prompt</string>
-    <string name="toast_prompt_copied">Prompt de análisis copiado al portapapeles</string>
     <string name="overtraining_warning_title">Alerta de Volumen Excesivo</string>
     <string name="overtraining_warning_message">Has registrado %1$d series efectivas para %2$s en esta sesión. Superar 12 series por músculo puede generar fatiga chatarra (junk volume) sin ganancia hipertrófica adicional.</string>
     <string name="overload_hint_body">Última sesión: %1$s • Sugerido: %2$s</string>
@@ -197,8 +191,6 @@
     <string name="setting_exclude_warmup_desc">No contabilizar series de calentamiento en el tonelaje total ni en el conteo de series completadas</string>
     <string name="toast_backup_read_error">Error al leer el archivo: %1$s</string>
     <string name="toast_backup_invalid_data">El archivo no contiene registros válidos</string>
-    <string name="toast_csv_import_empty">El archivo CSV no contiene registros de entrenamiento válidos</string>
-    <string name="toast_csv_import_error">Error al procesar el archivo CSV: %1$s</string>
     <string name="toast_import_success">Se importaron %1$d registros (%2$d omitidos)</string>
     <string name="toast_import_error">Error al importar datos: %1$s</string>
     <string name="duplicate_policy_title">Opciones de Importación</string>

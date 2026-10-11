@@ -174,7 +174,6 @@
     <string name="setting_import_data_title">Import Data</string>
     <string name="setting_import_data_desc">Restore from backup or sheet</string>
     <string name="export_format_dialog_title">Select Export Format</string>
-    <string name="import_format_dialog_title">Select Import Format</string>
     <string name="format_json_title">JSON (Full Backup)</string>
     <string name="format_json_desc">Complete backup including exercises, routines, and records</string>
     <string name="format_csv_title">CSV (Spreadsheet)</string>
@@ -183,11 +182,6 @@
     <string name="toast_backup_export_error">Error exporting backup: %1$s</string>
     <string name="toast_csv_exported_success">Workout history exported to CSV successfully</string>
     <string name="toast_csv_export_error">Error exporting CSV: %1$s</string>
-    <string name="llm_export_title">AI Coaching Analysis</string>
-    <string name="llm_export_desc">Export structured session markdown with progression deltas to analyze with ChatGPT, Claude, or DeepSeek</string>
-    <string name="action_copy_prompt">Copy Prompt</string>
-    <string name="action_share_prompt">Share Prompt</string>
-    <string name="toast_prompt_copied">AI analysis prompt copied to clipboard</string>
     <string name="overtraining_warning_title">Excessive Volume Warning</string>
     <string name="overtraining_warning_message">You have logged %1$d effective sets for %2$s in this session. Exceeding 12 sets per muscle group may cause junk volume and excessive fatigue without additional hypertrophic stimulus.</string>
     <string name="overload_hint_body">Last session: %1$s • Target: %2$s</string>
@@ -197,8 +191,6 @@
     <string name="setting_exclude_warmup_desc">Do not include warmup sets in total volume tonnage and completed set metrics</string>
     <string name="toast_backup_read_error">Error reading file: %1$s</string>
     <string name="toast_backup_invalid_data">The backup file contains no valid records</string>
-    <string name="toast_csv_import_empty">The CSV file contains no valid workout records</string>
-    <string name="toast_csv_import_error">Error processing CSV file: %1$s</string>
     <string name="toast_import_success">Imported %1$d records (%2$d skipped)</string>
     <string name="toast_import_error">Error importing data: %1$s</string>
     <string name="duplicate_policy_title">Import Options</string>

@@ -270,11 +270,6 @@ class ThemePreferences(
         }
     }
 
-    suspend fun setMaxAutoBackups(max: Int) {
-        dataStore.edit { preferences ->
-            preferences[MAX_AUTO_BACKUPS_KEY] = max
-        }
-    }
 
     suspend fun setHealthConnectSync(enabled: Boolean) {
         dataStore.edit { preferences ->

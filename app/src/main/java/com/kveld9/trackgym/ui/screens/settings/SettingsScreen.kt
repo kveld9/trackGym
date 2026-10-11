@@ -78,7 +78,6 @@ fun SettingsScreen(
 
     var showGymProfilesDialog by remember { mutableStateOf(false) }
     var showExportFormatDialog by remember { mutableStateOf(false) }
-    var showImportFormatDialog by remember { mutableStateOf(false) }
     var showOrmDialog by remember { mutableStateOf(false) }
     var showTimerSoundDialog by remember { mutableStateOf(false) }
     var showBodyWeightDialog by remember { mutableStateOf(false) }
@@ -140,14 +139,6 @@ fun SettingsScreen(
         }
     }
 
-    val importCsvLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.OpenDocument()
-    ) { uri: Uri? ->
-        if (uri != null) {
-            viewModel.startImportCsv { context.contentResolver.openInputStream(uri) }
-        }
-    }
-
     val autoBackupFolderLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocumentTree()
     ) { uri: Uri? ->
@@ -197,17 +188,6 @@ fun SettingsScreen(
         )
     }
 
-    if (showImportFormatDialog) {
-        ImportFormatDialog(
-            onDismiss = { showImportFormatDialog = false },
-            onSelectJson = {
-                importLauncher.launch(arrayOf("application/json", "*/*"))
-            },
-            onSelectCsv = {
-                importCsvLauncher.launch(arrayOf("text/comma-separated-values", "text/csv", "application/csv", "*/*"))
-            }
-        )
-    }
 
     if (showOrmDialog) {
         OneRepMaxSelectionDialog(
@@ -364,7 +344,7 @@ fun SettingsScreen(
                 autoBackupUri = themeSettings.autoBackupUri,
                 maxAutoBackups = themeSettings.maxAutoBackups,
                 onExportClick = { showExportFormatDialog = true },
-                onImportClick = { showImportFormatDialog = true },
+                onImportClick = { importLauncher.launch(arrayOf("application/json", "*/*")) },
                 onSelectFolder = { autoBackupFolderLauncher.launch(null) },
                 onDisableAutoBackup = { viewModel.setAutoBackupUri(null) }
             )

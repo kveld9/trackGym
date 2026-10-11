@@ -229,11 +229,6 @@ class SettingsViewModel(
         }
     }
 
-    fun setMaxAutoBackups(max: Int) {
-        viewModelScope.launch {
-            themePreferences.setMaxAutoBackups(max)
-        }
-    }
 
     fun setHealthConnectSync(enabled: Boolean) {
         viewModelScope.launch {
@@ -337,39 +332,6 @@ class SettingsViewModel(
 
     fun startImport(inputStream: InputStream) = startImport { inputStream }
 
-    fun startImportCsv(streamProvider: () -> InputStream?) {
-        viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
-            try {
-                val parsedBackup = withContext(ioDispatcher) {
-                    val inputStream = streamProvider()
-                        ?: throw IllegalStateException("No se pudo abrir el archivo CSV.")
-                    inputStream.use { stream ->
-                        com.kveld9.trackgym.data.backup.CsvWorkoutImporter.parseCsvToBackupDto(stream)
-                    }
-                }
-
-                if (parsedBackup.workouts.isEmpty()) {
-                    _uiEvent.emit(SettingsUiEvent.Error(R.string.toast_csv_import_empty))
-                    return@launch
-                }
-
-                val hasExisting = withContext(ioDispatcher) { repository.hasExistingData() }
-                if (hasExisting) {
-                    _uiState.update { it.copy(pendingImportBackup = parsedBackup) }
-                    _uiEvent.emit(SettingsUiEvent.ImportPromptDuplicate(parsedBackup))
-                } else {
-                    executeImport(parsedBackup, DuplicatePolicy.OVERWRITE_ALL)
-                }
-            } catch (e: Exception) {
-                _uiEvent.emit(SettingsUiEvent.Error(R.string.toast_csv_import_error, listOf(e.localizedMessage.orEmpty())))
-            } finally {
-                _uiState.update { it.copy(isLoading = false) }
-            }
-        }
-    }
-
-    fun startImportCsv(inputStream: InputStream) = startImportCsv { inputStream }
 
     fun applyImportPolicy(policy: DuplicatePolicy) {
         val pending = _uiState.value.pendingImportBackup ?: return

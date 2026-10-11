@@ -578,7 +578,6 @@ class GymRepository(private val database: GymDatabase) {
 
         WorkoutComparison(
             currentWorkout = currentWorkout,
-            previousWorkout = null,
             exerciseComparisons = exerciseComparisons,
             totalRecordsUnlocked = totalPrs,
             totalVolumeDeltaKg = totalVolumeDelta

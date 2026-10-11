@@ -29,7 +29,6 @@ data class ExerciseComparison(
 
 data class WorkoutComparison(
     val currentWorkout: Workout,
-    val previousWorkout: Workout?,
     val exerciseComparisons: List<ExerciseComparison>,
     val totalRecordsUnlocked: List<PersonalRecord>,
     val totalVolumeDeltaKg: Double
