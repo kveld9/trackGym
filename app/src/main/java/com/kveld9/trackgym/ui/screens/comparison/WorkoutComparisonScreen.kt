@@ -32,29 +32,17 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import android.content.Intent
-import android.graphics.Bitmap
-import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import com.kveld9.trackgym.domain.calculator.WorkToRestRatioEngine
-import com.kveld9.trackgym.domain.calculator.WorkToRestRatioResult
 import com.kveld9.trackgym.domain.model.Workout
-import com.kveld9.trackgym.ui.components.WorkoutShareCard
-import com.kveld9.trackgym.ui.components.WorkoutSharePreviewDialog
-import com.kveld9.trackgym.ui.util.ShareProvider
 import com.kveld9.trackgym.domain.calculator.MuscleHeatmapEngine
 import com.kveld9.trackgym.ui.components.MuscleHeatmapCard
 import com.kveld9.trackgym.ui.util.displayName
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -81,11 +69,6 @@ fun WorkoutComparisonScreen(
     weightUnit: WeightUnit = WeightUnit.KG,
     modifier: Modifier = Modifier
 ) {
-    val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
-    var previewBitmap by remember { mutableStateOf<Bitmap?>(null) }
-    val shareChooserTitle = stringResource(R.string.share_chooser_title)
-
     val dateFormat = remember { SimpleDateFormat("EEEE, d MMMM", Locale.getDefault()) }
     val dateString = dateFormat.format(Date(comparison.currentWorkout.completedAt ?: comparison.currentWorkout.startedAt)).replaceFirstChar { it.uppercase() }
     val workoutHeatmap = remember(comparison.currentWorkout) {
@@ -207,16 +190,6 @@ fun WorkoutComparisonScreen(
             }
 
             item {
-                WorkoutShareCard(
-                    comparison = comparison,
-                    weightUnit = weightUnit,
-                    onCapture = { bitmap ->
-                        previewBitmap = bitmap
-                    }
-                )
-            }
-
-            item {
                 MuscleHeatmapCard(
                     state = workoutHeatmap,
                     title = stringResource(R.string.heatmap_title_session),
@@ -229,30 +202,6 @@ fun WorkoutComparisonScreen(
                 Spacer(modifier = Modifier.height(24.dp))
             }
         }
-    }
-
-    previewBitmap?.let { bitmap ->
-        WorkoutSharePreviewDialog(
-            bitmap = bitmap,
-            onDownload = {
-                coroutineScope.launch {
-                    val success = ShareProvider.saveBitmapToGallery(context, bitmap)
-                    Toast.makeText(
-                        context,
-                        if (success) R.string.toast_image_saved else R.string.toast_image_save_failed,
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            },
-            onShare = {
-                coroutineScope.launch {
-                    ShareProvider.shareBitmap(context, bitmap, shareChooserTitle)
-                }
-            },
-            onDismiss = {
-                previewBitmap = null
-            }
-        )
     }
 }
 
@@ -267,10 +216,6 @@ fun WorkoutSummaryHeader(
     weightUnit: WeightUnit = WeightUnit.KG,
     modifier: Modifier = Modifier
 ) {
-    val workRestRatio = remember(workout, durationSeconds) {
-        workout?.let { WorkToRestRatioEngine.calculateRatio(it, durationSeconds) }
-    }
-
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
@@ -299,61 +244,8 @@ fun WorkoutSummaryHeader(
                 if (recordsCount > 0) {
                     StatBadge(label = stringResource(R.string.stat_records), value = recordsCount.toString(), valueColor = MaterialTheme.colorScheme.tertiary)
                 }
-                workRestRatio?.let { ratio ->
-                    StatBadge(
-                        label = stringResource(R.string.stat_work_rest_ratio),
-                        value = ratio.ratioString,
-                        valueColor = MaterialTheme.colorScheme.secondary
-                    )
-                }
-            }
-
-            workRestRatio?.let { ratio ->
-                if (ratio.totalSeconds > 0) {
-                    Spacer(modifier = Modifier.height(14.dp))
-                    WorkRestRatioIndicator(ratio = ratio)
-                }
             }
         }
-    }
-}
-
-@Composable
-private fun WorkRestRatioIndicator(ratio: WorkToRestRatioResult) {
-    Column(modifier = Modifier.fillMaxWidth()) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = stringResource(
-                    R.string.work_time_label,
-                    formatDuration(ratio.workSeconds),
-                    ratio.workPercentage
-                ),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.primary
-            )
-            Text(
-                text = stringResource(
-                    R.string.rest_time_label,
-                    formatDuration(ratio.restSeconds),
-                    ratio.restPercentage
-                ),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-        Spacer(modifier = Modifier.height(6.dp))
-        LinearProgressIndicator(
-            progress = { (ratio.workPercentage / 100.0).toFloat().coerceIn(0f, 1f) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(6.dp)
-                .clip(RoundedCornerShape(3.dp)),
-            color = MaterialTheme.colorScheme.primary,
-            trackColor = MaterialTheme.colorScheme.surfaceVariant
-        )
     }
 }
 

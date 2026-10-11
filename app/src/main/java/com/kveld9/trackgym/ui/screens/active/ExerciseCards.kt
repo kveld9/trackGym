@@ -130,7 +130,6 @@ fun WorkoutExerciseCard(
     onConfigureAutoProgression: () -> Unit = {},
     onSetRestDuration: () -> Unit = {},
     onSetSupersetGroup: () -> Unit = {},
-    onOpenTechniqueGuide: () -> Unit = {},
     onOpenExerciseHistory: () -> Unit = {},
     onOpenWheelPicker: (WorkoutSet) -> Unit = {}
 ) {
@@ -361,13 +360,6 @@ fun WorkoutExerciseCard(
                                 onClick = {
                                     menuExpanded = false
                                     onOpenRpeCalculator(null)
-                                }
-                            )
-                            DropdownMenuItem(
-                                text = { Text(stringResource(R.string.action_technique_guide), color = MaterialTheme.colorScheme.onSurface) },
-                                onClick = {
-                                    menuExpanded = false
-                                    onOpenTechniqueGuide()
                                 }
                             )
                             DropdownMenuItem(

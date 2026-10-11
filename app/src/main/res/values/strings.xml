@@ -70,9 +70,6 @@
     <string name="stat_duration">DURATION</string>
     <string name="stat_volume">VOLUME</string>
     <string name="stat_records">RECORDS</string>
-    <string name="stat_work_rest_ratio">WORK / REST</string>
-    <string name="work_time_label">Work: %1$s (%2$.0f%%)</string>
-    <string name="rest_time_label">Rest: %1$s (%2$.0f%%)</string>
     <string name="badge_record">RECORD</string>
     <string name="badge_previous">PREVIOUS</string>
     <string name="badge_current">CURRENT</string>
@@ -418,17 +415,6 @@
     <string name="checkbox_detach_routine_desc">Save as independent workout without modifying routine history</string>
     <string name="label_completion_date">Date &amp; Time Completed</string>
     <string name="action_backdate_workout">Change completion date &amp; time</string>
-    <string name="action_share_image">Export Workout Image</string>
-    <string name="preview_dialog_title">Workout Summary Preview</string>
-    <string name="action_save_gallery">Save to Gallery</string>
-    <string name="toast_image_saved">Workout image saved to Gallery</string>
-    <string name="toast_image_save_failed">Failed to save workout image</string>
-    <string name="share_card_volume">Volume</string>
-    <string name="share_card_duration">Duration</string>
-    <string name="share_card_sets">Sets</string>
-    <string name="share_card_records">PRs</string>
-    <string name="share_card_tagline">TrackGym • Built for Iron</string>
-    <string name="share_chooser_title">Share Workout Summary</string>
     <string name="setting_inline_plates_title">Inline Plate Indicator</string>
     <string name="setting_inline_plates_desc">Show compact plate breakdown per side under target weight in workout sets</string>
     <string name="rpe_calc_title">RPE Target Load Assistant</string>
@@ -471,55 +457,6 @@
     <string name="auto_progression_badge_progression">Auto-Progression: +%1$s</string>
     <string name="auto_progression_badge_deload">Auto-Deload: -%1$s</string>
     <string name="auto_progression_action_apply_load">Apply Target Weight</string>
-    <string name="periodized_cycle_title">Periodized Block &amp; Cycle</string>
-    <string name="periodized_cycle_enable_label">Enable Periodized Block</string>
-    <string name="periodized_cycle_enable_desc">Structure this routine into multi-week progressive blocks with programmed deloads.</string>
-    <string name="periodized_cycle_total_weeks_label">Block Length</string>
-    <string name="periodized_cycle_weeks_count">%1$d Weeks</string>
-    <string name="periodized_cycle_auto_advance_label">Auto-Advance Week</string>
-    <string name="periodized_cycle_auto_advance_desc">Automatically advance to the next week upon completing workouts.</string>
-    <string name="periodized_cycle_breakdown_label">Weekly Structure</string>
-    <string name="periodized_cycle_week_number">Week %1$d</string>
-    <string name="periodized_cycle_active_badge">ACTIVE</string>
-    <string name="periodized_volume_label">Volume</string>
-    <string name="periodized_load_label">Load</string>
-    <string name="periodization_phase_accumulation">Accumulation</string>
-    <string name="periodization_phase_intensification">Intensification</string>
-    <string name="periodization_phase_peak">Peak</string>
-    <string name="periodization_phase_deload">Deload</string>
-    <string name="periodization_phase_custom">Custom</string>
-    <string name="menu_configure_periodization">Periodized Block Config</string>
-    <string name="menu_advance_cycle_week">Advance Week (+1)</string>
-    <string name="menu_previous_cycle_week">Previous Week (-1)</string>
-    <string name="badge_periodized_block">Block: W%1$d/%2$d</string>
-    <string name="program_finder_title">Program Finder Wizard</string>
-    <string name="program_finder_subtitle">Find your optimal routine based on your schedule, experience, and goals.</string>
-    <string name="program_finder_frequency_label">Weekly Frequency</string>
-    <string name="program_finder_frequency_days">%1$d Days</string>
-    <string name="program_finder_duration_label">Session Duration</string>
-    <string name="program_finder_duration_express">30-45 min (Express)</string>
-    <string name="program_finder_duration_standard">45-60 min (Standard)</string>
-    <string name="program_finder_duration_long">60-90 min (High Volume)</string>
-    <string name="program_finder_experience_label">Experience Level</string>
-    <string name="program_finder_exp_beginner">&lt; 3 months</string>
-    <string name="program_finder_exp_intermediate">3 - 12 months</string>
-    <string name="program_finder_exp_advanced">&gt; 1 year</string>
-    <string name="program_finder_goal_label">Primary Goal</string>
-    <string name="program_finder_goal_strength">Strength</string>
-    <string name="program_finder_goal_hypertrophy">Hypertrophy</string>
-    <string name="program_finder_goal_hybrid">Strength &amp; Size</string>
-    <string name="program_finder_recommended_badge">RECOMMENDED</string>
-    <string name="program_finder_action_import">Generate Program</string>
-    <string name="program_finder_routines_included">Included Routines (%1$d):</string>
-    <string name="program_finder_exercises_count">%1$d exercises</string>
-    <string name="btn_program_wizard">Program Wizard</string>
-    <string name="deload_dialog_title">Generate Deload Routine</string>
-    <string name="deload_dialog_desc">Creates an active recovery copy with reduced sets and lighter weights to dissipate accumulated CNS and joint fatigue.</string>
-    <string name="deload_volume_reduction_label">Volume Reduction (Sets)</string>
-    <string name="deload_load_reduction_label">Load Reduction (Weight)</string>
-    <string name="deload_routine_suffix">(Deload)</string>
-    <string name="action_generate_deload">Create Deload Routine</string>
-    <string name="menu_generate_deload">Create Deload Version</string>
 
     <!-- Body Muscles & Anatomical Mapping -->
     <string name="body_muscle_chest">Chest</string>
@@ -565,125 +502,6 @@
     <string name="substitute_reason_secondary">Synergist / secondary muscle</string>
     <string name="substitute_no_alternatives">No alternative exercises found for the selected equipment.</string>
     <string name="chip_filter_all_equipment">All Equipment</string>
-
-    <!-- Exercise Technique & Execution Guides -->
-    <string name="dialog_technique_guide_title">Technique &amp; Execution Guide</string>
-    <string name="label_setup_steps">Setup &amp; Posture</string>
-    <string name="label_execution_steps">Execution Cues</string>
-    <string name="label_common_mistakes">Common Mistakes to Avoid</string>
-    <string name="label_breathing_cue">Breathing Strategy</string>
-    <string name="label_tempo_cue">Cadence &amp; Tempo</string>
-    <string name="action_technique_guide">Technique Guide</string>
-
-    <!-- General Breathing & Tempo -->
-    <string name="guide_breathing_valsalva">Inhale into the abdomen to brace core before descending; exhale past sticking point.</string>
-    <string name="guide_breathing_standard">Inhale on the eccentric (lowering) phase; exhale smoothly on concentric effort.</string>
-    <string name="guide_breathing_continuous">Maintain steady rhythmic breathing; avoid holding breath under tension.</string>
-    <string name="guide_tempo_controlled">Tempo: 2-3s controlled eccentric, brief pause, explosive concentric.</string>
-    <string name="guide_tempo_constant">Tempo: Smooth 2s eccentric and 2s concentric with constant muscular tension.</string>
-    <string name="guide_tempo_isometric">Tempo: Static hold maintaining maximum structural rigidity.</string>
-
-    <!-- Bench Press -->
-    <string name="guide_bench_press_setup_1">Lie with eyes under the barbell; plant feet flat on the floor.</string>
-    <string name="guide_bench_press_setup_2">Retract and depress scapulae into the bench; grip slightly wider than shoulder-width.</string>
-    <string name="guide_bench_press_exec_1">Lower bar under control to lower sternum, keeping elbows tucked at 45 to 70 degrees.</string>
-    <string name="guide_bench_press_exec_2">Press explosively upward and slightly back toward the face to full lockout.</string>
-    <string name="guide_bench_press_mistake_1">Excessive elbow flaring at 90 degrees, stressing anterior shoulder capsules.</string>
-    <string name="guide_bench_press_mistake_2">Bouncing barbell off the ribcage or lifting hips off the bench.</string>
-
-    <!-- Squat -->
-    <string name="guide_squat_setup_1">Place bar across upper traps or rear delts; feet shoulder-width apart, toes slightly out.</string>
-    <string name="guide_squat_setup_2">Brace abdomen 360 degrees and grip bar firmly to lock upper back tight.</string>
-    <string name="guide_squat_exec_1">Break at hips and knees simultaneously; descend until hip crease is below top of knees.</string>
-    <string name="guide_squat_exec_2">Drive through whole foot while keeping knees tracking over toes without valgus collapse.</string>
-    <string name="guide_squat_mistake_1">Knees caving inward (valgus collapse) during the concentric drive.</string>
-    <string name="guide_squat_mistake_2">Lumbar rounding (butt wink) at the bottom or shifting balance onto toes.</string>
-
-    <!-- Deadlift -->
-    <string name="guide_deadlift_setup_1">Stand with mid-foot directly under the bar; feet hip-width apart.</string>
-    <string name="guide_deadlift_setup_2">Hinge at hips, grip bar outside shins, pull slack out of bar and lock lats tight.</string>
-    <string name="guide_deadlift_exec_1">Push floor away through heels and mid-foot until bar passes knees.</string>
-    <string name="guide_deadlift_exec_2">Drive hips forward to stand tall; lock out knees and hips without hyperextending spine.</string>
-    <string name="guide_deadlift_mistake_1">Rounding lower spine under load; keep back in neutral lordosis.</string>
-    <string name="guide_deadlift_mistake_2">Jerking the bar off the floor before setting tension and pulling out bar slack.</string>
-
-    <!-- Overhead Press -->
-    <string name="guide_ohp_setup_1">Grip bar just outside shoulders with wrists stacked; bar resting on front deltoids.</string>
-    <string name="guide_ohp_setup_2">Squeeze glutes, brace abs, and pull chin slightly back to clear bar path.</string>
-    <string name="guide_ohp_exec_1">Press bar vertically in a straight line close to the nose.</string>
-    <string name="guide_ohp_exec_2">Push head through the window once bar clears forehead; lock out overhead.</string>
-    <string name="guide_ohp_mistake_1">Excessive lumbar hyperextension (leaning back) to turn it into an incline press.</string>
-    <string name="guide_ohp_mistake_2">Pressing bar forward in an arc instead of straight vertical trajectory.</string>
-
-    <!-- Pull-up / Lat Pulldown -->
-    <string name="guide_pull_setup_1">Grip bar wider than shoulders; hang with shoulders depressed down away from ears.</string>
-    <string name="guide_pull_setup_2">Initiate movement by engaging lats and driving scapulae downward.</string>
-    <string name="guide_pull_exec_1">Drive elbows down toward waist and pull chest up toward the bar.</string>
-    <string name="guide_pull_exec_2">Squeeze lats at contraction, then lower under full control to a dead hang stretch.</string>
-    <string name="guide_pull_mistake_1">Excessive swinging or using kipping momentum instead of lat contraction.</string>
-    <string name="guide_pull_mistake_2">Shrugging shoulders into ears at the top of the movement.</string>
-
-    <!-- Rows -->
-    <string name="guide_row_setup_1">Hinge at hips with neutral spine; knees slightly bent and torso at 45 to 70 degrees.</string>
-    <string name="guide_row_setup_2">Hold weight with arms fully extended; keep core braced and neck neutral.</string>
-    <string name="guide_row_exec_1">Pull elbows back toward hip pocket, retracting shoulder blades at the peak.</string>
-    <string name="guide_row_exec_2">Lower weight with control to full stretch without rounding upper back.</string>
-    <string name="guide_row_mistake_1">Using torso jerk and leg momentum to throw the weight upward.</string>
-    <string name="guide_row_mistake_2">Flaring elbows wide and pulling with upper traps instead of mid-back and lats.</string>
-
-    <!-- Arms: Curls -->
-    <string name="guide_bicep_setup_1">Stand tall with shoulders back; elbows pinned close to ribcage.</string>
-    <string name="guide_bicep_setup_2">Grip bar or dumbbells with supinated or neutral grip without wrist flexion.</string>
-    <string name="guide_bicep_exec_1">Curl weight up by flexing elbows while keeping upper arms completely stationary.</string>
-    <string name="guide_bicep_exec_2">Squeeze biceps peak for 1 second, then lower under controlled 3-second descent.</string>
-    <string name="guide_bicep_mistake_1">Swinging hips or throwing shoulders back to gain momentum.</string>
-    <string name="guide_bicep_mistake_2">Drifting elbows forward past the ribcage to shorten the resistance curve.</string>
-
-    <!-- Arms: Triceps -->
-    <string name="guide_tricep_setup_1">Keep shoulders packed and elbows fixed tightly in place at the sides.</string>
-    <string name="guide_tricep_setup_2">Maintain slight forward lean at the hips for comfortable clearance.</string>
-    <string name="guide_tricep_exec_1">Extend forearms downward until triceps are fully contracted.</string>
-    <string name="guide_tricep_exec_2">Control return path until forearms pass parallel; do not let elbows wander.</string>
-    <string name="guide_tricep_mistake_1">Letting elbows flare outward or move forward/backward during reps.</string>
-    <string name="guide_tricep_mistake_2">Using body weight to press downward instead of isolated elbow extension.</string>
-
-    <!-- Lateral Raise -->
-    <string name="guide_lateral_setup_1">Stand tall with slight forward lean; hold weights at sides with soft elbows.</string>
-    <string name="guide_lateral_setup_2">Engage lateral deltoids by thinking of pushing weights out toward the walls.</string>
-    <string name="guide_lateral_exec_1">Raise arms in the scapular plane (slightly forward of torso) to shoulder height.</string>
-    <string name="guide_lateral_exec_2">Control the eccentric descent; avoid letting weights crash back to hips.</string>
-    <string name="guide_lateral_mistake_1">Shrugging upper traps upward to heave weights into the air.</string>
-    <string name="guide_lateral_mistake_2">Raising arms directly out to 90 degrees in frontal plane causing impingement.</string>
-
-    <!-- Core -->
-    <string name="guide_core_setup_1">Set spine and pelvis in neutral alignment; brace abdominal wall firmly.</string>
-    <string name="guide_core_setup_2">Keep glutes contracted to stabilize hips and prevent anterior pelvic tilt.</string>
-    <string name="guide_core_exec_1">Execute controlled flexion or hold rigid anti-extension posture.</string>
-    <string name="guide_core_exec_2">Maintain constant tension on rectus abdominis and obliques throughout set.</string>
-    <string name="guide_core_mistake_1">Sagging lower back into hyperextension, transferring load to lumbar spine.</string>
-    <string name="guide_core_mistake_2">Yanking on neck or holding breath during abdominal contractions.</string>
-
-    <!-- Generic Fallbacks -->
-    <string name="guide_generic_push_setup">Set a stable base of support; retract scapulae and brace core.</string>
-    <string name="guide_generic_push_exec">Drive weight through target pressing muscles with full joint control.</string>
-    <string name="guide_generic_push_mistake">Avoid locking joints violently or losing scapular stability.</string>
-    <string name="guide_generic_pull_setup">Establish grip; set shoulders down and engage abdominal wall.</string>
-    <string name="guide_generic_pull_exec">Lead with elbows, pulling toward target plane while retracting scapulae.</string>
-    <string name="guide_generic_pull_mistake">Avoid rounding lumbar spine or using jerky momentum.</string>
-    <string name="guide_generic_legs_setup">Position feet firmly on platform or floor; align knees with toes.</string>
-    <string name="guide_generic_legs_exec">Move through full comfortable range of motion with continuous quad/glute tension.</string>
-    <string name="guide_generic_legs_mistake">Avoid knee valgus (inward collapse) or lifting heels off the floor.</string>
-    <string name="guide_generic_isolation_setup">Isolate the target muscle by stabilizing adjacent joints completely.</string>
-    <string name="guide_generic_isolation_exec">Focus on mind-muscle connection, strict tempo, and peak contraction.</string>
-    <string name="guide_generic_isolation_mistake">Avoid swinging or recruiting synergist muscle groups to move load.</string>
-
-    <!-- Leg Isolation (Curls & Extensions) -->
-    <string name="guide_leg_isolation_setup_1">Align knee joint axis directly with the machine\'s pivot point.</string>
-    <string name="guide_leg_isolation_setup_2">Fasten pad snugly against shins (extension) or lower Achilles tendon (curl).</string>
-    <string name="guide_leg_isolation_exec_1">Execute smooth concentric flexion or extension without kicking or jerking.</string>
-    <string name="guide_leg_isolation_exec_2">Pause for 1 second at peak contraction and resist the negative return.</string>
-    <string name="guide_leg_isolation_mistake_1">Allowing hips or lower back to lift off the seat/bench during reps.</string>
-    <string name="guide_leg_isolation_mistake_2">Using ballistic momentum or hyperextending knees violently at lockout.</string>
 
     <!-- Exercise History Tab & Dialog -->
     <string name="action_exercise_history">Exercise History</string>

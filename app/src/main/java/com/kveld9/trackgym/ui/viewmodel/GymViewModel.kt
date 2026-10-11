@@ -859,18 +859,6 @@ class GymViewModel(
         }
     }
 
-    fun generateDeloadRoutine(
-        routineId: Long,
-        loadReductionPct: Double = com.kveld9.trackgym.domain.calculator.DeloadGenerator.DEFAULT_LOAD_REDUCTION_PCT,
-        volumeReductionPct: Double = com.kveld9.trackgym.domain.calculator.DeloadGenerator.DEFAULT_VOLUME_REDUCTION_PCT,
-        copySuffix: String = "(Deload)",
-        onCreated: ((Long) -> Unit)? = null
-    ) {
-        viewModelScope.launch {
-            val newId = repository.generateDeloadRoutine(routineId, loadReductionPct, volumeReductionPct, copySuffix)
-            onCreated?.invoke(newId)
-        }
-    }
 
     fun toggleRoutineArchived(routineId: Long, isArchived: Boolean) {
         viewModelScope.launch {
@@ -878,36 +866,7 @@ class GymViewModel(
         }
     }
 
-    fun updateRoutinePeriodization(routineId: Long, isPeriodized: Boolean, cycle: com.kveld9.trackgym.domain.model.PeriodizedCycle?) {
-        viewModelScope.launch {
-            repository.updateRoutinePeriodization(routineId, isPeriodized, cycle)
-        }
-    }
 
-    fun advanceRoutineCycleWeek(routineId: Long) {
-        viewModelScope.launch {
-            repository.advanceRoutineCycleWeek(routineId)
-        }
-    }
-
-    fun previousRoutineCycleWeek(routineId: Long) {
-        viewModelScope.launch {
-            repository.previousRoutineCycleWeek(routineId)
-        }
-    }
-
-    fun setRoutineCycleWeek(routineId: Long, weekNumber: Int) {
-        viewModelScope.launch {
-            repository.setRoutineCycleWeek(routineId, weekNumber)
-        }
-    }
-
-    fun instantiateProgram(program: com.kveld9.trackgym.domain.calculator.ProgramRecommendation, onCompleted: (() -> Unit)? = null) {
-        viewModelScope.launch {
-            repository.instantiateProgram(program)
-            onCompleted?.invoke()
-        }
-    }
 
     fun importRoutineFromText(rawText: String, onResult: (Boolean) -> Unit) {
         val dto = com.kveld9.trackgym.domain.util.RoutineShareCodec.decodeFromText(rawText)

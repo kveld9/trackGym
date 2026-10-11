@@ -40,11 +40,6 @@ import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Share
-import com.kveld9.trackgym.domain.calculator.ProgramRecommendation
-import com.kveld9.trackgym.domain.model.PeriodizedCycle
-import com.kveld9.trackgym.ui.components.DeloadRoutineDialog
-import com.kveld9.trackgym.ui.components.PeriodizedCycleDialog
-import com.kveld9.trackgym.ui.components.ProgramFinderDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -94,11 +89,6 @@ fun EmptyWorkoutDashboard(
     onMoveRoutineDown: ((Long) -> Unit)? = null,
     onMoveFolderUp: ((Long) -> Unit)? = null,
     onMoveFolderDown: ((Long) -> Unit)? = null,
-    onUpdatePeriodization: ((Long, Boolean, PeriodizedCycle?) -> Unit)? = null,
-    onAdvanceCycleWeek: ((Long) -> Unit)? = null,
-    onPreviousCycleWeek: ((Long) -> Unit)? = null,
-    onInstantiateProgram: ((ProgramRecommendation) -> Unit)? = null,
-    onGenerateDeloadRoutine: ((Long, Double, Double) -> Unit)? = null,
     allExercises: List<Exercise> = emptyList(),
     onAddExerciseToRoutine: ((Long, Long) -> Unit)? = null,
     onRemoveExerciseFromRoutine: ((Long) -> Unit)? = null,
@@ -110,12 +100,9 @@ fun EmptyWorkoutDashboard(
     var showArchived by remember { mutableStateOf(false) }
     var showReorderFoldersDialog by remember { mutableStateOf(false) }
     var showImportRoutineDialog by remember { mutableStateOf(false) }
-    var showProgramFinderDialog by remember { mutableStateOf(false) }
     var showNewRoutineDialog by remember { mutableStateOf(false) }
     var routineIdForBuilder by remember { mutableStateOf<Long?>(null) }
     var pendingBuilderRoutine by remember { mutableStateOf<Routine?>(null) }
-    var routineToConfigurePeriodization by remember { mutableStateOf<Routine?>(null) }
-    var routineToGenerateDeload by remember { mutableStateOf<Routine?>(null) }
     val baseRoutines = if (showArchived) {
         routines.filter { it.isArchived }
     } else {
@@ -235,25 +222,6 @@ fun EmptyWorkoutDashboard(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                if (onInstantiateProgram != null) {
-                    OutlinedButton(
-                        onClick = { showProgramFinderDialog = true },
-                        contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 10.dp, vertical = 6.dp),
-                        shape = RoundedCornerShape(10.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.FitnessCenter,
-                            contentDescription = null,
-                            modifier = Modifier.size(16.dp)
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = stringResource(R.string.btn_program_wizard),
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.SemiBold
-                        )
-                    }
-                }
                 if (onImportRoutine != null) {
                     OutlinedButton(
                         onClick = { showImportRoutineDialog = true },
@@ -421,13 +389,7 @@ fun EmptyWorkoutDashboard(
                         onStart = { onStartRoutine(routine.id) },
                         onDelete = { onDeleteRoutine(routine.id) },
                         onDuplicate = { onDuplicateRoutine?.invoke(routine.id) },
-                        onGenerateDeload = if (onGenerateDeloadRoutine != null) {
-                            { routineToGenerateDeload = routine }
-                        } else null,
                         onToggleArchive = { onToggleArchive?.invoke(routine.id, !routine.isArchived) },
-                        onConfigurePeriodization = { routineToConfigurePeriodization = routine },
-                        onAdvanceWeek = { onAdvanceCycleWeek?.invoke(routine.id) },
-                        onPreviousWeek = { onPreviousCycleWeek?.invoke(routine.id) },
                         onShare = {
                             val shareText = RoutineShareCodec.encodeToShareText(routine)
                             val sendIntent = Intent().apply {
@@ -451,19 +413,6 @@ fun EmptyWorkoutDashboard(
         Spacer(modifier = Modifier.height(88.dp))
     }
 
-    if (routineToConfigurePeriodization != null && onUpdatePeriodization != null) {
-        val targetRoutine = routineToConfigurePeriodization!!
-        PeriodizedCycleDialog(
-            routineName = targetRoutine.name,
-            initialIsPeriodized = targetRoutine.isPeriodized,
-            initialCycle = targetRoutine.periodizedCycle,
-            onSave = { isPeriodized, cycle ->
-                onUpdatePeriodization(targetRoutine.id, isPeriodized, cycle)
-                routineToConfigurePeriodization = null
-            },
-            onDismiss = { routineToConfigurePeriodization = null }
-        )
-    }
 
     if (showReorderFoldersDialog && (onMoveFolderUp != null || onMoveFolderDown != null)) {
         ReorderFoldersDialog(
@@ -481,27 +430,7 @@ fun EmptyWorkoutDashboard(
         )
     }
 
-    if (showProgramFinderDialog && onInstantiateProgram != null) {
-        ProgramFinderDialog(
-            onImportProgram = { program ->
-                onInstantiateProgram(program)
-                showProgramFinderDialog = false
-            },
-            onDismiss = { showProgramFinderDialog = false }
-        )
-    }
 
-    if (routineToGenerateDeload != null && onGenerateDeloadRoutine != null) {
-        val targetRoutine = routineToGenerateDeload!!
-        DeloadRoutineDialog(
-            routineName = targetRoutine.name,
-            onGenerate = { loadPct, volPct ->
-                onGenerateDeloadRoutine(targetRoutine.id, loadPct, volPct)
-                routineToGenerateDeload = null
-            },
-            onDismiss = { routineToGenerateDeload = null }
-        )
-    }
 
     if (showNewRoutineDialog && onCreateRoutine != null) {
         NewRoutineDialog(
@@ -547,11 +476,7 @@ fun RoutineCardItem(
     onStart: () -> Unit,
     onDelete: () -> Unit,
     onDuplicate: (() -> Unit)? = null,
-    onGenerateDeload: (() -> Unit)? = null,
     onToggleArchive: (() -> Unit)? = null,
-    onConfigurePeriodization: (() -> Unit)? = null,
-    onAdvanceWeek: (() -> Unit)? = null,
-    onPreviousWeek: (() -> Unit)? = null,
     onShare: (() -> Unit)? = null,
     canMoveUp: Boolean = false,
     canMoveDown: Boolean = false,
@@ -584,22 +509,7 @@ fun RoutineCardItem(
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold
                     )
-                    if (routine.isPeriodized && routine.periodizedCycle != null) {
-                        val currentConfig = routine.periodizedCycle.getCurrentWeekConfig()
-                        Spacer(modifier = Modifier.width(6.dp))
-                        Surface(
-                            color = if (currentConfig.isDeload) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.secondaryContainer,
-                            shape = RoundedCornerShape(4.dp)
-                        ) {
-                            Text(
-                                text = stringResource(R.string.badge_periodized_block, currentConfig.weekNumber, routine.periodizedCycle.totalWeeks),
-                                color = if (currentConfig.isDeload) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSecondaryContainer,
-                                fontSize = 10.sp,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
-                            )
-                        }
-                    }
+
                     if (routine.isArchived) {
                         Spacer(modifier = Modifier.width(8.dp))
                         Surface(
@@ -653,21 +563,6 @@ fun RoutineCardItem(
                             fontSize = 11.sp
                         )
                     }
-                }
-                if (routine.isPeriodized && routine.periodizedCycle != null) {
-                    val currentConfig = routine.periodizedCycle.getCurrentWeekConfig()
-                    val volPct = (currentConfig.volumeMultiplier * 100).toInt()
-                    val intPct = (currentConfig.intensityMultiplier * 100).toInt()
-                    val deltaInt = intPct - 100
-                    val intSign = if (deltaInt > 0) "+$deltaInt%" else "$deltaInt%"
-                    val rpeStr = currentConfig.targetRpe?.let { " • RPE $it" } ?: ""
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = "${currentConfig.phase.name} • $volPct% Vol • $intSign Load$rpeStr",
-                        color = MaterialTheme.colorScheme.primary,
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.SemiBold
-                    )
                 }
             }
 
@@ -728,36 +623,6 @@ fun RoutineCardItem(
                                 }
                             )
                         }
-                        if (onConfigurePeriodization != null) {
-                            DropdownMenuItem(
-                                text = { Text(stringResource(R.string.menu_configure_periodization)) },
-                                leadingIcon = { Icon(Icons.Default.DateRange, contentDescription = null) },
-                                onClick = {
-                                    menuExpanded = false
-                                    onConfigurePeriodization()
-                                }
-                            )
-                        }
-                        if (routine.isPeriodized && onAdvanceWeek != null) {
-                            DropdownMenuItem(
-                                text = { Text(stringResource(R.string.menu_advance_cycle_week)) },
-                                leadingIcon = { Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null) },
-                                onClick = {
-                                    menuExpanded = false
-                                    onAdvanceWeek()
-                                }
-                            )
-                        }
-                        if (routine.isPeriodized && onPreviousWeek != null) {
-                            DropdownMenuItem(
-                                text = { Text(stringResource(R.string.menu_previous_cycle_week)) },
-                                leadingIcon = { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null) },
-                                onClick = {
-                                    menuExpanded = false
-                                    onPreviousWeek()
-                                }
-                            )
-                        }
                         if (onDuplicate != null) {
                             DropdownMenuItem(
                                 text = { Text(stringResource(R.string.menu_duplicate_routine)) },
@@ -765,16 +630,6 @@ fun RoutineCardItem(
                                 onClick = {
                                     menuExpanded = false
                                     onDuplicate()
-                                }
-                            )
-                        }
-                        if (onGenerateDeload != null) {
-                            DropdownMenuItem(
-                                text = { Text(stringResource(R.string.menu_generate_deload)) },
-                                leadingIcon = { Icon(Icons.Default.Refresh, contentDescription = null) },
-                                onClick = {
-                                    menuExpanded = false
-                                    onGenerateDeload()
                                 }
                             )
                         }

@@ -31,8 +31,6 @@ import com.kveld9.trackgym.domain.model.PersonalRecord
 import com.kveld9.trackgym.data.local.entity.RoutineEntity
 import com.kveld9.trackgym.data.local.entity.RoutineExerciseEntity
 import com.kveld9.trackgym.data.local.entity.RoutineFolderEntity
-import com.kveld9.trackgym.domain.calculator.DeloadGenerator
-import com.kveld9.trackgym.domain.calculator.PeriodizedRoutineEngine
 import com.kveld9.trackgym.domain.model.PeriodizedCycle
 import com.kveld9.trackgym.domain.model.Routine
 import com.kveld9.trackgym.domain.model.RoutineExercise
@@ -473,17 +471,6 @@ class GymRepository(private val database: GymDatabase) {
         )
         workoutDao.updateWorkout(completedEntity)
 
-        if (completedEntity.routineId != null && !detachRoutine) {
-            val routine = routineDao.getRoutineById(completedEntity.routineId)
-            if (routine != null && routine.isPeriodized) {
-                val cycle = PeriodizedRoutineEngine.decode(routine.periodizedCycleData)
-                if (cycle != null && cycle.autoAdvanceOnCompletion) {
-                    val advanced = PeriodizedRoutineEngine.advanceCycle(cycle, autoRepeat = true)
-                    routineDao.updateRoutineCycleData(routine.id, PeriodizedRoutineEngine.encode(advanced))
-                }
-            }
-        }
-
         compareWorkoutWithPrevious(workoutId, weightUnit, userBodyWeightKg)
     }
 
@@ -896,10 +883,6 @@ class GymRepository(private val database: GymDatabase) {
                         defaultReps = re.defaultReps
                     )
                 }
-                val cycle = if (entity.isPeriodized) {
-                    PeriodizedRoutineEngine.decode(entity.periodizedCycleData)
-                        ?: PeriodizedRoutineEngine.createDefaultCycle(PeriodizedRoutineEngine.DEFAULT_CYCLE_WEEKS)
-                } else null
                 Routine(
                     id = entity.id,
                     folderId = entity.folderId,
@@ -909,8 +892,8 @@ class GymRepository(private val database: GymDatabase) {
                     exercises = mappedExercises,
                     orderIndex = entity.orderIndex,
                     isArchived = entity.isArchived,
-                    isPeriodized = entity.isPeriodized,
-                    periodizedCycle = cycle,
+                    isPeriodized = false,
+                    periodizedCycle = null,
                     createdAt = entity.createdAt
                 )
             }
@@ -1013,17 +996,8 @@ class GymRepository(private val database: GymDatabase) {
         val active = getActiveWorkout()
         if (active != null) return@withContext active.id
 
-        val cycle = if (routine.isPeriodized) PeriodizedRoutineEngine.decode(routine.periodizedCycleData) else null
-        val currentWeekConfig = cycle?.getCurrentWeekConfig()
-
-        val workoutTitle = if (currentWeekConfig != null) {
-            "${routine.name} - W${currentWeekConfig.weekNumber} (${currentWeekConfig.phase.name})"
-        } else {
-            routine.name
-        }
-
         val workoutEntity = WorkoutEntity(
-            title = workoutTitle,
+            title = routine.name,
             startedAt = System.currentTimeMillis(),
             notes = routine.notes,
             isCompleted = false,
@@ -1039,16 +1013,8 @@ class GymRepository(private val database: GymDatabase) {
                 orderIndex = re.orderIndex
             )
             val weId = workoutDao.insertWorkoutExercise(weEntity)
-            val effectiveTargetSets = if (currentWeekConfig != null) {
-                PeriodizedRoutineEngine.calculatePrescribedSets(re.targetSets, currentWeekConfig)
-            } else {
-                re.targetSets
-            }
-            val effectiveWeight = if (currentWeekConfig != null) {
-                PeriodizedRoutineEngine.calculatePrescribedWeight(re.defaultWeightKg, currentWeekConfig)
-            } else {
-                re.defaultWeightKg
-            }
+            val effectiveTargetSets = re.targetSets
+            val effectiveWeight = re.defaultWeightKg
 
             for (setIndex in 1..effectiveTargetSets) {
                 val setEntity = WorkoutSetEntity(
@@ -1095,139 +1061,12 @@ class GymRepository(private val database: GymDatabase) {
         newRoutineId
     }
 
-    suspend fun generateDeloadRoutine(
-        routineId: Long,
-        loadReductionPct: Double = DeloadGenerator.DEFAULT_LOAD_REDUCTION_PCT,
-        volumeReductionPct: Double = DeloadGenerator.DEFAULT_VOLUME_REDUCTION_PCT,
-        copySuffix: String = "(Deload)"
-    ): Long = withContext(Dispatchers.IO) {
-        val original = routineDao.getRoutineById(routineId) ?: return@withContext -1L
-        val originalExercises = routineDao.getExercisesForRoutine(routineId)
 
-        val newRoutine = RoutineEntity(
-            folderId = original.folderId,
-            name = "${original.name} $copySuffix".trim(),
-            notes = "Deload routine: -${volumeReductionPct.toInt()}% volume, -${loadReductionPct.toInt()}% load.",
-            orderIndex = original.orderIndex + 1,
-            isArchived = false,
-            isPeriodized = false,
-            createdAt = System.currentTimeMillis()
-        )
-        val newRoutineId = routineDao.insertRoutine(newRoutine)
-
-        val deloadExercises = originalExercises.map { re ->
-            val targetSets = DeloadGenerator.calculateDeloadSets(re.targetSets, volumeReductionPct)
-            val deloadWeight = DeloadGenerator.calculateDeloadWeight(re.defaultWeightKg, loadReductionPct)
-            RoutineExerciseEntity(
-                routineId = newRoutineId,
-                exerciseId = re.exerciseId,
-                orderIndex = re.orderIndex,
-                targetSets = targetSets,
-                defaultWeightKg = deloadWeight,
-                defaultReps = re.defaultReps
-            )
-        }
-        routineDao.insertRoutineExercises(deloadExercises)
-        newRoutineId
-    }
-
-    suspend fun updateRoutinePeriodization(routineId: Long, isPeriodized: Boolean, cycle: PeriodizedCycle?) = withContext(Dispatchers.IO) {
-        val encoded = cycle?.let { PeriodizedRoutineEngine.encode(it) }
-        routineDao.updateRoutinePeriodization(routineId, isPeriodized, encoded)
-    }
-
-    suspend fun advanceRoutineCycleWeek(routineId: Long) = withContext(Dispatchers.IO) {
-        val routine = routineDao.getRoutineById(routineId) ?: return@withContext
-        val cycle = PeriodizedRoutineEngine.decode(routine.periodizedCycleData)
-            ?: PeriodizedRoutineEngine.createDefaultCycle()
-        val next = PeriodizedRoutineEngine.advanceCycle(cycle)
-        routineDao.updateRoutineCycleData(routineId, PeriodizedRoutineEngine.encode(next))
-    }
-
-    suspend fun previousRoutineCycleWeek(routineId: Long) = withContext(Dispatchers.IO) {
-        val routine = routineDao.getRoutineById(routineId) ?: return@withContext
-        val cycle = PeriodizedRoutineEngine.decode(routine.periodizedCycleData)
-            ?: PeriodizedRoutineEngine.createDefaultCycle()
-        val prev = PeriodizedRoutineEngine.previousCycle(cycle)
-        routineDao.updateRoutineCycleData(routineId, PeriodizedRoutineEngine.encode(prev))
-    }
-
-    suspend fun setRoutineCycleWeek(routineId: Long, weekNumber: Int) = withContext(Dispatchers.IO) {
-        val routine = routineDao.getRoutineById(routineId) ?: return@withContext
-        val cycle = PeriodizedRoutineEngine.decode(routine.periodizedCycleData)
-            ?: PeriodizedRoutineEngine.createDefaultCycle()
-        val updated = PeriodizedRoutineEngine.setCycleWeek(cycle, weekNumber)
-        routineDao.updateRoutineCycleData(routineId, PeriodizedRoutineEngine.encode(updated))
-    }
 
     suspend fun setRoutineArchived(routineId: Long, isArchived: Boolean) = withContext(Dispatchers.IO) {
         routineDao.updateRoutineArchived(routineId, isArchived)
     }
 
-    suspend fun instantiateProgram(program: com.kveld9.trackgym.domain.calculator.ProgramRecommendation): Long = withContext(Dispatchers.IO) {
-        val folderEntity = RoutineFolderEntity(name = program.name)
-        val folderId = routineDao.insertFolder(folderEntity)
-
-        val existingExercises = exerciseDao.getAllExercisesSync()
-        val existingByName = existingExercises.associateBy { it.name.lowercase().trim() }
-        val defaultByName = DefaultExercises.list.associateBy { it.name.lowercase().trim() }
-
-        program.routines.forEachIndexed { rIndex, routineTmpl ->
-            val routineEntity = RoutineEntity(
-                folderId = folderId,
-                name = routineTmpl.name,
-                orderIndex = rIndex,
-                createdAt = System.currentTimeMillis()
-            )
-            val routineId = routineDao.insertRoutine(routineEntity)
-
-            val routineExercises = routineTmpl.exercises.mapIndexed { eIndex, exTmpl ->
-                val nameLower = exTmpl.exerciseName.lowercase().trim()
-                var exerciseId = existingByName[nameLower]?.id
-
-                if (exerciseId == null) {
-                    val defaultEx = defaultByName[nameLower]
-                    val cat = defaultEx?.category ?: ExerciseCategory.OTHER
-                    val group = defaultEx?.muscleGroup ?: MuscleGroup.OTHER
-                    val classifiedMechanics = defaultEx?.mechanics ?: BiomechanicalClassifier.classifyMechanics(
-                        name = exTmpl.exerciseName,
-                        category = cat,
-                        muscleGroup = group
-                    )
-                    val newEntity = ExerciseEntity(
-                        name = exTmpl.exerciseName.trim(),
-                        muscleGroup = group.name,
-                        category = cat.name,
-                        isCustom = defaultEx == null,
-                        mechanics = classifiedMechanics.name,
-                        force = defaultEx?.force?.name ?: BiomechanicalClassifier.classifyForce(
-                            name = exTmpl.exerciseName,
-                            category = cat,
-                            muscleGroup = group
-                        ).name,
-                        level = defaultEx?.level?.name ?: BiomechanicalClassifier.classifyDifficulty(
-                            name = exTmpl.exerciseName,
-                            category = cat,
-                            muscleGroup = group,
-                            mechanics = classifiedMechanics
-                        ).name
-                    )
-                    exerciseId = exerciseDao.insertExercise(newEntity)
-                }
-
-                RoutineExerciseEntity(
-                    routineId = routineId,
-                    exerciseId = exerciseId,
-                    orderIndex = eIndex,
-                    targetSets = exTmpl.targetSets,
-                    defaultWeightKg = exTmpl.defaultWeightKg,
-                    defaultReps = exTmpl.defaultReps
-                )
-            }
-            routineDao.insertRoutineExercises(routineExercises)
-        }
-        folderId
-    }
 
     suspend fun importRoutineFromShareDto(dto: RoutineShareDto): Long = withContext(Dispatchers.IO) {
         val routineEntity = RoutineEntity(

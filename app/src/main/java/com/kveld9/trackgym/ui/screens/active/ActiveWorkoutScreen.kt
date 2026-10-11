@@ -20,8 +20,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
 import com.kveld9.trackgym.ui.theme.GymMotionTokens
 import com.kveld9.trackgym.ui.theme.subtleBorder
-import com.kveld9.trackgym.domain.model.StandardContextTag
-import com.kveld9.trackgym.domain.model.WorkoutContextTagParser
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -99,7 +97,6 @@ import com.kveld9.trackgym.domain.calculator.WarmupGenerator
 import com.kveld9.trackgym.domain.calculator.AutoProgressionEngine
 import com.kveld9.trackgym.ui.components.AutoProgressionDialog
 import com.kveld9.trackgym.ui.components.ExerciseHistoryDialog
-import com.kveld9.trackgym.ui.components.ExerciseTechniqueDialog
 import com.kveld9.trackgym.ui.components.RpeTargetWeightDialog
 import com.kveld9.trackgym.ui.components.WarmupRampDialog
 import com.kveld9.trackgym.ui.components.WorkoutSessionNotesCard
@@ -218,7 +215,6 @@ fun ActiveWorkoutScreen(
     var showDiscardDialog by remember { mutableStateOf(false) }
     var showSaveRoutineDialog by remember { mutableStateOf(false) }
     var finishNotes by remember { mutableStateOf("") }
-    var selectedContextTags by remember { mutableStateOf<List<String>>(emptyList()) }
     var detachRoutineFromWorkout by remember { mutableStateOf(false) }
     var backdateCompletionTimestamp by remember { mutableStateOf<Long?>(null) }
     var routineNameInput by remember { mutableStateOf("") }
@@ -232,7 +228,6 @@ fun ActiveWorkoutScreen(
     var autoProgressionExercise by remember { mutableStateOf<WorkoutExercise?>(null) }
     var supersetConfigExercise by remember { mutableStateOf<WorkoutExercise?>(null) }
     var exerciseToSwap by remember { mutableStateOf<WorkoutExercise?>(null) }
-    var exerciseForTechniqueGuide by remember { mutableStateOf<Exercise?>(null) }
     var exerciseForHistory by remember { mutableStateOf<Exercise?>(null) }
     var pendingSwapTarget by remember { mutableStateOf<Exercise?>(null) }
     var showSwapExercisePicker by remember { mutableStateOf(false) }
@@ -302,7 +297,6 @@ fun ActiveWorkoutScreen(
             } else if (activeWorkout == null) {
             val copySuffix = stringResource(R.string.routine_copy_suffix)
         val defaultWorkoutTitle = stringResource(R.string.workout_default_title)
-        val deloadSuffix = stringResource(R.string.deload_routine_suffix)
         EmptyWorkoutDashboard(
             routines = routines,
             folders = folders,
@@ -320,11 +314,6 @@ fun ActiveWorkoutScreen(
             onMoveRoutineDown = { routineId -> viewModel.moveRoutineDown(routineId, routines) },
             onMoveFolderUp = { folderId -> viewModel.moveFolderUp(folderId, folders) },
             onMoveFolderDown = { folderId -> viewModel.moveFolderDown(folderId, folders) },
-            onUpdatePeriodization = { routineId, isPeriodized, cycle -> viewModel.updateRoutinePeriodization(routineId, isPeriodized, cycle) },
-            onAdvanceCycleWeek = { routineId -> viewModel.advanceRoutineCycleWeek(routineId) },
-            onPreviousCycleWeek = { routineId -> viewModel.previousRoutineCycleWeek(routineId) },
-            onInstantiateProgram = { program -> viewModel.instantiateProgram(program) },
-            onGenerateDeloadRoutine = { routineId, loadPct, volPct -> viewModel.generateDeloadRoutine(routineId, loadPct, volPct, deloadSuffix) },
             onAddExerciseToRoutine = { routineId, exerciseId ->
                 viewModel.addExerciseToRoutine(routineId, exerciseId)
             },
@@ -508,7 +497,6 @@ fun ActiveWorkoutScreen(
                                 },
                                 onConfigureWarmupRamp = { warmupRampExercise = we },
                                 onConfigureAutoProgression = { autoProgressionExercise = we },
-                                onOpenTechniqueGuide = { exerciseForTechniqueGuide = we.exercise },
                                 onOpenExerciseHistory = { exerciseForHistory = we.exercise }
                             )
                         }
@@ -707,35 +695,6 @@ fun ActiveWorkoutScreen(
                         )
                     )
 
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Text(
-                        text = stringResource(R.string.label_context_tags),
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    @OptIn(ExperimentalLayoutApi::class)
-                    FlowRow(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        StandardContextTag.entries.forEach { tag ->
-                            val isSelected = selectedContextTags.contains(tag.tagKey)
-                            FilterChip(
-                                selected = isSelected,
-                                onClick = {
-                                    selectedContextTags = WorkoutContextTagParser.toggleTag(selectedContextTags, tag.tagKey)
-                                },
-                                label = { Text(stringResource(tag.labelRes), fontSize = 11.sp) },
-                                colors = FilterChipDefaults.filterChipColors(
-                                    selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                                    selectedLabelColor = MaterialTheme.colorScheme.primary
-                                )
-                            )
-                        }
-                    }
-
                     val activeDateMillis = backdateCompletionTimestamp ?: System.currentTimeMillis()
                     val formattedDate = remember(activeDateMillis) {
                         java.text.SimpleDateFormat("yyyy-MM-dd HH:mm", java.util.Locale.getDefault())
@@ -836,7 +795,7 @@ fun ActiveWorkoutScreen(
                 Button(
                     onClick = {
                         showFinishDialog = false
-                        val finalNotes = WorkoutContextTagParser.embedTagsIntoNotes(selectedContextTags, finishNotes)
+                        val finalNotes = finishNotes
                         val linkedRoutineId = activeWorkout?.routineId
                         if (linkedRoutineId != null && !detachRoutineFromWorkout) {
                             when (routineUpdateMode) {
@@ -890,7 +849,7 @@ fun ActiveWorkoutScreen(
 
     if (showRoutineSyncPrompt) {
         val routineName = activeWorkout?.name.orEmpty()
-        val finalNotes = WorkoutContextTagParser.embedTagsIntoNotes(selectedContextTags, finishNotes)
+        val finalNotes = finishNotes
         AlertDialog(
             onDismissRequest = {
                 showRoutineSyncPrompt = false
@@ -1151,13 +1110,6 @@ fun ActiveWorkoutScreen(
                 autoProgressionExercise = null
             },
             onDismiss = { autoProgressionExercise = null }
-        )
-    }
-
-    exerciseForTechniqueGuide?.let { exercise ->
-        ExerciseTechniqueDialog(
-            exercise = exercise,
-            onDismiss = { exerciseForTechniqueGuide = null }
         )
     }
 

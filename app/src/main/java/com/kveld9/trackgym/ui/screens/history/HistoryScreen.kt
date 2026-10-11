@@ -53,10 +53,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.minimumInteractiveComponentSize
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
-import com.kveld9.trackgym.domain.model.StandardContextTag
-import com.kveld9.trackgym.domain.model.WorkoutContextTagParser
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
@@ -82,14 +78,6 @@ import com.kveld9.trackgym.domain.model.Workout
 import com.kveld9.trackgym.ui.components.MuscleHeatmapCard
 import com.kveld9.trackgym.ui.components.TimeBucketedDistributionCard
 import com.kveld9.trackgym.ui.components.HypertrophyThresholdCard
-import com.kveld9.trackgym.ui.components.WorkoutShareCard
-import com.kveld9.trackgym.ui.components.WorkoutSharePreviewDialog
-import com.kveld9.trackgym.ui.util.ShareProvider
-import com.kveld9.trackgym.domain.model.WorkoutComparison
-import android.graphics.Bitmap
-import android.widget.Toast
-import androidx.compose.runtime.rememberCoroutineScope
-import kotlinx.coroutines.launch
 import com.kveld9.trackgym.ui.util.LocalKeepEnglishExerciseNames
 import com.kveld9.trackgym.ui.util.displayName
 import com.kveld9.trackgym.ui.viewmodel.GymViewModel
@@ -123,26 +111,9 @@ fun HistoryScreen(
         })
     }
     var selectedDateKey by remember { mutableStateOf<String?>(null) }
-    var selectedContextFilter by remember { mutableStateOf<String?>(null) }
-
-    val filteredCompletedWorkouts = remember(completedWorkouts, selectedContextFilter) {
-        if (selectedContextFilter == null) {
-            completedWorkouts
-        } else {
-            completedWorkouts.filter { workout ->
-                val tags = WorkoutContextTagParser.extractTagsFromNotes(workout.notes)
-                tags.any { it.equals(selectedContextFilter, ignoreCase = true) }
-            }
-        }
-    }
 
     var workoutToSaveAsRoutine by remember { mutableStateOf<Workout?>(null) }
     var routineNameInput by remember { mutableStateOf("") }
-    var workoutToShare by remember { mutableStateOf<Workout?>(null) }
-    var previewBitmap by remember { mutableStateOf<Bitmap?>(null) }
-    val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
-    val shareChooserTitle = stringResource(R.string.share_chooser_title)
 
     Scaffold(
         topBar = {
@@ -251,42 +222,6 @@ fun HistoryScreen(
                     }
                 }
 
-                // Context Tags Filter Bar
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .horizontalScroll(rememberScrollState())
-                        .padding(horizontal = 16.dp, vertical = 2.dp),
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    FilterChip(
-                        selected = selectedContextFilter == null,
-                        onClick = { selectedContextFilter = null },
-                        label = { Text(stringResource(R.string.chip_all_context_tags), fontSize = 11.sp) },
-                        colors = FilterChipDefaults.filterChipColors(
-                            selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                            selectedLabelColor = MaterialTheme.colorScheme.primary
-                        )
-                    )
-                    StandardContextTag.entries.forEach { tag ->
-                        val isSelected = selectedContextFilter.equals(tag.tagKey, ignoreCase = true)
-                        FilterChip(
-                            selected = isSelected,
-                            onClick = {
-                                selectedContextFilter = if (isSelected) null else tag.tagKey
-                            },
-                            label = { Text(stringResource(tag.labelRes), fontSize = 11.sp) },
-                            colors = FilterChipDefaults.filterChipColors(
-                                selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                                selectedLabelColor = MaterialTheme.colorScheme.primary
-                            )
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(4.dp))
-
                 if (!isCalendarView) {
                     LazyColumn(
                         modifier = Modifier
@@ -295,7 +230,7 @@ fun HistoryScreen(
                         verticalArrangement = Arrangement.spacedBy(14.dp)
                     ) {
                         items(
-                            items = filteredCompletedWorkouts,
+                            items = completedWorkouts,
                             key = { it.id },
                             contentType = { "workout_card" }
                         ) { workout ->
@@ -309,9 +244,6 @@ fun HistoryScreen(
                                 onSaveAsRoutine = {
                                     routineNameInput = workout.name
                                     workoutToSaveAsRoutine = workout
-                                },
-                                onShareCard = {
-                                    workoutToShare = workout
                                 }
                             )
                         }
@@ -438,53 +370,6 @@ fun HistoryScreen(
                 TextButton(onClick = { workoutToSaveAsRoutine = null }) {
                     Text(stringResource(R.string.action_cancel), color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
-            }
-        )
-    }
-
-    workoutToShare?.let { workout ->
-        val dummyComparison = remember(workout) {
-            WorkoutComparison(
-                currentWorkout = workout,
-                exerciseComparisons = emptyList(),
-                totalRecordsUnlocked = emptyList(),
-                totalVolumeDeltaKg = 0.0
-            )
-        }
-
-        // Invisible off-screen composable that triggers capture to bitmap
-        Box(modifier = Modifier.size(0.dp)) {
-            WorkoutShareCard(
-                comparison = dummyComparison,
-                weightUnit = weightUnit,
-                onCapture = { bitmap ->
-                    previewBitmap = bitmap
-                    workoutToShare = null
-                }
-            )
-        }
-    }
-
-    previewBitmap?.let { bitmap ->
-        WorkoutSharePreviewDialog(
-            bitmap = bitmap,
-            onDownload = {
-                coroutineScope.launch {
-                    val success = ShareProvider.saveBitmapToGallery(context, bitmap)
-                    Toast.makeText(
-                        context,
-                        if (success) R.string.toast_image_saved else R.string.toast_image_save_failed,
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            },
-            onShare = {
-                coroutineScope.launch {
-                    ShareProvider.shareBitmap(context, bitmap, shareChooserTitle)
-                }
-            },
-            onDismiss = {
-                previewBitmap = null
             }
         )
     }
@@ -663,8 +548,7 @@ fun WorkoutHistoryCard(
     workout: Workout,
     weightUnit: WeightUnit = WeightUnit.KG,
     onClick: () -> Unit,
-    onSaveAsRoutine: () -> Unit,
-    onShareCard: () -> Unit = {}
+    onSaveAsRoutine: () -> Unit
 ) {
     val dateFormat = remember { SimpleDateFormat("EEEE, d MMMM", Locale.getDefault()) }
     val dateString = dateFormat.format(Date(workout.completedAt ?: workout.startedAt)).replaceFirstChar { it.uppercase() }
@@ -686,8 +570,7 @@ fun WorkoutHistoryCard(
             WorkoutCardHeaderRow(
                 workoutName = workout.name,
                 dateString = dateString,
-                onSaveAsRoutine = onSaveAsRoutine,
-                onShareCard = onShareCard
+                onSaveAsRoutine = onSaveAsRoutine
             )
 
             Spacer(modifier = Modifier.height(14.dp))
@@ -718,8 +601,7 @@ fun WorkoutHistoryCard(
 private fun WorkoutCardHeaderRow(
     workoutName: String,
     dateString: String,
-    onSaveAsRoutine: () -> Unit,
-    onShareCard: () -> Unit
+    onSaveAsRoutine: () -> Unit
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
     Row(
@@ -760,13 +642,6 @@ private fun WorkoutCardHeaderRow(
                         onClick = {
                             menuExpanded = false
                             onSaveAsRoutine()
-                        }
-                    )
-                    DropdownMenuItem(
-                        text = { Text(stringResource(R.string.action_share_image), color = MaterialTheme.colorScheme.onSurface) },
-                        onClick = {
-                            menuExpanded = false
-                            onShareCard()
                         }
                     )
                 }

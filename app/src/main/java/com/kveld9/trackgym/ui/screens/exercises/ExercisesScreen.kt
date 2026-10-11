@@ -97,7 +97,6 @@ import com.kveld9.trackgym.domain.model.MechanicsType
 import com.kveld9.trackgym.domain.model.MuscleGroup
 import com.kveld9.trackgym.domain.model.MuscleInvolvement
 import com.kveld9.trackgym.ui.components.ExerciseHistoryDialog
-import com.kveld9.trackgym.ui.components.ExerciseTechniqueDialog
 import com.kveld9.trackgym.ui.util.displayName
 import com.kveld9.trackgym.ui.viewmodel.GymViewModel
 
@@ -375,7 +374,6 @@ fun ExerciseRowCard(
 ) {
     var expanded by remember { mutableStateOf(false) }
     var showAlternatives by remember { mutableStateOf(false) }
-    var showTechniqueDialog by remember { mutableStateOf(false) }
     val involvements = remember(exercise) { MuscleAnatomyRegistry.getInvolvementsForExercise(exercise) }
     val primary = remember(involvements) { involvements.firstOrNull { it.isPrimary } ?: involvements.firstOrNull() }
 
@@ -669,30 +667,6 @@ fun ExerciseRowCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 OutlinedButton(
-                    onClick = { showTechniqueDialog = true },
-                    modifier = Modifier
-                        .weight(1f)
-                        .defaultMinSize(minHeight = 48.dp),
-                    shape = RoundedCornerShape(8.dp),
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        contentColor = MaterialTheme.colorScheme.primary
-                    )
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Description,
-                        contentDescription = null,
-                        modifier = Modifier.size(16.dp)
-                    )
-                    Spacer(modifier = Modifier.width(6.dp))
-                    Text(
-                        text = stringResource(R.string.action_technique_guide),
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        maxLines = 1
-                    )
-                }
-
-                OutlinedButton(
                     onClick = onOpenHistory,
                     modifier = Modifier
                         .weight(1f)
@@ -734,13 +708,6 @@ fun ExerciseRowCard(
                 }
             }
         }
-    }
-
-    if (showTechniqueDialog) {
-        ExerciseTechniqueDialog(
-            exercise = exercise,
-            onDismiss = { showTechniqueDialog = false }
-        )
     }
 }
 
