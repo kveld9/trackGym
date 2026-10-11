@@ -15,7 +15,6 @@ import com.kveld9.trackgym.data.local.entity.WorkoutEntity
 import com.kveld9.trackgym.data.local.entity.WorkoutExerciseEntity
 import com.kveld9.trackgym.data.local.entity.WorkoutSetEntity
 import com.kveld9.trackgym.domain.calculator.BiomechanicalClassifier
-import com.kveld9.trackgym.domain.calculator.MechanicsClassifier
 import com.kveld9.trackgym.domain.calculator.PersonalRecordDetector
 import com.kveld9.trackgym.domain.calculator.WorkoutComparisonEngine
 import com.kveld9.trackgym.domain.calculator.resolveNewRoutineName
@@ -722,7 +721,7 @@ class GymRepository(private val database: GymDatabase) {
                 val key = exDto.name.lowercase().trim()
                 val group = MuscleGroup.fromString(exDto.muscleGroup)
                 val cat = ExerciseCategory.fromString(exDto.category)
-                val mechanics = if (exDto.mechanics.isNotBlank()) exDto.mechanics else MechanicsClassifier.classify(
+                val mechanics = if (exDto.mechanics.isNotBlank()) exDto.mechanics else BiomechanicalClassifier.classifyMechanics(
                     name = exDto.name,
                     category = cat,
                     muscleGroup = group
@@ -789,7 +788,7 @@ class GymRepository(private val database: GymDatabase) {
                     val exKey = weDto.exerciseName.lowercase().trim()
                     var exId = exerciseNameToIdMap[exKey]
                     if (exId == null) {
-                        val mech = MechanicsClassifier.classify(weDto.exerciseName)
+                        val mech = BiomechanicalClassifier.classifyMechanics(weDto.exerciseName)
                         val force = BiomechanicalClassifier.classifyForce(weDto.exerciseName, ExerciseCategory.BARBELL, MuscleGroup.OTHER).name
                         val level = BiomechanicalClassifier.classifyDifficulty(weDto.exerciseName, ExerciseCategory.BARBELL, MuscleGroup.OTHER, mech).name
                         val newEx = ExerciseEntity(
@@ -1192,7 +1191,7 @@ class GymRepository(private val database: GymDatabase) {
                     val defaultEx = defaultByName[nameLower]
                     val cat = defaultEx?.category ?: ExerciseCategory.OTHER
                     val group = defaultEx?.muscleGroup ?: MuscleGroup.OTHER
-                    val classifiedMechanics = defaultEx?.mechanics ?: MechanicsClassifier.classify(
+                    val classifiedMechanics = defaultEx?.mechanics ?: BiomechanicalClassifier.classifyMechanics(
                         name = exTmpl.exerciseName,
                         category = cat,
                         muscleGroup = group
@@ -1254,7 +1253,7 @@ class GymRepository(private val database: GymDatabase) {
                 } catch (_: Exception) {
                     ExerciseCategory.OTHER
                 }
-                val classifiedMechanics = MechanicsClassifier.classify(
+                val classifiedMechanics = BiomechanicalClassifier.classifyMechanics(
                     name = exDto.name,
                     category = cat,
                     muscleGroup = group

@@ -103,19 +103,25 @@ class WorkoutComparisonEngineTest {
     }
 
     @Test
-    fun `computeRecommendation suggests micro-load progression based on previous session`() {
+    fun `autoProgression suggests micro-load progression based on previous session`() {
         val previousSets = listOf(
             WorkoutSet(id = 1, setNumber = 1, weightKg = 80.0, reps = 10, isCompleted = true),
             WorkoutSet(id = 2, setNumber = 2, weightKg = 80.0, reps = 10, isCompleted = true),
             WorkoutSet(id = 3, setNumber = 3, weightKg = 80.0, reps = 10, isCompleted = true)
         )
-        val rec = ProgressiveOverloadEngine.computeRecommendation(previousSets, com.kveld9.trackgym.domain.model.WeightUnit.KG)
-        org.junit.Assert.assertNotNull(rec)
-        rec?.let {
-            assertTrue(it.previousSummary.contains("3×10"))
-            assertTrue(it.suggestedTarget.contains("82.5 kg"))
-            assertTrue(it.suggestedTarget.contains("+2.5 kg"))
-        }
+        val defaultRule = AutoProgressionEngine.DEFAULT_RULE.copy(incrementKg = 2.5)
+        val workingWeight = previousSets.first().weightKg
+        val historySessions = listOf(previousSets)
+        val result = AutoProgressionEngine.evaluate(
+            rule = defaultRule,
+            recentSessionsSets = historySessions,
+            currentWeightKg = workingWeight,
+            roundingStepKg = 2.5
+        )
+        assertEquals(ProgressionDecisionType.PROGRESSION, result.type)
+        assertEquals(80.0, result.baseWeightKg, 0.001)
+        assertEquals(82.5, result.recommendedWeightKg, 0.001)
+        assertEquals(2.5, result.weightDeltaKg, 0.001)
     }
 
     @Test

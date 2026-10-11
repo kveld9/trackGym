@@ -69,7 +69,7 @@ object MuscleHeatmapEngine {
 
         for (workout in workouts) {
             for (exercise in workout.exercises) {
-                val setsCount = resolveCompletedSetsCount(exercise)
+                val setsCount = EffectiveSetCounter.countEffectiveSets(exercise)
                 if (setsCount <= 0) continue
 
                 totalSets += setsCount
@@ -93,12 +93,6 @@ object MuscleHeatmapEngine {
             muscleGroupVolumes = volumes,
             totalSets = totalSets
         )
-    }
-
-    private fun resolveCompletedSetsCount(exercise: WorkoutExercise): Int {
-        val completed = exercise.sets.count { it.isCompleted }
-        if (completed > 0) return completed
-        return exercise.sets.size
     }
 
     fun calculateWeekly(

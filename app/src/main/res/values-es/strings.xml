@@ -184,7 +184,6 @@
     <string name="toast_csv_export_error">Error al exportar CSV: %1$s</string>
     <string name="overtraining_warning_title">Alerta de Volumen Excesivo</string>
     <string name="overtraining_warning_message">Has registrado %1$d series efectivas para %2$s en esta sesión. Superar 12 series por músculo puede generar fatiga chatarra (junk volume) sin ganancia hipertrófica adicional.</string>
-    <string name="overload_hint_body">Última sesión: %1$s • Sugerido: %2$s</string>
     <string name="setting_double_dumbbell_title">Duplicar Volumen en Mancuernas</string>
     <string name="setting_double_dumbbell_desc">Multiplica el volumen por 2 en ejercicios de mancuernas al ingresar el peso de una mano</string>
     <string name="setting_exclude_warmup_title">Excluir Calentamiento de Volumen</string>

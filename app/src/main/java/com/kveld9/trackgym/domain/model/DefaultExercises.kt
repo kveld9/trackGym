@@ -6016,7 +6016,7 @@ object DefaultExercises {
         val involvements = com.kveld9.trackgym.domain.calculator.MuscleAnatomyRegistry.getInvolvementsForExercise(ex)
         val primary = involvements.firstOrNull { it.isPrimary }?.muscle
         val secondaries = involvements.filter { !it.isPrimary }
-        val mechanics = com.kveld9.trackgym.domain.calculator.MechanicsClassifier.classify(ex.name, ex.category, ex.muscleGroup)
+        val mechanics = com.kveld9.trackgym.domain.calculator.BiomechanicalClassifier.classifyMechanics(ex.name, ex.category, ex.muscleGroup)
         val force = com.kveld9.trackgym.domain.calculator.BiomechanicalClassifier.classifyForce(ex.name, ex.category, ex.muscleGroup)
         val level = com.kveld9.trackgym.domain.calculator.BiomechanicalClassifier.classifyDifficulty(ex.name, ex.category, ex.muscleGroup, mechanics)
         ex.copy(primaryMuscle = primary, secondaryMuscles = secondaries, mechanics = mechanics, force = force, level = level)

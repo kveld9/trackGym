@@ -12,6 +12,12 @@ import com.kveld9.trackgym.domain.model.MuscleGroup
  */
 object BiomechanicalClassifier {
 
+    private val isolationKeywords = listOf(
+        "curl", "extension", "raise", "fly", "crossover",
+        "calf", "calves", "crunch", "shrug", "face pull",
+        "kickback", "pullover", "wrist", "abductor", "adductor"
+    )
+
     private val staticKeywords = listOf(
         "plank", "isometric", "wall sit", "l-sit", "bridge", "dead hang"
     )
@@ -96,4 +102,36 @@ object BiomechanicalClassifier {
         return mechanics == MechanicsType.COMPOUND &&
                 (category == ExerciseCategory.BARBELL || category == ExerciseCategory.DUMBBELL)
     }
+
+    /**
+     * Biomechanical classifier to determine whether an exercise is Compound (multi-joint)
+     * or Isolation (single-joint).
+     */
+    fun classifyMechanics(
+        name: String,
+        category: ExerciseCategory = ExerciseCategory.BARBELL,
+        muscleGroup: MuscleGroup = MuscleGroup.CHEST
+    ): MechanicsType {
+        val lower = name.lowercase().trim()
+
+        if (isolationKeywords.any { lower.contains(it) }) {
+            return MechanicsType.ISOLATION
+        }
+
+        // Arm exercises default to isolation unless dips or close-grip bench
+        if (muscleGroup == MuscleGroup.ARMS && !lower.contains("dip") && !lower.contains("close-grip")) {
+            return MechanicsType.ISOLATION
+        }
+
+        return MechanicsType.COMPOUND
+    }
+
+    /**
+     * Backward-compatibility alias for [classifyMechanics].
+     */
+    fun classify(
+        name: String,
+        category: ExerciseCategory = ExerciseCategory.BARBELL,
+        muscleGroup: MuscleGroup = MuscleGroup.CHEST
+    ): MechanicsType = classifyMechanics(name, category, muscleGroup)
 }

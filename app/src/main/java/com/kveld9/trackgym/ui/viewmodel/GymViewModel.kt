@@ -19,6 +19,7 @@ import com.kveld9.trackgym.domain.model.WorkoutExercise
 import com.kveld9.trackgym.domain.model.WorkoutSet
 import com.kveld9.trackgym.domain.model.SetType
 import com.kveld9.trackgym.data.ThemePreferences
+import com.kveld9.trackgym.data.GymProfilePreferencesHelper
 import com.kveld9.trackgym.domain.calculator.GymEquipmentProfileEngine
 import com.kveld9.trackgym.domain.calculator.MuscleHeatmapEngine
 import com.kveld9.trackgym.domain.calculator.TrainingConsistencyEngine
@@ -138,46 +139,29 @@ class GymViewModel(
     } ?: flowOf(0))
         .stateIn(viewModelScope, SharingStarted.Eagerly, 0)
 
-    val gymProfiles: StateFlow<List<GymEquipmentProfile>> = (themePreferences?.themeSettings?.map {
-        GymEquipmentProfileEngine.parseProfiles(it.gymProfilesJson)
-    } ?: flowOf(GymEquipmentProfile.defaultProfiles()))
+    val gymProfiles: StateFlow<List<GymEquipmentProfile>> = GymProfilePreferencesHelper
+        .getProfilesFlow(themePreferences)
         .stateIn(viewModelScope, SharingStarted.Eagerly, GymEquipmentProfile.defaultProfiles())
 
-    val activeGymProfile: StateFlow<GymEquipmentProfile> = (themePreferences?.themeSettings?.map {
-        val list = GymEquipmentProfileEngine.parseProfiles(it.gymProfilesJson)
-        GymEquipmentProfileEngine.getActiveProfile(list, it.activeGymProfileId)
-    } ?: flowOf(GymEquipmentProfile.defaultProfiles().first()))
+    val activeGymProfile: StateFlow<GymEquipmentProfile> = GymProfilePreferencesHelper
+        .getActiveProfileFlow(themePreferences)
         .stateIn(viewModelScope, SharingStarted.Eagerly, GymEquipmentProfile.defaultProfiles().first())
 
     fun selectGymProfile(id: String) {
         viewModelScope.launch {
-            themePreferences?.setActiveGymProfileId(id)
+            GymProfilePreferencesHelper.selectProfile(themePreferences, id)
         }
     }
 
     fun saveGymProfile(profile: GymEquipmentProfile) {
         viewModelScope.launch {
-            val currentList = gymProfiles.value
-            val updated = GymEquipmentProfileEngine.addOrUpdateProfile(currentList, profile)
-            val json = GymEquipmentProfileEngine.serializeProfiles(updated)
-            themePreferences?.setGymProfilesJson(json)
-            if (profile.isDefault) {
-                themePreferences?.setActiveGymProfileId(profile.id)
-            }
+            GymProfilePreferencesHelper.saveProfile(themePreferences, gymProfiles.value, profile)
         }
     }
 
     fun deleteGymProfile(id: String) {
         viewModelScope.launch {
-            val currentList = gymProfiles.value
-            val updated = GymEquipmentProfileEngine.deleteProfile(currentList, id)
-            val json = GymEquipmentProfileEngine.serializeProfiles(updated)
-            themePreferences?.setGymProfilesJson(json)
-            val activeId = themePreferences?.themeSettings?.firstOrNull()?.activeGymProfileId
-            if (activeId == id) {
-                val newActive = updated.firstOrNull { it.isDefault } ?: updated.firstOrNull()
-                newActive?.let { themePreferences?.setActiveGymProfileId(it.id) }
-            }
+            GymProfilePreferencesHelper.deleteProfile(themePreferences, gymProfiles.value, id)
         }
     }
 

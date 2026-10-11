@@ -85,8 +85,6 @@ import com.kveld9.trackgym.domain.model.WorkoutExercise
 import com.kveld9.trackgym.domain.model.WorkoutSet
 import androidx.compose.material3.MaterialTheme
 import com.kveld9.trackgym.domain.calculator.CardioCalculator
-import com.kveld9.trackgym.domain.calculator.ProgressiveOverloadEngine
-import com.kveld9.trackgym.domain.calculator.ProgressiveOverloadRecommendation
 import com.kveld9.trackgym.domain.model.DistanceUnit
 import com.kveld9.trackgym.domain.model.RpeScale
 import com.kveld9.trackgym.ui.components.PinnedExerciseNotesCard
@@ -399,17 +397,26 @@ fun WorkoutExerciseCard(
                 onNotesChange = onUpdateExerciseNotes
             )
 
-            val autoProgressionRule = remember(workoutExercise.exercise.autoProgressionRule) {
+            val decodedRule = remember(workoutExercise.exercise.autoProgressionRule) {
                 AutoProgressionEngine.decode(workoutExercise.exercise.autoProgressionRule)
             }
-            val autoProgressionResult = remember(autoProgressionRule, previousSets, workoutExercise.sets) {
+            val defaultIncrementKg = if (weightUnit == WeightUnit.LB) (5.0 / 2.20462262185) else 2.5
+            val autoProgressionRule = remember(decodedRule, defaultIncrementKg) {
+                if (workoutExercise.exercise.autoProgressionRule.isNullOrBlank()) {
+                    AutoProgressionEngine.DEFAULT_RULE.copy(incrementKg = defaultIncrementKg)
+                } else {
+                    decodedRule
+                }
+            }
+            val stepKg = if (weightUnit == WeightUnit.LB) (5.0 / 2.20462262185) else 2.5
+            val autoProgressionResult = remember(autoProgressionRule, previousSets, workoutExercise.sets, stepKg) {
                 if (autoProgressionRule != null && autoProgressionRule.enabled) {
                     val workingWeight = workoutExercise.sets.firstOrNull { it.weightKg > 0.0 && it.setType != SetType.WARMUP }?.weightKg
                         ?: workoutExercise.sets.firstOrNull { it.weightKg > 0.0 }?.weightKg
                         ?: previousSets.firstOrNull { it.weightKg > 0.0 && it.setType != SetType.WARMUP }?.weightKg
                         ?: 0.0
                     val historySessions = if (previousSets.isNotEmpty()) listOf(previousSets) else emptyList()
-                    AutoProgressionEngine.evaluate(autoProgressionRule, historySessions, workingWeight)
+                    AutoProgressionEngine.evaluate(autoProgressionRule, historySessions, workingWeight, roundingStepKg = stepKg)
                 } else null
             }
 
@@ -426,14 +433,6 @@ fun WorkoutExerciseCard(
                         }
                     }
                 )
-            } else {
-                val overloadRec = remember(previousSets, weightUnit) {
-                    ProgressiveOverloadEngine.computeRecommendation(previousSets, weightUnit)
-                }
-                if (overloadRec != null) {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    ProgressiveOverloadHintBadge(recommendation = overloadRec)
-                }
             }
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -558,42 +557,6 @@ fun SetActionButtonsRow(
             Spacer(modifier = Modifier.width(6.dp))
             Text(stringResource(R.string.btn_add_set), fontSize = 13.sp)
         }
-    }
-}
-
-@Composable
-fun ProgressiveOverloadHintBadge(
-    recommendation: ProgressiveOverloadRecommendation,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(8.dp))
-            .background(MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.5f))
-            .border(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.3f), RoundedCornerShape(8.dp))
-            .padding(horizontal = 10.dp, vertical = 6.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            imageVector = Icons.Default.FitnessCenter,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(16.dp)
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(
-            text = stringResource(
-                R.string.overload_hint_body,
-                recommendation.previousSummary,
-                recommendation.suggestedTarget
-            ),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurface,
-            fontSize = 11.sp,
-            lineHeight = 15.sp,
-            fontWeight = FontWeight.Medium
-        )
     }
 }
 

@@ -32,9 +32,7 @@ object OvertrainingDetector {
             val muscle = workoutExercise.exercise.muscleGroup
             if (muscle == MuscleGroup.OTHER) continue
 
-            val effectiveSets = workoutExercise.sets.count { set ->
-                set.setType != SetType.WARMUP && (set.isCompleted || set.weightKg > 0.0 || set.reps > 0)
-            }
+            val effectiveSets = EffectiveSetCounter.countEffectiveSets(workoutExercise)
             if (effectiveSets > 0) {
                 countByMuscle[muscle] = (countByMuscle[muscle] ?: 0) + effectiveSets
             }

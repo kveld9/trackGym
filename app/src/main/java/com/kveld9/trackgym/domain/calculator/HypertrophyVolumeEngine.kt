@@ -25,8 +25,7 @@ object HypertrophyVolumeEngine {
 
         for (w in weeklyWorkouts) {
             for (we in w.exercises) {
-                val completedSets = we.sets.count { it.isCompleted }
-                val setsToAdd = if (completedSets > 0) completedSets else we.sets.size
+                val setsToAdd = EffectiveSetCounter.countEffectiveSets(we)
                 if (setsToAdd <= 0) continue
 
                 val group = we.exercise.muscleGroup
