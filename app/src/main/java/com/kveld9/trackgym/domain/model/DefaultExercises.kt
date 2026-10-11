@@ -103,7 +103,7 @@ object DefaultExercises {
             muscleGroup = MuscleGroup.LEGS,
             category = ExerciseCategory.OTHER
         ),
-        Exercise(name = "Alternate Walking", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Alternate Walking", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.BODYWEIGHT),
         Exercise(
             name = "Alternating Cable Shoulder Press",
             muscleGroup = MuscleGroup.SHOULDERS,
@@ -161,7 +161,7 @@ object DefaultExercises {
             category = ExerciseCategory.DUMBBELL
         ),
         Exercise(name = "Around The Worlds", muscleGroup = MuscleGroup.CHEST, category = ExerciseCategory.DUMBBELL),
-        Exercise(name = "Assault Bike Run", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Assault Bike Run", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.MACHINE),
         Exercise(
             name = "Assisted Chest Dip Kneeling",
             muscleGroup = MuscleGroup.CHEST,
@@ -208,11 +208,11 @@ object DefaultExercises {
             muscleGroup = MuscleGroup.BACK,
             category = ExerciseCategory.BODYWEIGHT
         ),
-        Exercise(name = "Bag training", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Bag training", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.OTHER),
         Exercise(name = "Balance Board", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.OTHER),
         Exercise(name = "Ball crunches", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.OTHER),
         Exercise(name = "Ball Leg Curl", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.OTHER),
-        Exercise(name = "Ball Slams", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Ball Slams", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.OTHER),
         Exercise(name = "Band Assisted Pull-Up", muscleGroup = MuscleGroup.BACK, category = ExerciseCategory.BAND),
         Exercise(name = "Band Bent Over Row", muscleGroup = MuscleGroup.BACK, category = ExerciseCategory.BAND),
         Exercise(name = "Band Chest Fly", muscleGroup = MuscleGroup.CHEST, category = ExerciseCategory.BAND),
@@ -651,9 +651,9 @@ object DefaultExercises {
         ),
         Exercise(name = "Barbell Walking Lunge", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BARBELL),
         Exercise(name = "Barbell Wrist Curl", muscleGroup = MuscleGroup.ARMS, category = ExerciseCategory.BARBELL),
-        Exercise(name = "Battle Ropes", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
-        Exercise(name = "Bear Crawl", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.CARDIO),
-        Exercise(name = "Bear Crawl Low Hip", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Battle Ropes", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.OTHER),
+        Exercise(name = "Bear Crawl", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BODYWEIGHT),
+        Exercise(name = "Bear Crawl Low Hip", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Bear Crawl Sled Drags", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.OTHER),
         Exercise(name = "Bear Walk 2", muscleGroup = MuscleGroup.CHEST, category = ExerciseCategory.BODYWEIGHT),
         Exercise(
@@ -748,19 +748,19 @@ object DefaultExercises {
         ),
         Exercise(name = "Biceps with TRX", muscleGroup = MuscleGroup.ARMS, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Bicycle Crunch", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.BODYWEIGHT),
-        Exercise(name = "Bicycle Recline Walk", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Bicycle Recline Walk", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.MACHINE),
         Exercise(
             name = "Bicycle Twisting Crunch",
             muscleGroup = MuscleGroup.CORE,
             category = ExerciseCategory.BODYWEIGHT
         ),
-        Exercise(name = "Bicycling", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.CARDIO),
-        Exercise(name = "Bicycling, Stationary", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Bicycling", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.MACHINE),
+        Exercise(name = "Bicycling, Stationary", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.MACHINE),
         Exercise(name = "Bird Dog", muscleGroup = MuscleGroup.BACK, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Black Widow Knee Slides", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.OTHER),
         Exercise(name = "Blackroll", muscleGroup = MuscleGroup.BACK, category = ExerciseCategory.OTHER),
         Exercise(name = "Board Press", muscleGroup = MuscleGroup.ARMS, category = ExerciseCategory.BARBELL),
-        Exercise(name = "Bobbing Exhale Drill", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Bobbing Exhale Drill", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.OTHER),
         Exercise(name = "Body Tricep Press", muscleGroup = MuscleGroup.ARMS, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Body-Up", muscleGroup = MuscleGroup.ARMS, category = ExerciseCategory.BODYWEIGHT),
         Exercise(
@@ -816,7 +816,7 @@ object DefaultExercises {
         Exercise(name = "Box Squat", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BARBELL),
         Exercise(name = "Box Squat with Bands", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BARBELL),
         Exercise(name = "Box Squat with Chains", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BARBELL),
-        Exercise(name = "Boxing", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Boxing", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.BODYWEIGHT),
         Exercise(
             name = "Boxing Cross (with Bag and Gloves)",
             muscleGroup = MuscleGroup.LEGS,
@@ -830,7 +830,7 @@ object DefaultExercises {
             category = ExerciseCategory.BARBELL
         ),
         Exercise(name = "Bretzel stretch", muscleGroup = MuscleGroup.BACK, category = ExerciseCategory.BODYWEIGHT),
-        Exercise(name = "Bronco", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Bronco", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.BODYWEIGHT),
         Exercise(
             name = "Bulgarian split squats left",
             muscleGroup = MuscleGroup.LEGS,
@@ -1524,7 +1524,7 @@ object DefaultExercises {
         Exercise(name = "Clean from Blocks", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BARBELL),
         Exercise(name = "Clean Pull", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BARBELL),
         Exercise(name = "Clean Shrug", muscleGroup = MuscleGroup.BACK, category = ExerciseCategory.BARBELL),
-        Exercise(name = "ClimbMill", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
+        Exercise(name = "ClimbMill", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.MACHINE),
         Exercise(name = "Clock Push-Up", muscleGroup = MuscleGroup.CHEST, category = ExerciseCategory.BODYWEIGHT),
         Exercise(
             name = "Clockwise neck circles",
@@ -1576,7 +1576,7 @@ object DefaultExercises {
         Exercise(name = "Conan's Wheel", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.OTHER),
         Exercise(name = "Concentration Curls", muscleGroup = MuscleGroup.ARMS, category = ExerciseCategory.DUMBBELL),
         Exercise(name = "Controlled Kegels", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.OTHER),
-        Exercise(name = "Cool-Down Swim", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Cool-Down Swim", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.BODYWEIGHT),
         Exercise(
             name = "Copenhagen Adduction Exercise",
             muscleGroup = MuscleGroup.LEGS,
@@ -1616,7 +1616,7 @@ object DefaultExercises {
         Exercise(name = "Crunches on Machine", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.OTHER),
         Exercise(name = "Crunches With Legs Up", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.OTHER),
         Exercise(name = "Cuban Press", muscleGroup = MuscleGroup.SHOULDERS, category = ExerciseCategory.DUMBBELL),
-        Exercise(name = "Cycling", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Cycling", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.MACHINE),
         Exercise(name = "Dancer's Stretch", muscleGroup = MuscleGroup.BACK, category = ExerciseCategory.OTHER),
         Exercise(name = "Dead Bug", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Dead Hang Stretch", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.OTHER),
@@ -1675,7 +1675,7 @@ object DefaultExercises {
             category = ExerciseCategory.BODYWEIGHT
         ),
         Exercise(name = "Diamond push ups", muscleGroup = MuscleGroup.CHEST, category = ExerciseCategory.BODYWEIGHT),
-        Exercise(name = "Diaphragmatic Breathing", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Diaphragmatic Breathing", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.OTHER),
         Exercise(name = "Dips", muscleGroup = MuscleGroup.CHEST, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Dips - Chest Version", muscleGroup = MuscleGroup.CHEST, category = ExerciseCategory.OTHER),
         Exercise(
@@ -1725,7 +1725,11 @@ object DefaultExercises {
             muscleGroup = MuscleGroup.LEGS,
             category = ExerciseCategory.BODYWEIGHT
         ),
-        Exercise(name = "Double Under Jump Rope", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
+        Exercise(
+            name = "Double Under Jump Rope",
+            muscleGroup = MuscleGroup.OTHER,
+            category = ExerciseCategory.BODYWEIGHT
+        ),
         Exercise(
             name = "Double-Leg Abdominal Press",
             muscleGroup = MuscleGroup.CORE,
@@ -1745,7 +1749,7 @@ object DefaultExercises {
         Exercise(
             name = "Dumbbell 3D lunge warmup",
             muscleGroup = MuscleGroup.OTHER,
-            category = ExerciseCategory.CARDIO
+            category = ExerciseCategory.DUMBBELL
         ),
         Exercise(
             name = "Dumbbell 45° Lateral Raises",
@@ -1861,7 +1865,7 @@ object DefaultExercises {
             muscleGroup = MuscleGroup.ARMS,
             category = ExerciseCategory.DUMBBELL
         ),
-        Exercise(name = "Dumbbell Blaze", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Dumbbell Blaze", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.DUMBBELL),
         Exercise(
             name = "Dumbbell Bradford press",
             muscleGroup = MuscleGroup.SHOULDERS,
@@ -2502,7 +2506,7 @@ object DefaultExercises {
         Exercise(
             name = "Easy Continuous Swim (Freestyle)",
             muscleGroup = MuscleGroup.OTHER,
-            category = ExerciseCategory.CARDIO
+            category = ExerciseCategory.BODYWEIGHT
         ),
         Exercise(name = "Elbow Circles", muscleGroup = MuscleGroup.SHOULDERS, category = ExerciseCategory.OTHER),
         Exercise(name = "Elbow Lever", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.BODYWEIGHT),
@@ -2526,9 +2530,13 @@ object DefaultExercises {
             muscleGroup = MuscleGroup.BACK,
             category = ExerciseCategory.BODYWEIGHT
         ),
-        Exercise(name = "Elliptical", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
-        Exercise(name = "Elliptical Machine Walk", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
-        Exercise(name = "Elliptical Trainer", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Elliptical", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.MACHINE),
+        Exercise(
+            name = "Elliptical Machine Walk",
+            muscleGroup = MuscleGroup.OTHER,
+            category = ExerciseCategory.MACHINE
+        ),
+        Exercise(name = "Elliptical Trainer", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.MACHINE),
         Exercise(name = "Exercise Ball Crunch", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.OTHER),
         Exercise(name = "Exercise Ball Pull-In", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.OTHER),
         Exercise(name = "Exercise Band Dorsiflexion", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BAND),
@@ -2615,7 +2623,7 @@ object DefaultExercises {
             muscleGroup = MuscleGroup.BACK,
             category = ExerciseCategory.BAND
         ),
-        Exercise(name = "Farmers Walk", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Farmers Walk", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.OTHER),
         Exercise(name = "Fast Skipping", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Finger Curls", muscleGroup = MuscleGroup.ARMS, category = ExerciseCategory.BARBELL),
         Exercise(name = "Finger Pushup", muscleGroup = MuscleGroup.ARMS, category = ExerciseCategory.BODYWEIGHT),
@@ -2777,7 +2785,7 @@ object DefaultExercises {
         Exercise(
             name = "Guided or free meditation",
             muscleGroup = MuscleGroup.OTHER,
-            category = ExerciseCategory.CARDIO
+            category = ExerciseCategory.OTHER
         ),
         Exercise(name = "Hack Squat", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.MACHINE),
         Exercise(name = "Hammer Curls", muscleGroup = MuscleGroup.ARMS, category = ExerciseCategory.DUMBBELL),
@@ -2859,10 +2867,10 @@ object DefaultExercises {
         Exercise(name = "Heavy Bag Thrust", muscleGroup = MuscleGroup.CHEST, category = ExerciseCategory.OTHER),
         Exercise(name = "Heel Touches", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "High Cable Curls", muscleGroup = MuscleGroup.ARMS, category = ExerciseCategory.CABLE),
-        Exercise(name = "High Knee Jumps", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
-        Exercise(name = "High Knee Skips", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
-        Exercise(name = "High Knee Skips HD", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
-        Exercise(name = "High knees", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
+        Exercise(name = "High Knee Jumps", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.BODYWEIGHT),
+        Exercise(name = "High Knee Skips", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.BODYWEIGHT),
+        Exercise(name = "High Knee Skips HD", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.BODYWEIGHT),
+        Exercise(name = "High knees", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "High plank", muscleGroup = MuscleGroup.CHEST, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "High Pull", muscleGroup = MuscleGroup.SHOULDERS, category = ExerciseCategory.OTHER),
         Exercise(
@@ -3005,7 +3013,7 @@ object DefaultExercises {
             category = ExerciseCategory.BODYWEIGHT
         ),
         Exercise(name = "Incline Skull Crush", muscleGroup = MuscleGroup.ARMS, category = ExerciseCategory.OTHER),
-        Exercise(name = "Inline Skating", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Inline Skating", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BODYWEIGHT),
         Exercise(
             name = "Intermediate Groin Stretch",
             muscleGroup = MuscleGroup.LEGS,
@@ -3068,16 +3076,20 @@ object DefaultExercises {
         Exercise(name = "Jerk Balance", muscleGroup = MuscleGroup.SHOULDERS, category = ExerciseCategory.BARBELL),
         Exercise(name = "Jerk Dip Squat", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BARBELL),
         Exercise(name = "JM Press", muscleGroup = MuscleGroup.ARMS, category = ExerciseCategory.BARBELL),
-        Exercise(name = "Jogging", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
-        Exercise(name = "Jogging, Treadmill", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Jogging", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.BODYWEIGHT),
+        Exercise(name = "Jogging, Treadmill", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.MACHINE),
         Exercise(name = "Jump Box", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BODYWEIGHT),
-        Exercise(name = "Jump Rope", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
-        Exercise(name = "Jump rope: basic jumps", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Jump Rope", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.BODYWEIGHT),
+        Exercise(
+            name = "Jump rope: basic jumps",
+            muscleGroup = MuscleGroup.OTHER,
+            category = ExerciseCategory.BODYWEIGHT
+        ),
         Exercise(name = "Jump Shrug", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Jump Split", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Jump Squat", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BODYWEIGHT),
-        Exercise(name = "Jumping Jack", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
-        Exercise(name = "Jumping Jack HD", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Jumping Jack", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.BODYWEIGHT),
+        Exercise(name = "Jumping Jack HD", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Keg Load", muscleGroup = MuscleGroup.BACK, category = ExerciseCategory.OTHER),
         Exercise(name = "Kegel Exercise", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.OTHER),
         Exercise(
@@ -3265,7 +3277,7 @@ object DefaultExercises {
             category = ExerciseCategory.KETTLEBELL
         ),
         Exercise(name = "Kettlebell Windmill", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.KETTLEBELL),
-        Exercise(name = "Kick with Board", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Kick with Board", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.OTHER),
         Exercise(name = "Kipping Muscle Up", muscleGroup = MuscleGroup.BACK, category = ExerciseCategory.OTHER),
         Exercise(name = "Knee Across The Body", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.OTHER),
         Exercise(name = "Knee Circles", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BODYWEIGHT),
@@ -3662,7 +3674,11 @@ object DefaultExercises {
         Exercise(name = "Linear Depth Jump", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.OTHER),
         Exercise(name = "Log Lift", muscleGroup = MuscleGroup.SHOULDERS, category = ExerciseCategory.OTHER),
         Exercise(name = "London Bridges", muscleGroup = MuscleGroup.BACK, category = ExerciseCategory.OTHER),
-        Exercise(name = "Long Distance Running", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
+        Exercise(
+            name = "Long Distance Running",
+            muscleGroup = MuscleGroup.OTHER,
+            category = ExerciseCategory.BODYWEIGHT
+        ),
         Exercise(name = "Long Lunge Pulse Stretch", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BAND),
         Exercise(name = "Looking At Ceiling", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.OTHER),
         Exercise(name = "Low Cable Crossover", muscleGroup = MuscleGroup.CHEST, category = ExerciseCategory.CABLE),
@@ -3815,7 +3831,11 @@ object DefaultExercises {
             muscleGroup = MuscleGroup.ARMS,
             category = ExerciseCategory.MACHINE
         ),
-        Exercise(name = "March or jog in place", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
+        Exercise(
+            name = "March or jog in place",
+            muscleGroup = MuscleGroup.OTHER,
+            category = ExerciseCategory.BODYWEIGHT
+        ),
         Exercise(name = "Marching High Knees", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BODYWEIGHT),
         Exercise(
             name = "Medicine ball booklet crunch",
@@ -4126,8 +4146,8 @@ object DefaultExercises {
         Exercise(name = "Power Clean from Blocks", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BARBELL),
         Exercise(name = "Power Jerk", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BARBELL),
         Exercise(name = "Power Partials", muscleGroup = MuscleGroup.SHOULDERS, category = ExerciseCategory.DUMBBELL),
-        Exercise(name = "Power Sled Pull", muscleGroup = MuscleGroup.BACK, category = ExerciseCategory.CARDIO),
-        Exercise(name = "Power Sled Push", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Power Sled Pull", muscleGroup = MuscleGroup.BACK, category = ExerciseCategory.MACHINE),
+        Exercise(name = "Power Sled Push", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.MACHINE),
         Exercise(name = "Power Snatch", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BARBELL),
         Exercise(
             name = "Power Snatch from Blocks",
@@ -4150,7 +4170,7 @@ object DefaultExercises {
             muscleGroup = MuscleGroup.BACK,
             category = ExerciseCategory.OTHER
         ),
-        Exercise(name = "Prowler Sprint", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Prowler Sprint", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.MACHINE),
         Exercise(
             name = "Pseudo Planche Push-up",
             muscleGroup = MuscleGroup.SHOULDERS,
@@ -4235,7 +4255,7 @@ object DefaultExercises {
         Exercise(name = "Rack Delivery", muscleGroup = MuscleGroup.SHOULDERS, category = ExerciseCategory.BARBELL),
         Exercise(name = "Rack Pull with Bands", muscleGroup = MuscleGroup.BACK, category = ExerciseCategory.BARBELL),
         Exercise(name = "Rack Pulls", muscleGroup = MuscleGroup.BACK, category = ExerciseCategory.BARBELL),
-        Exercise(name = "Radio Taiso", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Radio Taiso", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Reach ups", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Rear Decline Bridge", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Rear Leg Raises", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BODYWEIGHT),
@@ -4244,9 +4264,9 @@ object DefaultExercises {
             muscleGroup = MuscleGroup.LEGS,
             category = ExerciseCategory.BODYWEIGHT
         ),
-        Exercise(name = "Recovery Bobbing", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Recovery Bobbing", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.OTHER),
         Exercise(name = "Recruitment Pulls", muscleGroup = MuscleGroup.ARMS, category = ExerciseCategory.OTHER),
-        Exercise(name = "Recumbent Bike", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Recumbent Bike", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.MACHINE),
         Exercise(
             name = "Relaxed Diaphragmatic Breathing",
             muscleGroup = MuscleGroup.CORE,
@@ -4268,7 +4288,11 @@ object DefaultExercises {
             category = ExerciseCategory.BAND
         ),
         Exercise(name = "Rest (for timed workouts)", muscleGroup = MuscleGroup.ARMS, category = ExerciseCategory.OTHER),
-        Exercise(name = "Retro Treadmill Walking", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
+        Exercise(
+            name = "Retro Treadmill Walking",
+            muscleGroup = MuscleGroup.OTHER,
+            category = ExerciseCategory.MACHINE
+        ),
         Exercise(
             name = "Return Push from Stance",
             muscleGroup = MuscleGroup.SHOULDERS,
@@ -4374,7 +4398,7 @@ object DefaultExercises {
         ),
         Exercise(name = "Rope Climb", muscleGroup = MuscleGroup.BACK, category = ExerciseCategory.OTHER),
         Exercise(name = "Rope Crunch", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.CABLE),
-        Exercise(name = "Rope Jumping", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Rope Jumping", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BODYWEIGHT),
         Exercise(
             name = "Rope Straight-Arm Pulldown",
             muscleGroup = MuscleGroup.BACK,
@@ -4386,7 +4410,7 @@ object DefaultExercises {
             muscleGroup = MuscleGroup.SHOULDERS,
             category = ExerciseCategory.OTHER
         ),
-        Exercise(name = "Rowing Machine", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Rowing Machine", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.MACHINE),
         Exercise(
             name = "Rowing seated, narrow grip",
             muscleGroup = MuscleGroup.BACK,
@@ -4395,29 +4419,33 @@ object DefaultExercises {
         Exercise(
             name = "Rowing Straight Back with Rowing Machine",
             muscleGroup = MuscleGroup.OTHER,
-            category = ExerciseCategory.CARDIO
+            category = ExerciseCategory.MACHINE
         ),
         Exercise(
             name = "Rowing with Rowing Machine",
             muscleGroup = MuscleGroup.OTHER,
-            category = ExerciseCategory.CARDIO
+            category = ExerciseCategory.MACHINE
         ),
         Exercise(name = "Rowing with TRX band", muscleGroup = MuscleGroup.BACK, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Rowing, Lying on Bench", muscleGroup = MuscleGroup.BACK, category = ExerciseCategory.OTHER),
-        Exercise(name = "Rowing, Stationary", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Rowing, Stationary", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.MACHINE),
         Exercise(name = "Rowing, T-bar", muscleGroup = MuscleGroup.BACK, category = ExerciseCategory.OTHER),
         Exercise(name = "Rubber Band Glute Kickback", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BAND),
-        Exercise(name = "Run", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
-        Exercise(name = "Run - Interval Training", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
-        Exercise(name = "Run - Treadmill", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Run", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.BODYWEIGHT),
+        Exercise(
+            name = "Run - Interval Training",
+            muscleGroup = MuscleGroup.OTHER,
+            category = ExerciseCategory.BODYWEIGHT
+        ),
+        Exercise(name = "Run - Treadmill", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.MACHINE),
         Exercise(name = "Runner's Stretch", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.OTHER),
         Exercise(
             name = "Runners Lunge Stretch",
             muscleGroup = MuscleGroup.LEGS,
             category = ExerciseCategory.BODYWEIGHT
         ),
-        Exercise(name = "Running", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
-        Exercise(name = "Running, Treadmill", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Running", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.BODYWEIGHT),
+        Exercise(name = "Running, Treadmill", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.MACHINE),
         Exercise(name = "Russian Push Ups", muscleGroup = MuscleGroup.CHEST, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Russian Twist", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.BODYWEIGHT),
         Exercise(
@@ -4428,7 +4456,7 @@ object DefaultExercises {
         Exercise(name = "Sandbag Load", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.OTHER),
         Exercise(name = "Scapula Pulls", muscleGroup = MuscleGroup.BACK, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Scapular Pull-Up", muscleGroup = MuscleGroup.BACK, category = ExerciseCategory.BODYWEIGHT),
-        Exercise(name = "Schwimmen", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Schwimmen", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Scissor Kick", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Scissors", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.OTHER),
         Exercise(name = "Scissors Jump", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BODYWEIGHT),
@@ -4674,7 +4702,7 @@ object DefaultExercises {
         Exercise(
             name = "Side-Kick Breathing (Kickboard)",
             muscleGroup = MuscleGroup.OTHER,
-            category = ExerciseCategory.CARDIO
+            category = ExerciseCategory.OTHER
         ),
         Exercise(
             name = "Side-lying External Rotation",
@@ -4797,28 +4825,28 @@ object DefaultExercises {
             muscleGroup = MuscleGroup.LEGS,
             category = ExerciseCategory.BODYWEIGHT
         ),
-        Exercise(name = "Skating", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.CARDIO),
-        Exercise(name = "Ski Runners", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.CARDIO),
-        Exercise(name = "Skipping - Standard", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Skating", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BODYWEIGHT),
+        Exercise(name = "Ski Runners", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BODYWEIGHT),
+        Exercise(name = "Skipping - Standard", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.BODYWEIGHT),
         Exercise(
             name = "Skydiver with arms in T-position",
             muscleGroup = MuscleGroup.BACK,
             category = ExerciseCategory.BODYWEIGHT
         ),
-        Exercise(name = "Sled 45 Calf Press", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Sled 45 Calf Press", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.MACHINE),
         Exercise(
             name = "Sled 45 Degrees Leg Press",
             muscleGroup = MuscleGroup.LEGS,
-            category = ExerciseCategory.CARDIO
+            category = ExerciseCategory.MACHINE
         ),
-        Exercise(name = "Sled 45 Leg Press", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Sled 45 Leg Press", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.MACHINE),
         Exercise(
             name = "Sled Calf Press on Leg Press",
             muscleGroup = MuscleGroup.LEGS,
-            category = ExerciseCategory.CARDIO
+            category = ExerciseCategory.MACHINE
         ),
         Exercise(name = "Sled Drag - Harness", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.OTHER),
-        Exercise(name = "Sled Hack Squat", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Sled Hack Squat", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.MACHINE),
         Exercise(
             name = "Sled Overhead Backward Walk",
             muscleGroup = MuscleGroup.SHOULDERS,
@@ -4970,7 +4998,7 @@ object DefaultExercises {
         Exercise(name = "Split Squats", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.OTHER),
         Exercise(name = "Split squats left", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Split squats right", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BODYWEIGHT),
-        Exercise(name = "Sprint", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Sprint", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Squat", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BODYWEIGHT),
         Exercise(
             name = "Squat -> Stand Coordination",
@@ -4983,7 +5011,7 @@ object DefaultExercises {
         Exercise(name = "Squat with Chains", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BARBELL),
         Exercise(name = "Squat with Plate Movers", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BARBELL),
         Exercise(name = "Squats on Multipress", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.OTHER),
-        Exercise(name = "Stairmaster", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Stairmaster", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.MACHINE),
         Exercise(
             name = "Standing Alternating Arm Lift",
             muscleGroup = MuscleGroup.SHOULDERS,
@@ -5213,11 +5241,11 @@ object DefaultExercises {
             category = ExerciseCategory.OTHER
         ),
         Exercise(name = "Star Jump", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BODYWEIGHT),
-        Exercise(name = "Stationary Bike", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
-        Exercise(name = "Stationary Bike Run", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Stationary Bike", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.MACHINE),
+        Exercise(name = "Stationary Bike Run", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.MACHINE),
         Exercise(name = "Step Calf Stretch", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BODYWEIGHT),
-        Exercise(name = "Step Jack", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
-        Exercise(name = "Step Mill", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Step Jack", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.BODYWEIGHT),
+        Exercise(name = "Step Mill", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.MACHINE),
         Exercise(
             name = "Step Side Jump Over Stepbox",
             muscleGroup = MuscleGroup.LEGS,
@@ -5266,7 +5294,7 @@ object DefaultExercises {
             category = ExerciseCategory.DUMBBELL
         ),
         Exercise(name = "Stride Jump Crossover", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.OTHER),
-        Exercise(name = "Stroke-and-Roll Drill", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Stroke-and-Roll Drill", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.OTHER),
         Exercise(name = "Sumo Deadlift", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BARBELL),
         Exercise(name = "Sumo Deadlift High Pull", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BARBELL),
         Exercise(
@@ -5305,7 +5333,7 @@ object DefaultExercises {
             category = ExerciseCategory.OTHER
         ),
         Exercise(name = "Supported Split Squat", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.OTHER),
-        Exercise(name = "Suspended crossess", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Suspended crossess", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.OTHER),
         Exercise(name = "Suspended Fallout", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.OTHER),
         Exercise(name = "Suspended Push-Up", muscleGroup = MuscleGroup.CHEST, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Suspended Reverse Crunch", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.OTHER),
@@ -5331,10 +5359,9 @@ object DefaultExercises {
             category = ExerciseCategory.BODYWEIGHT
         ),
         Exercise(name = "Svend Press", muscleGroup = MuscleGroup.CHEST, category = ExerciseCategory.OTHER),
-        Exercise(name = "Swimming 50m sprints", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
-        Exercise(name = "Swimming Crawl Style", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Swimming Crawl Style", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "T-Bar Row with Handle", muscleGroup = MuscleGroup.BACK, category = ExerciseCategory.BARBELL),
-        Exercise(name = "Talons fesses", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Talons fesses", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Tate Press", muscleGroup = MuscleGroup.ARMS, category = ExerciseCategory.DUMBBELL),
         Exercise(name = "The Straddle", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.OTHER),
         Exercise(name = "Thigh Abductor", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.MACHINE),
@@ -5351,7 +5378,11 @@ object DefaultExercises {
         ),
         Exercise(name = "Torso Twist", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Towel Superman", muscleGroup = MuscleGroup.BACK, category = ExerciseCategory.OTHER),
-        Exercise(name = "Trail Running/Walking", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.CARDIO),
+        Exercise(
+            name = "Trail Running/Walking",
+            muscleGroup = MuscleGroup.LEGS,
+            category = ExerciseCategory.BODYWEIGHT
+        ),
         Exercise(name = "Trap Bar Deadlift", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BARBELL),
         Exercise(name = "Trap Bar Squat", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.OTHER),
         Exercise(name = "Trap-3 Raise", muscleGroup = MuscleGroup.BACK, category = ExerciseCategory.BODYWEIGHT),
@@ -5460,9 +5491,9 @@ object DefaultExercises {
         Exercise(name = "Vpushup", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "W-Raise", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Walking Bridge", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.BODYWEIGHT),
-        Exercise(name = "Walking Lunge", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.CARDIO),
-        Exercise(name = "Walking on Stepmill", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.CARDIO),
-        Exercise(name = "Walking, Treadmill", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Walking Lunge", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BODYWEIGHT),
+        Exercise(name = "Walking on Stepmill", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.MACHINE),
+        Exercise(name = "Walking, Treadmill", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.MACHINE),
         Exercise(name = "Wall Angels", muscleGroup = MuscleGroup.SHOULDERS, category = ExerciseCategory.OTHER),
         Exercise(name = "Wall Baby Breathing", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.OTHER),
         Exercise(name = "Wall balls", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.OTHER),
@@ -5472,7 +5503,7 @@ object DefaultExercises {
         Exercise(name = "Wall Pushup", muscleGroup = MuscleGroup.ARMS, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Wall Slides", muscleGroup = MuscleGroup.BACK, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Wall Squat", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BODYWEIGHT),
-        Exercise(name = "Wall-Hold Rotation", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Wall-Hold Rotation", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.OTHER),
         Exercise(
             name = "Weighted Ball Hyperextension",
             muscleGroup = MuscleGroup.BACK,
@@ -5618,7 +5649,7 @@ object DefaultExercises {
         Exercise(name = "YTW Raises", muscleGroup = MuscleGroup.SHOULDERS, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "YWTs", muscleGroup = MuscleGroup.BACK, category = ExerciseCategory.OTHER),
         Exercise(name = "Zercher Squats", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BARBELL),
-        Exercise(name = "Zone 2 Running", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Zone 2 Running", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Zottman Curl", muscleGroup = MuscleGroup.ARMS, category = ExerciseCategory.DUMBBELL),
         Exercise(name = "Zottman Preacher Curl", muscleGroup = MuscleGroup.ARMS, category = ExerciseCategory.DUMBBELL),
     )
@@ -5629,13 +5660,6 @@ object DefaultExercises {
             muscleGroup = MuscleGroup.FULL_BODY,
             category = ExerciseCategory.BODYWEIGHT
         ),
-        Exercise(name = "100m Row", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
-        Exercise(name = "100m Sprint", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
-        Exercise(name = "10km Row", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
-        Exercise(name = "1km Row", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
-        Exercise(name = "200m Sprint", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
-        Exercise(name = "2km Row", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
-        Exercise(name = "400m Sprint", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
         Exercise(
             name = "45 Degree Hyperextension Arms in Front of Chest",
             muscleGroup = MuscleGroup.BACK,
@@ -5646,7 +5670,6 @@ object DefaultExercises {
             muscleGroup = MuscleGroup.BACK,
             category = ExerciseCategory.BODYWEIGHT
         ),
-        Exercise(name = "500m Row", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
         Exercise(name = "90/90 Hip Flow", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "A Skip", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Abs Crunch (Weighted)", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.DUMBBELL),
@@ -6213,9 +6236,9 @@ object DefaultExercises {
         ),
         Exercise(name = "Cambered Bar Squat", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BARBELL),
         Exercise(name = "Cannonball Crunch", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.BODYWEIGHT),
-        Exercise(name = "Cardio", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
-        Exercise(name = "Cardio (LISS)", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
-        Exercise(name = "Cardio (Zone 2)", muscleGroup = MuscleGroup.FULL_BODY, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Cardio", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.OTHER),
+        Exercise(name = "Cardio (LISS)", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.OTHER),
+        Exercise(name = "Cardio (Zone 2)", muscleGroup = MuscleGroup.FULL_BODY, category = ExerciseCategory.OTHER),
         Exercise(
             name = "Cat Cow and T-Spine Rotation",
             muscleGroup = MuscleGroup.FULL_BODY,
@@ -6241,7 +6264,7 @@ object DefaultExercises {
             muscleGroup = MuscleGroup.OTHER,
             category = ExerciseCategory.OTHER
         ),
-        Exercise(name = "Conditioning Circuit", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Conditioning Circuit", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.OTHER),
         Exercise(name = "Copenhagen Plank", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.BODYWEIGHT),
         Exercise(
             name = "Couch Stretch with Reachovers",
@@ -6726,7 +6749,7 @@ object DefaultExercises {
         ),
         Exercise(name = "Inverted Face Pull", muscleGroup = MuscleGroup.BACK, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Jammer Press", muscleGroup = MuscleGroup.CHEST, category = ExerciseCategory.BARBELL),
-        Exercise(name = "Jog", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Jog", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Jump Switch Lunge", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Katana Extension", muscleGroup = MuscleGroup.ARMS, category = ExerciseCategory.CABLE),
         Exercise(
@@ -7128,7 +7151,7 @@ object DefaultExercises {
             muscleGroup = MuscleGroup.FULL_BODY,
             category = ExerciseCategory.BODYWEIGHT
         ),
-        Exercise(name = "Prowler Push", muscleGroup = MuscleGroup.FULL_BODY, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Prowler Push", muscleGroup = MuscleGroup.FULL_BODY, category = ExerciseCategory.MACHINE),
         Exercise(
             name = "Pull-Up (Neutral Grip, Bodyweight)",
             muscleGroup = MuscleGroup.BACK,
@@ -7139,7 +7162,7 @@ object DefaultExercises {
             muscleGroup = MuscleGroup.BACK,
             category = ExerciseCategory.DUMBBELL
         ),
-        Exercise(name = "Punching Bag", muscleGroup = MuscleGroup.FULL_BODY, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Punching Bag", muscleGroup = MuscleGroup.FULL_BODY, category = ExerciseCategory.OTHER),
         Exercise(name = "Reaching Situp", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Rear Delt Row", muscleGroup = MuscleGroup.BACK, category = ExerciseCategory.DUMBBELL),
         Exercise(
@@ -7200,7 +7223,7 @@ object DefaultExercises {
             category = ExerciseCategory.BARBELL
         ),
         Exercise(name = "Row Between Chairs", muscleGroup = MuscleGroup.BACK, category = ExerciseCategory.BODYWEIGHT),
-        Exercise(name = "Run Strides", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Run Strides", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.BODYWEIGHT),
         Exercise(
             name = "Runners Lunge Thoracic Extension",
             muscleGroup = MuscleGroup.FULL_BODY,
@@ -7233,8 +7256,8 @@ object DefaultExercises {
             muscleGroup = MuscleGroup.BACK,
             category = ExerciseCategory.BODYWEIGHT
         ),
-        Exercise(name = "Shadow Boxing", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
-        Exercise(name = "Shadow Kick Boxing", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Shadow Boxing", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.BODYWEIGHT),
+        Exercise(name = "Shadow Kick Boxing", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.BODYWEIGHT),
         Exercise(
             name = "Shoulder Press (Plate Loaded)",
             muscleGroup = MuscleGroup.SHOULDERS,
@@ -7296,13 +7319,13 @@ object DefaultExercises {
         Exercise(name = "Single-Leg Leg Curl", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.MACHINE),
         Exercise(name = "Sissy Squat", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Skater Hop", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BODYWEIGHT),
-        Exercise(name = "SkiErg", muscleGroup = MuscleGroup.FULL_BODY, category = ExerciseCategory.CARDIO),
+        Exercise(name = "SkiErg", muscleGroup = MuscleGroup.FULL_BODY, category = ExerciseCategory.MACHINE),
         Exercise(
             name = "Sled 45 Degrees One Leg Press",
             muscleGroup = MuscleGroup.LEGS,
-            category = ExerciseCategory.CARDIO
+            category = ExerciseCategory.MACHINE
         ),
-        Exercise(name = "Sled Full Hack Squat", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Sled Full Hack Squat", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.MACHINE),
         Exercise(
             name = "Smith Front Squat Clean Grip",
             muscleGroup = MuscleGroup.LEGS,
@@ -7421,7 +7444,7 @@ object DefaultExercises {
             muscleGroup = MuscleGroup.CHEST,
             category = ExerciseCategory.BODYWEIGHT
         ),
-        Exercise(name = "Swim", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Swim", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "T-Bar Row", muscleGroup = MuscleGroup.BACK, category = ExerciseCategory.MACHINE),
         Exercise(name = "Tempo Bench Press", muscleGroup = MuscleGroup.CHEST, category = ExerciseCategory.BARBELL),
         Exercise(name = "Tempo Deadlift", muscleGroup = MuscleGroup.BACK, category = ExerciseCategory.BARBELL),
@@ -7453,7 +7476,7 @@ object DefaultExercises {
         ),
         Exercise(name = "Trap Bar Shrug", muscleGroup = MuscleGroup.BACK, category = ExerciseCategory.MACHINE),
         Exercise(name = "Trapbar High Pull", muscleGroup = MuscleGroup.BACK, category = ExerciseCategory.BARBELL),
-        Exercise(name = "Treadmill", muscleGroup = MuscleGroup.FULL_BODY, category = ExerciseCategory.CARDIO),
+        Exercise(name = "Treadmill", muscleGroup = MuscleGroup.FULL_BODY, category = ExerciseCategory.MACHINE),
         Exercise(name = "Tricep Kickback", muscleGroup = MuscleGroup.ARMS, category = ExerciseCategory.DUMBBELL),
         Exercise(
             name = "Triceps Dip Bench Leg",
@@ -7470,8 +7493,8 @@ object DefaultExercises {
         Exercise(name = "Up Down Plank", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Vertical Jump", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Viking Press", muscleGroup = MuscleGroup.SHOULDERS, category = ExerciseCategory.BARBELL),
-        Exercise(name = "VO2 Max Intervals", muscleGroup = MuscleGroup.FULL_BODY, category = ExerciseCategory.CARDIO),
-        Exercise(name = "Walk", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
+        Exercise(name = "VO2 Max Intervals", muscleGroup = MuscleGroup.FULL_BODY, category = ExerciseCategory.OTHER),
+        Exercise(name = "Walk", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Walking Calf Raise", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Walking Knee Hugs", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Wall Press Dead Bug", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.BODYWEIGHT),

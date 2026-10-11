@@ -31,7 +31,7 @@ import com.kveld9.trackgym.data.local.entity.WorkoutSetEntity
         RoutineExerciseEntity::class,
         CustomExerciseCategoryEntity::class
     ],
-    version = 19,
+    version = 20,
     exportSchema = false
 )
 abstract class GymDatabase : RoomDatabase() {
@@ -203,6 +203,75 @@ abstract class GymDatabase : RoomDatabase() {
             }
         }
 
+        /**
+         * Migration 19 -> 20: Maps obsolete 'CARDIO' exercise category rows to concrete equipment categories
+         * (MACHINE, BODYWEIGHT, DUMBBELL, or OTHER) based on exercise names.
+         */
+        private val MIGRATION_19_20 = object : androidx.room.migration.Migration(19, 20) {
+            override fun migrate(db: androidx.sqlite.db.SupportSQLiteDatabase) {
+                db.execSQL(
+                    """
+                    UPDATE exercises
+                    SET category = 'MACHINE'
+                    WHERE category = 'CARDIO' AND (
+                        LOWER(name) LIKE '%treadmill%' OR
+                        LOWER(name) LIKE '%bike%' OR
+                        LOWER(name) LIKE '%cycling%' OR
+                        LOWER(name) LIKE '%bicycling%' OR
+                        LOWER(name) LIKE '%elliptical%' OR
+                        LOWER(name) LIKE '%rower%' OR
+                        LOWER(name) LIKE '%rowing%' OR
+                        LOWER(name) LIKE '%climbmill%' OR
+                        LOWER(name) LIKE '%stepmill%' OR
+                        LOWER(name) LIKE '%step mill%' OR
+                        LOWER(name) LIKE '%stairmaster%' OR
+                        LOWER(name) LIKE '%skierg%' OR
+                        LOWER(name) LIKE '%sled%' OR
+                        LOWER(name) LIKE '%prowler%' OR
+                        LOWER(name) LIKE '%recumbent%'
+                    )
+                    """.trimIndent()
+                )
+
+                db.execSQL(
+                    """
+                    UPDATE exercises
+                    SET category = 'DUMBBELL'
+                    WHERE category = 'CARDIO' AND (
+                        LOWER(name) LIKE '%dumbbell%'
+                    )
+                    """.trimIndent()
+                )
+
+                db.execSQL(
+                    """
+                    UPDATE exercises
+                    SET category = 'BODYWEIGHT'
+                    WHERE category = 'CARDIO' AND (
+                        LOWER(name) LIKE '%run%' OR
+                        LOWER(name) LIKE '%sprint%' OR
+                        LOWER(name) LIKE '%jog%' OR
+                        LOWER(name) LIKE '%walk%' OR
+                        LOWER(name) LIKE '%swim%' OR
+                        LOWER(name) LIKE '%schwimmen%' OR
+                        LOWER(name) LIKE '%jump rope%' OR
+                        LOWER(name) LIKE '%jumping jack%' OR
+                        LOWER(name) LIKE '%bear crawl%' OR
+                        LOWER(name) LIKE '%boxing%' OR
+                        LOWER(name) LIKE '%shadow%' OR
+                        LOWER(name) LIKE '%skating%' OR
+                        LOWER(name) LIKE '%burpee%' OR
+                        LOWER(name) LIKE '%high knee%' OR
+                        LOWER(name) LIKE '%rope jump%' OR
+                        LOWER(name) LIKE '%skipping%'
+                    )
+                    """.trimIndent()
+                )
+
+                db.execSQL("UPDATE exercises SET category = 'OTHER' WHERE category = 'CARDIO'")
+            }
+        }
+
         fun getInstance(context: Context): GymDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
@@ -210,7 +279,7 @@ abstract class GymDatabase : RoomDatabase() {
                     GymDatabase::class.java,
                     "trackgym_database.db"
                 )
-                    .addMigrations(MIGRATION_12_13, MIGRATION_13_14, MIGRATION_14_15, MIGRATION_15_16, MIGRATION_16_17, MIGRATION_17_18, MIGRATION_18_19)
+                    .addMigrations(MIGRATION_12_13, MIGRATION_13_14, MIGRATION_14_15, MIGRATION_15_16, MIGRATION_16_17, MIGRATION_17_18, MIGRATION_18_19, MIGRATION_19_20)
                     .fallbackToDestructiveMigration(dropAllTables = true)
                     .build()
                 INSTANCE = instance

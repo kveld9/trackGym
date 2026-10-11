@@ -121,7 +121,6 @@
     <string name="category_machine">Máquina</string>
     <string name="category_cable">Polea</string>
     <string name="category_bodyweight">Peso Corporal</string>
-    <string name="category_cardio">Cardio</string>
     <string name="category_other">Otro</string>
 
     <!-- Record Types -->

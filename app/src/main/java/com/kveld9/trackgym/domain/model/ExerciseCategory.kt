@@ -12,7 +12,6 @@ enum class ExerciseCategory(@get:StringRes val nameRes: Int, val displayName: St
     SMITH_MACHINE(R.string.category_smith_machine, "Smith Machine"),
     KETTLEBELL(R.string.category_kettlebell, "Kettlebell"),
     BAND(R.string.category_band, "Band"),
-    CARDIO(R.string.category_cardio, "Cardio"),
     OTHER(R.string.category_other, "Other");
 
     companion object {

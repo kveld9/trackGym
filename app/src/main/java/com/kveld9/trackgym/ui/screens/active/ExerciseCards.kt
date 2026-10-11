@@ -78,7 +78,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kveld9.trackgym.R
-import com.kveld9.trackgym.domain.model.ExerciseCategory
 import com.kveld9.trackgym.domain.model.SetType
 import com.kveld9.trackgym.domain.model.WeightUnit
 import com.kveld9.trackgym.domain.model.WorkoutExercise
@@ -435,8 +434,7 @@ fun WorkoutExerciseCard(
             Spacer(modifier = Modifier.height(10.dp))
 
             // Sets Table Header
-            val isCardioExercise = workoutExercise.exercise.category == ExerciseCategory.CARDIO ||
-                workoutExercise.sets.any { it.setType == SetType.CARDIO }
+            val isCardioExercise = workoutExercise.sets.any { it.setType == SetType.CARDIO }
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
