@@ -33,6 +33,7 @@
     <ID>ExplicitItLambdaMultipleParameters:ActiveWorkoutScreen.kt:{ _, it -&gt; it.id }</ID>
     <ID>FunctionNaming:PeriodizedRoutineEngine.kt:PeriodizedRoutineEngine$private fun PeriodizationWeekPhaseOrDefault: PeriodizationPhase</ID>
     <ID>LargeClass:DefaultExercises.kt:DefaultExercises</ID>
+    <ID>LargeClass:ExerciseTranslationRegistry.kt:ExerciseTranslationRegistry</ID>
     <ID>LargeClass:GymRepository.kt:GymRepository</ID>
     <ID>LargeClass:GymViewModel.kt:GymViewModel : ViewModel</ID>
     <ID>LongMethod:ActiveWorkoutScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun ActiveWorkoutScreen</ID>
