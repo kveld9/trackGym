@@ -53,7 +53,7 @@ private val mobilityKeywords = listOf(
     "drill"
 )
 
-private val cardioKeywords = listOf(
+private val cardioLongKeywords = listOf(
     "step mill",
     "stepmill",
     "climb mill",
@@ -64,32 +64,34 @@ private val cardioKeywords = listOf(
     "rowing machine",
     "row machine",
     "row erg",
-    "rower",
-    "rowing",
+    "stair master",
+    "stairmaster",
+    "ski erg",
+    "skierg",
     "treadmill",
     "bicycling",
     "cycling",
     "bike",
     "elliptical",
-    "stairmaster",
-    "stair master",
-    "skierg",
-    "ski erg",
+    "rowing",
+    "rower",
     "skating",
-    "swim",
     "swimming",
-    "sprint",
-    "sprinting",
-    "run",
-    "running",
-    "jog",
     "jogging",
-    "walk",
     "walking",
-    "shadow boxing",
+    "sprinting",
+    "running",
     "boxing",
     "shadow",
     "cardio"
+)
+
+private val cardioPaddedShortKeywords = listOf(
+    " run ",
+    " jog ",
+    " walk ",
+    " swim ",
+    " sprint "
 )
 
 /**
@@ -100,11 +102,13 @@ private val cardioKeywords = listOf(
  */
 fun classifyExerciseModality(name: String): ExerciseModality {
     val clean = name.lowercase().trim()
+    val padded = " $clean "
     return when {
         clean.isEmpty() -> ExerciseModality.STRENGTH
         ambiguousStrengthKeywords.any { clean.contains(it) } -> ExerciseModality.STRENGTH
         mobilityKeywords.any { clean.contains(it) } -> ExerciseModality.MOBILITY
-        cardioKeywords.any { clean.contains(it) } -> ExerciseModality.CARDIO
+        cardioLongKeywords.any { clean.contains(it) } ||
+            cardioPaddedShortKeywords.any { padded.contains(it) } -> ExerciseModality.CARDIO
         else -> ExerciseModality.STRENGTH
     }
 }

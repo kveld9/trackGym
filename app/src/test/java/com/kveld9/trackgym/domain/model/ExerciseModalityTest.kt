@@ -52,10 +52,16 @@ class ExerciseModalityTest {
     fun classifyExerciseModality_cardioRepresentativeNames() {
         val cardioCases = listOf(
             "Run",
+            "Running",
+            "Trail Running",
+            "Trail Run",
+            "Jog",
+            "Walk",
+            "Swim",
+            "Sprint",
             "Treadmill",
             "Rowing Machine",
             "Jump Rope",
-            "Swim",
             "Stationary Bike",
             "Cycling",
             "Elliptical",
@@ -97,11 +103,27 @@ class ExerciseModalityTest {
             "Barbell Back Squat",
             "Conventional Deadlift",
             "Barbell Row",
+            "Barbell Bent-Over Row",
+            "Cable Crunch",
+            "Seated Cable Row",
             "Dumbbell Overhead Press",
             "Incline Bicep Curl"
         )
         strengthCases.forEach { name ->
             assertEquals("Expected STRENGTH for: $name", ExerciseModality.STRENGTH, classifyExerciseModality(name))
+        }
+    }
+
+    @Test
+    fun classifyExerciseModality_bareKeywordCollisions_resolveToStrength() {
+        val collisionCases = listOf(
+            "Barbell Bent-Over Row",
+            "Cable Crunch",
+            "Seated Cable Row"
+        )
+        collisionCases.forEach { name ->
+            val message = "Expected STRENGTH (prevent collision) for: $name"
+            assertEquals(message, ExerciseModality.STRENGTH, classifyExerciseModality(name))
         }
     }
 

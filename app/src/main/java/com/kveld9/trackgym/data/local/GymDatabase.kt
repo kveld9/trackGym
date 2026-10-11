@@ -305,28 +305,31 @@ abstract class GymDatabase : RoomDatabase() {
                         LOWER(name) LIKE '%rowing machine%' OR
                         LOWER(name) LIKE '%row machine%' OR
                         LOWER(name) LIKE '%row erg%' OR
-                        LOWER(name) LIKE '%rowing%' OR
-                        LOWER(name) LIKE '%rower%' OR
+                        LOWER(name) LIKE '%stair master%' OR
+                        LOWER(name) LIKE '%stairmaster%' OR
+                        LOWER(name) LIKE '%ski erg%' OR
+                        LOWER(name) LIKE '%skierg%' OR
                         LOWER(name) LIKE '%treadmill%' OR
                         LOWER(name) LIKE '%bicycling%' OR
                         LOWER(name) LIKE '%cycling%' OR
                         LOWER(name) LIKE '%bike%' OR
                         LOWER(name) LIKE '%elliptical%' OR
-                        LOWER(name) LIKE '%stair master%' OR
-                        LOWER(name) LIKE '%stairmaster%' OR
-                        LOWER(name) LIKE '%ski erg%' OR
-                        LOWER(name) LIKE '%skierg%' OR
+                        LOWER(name) LIKE '%rowing%' OR
+                        LOWER(name) LIKE '%rower%' OR
                         LOWER(name) LIKE '%skating%' OR
-                        LOWER(name) LIKE '%swim%' OR
-                        LOWER(name) LIKE '%sprint%' OR
-                        LOWER(name) LIKE '%run%' OR
-                        LOWER(name) LIKE '%jog%' OR
-                        LOWER(name) LIKE '%walk%' OR
-                        LOWER(name) LIKE '%row%' OR
-                        LOWER(name) LIKE '%shadow boxing%' OR
+                        LOWER(name) LIKE '%swimming%' OR
+                        LOWER(name) LIKE '%jogging%' OR
+                        LOWER(name) LIKE '%walking%' OR
+                        LOWER(name) LIKE '%sprinting%' OR
+                        LOWER(name) LIKE '%running%' OR
                         LOWER(name) LIKE '%boxing%' OR
                         LOWER(name) LIKE '%shadow%' OR
-                        LOWER(name) LIKE '%cardio%'
+                        LOWER(name) LIKE '%cardio%' OR
+                        (' ' || LOWER(name) || ' ') LIKE '% run %' OR
+                        (' ' || LOWER(name) || ' ') LIKE '% jog %' OR
+                        (' ' || LOWER(name) || ' ') LIKE '% walk %' OR
+                        (' ' || LOWER(name) || ' ') LIKE '% swim %' OR
+                        (' ' || LOWER(name) || ' ') LIKE '% sprint %'
                     ) AND LOWER(name) NOT LIKE '%farmer%'
                     """.trimIndent()
                 )
