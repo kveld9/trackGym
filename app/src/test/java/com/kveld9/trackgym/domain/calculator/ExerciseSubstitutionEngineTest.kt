@@ -51,7 +51,8 @@ class ExerciseSubstitutionEngineTest {
         val dumbbellSubstitutes = ExerciseSubstitutionEngine.findSubstitutes(
             target = benchPress,
             allExercises = exercises,
-            targetCategory = ExerciseCategory.DUMBBELL
+            targetCategory = ExerciseCategory.DUMBBELL,
+            limit = exercises.size
         )
 
         assertTrue(dumbbellSubstitutes.isNotEmpty())
@@ -77,7 +78,8 @@ class ExerciseSubstitutionEngineTest {
         val bicepCurl = exercises.first { it.name == "EZ-Bar Bicep Curl" }
         val substitutes = ExerciseSubstitutionEngine.findSubstitutes(
             target = bicepCurl,
-            allExercises = exercises
+            allExercises = exercises,
+            limit = exercises.size
         )
 
         assertTrue(substitutes.isNotEmpty())

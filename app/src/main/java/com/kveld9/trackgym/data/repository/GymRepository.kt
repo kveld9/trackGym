@@ -65,6 +65,16 @@ class GymRepository(private val database: GymDatabase) {
         if (exerciseDao.countExercises() == 0) {
             val entities = DefaultExercises.list.map { ExerciseEntity.fromDomain(it) }
             exerciseDao.insertAll(entities)
+        } else {
+            val existingNames = exerciseDao.getAllExercisesSync()
+                .map { it.name.lowercase().trim() }
+                .toSet()
+            val missing = DefaultExercises.list
+                .filter { it.name.lowercase().trim() !in existingNames }
+                .map { ExerciseEntity.fromDomain(it) }
+            if (missing.isNotEmpty()) {
+                exerciseDao.insertAll(missing)
+            }
         }
     }
 

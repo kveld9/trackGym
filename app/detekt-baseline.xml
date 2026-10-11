@@ -2,18 +2,15 @@
 <SmellBaseline>
   <ManuallySuppressedIssues/>
   <CurrentIssues>
-    <ID>ComplexCondition:ExerciseCards.kt:showInlinePlates &amp;&amp; !isCardio &amp;&amp; set.setType != SetType.CARDIO &amp;&amp; set.setType != SetType.DURATION &amp;&amp; set.setType != SetType.BODYWEIGHT_LOAD &amp;&amp; set.setType != SetType.BODYWEIGHT_ASSISTED &amp;&amp; effectiveWeightDisplay &gt; 0.0</ID>
     <ID>ComplexCondition:CsvWorkoutExporter.kt:CsvWorkoutExporter$!value.contains(',') &amp;&amp; !value.contains('"') &amp;&amp; !value.contains('\n') &amp;&amp; !value.contains('\r')</ID>
+    <ID>ComplexCondition:ExerciseCards.kt:showInlinePlates &amp;&amp; !isCardio &amp;&amp; set.setType != SetType.CARDIO &amp;&amp; set.setType != SetType.DURATION &amp;&amp; set.setType != SetType.BODYWEIGHT_LOAD &amp;&amp; set.setType != SetType.BODYWEIGHT_ASSISTED &amp;&amp; effectiveWeightDisplay &gt; 0.0</ID>
     <ID>ComplexCondition:PersonalRecordDetector.kt:PersonalRecordDetector$!currentSet.isCompleted || !currentSet.weightKg.isFinite() || currentSet.weightKg &lt;= 0.0 || currentSet.reps &lt;= 0 || currentSet.setType == SetType.WARMUP</ID>
     <ID>ComplexCondition:RpeTargetWeightCalculator.kt:RpeTargetWeightCalculator$!estimated1RmKg.isFinite() || estimated1RmKg &lt;= 0.0 || targetReps &lt;= 0 || !targetRpe.isFinite()</ID>
-    <ID>CyclomaticComplexMethod:WorkoutDashboard.kt:@Composable fun EmptyWorkoutDashboard</ID>
-    <ID>CyclomaticComplexMethod:WorkoutDialogs.kt:@Composable fun PlateCalculatorDialog</ID>
-    <ID>CyclomaticComplexMethod:WorkoutDashboard.kt:@Composable fun RoutineCardItem</ID>
-    <ID>CyclomaticComplexMethod:ExerciseCards.kt:@Composable fun SetRowItem</ID>
-    <ID>CyclomaticComplexMethod:ExerciseCards.kt:@Composable fun WorkoutExerciseCard</ID>
     <ID>CyclomaticComplexMethod:ActiveWorkoutScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun ActiveWorkoutScreen</ID>
     <ID>CyclomaticComplexMethod:AutoProgressionDialog.kt:@Composable fun AutoProgressionDialog</ID>
     <ID>CyclomaticComplexMethod:CsvWorkoutImporter.kt:CsvWorkoutImporter$fun parseCsvToBackupDto: GymBackupDto</ID>
+    <ID>CyclomaticComplexMethod:ExerciseCards.kt:@Composable fun SetRowItem</ID>
+    <ID>CyclomaticComplexMethod:ExerciseCards.kt:@Composable fun WorkoutExerciseCard</ID>
     <ID>CyclomaticComplexMethod:ExerciseGuideRegistry.kt:ExerciseGuideRegistry$fun getGuideForExercise: ExerciseGuide</ID>
     <ID>CyclomaticComplexMethod:ExerciseHistoryEngine.kt:ExerciseHistoryEngine$fun extractHistory: List&lt;ExerciseHistoryEntry&gt;</ID>
     <ID>CyclomaticComplexMethod:ExerciseSubstitutionEngine.kt:ExerciseSubstitutionEngine$fun findSubstitutes: List&lt;ExerciseSubstitute&gt;</ID>
@@ -30,23 +27,15 @@
     <ID>CyclomaticComplexMethod:RpeTargetWeightCalculator.kt:RpeTargetWeightCalculator$fun calculateTargetWeight: RpeTargetWeightResult</ID>
     <ID>CyclomaticComplexMethod:SettingsScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun SettingsScreen</ID>
     <ID>CyclomaticComplexMethod:WeekStreakEngine.kt:WeekStreakEngine$fun calculateStreak: WeekStreakResult</ID>
+    <ID>CyclomaticComplexMethod:WorkoutDashboard.kt:@Composable fun EmptyWorkoutDashboard</ID>
+    <ID>CyclomaticComplexMethod:WorkoutDashboard.kt:@Composable fun RoutineCardItem</ID>
+    <ID>CyclomaticComplexMethod:WorkoutDialogs.kt:@Composable fun PlateCalculatorDialog</ID>
     <ID>ExplicitItLambdaMultipleParameters:ActiveWorkoutScreen.kt:{ _, it -&gt; it.id }</ID>
     <ID>FunctionNaming:PeriodizedRoutineEngine.kt:PeriodizedRoutineEngine$private fun PeriodizationWeekPhaseOrDefault: PeriodizationPhase</ID>
+    <ID>LargeClass:DefaultExercises.kt:DefaultExercises</ID>
     <ID>LargeClass:GymRepository.kt:GymRepository</ID>
     <ID>LargeClass:GymViewModel.kt:GymViewModel : ViewModel</ID>
-    <ID>LongMethod:ExerciseCards.kt:@Composable fun AutoProgressionBadge</ID>
-    <ID>LongMethod:WorkoutDashboard.kt:@Composable fun EmptyWorkoutDashboard</ID>
-    <ID>LongMethod:ExercisePicker.kt:@Composable fun ExercisePickerContent</ID>
-    <ID>LongMethod:WorkoutDialogs.kt:@Composable fun ExerciseRestDurationDialog</ID>
-    <ID>LongMethod:WorkoutChrome.kt:@Composable fun FloatingRestTimer</ID>
-    <ID>LongMethod:WorkoutDialogs.kt:@Composable fun PlateCalculatorDialog</ID>
-    <ID>LongMethod:WorkoutDashboard.kt:@Composable fun RoutineCardItem</ID>
-    <ID>LongMethod:ExerciseCards.kt:@Composable fun SetRowItem</ID>
-    <ID>LongMethod:WorkoutDialogs.kt:@Composable fun SupersetGroupDialog</ID>
-    <ID>LongMethod:ExerciseCards.kt:@Composable fun WorkoutExerciseCard</ID>
-    <ID>LongMethod:RoutineDialogs.kt:@Composable fun ImportRoutineDialog</ID>
     <ID>LongMethod:ActiveWorkoutScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun ActiveWorkoutScreen</ID>
-    <ID>LongMethod:WorkoutChrome.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun ActiveWorkoutTopBar</ID>
     <ID>LongMethod:AutoBackupEngine.kt:AutoBackupEngine$suspend fun performAutoBackup: AutoBackupResult</ID>
     <ID>LongMethod:AutoProgressionDialog.kt:@Composable fun AutoProgressionDialog</ID>
     <ID>LongMethod:AutoProgressionEngine.kt:AutoProgressionEngine$fun evaluate: AutoProgressionResult</ID>
@@ -54,11 +43,27 @@
     <ID>LongMethod:BodyTelemetryCard.kt:@Composable fun BodyTelemetryCard</ID>
     <ID>LongMethod:CameraGhostSilhouette.kt:@Composable fun CameraGhostSilhouette</ID>
     <ID>LongMethod:CsvWorkoutImporter.kt:CsvWorkoutImporter$fun parseCsvToBackupDto: GymBackupDto</ID>
+    <ID>LongMethod:DefaultExercises.kt:DefaultExercises$private fun chunk0: List&lt;Exercise&gt;</ID>
+    <ID>LongMethod:DefaultExercises.kt:DefaultExercises$private fun chunk10: List&lt;Exercise&gt;</ID>
+    <ID>LongMethod:DefaultExercises.kt:DefaultExercises$private fun chunk11: List&lt;Exercise&gt;</ID>
+    <ID>LongMethod:DefaultExercises.kt:DefaultExercises$private fun chunk1: List&lt;Exercise&gt;</ID>
+    <ID>LongMethod:DefaultExercises.kt:DefaultExercises$private fun chunk2: List&lt;Exercise&gt;</ID>
+    <ID>LongMethod:DefaultExercises.kt:DefaultExercises$private fun chunk3: List&lt;Exercise&gt;</ID>
+    <ID>LongMethod:DefaultExercises.kt:DefaultExercises$private fun chunk4: List&lt;Exercise&gt;</ID>
+    <ID>LongMethod:DefaultExercises.kt:DefaultExercises$private fun chunk5: List&lt;Exercise&gt;</ID>
+    <ID>LongMethod:DefaultExercises.kt:DefaultExercises$private fun chunk6: List&lt;Exercise&gt;</ID>
+    <ID>LongMethod:DefaultExercises.kt:DefaultExercises$private fun chunk7: List&lt;Exercise&gt;</ID>
+    <ID>LongMethod:DefaultExercises.kt:DefaultExercises$private fun chunk8: List&lt;Exercise&gt;</ID>
+    <ID>LongMethod:DefaultExercises.kt:DefaultExercises$private fun chunk9: List&lt;Exercise&gt;</ID>
     <ID>LongMethod:DeloadRoutineDialog.kt:@Composable fun DeloadRoutineDialog</ID>
     <ID>LongMethod:ErrorActivity.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun ErrorScreen</ID>
+    <ID>LongMethod:ExerciseCards.kt:@Composable fun AutoProgressionBadge</ID>
+    <ID>LongMethod:ExerciseCards.kt:@Composable fun SetRowItem</ID>
+    <ID>LongMethod:ExerciseCards.kt:@Composable fun WorkoutExerciseCard</ID>
     <ID>LongMethod:ExerciseGuideRegistry.kt:ExerciseGuideRegistry$fun getGuideForExercise: ExerciseGuide</ID>
     <ID>LongMethod:ExerciseHistoryDialog.kt:@Composable fun ExerciseHistoryDialog</ID>
     <ID>LongMethod:ExerciseHistoryDialog.kt:@Composable private fun ExerciseHistorySessionCard</ID>
+    <ID>LongMethod:ExercisePicker.kt:@Composable fun ExercisePickerContent</ID>
     <ID>LongMethod:ExerciseSubstitutionEngine.kt:ExerciseSubstitutionEngine$fun findSubstitutes: List&lt;ExerciseSubstitute&gt;</ID>
     <ID>LongMethod:ExerciseTechniqueDialog.kt:@Composable fun ExerciseTechniqueDialog</ID>
     <ID>LongMethod:ExercisesScreen.kt:@Composable fun EditExerciseTagsDialog</ID>
@@ -67,7 +72,6 @@
     <ID>LongMethod:ExercisesScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun CreateExerciseDialog</ID>
     <ID>LongMethod:ExercisesScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun ExercisesScreen</ID>
     <ID>LongMethod:GymEquipmentProfileDialog.kt:@Composable fun GymEquipmentProfileEditDialog</ID>
-    <ID>LongMethod:GymEquipmentProfileDialog.kt:@Composable fun GymEquipmentProfilesManageDialog</ID>
     <ID>LongMethod:GymRepository.kt:GymRepository$suspend fun getBackupData: GymBackupDto</ID>
     <ID>LongMethod:GymRepository.kt:GymRepository$suspend fun importBackup: Pair&lt;Int, Int&gt;</ID>
     <ID>LongMethod:HapticWheelPicker.kt:@Composable fun &lt;T&gt; HapticWheelColumn</ID>
@@ -75,11 +79,9 @@
     <ID>LongMethod:HistoryScreen.kt:@Composable fun ActivityHeatmapGrid</ID>
     <ID>LongMethod:HistoryScreen.kt:@Composable fun HistoryCalendarView</ID>
     <ID>LongMethod:HistoryScreen.kt:@Composable fun TrainingConsistencyHeader</ID>
-    <ID>LongMethod:HistoryScreen.kt:@Composable fun WorkoutHistoryCard</ID>
     <ID>LongMethod:HistoryScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun HistoryScreen</ID>
     <ID>LongMethod:JsonBackupManagerTest.kt:JsonBackupManagerTest$@Test fun exportToJson_and_parseAndValidateJson_roundTripSucceeds</ID>
     <ID>LongMethod:LlmWorkoutPromptGeneratorTest.kt:LlmWorkoutPromptGeneratorTest$@Test fun generateMarkdownPrompt_createsComprehensiveStructuredPrompt</ID>
-    <ID>LongMethod:MainScreen.kt:@Composable fun MainScreen</ID>
     <ID>LongMethod:MuscleAnatomyRegistry.kt:MuscleAnatomyRegistry$private fun matchByKeyword: List&lt;MuscleInvolvement&gt;?</ID>
     <ID>LongMethod:OneRepMaxProgressionCard.kt:@Composable fun OneRepMaxProgressionCard</ID>
     <ID>LongMethod:PeriodizedCycleDialog.kt:@Composable fun PeriodizedCycleDialog</ID>
@@ -91,9 +93,9 @@
     <ID>LongMethod:RecordsScreen.kt:@Composable fun RecordItemCard</ID>
     <ID>LongMethod:RecordsScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun RecordsScreen</ID>
     <ID>LongMethod:RoutineBiomechanicalBalanceEngine.kt:RoutineBiomechanicalBalanceEngine$fun calculate: RoutineBiomechanicalBalance</ID>
+    <ID>LongMethod:RoutineDialogs.kt:@Composable fun ImportRoutineDialog</ID>
     <ID>LongMethod:RpeSelectionDialog.kt:@Composable fun RpeSelectionDialog</ID>
     <ID>LongMethod:RpeTargetWeightDialog.kt:@Composable fun RpeTargetWeightDialog</ID>
-    <ID>LongMethod:SettingsScreen.kt:@Composable fun OneRepMaxModelsCard</ID>
     <ID>LongMethod:SettingsScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun SettingsScreen</ID>
     <ID>LongMethod:StrengthBenchmarkEngine.kt:StrengthBenchmarkEngine$fun evaluate: StrengthBenchmarkResult</ID>
     <ID>LongMethod:StrengthStandardsCard.kt:@Composable fun StrengthStandardsCard</ID>
@@ -103,11 +105,17 @@
     <ID>LongMethod:WarmupRampDialog.kt:@Composable fun WarmupRampDialog</ID>
     <ID>LongMethod:WarmupRampDialog.kt:@Composable private fun WarmupStepCard</ID>
     <ID>LongMethod:WeekStreakEngine.kt:WeekStreakEngine$fun calculateStreak: WeekStreakResult</ID>
+    <ID>LongMethod:WorkoutChrome.kt:@Composable fun FloatingRestTimer</ID>
+    <ID>LongMethod:WorkoutChrome.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun ActiveWorkoutTopBar</ID>
     <ID>LongMethod:WorkoutComparisonScreen.kt:@Composable fun ExerciseComparisonCard</ID>
     <ID>LongMethod:WorkoutComparisonScreen.kt:@Composable fun LlmPromptExportCard</ID>
     <ID>LongMethod:WorkoutComparisonScreen.kt:@Composable fun SetComparisonRow</ID>
-    <ID>LongMethod:WorkoutComparisonScreen.kt:@Composable fun WorkoutSummaryHeader</ID>
     <ID>LongMethod:WorkoutComparisonScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun WorkoutComparisonScreen</ID>
+    <ID>LongMethod:WorkoutDashboard.kt:@Composable fun EmptyWorkoutDashboard</ID>
+    <ID>LongMethod:WorkoutDashboard.kt:@Composable fun RoutineCardItem</ID>
+    <ID>LongMethod:WorkoutDialogs.kt:@Composable fun ExerciseRestDurationDialog</ID>
+    <ID>LongMethod:WorkoutDialogs.kt:@Composable fun PlateCalculatorDialog</ID>
+    <ID>LongMethod:WorkoutDialogs.kt:@Composable fun SupersetGroupDialog</ID>
     <ID>LongMethod:WorkoutNotesComponents.kt:@Composable fun PinnedExerciseNotesCard</ID>
     <ID>LongMethod:WorkoutNotesComponents.kt:@Composable fun WorkoutSessionNotesCard</ID>
     <ID>LongMethod:WorkoutShareCard.kt:@Composable fun WorkoutShareCard</ID>
@@ -115,10 +123,6 @@
     <ID>LoopWithTooManyJumpStatements:CsvWorkoutImporter.kt:CsvWorkoutImporter$for</ID>
     <ID>LoopWithTooManyJumpStatements:ExerciseSubstitutionEngine.kt:ExerciseSubstitutionEngine$for</ID>
     <ID>LoopWithTooManyJumpStatements:GymViewModel.kt:GymViewModel$while</ID>
-    <ID>MagicNumber:ExerciseCards.kt:0.001</ID>
-    <ID>MagicNumber:ExerciseCards.kt:1000</ID>
-    <ID>MagicNumber:WorkoutChrome.kt:15</ID>
-    <ID>MagicNumber:ExerciseCards.kt:3</ID>
     <ID>MagicNumber:AutoProgressionDialog.kt:0.95f</ID>
     <ID>MagicNumber:AutoProgressionDialog.kt:10.0</ID>
     <ID>MagicNumber:AutoProgressionDialog.kt:15.0</ID>
@@ -142,6 +146,9 @@
     <ID>MagicNumber:DeloadRoutineDialog.kt:40.0</ID>
     <ID>MagicNumber:DeloadRoutineDialog.kt:50.0</ID>
     <ID>MagicNumber:DurationFormatter.kt:DurationFormatter$60</ID>
+    <ID>MagicNumber:ExerciseCards.kt:0.001</ID>
+    <ID>MagicNumber:ExerciseCards.kt:1000</ID>
+    <ID>MagicNumber:ExerciseCards.kt:3</ID>
     <ID>MagicNumber:ExerciseSubstitutionEngine.kt:ExerciseSubstitutionEngine$25</ID>
     <ID>MagicNumber:ExerciseSubstitutionEngine.kt:ExerciseSubstitutionEngine$3</ID>
     <ID>MagicNumber:ExerciseSubstitutionEngine.kt:ExerciseSubstitutionEngine$30</ID>
@@ -189,8 +196,6 @@
     <ID>MagicNumber:HealthConnectSyncEngine.kt:HealthConnectSyncEngine$1000L</ID>
     <ID>MagicNumber:HealthConnectSyncEngine.kt:HealthConnectSyncEngine$60L</ID>
     <ID>MagicNumber:HistoryScreen.kt:7</ID>
-    <ID>MagicNumber:MainScreen.kt:3</ID>
-    <ID>MagicNumber:MainScreen.kt:4</ID>
     <ID>MagicNumber:MuscleAnatomyRegistry.kt:MuscleAnatomyRegistry$10</ID>
     <ID>MagicNumber:MuscleAnatomyRegistry.kt:MuscleAnatomyRegistry$100</ID>
     <ID>MagicNumber:MuscleAnatomyRegistry.kt:MuscleAnatomyRegistry$15</ID>
@@ -327,98 +332,23 @@
     <ID>MagicNumber:WorkoutAudioCuePlayer.kt:WorkoutAudioCuePlayer$500</ID>
     <ID>MagicNumber:WorkoutAudioCuePlayer.kt:WorkoutAudioCuePlayer$60</ID>
     <ID>MagicNumber:WorkoutAudioCuePlayer.kt:WorkoutAudioCuePlayer$80</ID>
+    <ID>MagicNumber:WorkoutChrome.kt:15</ID>
     <ID>MagicNumber:WorkoutComparisonScreen.kt:60</ID>
     <ID>MagicNumber:WorkoutShareCard.kt:0xFF18181B</ID>
     <ID>MagicNumber:WorkoutShareCard.kt:0xFF27272A</ID>
     <ID>MagicNumber:WorkoutShareCard.kt:3</ID>
-    <ID>MatchingDeclarationName:MainScreen.kt:NavTab</ID>
-    <ID>MaxLineLength:ExerciseCards.kt:.</ID>
-    <ID>MaxLineLength:ExercisePicker.kt:.</ID>
-    <ID>MaxLineLength:ExerciseCards.kt:CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)))</ID>
-    <ID>MaxLineLength:WorkoutDashboard.kt:Icon(Icons.Default.MoreVert, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)</ID>
-    <ID>MaxLineLength:WorkoutChrome.kt:Icon(Icons.Default.MoreVert, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)</ID>
-    <ID>MaxLineLength:ExerciseCards.kt:Icon(Icons.Default.MoreVert, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)</ID>
-    <ID>MaxLineLength:ExerciseCards.kt:SetType.NORMAL -&gt; if (set.isCompleted) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant</ID>
-    <ID>MaxLineLength:WorkoutDialogs.kt:String.format(java.util.Locale.US, "%.2f %s", calcResult.weightPerSide, weightUnit.symbol)</ID>
-    <ID>MaxLineLength:ExerciseCards.kt:Text(col1Header, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f), textAlign = TextAlign.Center)</ID>
-    <ID>MaxLineLength:WorkoutChrome.kt:Text(stringResource(R.string.action_finish), color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Bold)</ID>
-    <ID>MaxLineLength:ExerciseCards.kt:Text(stringResource(R.string.table_header_complete), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp, fontWeight = FontWeight.Bold, modifier = Modifier.width(48.dp), textAlign = TextAlign.Center)</ID>
-    <ID>MaxLineLength:ExerciseCards.kt:Text(stringResource(R.string.table_header_set), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.width(48.dp), textAlign = TextAlign.Center)</ID>
     <ID>MaxLineLength:ActiveWorkoutScreen.kt:Text(stringResource(R.string.action_keep_original), color = MaterialTheme.colorScheme.onSurfaceVariant)</ID>
     <ID>MaxLineLength:ActiveWorkoutScreen.kt:Text(stringResource(R.string.action_save), color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Bold)</ID>
     <ID>MaxLineLength:ActiveWorkoutScreen.kt:Text(stringResource(R.string.action_update_routine), color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Bold)</ID>
     <ID>MaxLineLength:ActiveWorkoutScreen.kt:Text(stringResource(R.string.btn_save_and_summary), color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Bold)</ID>
     <ID>MaxLineLength:ActiveWorkoutScreen.kt:Text(stringResource(R.string.dialog_finish_workout_msg), color = MaterialTheme.colorScheme.onSurfaceVariant)</ID>
-    <ID>MaxLineLength:WorkoutDialogs.kt:barWeightInput = if (newBar % 1.0 == 0.0) newBar.toInt().toString() else newBar.toString()</ID>
-    <ID>MaxLineLength:WorkoutDialogs.kt:barWeightInput = if (pWeight % 1.0 == 0.0) pWeight.toInt().toString() else pWeight.toString()</ID>
-    <ID>MaxLineLength:WorkoutDialogs.kt:border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.25f))</ID>
-    <ID>MaxLineLength:WorkoutDialogs.kt:border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.35f))</ID>
-    <ID>MaxLineLength:ExerciseCards.kt:border = ButtonDefaults.outlinedButtonBorder(enabled = true).copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)))</ID>
-    <ID>MaxLineLength:WorkoutChrome.kt:border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)))</ID>
-    <ID>MaxLineLength:WorkoutDashboard.kt:border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)))</ID>
-    <ID>MaxLineLength:WorkoutDashboard.kt:color = if (balance.isBalanced) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant</ID>
-    <ID>MaxLineLength:WorkoutDashboard.kt:color = if (balance.isBalanced) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainerHighest</ID>
-    <ID>MaxLineLength:WorkoutDashboard.kt:color = if (currentConfig.isDeload) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSecondaryContainer</ID>
-    <ID>MaxLineLength:WorkoutDashboard.kt:color = if (currentConfig.isDeload) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.secondaryContainer</ID>
-    <ID>MaxLineLength:ExerciseCards.kt:color = if (isPositive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface</ID>
-    <ID>MaxLineLength:ExerciseCards.kt:color = if (rpe != null) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)</ID>
     <ID>MaxLineLength:ActiveWorkoutScreen.kt:color = if (isBackdated) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface</ID>
     <ID>MaxLineLength:ActiveWorkoutScreen.kt:colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh)</ID>
-    <ID>MaxLineLength:ExerciseCards.kt:contentDescription</ID>
-    <ID>MaxLineLength:WorkoutChrome.kt:contentDescription = if (isRunning) stringResource(R.string.rest_timer_pause) else stringResource(R.string.rest_timer_resume)</ID>
-    <ID>MaxLineLength:WorkoutDashboard.kt:contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 10.dp, vertical = 6.dp)</ID>
-    <ID>MaxLineLength:ExerciseCards.kt:if</ID>
-    <ID>MaxLineLength:WorkoutDialogs.kt:label = { Text("${stringResource(R.string.plate_calc_bar_weight)} (${weightUnit.symbol})", fontSize = 11.sp) }</ID>
-    <ID>MaxLineLength:WorkoutDialogs.kt:label = { Text("${stringResource(R.string.plate_calc_target_weight)} (${weightUnit.symbol})", fontSize = 11.sp) }</ID>
-    <ID>MaxLineLength:WorkoutDialogs.kt:label = { Text(stringResource(R.string.plate_calc_collars_toggle, collarStr), fontSize = 11.sp) }</ID>
-    <ID>MaxLineLength:WorkoutDashboard.kt:leadingIcon = { Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null) }</ID>
-    <ID>MaxLineLength:ExercisePicker.kt:placeholder = { Text(stringResource(R.string.search_exercise_placeholder), color = MaterialTheme.colorScheme.onSurfaceVariant) }</ID>
     <ID>MaxLineLength:ActiveWorkoutScreen.kt:onGenerateDeloadRoutine = { routineId, loadPct, volPct -&gt; viewModel.generateDeloadRoutine(routineId, loadPct, volPct, deloadSuffix) }</ID>
     <ID>MaxLineLength:ActiveWorkoutScreen.kt:onUpdatePeriodization = { routineId, isPeriodized, cycle -&gt; viewModel.updateRoutinePeriodization(routineId, isPeriodized, cycle) }</ID>
     <ID>MaxLineLength:ActiveWorkoutScreen.kt:selectedContextTags = WorkoutContextTagParser.toggleTag(selectedContextTags, tag.tagKey)</ID>
-    <ID>MaxLineLength:ExerciseCards.kt:targetValue = if (set.isCompleted) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh</ID>
-    <ID>MaxLineLength:WorkoutDashboard.kt:text = "${balance.pushCount} ${stringResource(R.string.force_push)} • ${balance.pullCount} ${stringResource(R.string.force_pull)}"</ID>
-    <ID>MaxLineLength:ExercisePicker.kt:text = "${stringResource(exercise.muscleGroup.nameRes)} • ${stringResource(exercise.category.nameRes)} • ${stringResource(exercise.force.nameRes)} • ${stringResource(exercise.level.nameRes)}"</ID>
-    <ID>MaxLineLength:ExercisePicker.kt:text = "${stringResource(sub.exercise.muscleGroup.nameRes)} • ${stringResource(sub.exercise.category.nameRes)} • ${stringResource(sub.exercise.mechanics.nameRes)}"</ID>
-    <ID>MaxLineLength:ExerciseCards.kt:text = "${stringResource(workoutExercise.exercise.muscleGroup.nameRes)} • ${stringResource(workoutExercise.exercise.category.nameRes)}"</ID>
-    <ID>MaxLineLength:WorkoutDashboard.kt:text = if (exerciseNames.isNotBlank()) exerciseNames else stringResource(R.string.routine_exercises_count, routine.exercises.size)</ID>
-    <ID>MaxLineLength:WorkoutDashboard.kt:text = stringResource(R.string.badge_periodized_block, currentConfig.weekNumber, routine.periodizedCycle.totalWeeks)</ID>
     <ID>MaxLineLength:ActiveWorkoutScreen.kt:text = stringResource(R.string.checkbox_detach_routine, activeWorkout?.name.orEmpty())</ID>
-    <ID>MaxLineLength:ExercisePicker.kt:text = stringResource(R.string.subtitle_substitutes_for, exerciseToSubstitute.displayName(context, keepEnglish))</ID>
-    <ID>MaxLineLength:ExerciseCards.kt:text = { Text(stringResource(R.string.action_add_warmup_sets), color = MaterialTheme.colorScheme.onSurface) }</ID>
-    <ID>MaxLineLength:WorkoutChrome.kt:text = { Text(stringResource(R.string.action_discard), color = MaterialTheme.colorScheme.error) }</ID>
-    <ID>MaxLineLength:ExerciseCards.kt:text = { Text(stringResource(R.string.action_exercise_history), color = MaterialTheme.colorScheme.onSurface) }</ID>
-    <ID>MaxLineLength:ExerciseCards.kt:text = { Text(stringResource(R.string.action_plate_calculator), color = MaterialTheme.colorScheme.onSurface) }</ID>
-    <ID>MaxLineLength:ExerciseCards.kt:text = { Text(stringResource(R.string.action_rpe_target_calculator), color = MaterialTheme.colorScheme.onSurface) }</ID>
-    <ID>MaxLineLength:WorkoutChrome.kt:text = { Text(stringResource(R.string.action_save_as_routine), color = MaterialTheme.colorScheme.onSurface) }</ID>
-    <ID>MaxLineLength:ExerciseCards.kt:text = { Text(stringResource(R.string.action_technique_guide), color = MaterialTheme.colorScheme.onSurface) }</ID>
-    <ID>MaxLineLength:ExerciseCards.kt:text = { Text(stringResource(R.string.menu_auto_progression_rules), color = MaterialTheme.colorScheme.onSurface) }</ID>
-    <ID>MaxLineLength:ExerciseCards.kt:text = { Text(stringResource(R.string.menu_configure_warmup_ramp), color = MaterialTheme.colorScheme.onSurface) }</ID>
-    <ID>MaxLineLength:WorkoutDashboard.kt:text = { Text(stringResource(R.string.menu_delete_routine), color = MaterialTheme.colorScheme.error) }</ID>
-    <ID>MaxLineLength:ExerciseCards.kt:text = { Text(stringResource(R.string.menu_move_down), color = MaterialTheme.colorScheme.onSurface) }</ID>
-    <ID>MaxLineLength:ExerciseCards.kt:text = { Text(stringResource(R.string.menu_move_up), color = MaterialTheme.colorScheme.onSurface) }</ID>
-    <ID>MaxLineLength:ExerciseCards.kt:text = { Text(stringResource(R.string.menu_remove_exercise), color = MaterialTheme.colorScheme.error) }</ID>
-    <ID>MaxLineLength:ExerciseCards.kt:text = { Text(stringResource(R.string.menu_set_rest_duration), color = MaterialTheme.colorScheme.onSurface) }</ID>
-    <ID>MaxLineLength:ExerciseCards.kt:text = { Text(stringResource(R.string.menu_swap_exercise), color = MaterialTheme.colorScheme.onSurface) }</ID>
-    <ID>MaxLineLength:ExerciseCards.kt:textStyle = androidx.compose.ui.text.TextStyle(textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onSurface, fontSize = 15.sp)</ID>
-    <ID>MaxLineLength:ExerciseCards.kt:tint = if (set.isCompleted) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant</ID>
-    <ID>MaxLineLength:ExerciseCards.kt:tint = if (showQuickAdjust) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)</ID>
     <ID>MaxLineLength:ActiveWorkoutScreen.kt:title = { Text(stringResource(R.string.dialog_finish_workout_title), color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold) }</ID>
-    <ID>MaxLineLength:ActiveWorkoutScreen.kt:val</ID>
-    <ID>MaxLineLength:ExerciseCards.kt:val</ID>
-    <ID>MaxLineLength:ExerciseCards.kt:val cal = if (isCardio) CardioCalculator.calculateCaloriesBurned(parsedSec, userBodyWeightKg) else set.caloriesBurned</ID>
-    <ID>MaxLineLength:ExerciseCards.kt:val calories = set.caloriesBurned ?: if (durationSec &gt; 0) CardioCalculator.calculateCaloriesBurned(durationSec, userBodyWeightKg) else 0</ID>
-    <ID>MaxLineLength:ExerciseCards.kt:val col1Header = if (isCardioExercise) distanceUnit.symbol.uppercase() else weightUnit.symbol.uppercase()</ID>
-    <ID>MaxLineLength:WorkoutDialogs.kt:val collarStr = if (defaultCollars % 1.0 == 0.0) "${defaultCollars.toInt()}${weightUnit.symbol}" else "$defaultCollars${weightUnit.symbol}"</ID>
-    <ID>MaxLineLength:WorkoutDialogs.kt:val defaultCollars = remember(weightUnit) { com.kveld9.trackgym.domain.calculator.PlateCalculator.defaultCollarsWeight(weightUnit) }</ID>
-    <ID>MaxLineLength:ExerciseCards.kt:val distanceVal = set.distanceKm ?: distanceText.replace(',', '.').toDoubleOrNull()?.let { distanceUnit.toKm(it) } ?: 0.0</ID>
-    <ID>MaxLineLength:ExerciseCards.kt:val durationSec = if (set.durationSeconds != null &amp;&amp; set.durationSeconds &gt; 0) set.durationSeconds else com.kveld9.trackgym.domain.util.DurationFormatter.parseInputToSeconds(repsText)</ID>
-    <ID>MaxLineLength:WorkoutDashboard.kt:val exerciseNames = routine.exercises.joinToString(", ") { it.exercise.displayName(context, keepEnglish) }</ID>
-    <ID>MaxLineLength:WorkoutDialogs.kt:val label = if (plate % 1.0 == 0.0) "${plate.toInt()}${weightUnit.symbol}" else "$plate${weightUnit.symbol}"</ID>
-    <ID>MaxLineLength:WorkoutDialogs.kt:val pWeightStr = if (pWeight % 1.0 == 0.0) "${pWeight.toInt()}${weightUnit.symbol}" else "$pWeight${weightUnit.symbol}"</ID>
-    <ID>MaxLineLength:ExerciseCards.kt:val parsedSec = com.kveld9.trackgym.domain.util.DurationFormatter.parseInputToSeconds(repsText)</ID>
-    <ID>MaxLineLength:WorkoutDialogs.kt:val plateLabel = if (item.weight % 1.0 == 0.0) "${item.weight.toInt()} ${weightUnit.symbol}" else "${item.weight} ${weightUnit.symbol}"</ID>
-    <ID>MaxLineLength:WorkoutDialogs.kt:val remText = String.format(java.util.Locale.US, "%.2f %s", calcResult.remainderPerSide, weightUnit.symbol)</ID>
     <ID>MaxLineLength:AutoProgressionDialog.kt:color = if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface</ID>
     <ID>MaxLineLength:AutoProgressionDialog.kt:color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh</ID>
     <ID>MaxLineLength:AutoProgressionDialog.kt:text = "Rule: If all sets reach $targetReps reps -&gt; +$incDisplay. If failed $failureThreshold workouts in a row -&gt; -${deloadPercentage.toInt()}% deload."</ID>
@@ -503,11 +433,43 @@
     <ID>MaxLineLength:DefaultExercises.kt:DefaultExercises$val force = com.kveld9.trackgym.domain.calculator.BiomechanicalClassifier.classifyForce(ex.name, ex.category, ex.muscleGroup)</ID>
     <ID>MaxLineLength:DefaultExercises.kt:DefaultExercises$val level = com.kveld9.trackgym.domain.calculator.BiomechanicalClassifier.classifyDifficulty(ex.name, ex.category, ex.muscleGroup, mechanics)</ID>
     <ID>MaxLineLength:DefaultExercises.kt:DefaultExercises$val mechanics = com.kveld9.trackgym.domain.calculator.MechanicsClassifier.classify(ex.name, ex.category, ex.muscleGroup)</ID>
-    <ID>MaxLineLength:DeloadRoutineDialog.kt:border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)))</ID>
     <ID>MaxLineLength:DeloadRoutineDialog.kt:color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface</ID>
     <ID>MaxLineLength:DeloadRoutineDialog.kt:color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh</ID>
     <ID>MaxLineLength:DeloadRoutineDialog.kt:text = "${stringResource(R.string.deload_routine_suffix)}: -${volumeReductionPct.toInt()}% sets • -${loadReductionPct.toInt()}% load"</ID>
     <ID>MaxLineLength:DeloadRoutineDialog.kt:text = "Preserves motor efficiency while facilitating full articular and systemic recovery."</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:.</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:Icon(Icons.Default.MoreVert, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:SetType.NORMAL -&gt; if (set.isCompleted) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:Text(col1Header, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f), textAlign = TextAlign.Center)</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:Text(stringResource(R.string.table_header_complete), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp, fontWeight = FontWeight.Bold, modifier = Modifier.width(48.dp), textAlign = TextAlign.Center)</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:Text(stringResource(R.string.table_header_set), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.width(48.dp), textAlign = TextAlign.Center)</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:color = if (rpe != null) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:contentDescription</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:if</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:targetValue = if (set.isCompleted) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:text = "${stringResource(workoutExercise.exercise.muscleGroup.nameRes)} • ${stringResource(workoutExercise.exercise.category.nameRes)}"</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:text = { Text(stringResource(R.string.action_add_warmup_sets), color = MaterialTheme.colorScheme.onSurface) }</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:text = { Text(stringResource(R.string.action_exercise_history), color = MaterialTheme.colorScheme.onSurface) }</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:text = { Text(stringResource(R.string.action_plate_calculator), color = MaterialTheme.colorScheme.onSurface) }</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:text = { Text(stringResource(R.string.action_rpe_target_calculator), color = MaterialTheme.colorScheme.onSurface) }</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:text = { Text(stringResource(R.string.action_technique_guide), color = MaterialTheme.colorScheme.onSurface) }</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:text = { Text(stringResource(R.string.menu_auto_progression_rules), color = MaterialTheme.colorScheme.onSurface) }</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:text = { Text(stringResource(R.string.menu_configure_warmup_ramp), color = MaterialTheme.colorScheme.onSurface) }</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:text = { Text(stringResource(R.string.menu_move_down), color = MaterialTheme.colorScheme.onSurface) }</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:text = { Text(stringResource(R.string.menu_move_up), color = MaterialTheme.colorScheme.onSurface) }</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:text = { Text(stringResource(R.string.menu_remove_exercise), color = MaterialTheme.colorScheme.error) }</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:text = { Text(stringResource(R.string.menu_set_rest_duration), color = MaterialTheme.colorScheme.onSurface) }</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:text = { Text(stringResource(R.string.menu_swap_exercise), color = MaterialTheme.colorScheme.onSurface) }</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:textStyle = androidx.compose.ui.text.TextStyle(textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onSurface, fontSize = 15.sp)</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:tint = if (set.isCompleted) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:tint = if (showQuickAdjust) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:val</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:val cal = if (isCardio) CardioCalculator.calculateCaloriesBurned(parsedSec, userBodyWeightKg) else set.caloriesBurned</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:val calories = set.caloriesBurned ?: if (durationSec &gt; 0) CardioCalculator.calculateCaloriesBurned(durationSec, userBodyWeightKg) else 0</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:val col1Header = if (isCardioExercise) distanceUnit.symbol.uppercase() else weightUnit.symbol.uppercase()</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:val distanceVal = set.distanceKm ?: distanceText.replace(',', '.').toDoubleOrNull()?.let { distanceUnit.toKm(it) } ?: 0.0</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:val durationSec = if (set.durationSeconds != null &amp;&amp; set.durationSeconds &gt; 0) set.durationSeconds else com.kveld9.trackgym.domain.util.DurationFormatter.parseInputToSeconds(repsText)</ID>
+    <ID>MaxLineLength:ExerciseCards.kt:val parsedSec = com.kveld9.trackgym.domain.util.DurationFormatter.parseInputToSeconds(repsText)</ID>
     <ID>MaxLineLength:ExerciseEntity.kt:ExerciseEntity.Companion$customCategories = com.kveld9.trackgym.domain.util.CustomCategoryCodec.serialize(domain.customCategories)</ID>
     <ID>MaxLineLength:ExerciseEntity.kt:ExerciseEntity.Companion$secondaryMuscles = MuscleAnatomyRegistry.serializeSecondaryMuscles(domain.secondaryMuscles).ifBlank { null }</ID>
     <ID>MaxLineLength:ExerciseGuideRegistry.kt:ExerciseGuideRegistry$MuscleGroup.ARMS -&gt; Triple(R.string.guide_generic_isolation_setup, R.string.guide_generic_isolation_exec, R.string.guide_generic_isolation_mistake)</ID>
@@ -526,7 +488,6 @@
     <ID>MaxLineLength:ExerciseGuideRegistry.kt:ExerciseGuideRegistry$nameLower.contains("tricep") || nameLower.contains("pushdown") || nameLower.contains("skull crusher") || (nameLower.contains("dip") &amp;&amp; !nameLower.contains("hip"))</ID>
     <ID>MaxLineLength:ExerciseGuideRegistry.kt:ExerciseGuideRegistry$tempoCueRes = if (nameLower.contains("plank")) R.string.guide_tempo_isometric else R.string.guide_tempo_constant</ID>
     <ID>MaxLineLength:ExerciseHistoryDialog.kt:border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)))</ID>
-    <ID>MaxLineLength:ExerciseHistoryDialog.kt:border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)))</ID>
     <ID>MaxLineLength:ExerciseHistoryDialog.kt:border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)))</ID>
     <ID>MaxLineLength:ExerciseHistoryDialog.kt:border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.secondary.copy(alpha = 0.4f)))</ID>
     <ID>MaxLineLength:ExerciseHistoryDialog.kt:border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f)))</ID>
@@ -541,6 +502,10 @@
     <ID>MaxLineLength:ExerciseHistoryEngineTest.kt:ExerciseHistoryEngineTest$WorkoutSet(id = 13L, setNumber = 3, setType = SetType.DURATION, durationSeconds = 50, isCompleted = true)</ID>
     <ID>MaxLineLength:ExerciseHistoryEngineTest.kt:ExerciseHistoryEngineTest$WorkoutSet(id = 8L, setNumber = 1, weightKg = 80.0, reps = 10, isCompleted = true)</ID>
     <ID>MaxLineLength:ExerciseHistoryEngineTest.kt:ExerciseHistoryEngineTest$WorkoutSet(id = 9L, setNumber = 2, weightKg = 100.0, reps = 5, isCompleted = true)</ID>
+    <ID>MaxLineLength:ExercisePicker.kt:.</ID>
+    <ID>MaxLineLength:ExercisePicker.kt:placeholder = { Text(stringResource(R.string.search_exercise_placeholder), color = MaterialTheme.colorScheme.onSurfaceVariant) }</ID>
+    <ID>MaxLineLength:ExercisePicker.kt:text = "${stringResource(sub.exercise.muscleGroup.nameRes)} • ${stringResource(sub.exercise.category.nameRes)} • ${stringResource(sub.exercise.mechanics.nameRes)}"</ID>
+    <ID>MaxLineLength:ExercisePicker.kt:text = stringResource(R.string.subtitle_substitutes_for, exerciseToSubstitute.displayName(context, keepEnglish))</ID>
     <ID>MaxLineLength:ExerciseSubstitutionEngineTest.kt:ExerciseSubstitutionEngineTest$assertFalse("No barbell exercise should be present", substitutesWithoutBarbell.any { it.exercise.category == ExerciseCategory.BARBELL })</ID>
     <ID>MaxLineLength:ExerciseSubstitutionEngineTest.kt:ExerciseSubstitutionEngineTest$assertFalse("Target exercise should not be included in substitutes", substitutes.any { it.exercise.name == benchPress.name })</ID>
     <ID>MaxLineLength:ExerciseSubstitutionEngineTest.kt:ExerciseSubstitutionEngineTest$assertTrue("All returned exercises must be dumbbells", dumbbellSubstitutes.all { it.exercise.category == ExerciseCategory.DUMBBELL })</ID>
@@ -552,42 +517,23 @@
     <ID>MaxLineLength:ExerciseTranslationRegistry.kt:ExerciseTranslationRegistry$TranslationEntry("One-Arm Dumbbell Row", R.string.exercise_one_arm_dumbbell_row, "Remo con mancuerna a una mano")</ID>
     <ID>MaxLineLength:ExerciseTranslationRegistry.kt:ExerciseTranslationRegistry$TranslationEntry("Seated Dumbbell Shoulder Press", R.string.exercise_seated_dumbbell_shoulder_press, "Press de hombros sentado con mancuernas")</ID>
     <ID>MaxLineLength:ExercisesScreen.kt:.</ID>
-    <ID>MaxLineLength:ExercisesScreen.kt:Icon(Icons.Default.Check, contentDescription = null, tint = MaterialTheme.colorScheme.primary)</ID>
-    <ID>MaxLineLength:ExercisesScreen.kt:Icon(Icons.Default.Close, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)</ID>
-    <ID>MaxLineLength:ExercisesScreen.kt:Icon(Icons.Default.Delete, contentDescription = null, tint = MaterialTheme.colorScheme.error, modifier = Modifier.size(16.dp))</ID>
-    <ID>MaxLineLength:ExercisesScreen.kt:Icon(Icons.Default.Edit, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(16.dp))</ID>
-    <ID>MaxLineLength:ExercisesScreen.kt:Icon(Icons.Default.Search, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)</ID>
     <ID>MaxLineLength:ExercisesScreen.kt:Text(stringResource(R.string.dialog_create_exercise_title), color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold)</ID>
     <ID>MaxLineLength:ExercisesScreen.kt:Text(stringResource(R.string.dialog_delete_category_confirm, targetCat.name), fontWeight = FontWeight.Bold, fontSize = 16.sp)</ID>
     <ID>MaxLineLength:ExercisesScreen.kt:Text(stringResource(R.string.dialog_edit_tags_title, exercise.displayName()), fontWeight = FontWeight.Bold, fontSize = 16.sp)</ID>
     <ID>MaxLineLength:ExercisesScreen.kt:color = if (inv.isPrimary) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant</ID>
-    <ID>MaxLineLength:ExercisesScreen.kt:color = if (isSelected) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onSurfaceVariant</ID>
     <ID>MaxLineLength:ExercisesScreen.kt:imageVector = if (showAlternatives) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown</ID>
     <ID>MaxLineLength:ExercisesScreen.kt:modifier = Modifier.menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable, enabled = true).fillMaxWidth()</ID>
     <ID>MaxLineLength:ExercisesScreen.kt:onCreate</ID>
     <ID>MaxLineLength:ExercisesScreen.kt:onCreate(name.trim(), selectedGroup, selectedCategory, notes.trim(), primaryMuscle, emptyList(), selectedMechanics, selectedForce, selectedLevel, selectedCategories.toList())</ID>
     <ID>MaxLineLength:ExercisesScreen.kt:onCreate: (String, MuscleGroup, ExerciseCategory, String, BodyMuscle?, List&lt;MuscleInvolvement&gt;, MechanicsType, ForceType, DifficultyLevel, List&lt;String&gt;) -&gt; Unit</ID>
     <ID>MaxLineLength:ExercisesScreen.kt:placeholder = { Text(stringResource(R.string.dialog_manage_categories_add_placeholder), fontSize = 12.sp) }</ID>
-    <ID>MaxLineLength:ExercisesScreen.kt:placeholder = { Text(stringResource(R.string.search_exercise_placeholder), color = MaterialTheme.colorScheme.onSurfaceVariant) }</ID>
     <ID>MaxLineLength:ExercisesScreen.kt:selectedLevel = BiomechanicalClassifier.classifyDifficulty(name, selectedCategory, selectedGroup, selectedMechanics)</ID>
-    <ID>MaxLineLength:ExercisesScreen.kt:text = "${stringResource(exercise.muscleGroup.nameRes)} • ${stringResource(exercise.category.nameRes)} • ${stringResource(exercise.mechanics.nameRes)} • ${stringResource(exercise.force.nameRes)} • ${stringResource(exercise.level.nameRes)}"</ID>
     <ID>MaxLineLength:ExercisesScreen.kt:text = "${stringResource(sub.exercise.category.nameRes)} • ${stringResource(sub.exercise.mechanics.nameRes)}"</ID>
     <ID>MaxLineLength:ExercisesScreen.kt:text = stringResource(R.string.badge_primary_muscle, stringResource(primary.muscle.nameRes), primary.percentage)</ID>
-    <ID>MaxLineLength:ExercisesScreen.kt:text = stringResource(R.string.badge_secondary_muscle, stringResource(sec.muscle.nameRes), sec.percentage)</ID>
     <ID>MaxLineLength:ExercisesScreen.kt:viewModel.createCustomExercise(name, group, category, notes, primaryMuscle, secondaryMuscles, mechanics, force, level, customCategories)</ID>
     <ID>MaxLineLength:GymDatabase.kt:GymDatabase.Companion$.</ID>
     <ID>MaxLineLength:GymDatabase.kt:GymDatabase.Companion.&lt;no name provided&gt;$"CREATE UNIQUE INDEX IF NOT EXISTS index_custom_exercise_categories_name ON custom_exercise_categories(name)"</ID>
     <ID>MaxLineLength:GymDatabase.kt:GymDatabase.Companion.&lt;no name provided&gt;$db.execSQL("CREATE INDEX IF NOT EXISTS index_body_measurements_measuredAt ON body_measurements(measuredAt)")</ID>
-    <ID>MaxLineLength:GymEquipmentProfileDialog.kt:color = if (isActive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface</ID>
-    <ID>MaxLineLength:GymEquipmentProfileDialog.kt:color = if (isActive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)</ID>
-    <ID>MaxLineLength:GymEquipmentProfileDialog.kt:label = { Text("${stringResource(R.string.gym_profile_bar_weight)} (${weightUnit.symbol})", fontSize = 11.sp) }</ID>
-    <ID>MaxLineLength:GymEquipmentProfileDialog.kt:label = { Text("${stringResource(R.string.gym_profile_min_increment)} (${weightUnit.symbol})", fontSize = 11.sp) }</ID>
-    <ID>MaxLineLength:GymEquipmentProfileDialog.kt:mutableStateOf(if (defaultBarWeight % 1.0 == 0.0) defaultBarWeight.toInt().toString() else defaultBarWeight.toString())</ID>
-    <ID>MaxLineLength:GymEquipmentProfileDialog.kt:mutableStateOf(if (defaultIncrement % 1.0 == 0.0) defaultIncrement.toInt().toString() else defaultIncrement.toString())</ID>
-    <ID>MaxLineLength:GymEquipmentProfileDialog.kt:text = "${stringResource(R.string.gym_profile_bar_weight)}: $barText • ${stringResource(R.string.gym_profile_step_label)}: $incText"</ID>
-    <ID>MaxLineLength:GymEquipmentProfileDialog.kt:text = "${stringResource(R.string.gym_profile_plates)}: $platesText ${weightUnit.symbol}"</ID>
-    <ID>MaxLineLength:GymEquipmentProfileDialog.kt:text = if (initialProfile == null) stringResource(R.string.gym_profile_add) else stringResource(R.string.gym_profile_edit)</ID>
-    <ID>MaxLineLength:GymEquipmentProfileDialog.kt:val label = if (plate % 1.0 == 0.0) "${plate.toInt()}${weightUnit.symbol}" else "$plate${weightUnit.symbol}"</ID>
     <ID>MaxLineLength:GymRepository.kt:GymRepository$customCategoryDao.insertCategory(com.kveld9.trackgym.data.local.entity.CustomExerciseCategoryEntity(name = trimmed))</ID>
     <ID>MaxLineLength:GymRepository.kt:GymRepository$customCategoryDao.updateCategory(com.kveld9.trackgym.data.local.entity.CustomExerciseCategoryEntity(id = id, name = trimmedNew))</ID>
     <ID>MaxLineLength:GymRepository.kt:GymRepository$formula: com.kveld9.trackgym.domain.calculator.OneRepMaxFormula = com.kveld9.trackgym.domain.calculator.OneRepMaxFormula.EPLEY</ID>
@@ -619,7 +565,6 @@
     <ID>MaxLineLength:HistoryScreen.kt:BorderStroke(1.dp, MaterialTheme.colorScheme.primary)</ID>
     <ID>MaxLineLength:HistoryScreen.kt:Icon(Icons.Default.MoreVert, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)</ID>
     <ID>MaxLineLength:HistoryScreen.kt:Text(stringResource(R.string.action_save), color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Bold)</ID>
-    <ID>MaxLineLength:HistoryScreen.kt:border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)))</ID>
     <ID>MaxLineLength:HistoryScreen.kt:color = if (!isCalendarView) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant</ID>
     <ID>MaxLineLength:HistoryScreen.kt:color = if (!isCalendarView) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh</ID>
     <ID>MaxLineLength:HistoryScreen.kt:color = if (isCalendarView) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant</ID>
@@ -711,7 +656,6 @@
     <ID>MaxLineLength:ProgressiveOverloadEngineTest.kt:ProgressiveOverloadEngineTest$WorkoutSet(workoutExerciseId = 1, setNumber = 3, setType = SetType.NORMAL, weightKg = 100.0, reps = 5, isCompleted = true)</ID>
     <ID>MaxLineLength:RecordsScreen.kt:RecordType.MAX_AMRAP_REPS_AT_WEIGHT -&gt; "${record.reps}+ reps @ ${weightUnit.format(record.weightKg)}"</ID>
     <ID>MaxLineLength:RecordsScreen.kt:border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5f)))</ID>
-    <ID>MaxLineLength:RestTimerNotificationManager.kt:RestTimerNotificationManager$val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager ?: return</ID>
     <ID>MaxLineLength:RoutineShareCodec.kt:RoutineShareCodec$summaryBuilder.append(" (").append(re.defaultWeightKg).append(" kg x ").append(re.defaultReps).append(" reps)")</ID>
     <ID>MaxLineLength:RpeSelectionDialog.kt:color = if (isNoneSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant</ID>
     <ID>MaxLineLength:RpeSelectionDialog.kt:color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface</ID>
@@ -719,25 +663,6 @@
     <ID>MaxLineLength:RpeTargetWeightDialog.kt:Icon(Icons.Default.Remove, contentDescription = "-1 Rep", tint = MaterialTheme.colorScheme.primary)</ID>
     <ID>MaxLineLength:RpeTargetWeightDialog.kt:color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface</ID>
     <ID>MaxLineLength:RpeTargetWeightDialog.kt:color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh</ID>
-    <ID>MaxLineLength:SettingsScreen.kt:Icon(Icons.Default.FileDownload, contentDescription = null, tint = MaterialTheme.colorScheme.primary)</ID>
-    <ID>MaxLineLength:SettingsScreen.kt:Icon(Icons.Default.FileDownload, contentDescription = null, tint = MaterialTheme.colorScheme.secondary)</ID>
-    <ID>MaxLineLength:SettingsScreen.kt:Icon(Icons.Default.FileUpload, contentDescription = null, tint = MaterialTheme.colorScheme.primary)</ID>
-    <ID>MaxLineLength:SettingsScreen.kt:Icon(Icons.Default.FileUpload, contentDescription = null, tint = MaterialTheme.colorScheme.secondary)</ID>
-    <ID>MaxLineLength:SettingsScreen.kt:Icon(Icons.Default.Security, contentDescription = null, tint = MaterialTheme.colorScheme.primary)</ID>
-    <ID>MaxLineLength:SettingsScreen.kt:Triple(ThemePreferences.MODE_AMOLED, stringResource(R.string.theme_mode_amoled), Icons.Default.Contrast)</ID>
-    <ID>MaxLineLength:SettingsScreen.kt:Triple(ThemePreferences.MODE_DARK, stringResource(R.string.theme_mode_dark), Icons.Default.DarkMode)</ID>
-    <ID>MaxLineLength:SettingsScreen.kt:Triple(ThemePreferences.MODE_LIGHT, stringResource(R.string.theme_mode_light), Icons.Default.LightMode)</ID>
-    <ID>MaxLineLength:SettingsScreen.kt:Uri.parse(themeSettings.autoBackupUri).lastPathSegment ?: themeSettings.autoBackupUri.orEmpty()</ID>
-    <ID>MaxLineLength:SettingsScreen.kt:color = if (hasFolder) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant</ID>
-    <ID>MaxLineLength:SettingsScreen.kt:color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface</ID>
-    <ID>MaxLineLength:SettingsScreen.kt:color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface</ID>
-    <ID>MaxLineLength:SettingsScreen.kt:color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh</ID>
-    <ID>MaxLineLength:SettingsScreen.kt:color = if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.12f) else MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.4f)</ID>
-    <ID>MaxLineLength:SettingsScreen.kt:context.startActivity(Intent(context, com.kveld9.trackgym.ui.privacy.PrivacyActivity::class.java))</ID>
-    <ID>MaxLineLength:SettingsScreen.kt:importCsvLauncher.launch(arrayOf("text/comma-separated-values", "text/csv", "application/csv", "*/*"))</ID>
-    <ID>MaxLineLength:SettingsScreen.kt:shape = SegmentedButtonDefaults.itemShape(index = index, count = restOptions.size)</ID>
-    <ID>MaxLineLength:SettingsScreen.kt:text = stringResource(R.string.setting_auto_backup_rotation_count, themeSettings.maxAutoBackups)</ID>
-    <ID>MaxLineLength:SettingsScreen.kt:val currentSex = if (sex == "FEMALE") com.kveld9.trackgym.domain.model.BiologicalSex.FEMALE else com.kveld9.trackgym.domain.model.BiologicalSex.MALE</ID>
     <ID>MaxLineLength:SettingsViewModel.kt:SettingsViewModel$_uiEvent.emit(SettingsUiEvent.Error(R.string.toast_backup_export_error, listOf(e.localizedMessage.orEmpty())))</ID>
     <ID>MaxLineLength:SettingsViewModel.kt:SettingsViewModel$_uiEvent.emit(SettingsUiEvent.Error(R.string.toast_backup_read_error, listOf(e.localizedMessage.orEmpty())))</ID>
     <ID>MaxLineLength:SettingsViewModel.kt:SettingsViewModel$_uiEvent.emit(SettingsUiEvent.Error(R.string.toast_csv_export_error, listOf(e.localizedMessage.orEmpty())))</ID>
@@ -749,6 +674,11 @@
     <ID>MaxLineLength:TimeBucketedDistributionCard.kt:DistributionMetricType.SETS -&gt; "${stringResource(R.string.history_stat_sets, item.value.toInt())} (${(item.percentage * 100).toInt()}%)"</ID>
     <ID>MaxLineLength:TimeBucketedDistributionCard.kt:DistributionMetricType.SETS -&gt; stringResource(R.string.history_stat_sets, distribution.totalValue.toInt())</ID>
     <ID>MaxLineLength:WarmupRampDialog.kt:val rawWeight = if (step.isBarOnly) minWeightKg else (effectiveWeightKg * step.percentage).coerceAtLeast(minWeightKg)</ID>
+    <ID>MaxLineLength:WorkoutChrome.kt:Icon(Icons.Default.MoreVert, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)</ID>
+    <ID>MaxLineLength:WorkoutChrome.kt:Text(stringResource(R.string.action_finish), color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Bold)</ID>
+    <ID>MaxLineLength:WorkoutChrome.kt:contentDescription = if (isRunning) stringResource(R.string.rest_timer_pause) else stringResource(R.string.rest_timer_resume)</ID>
+    <ID>MaxLineLength:WorkoutChrome.kt:text = { Text(stringResource(R.string.action_discard), color = MaterialTheme.colorScheme.error) }</ID>
+    <ID>MaxLineLength:WorkoutChrome.kt:text = { Text(stringResource(R.string.action_save_as_routine), color = MaterialTheme.colorScheme.onSurface) }</ID>
     <ID>MaxLineLength:WorkoutComparisonEngine.kt:WorkoutComparisonEngine$previousSummary = if (previousSets.isNotEmpty()) formatSetsSummary(previousSets, weightUnit) else "First time"</ID>
     <ID>MaxLineLength:WorkoutComparisonEngineTest.kt:WorkoutComparisonEngineTest$WorkoutSet(id = 1, setNumber = 1, setType = SetType.WARMUP, weightKg = 40.0, reps = 10, isCompleted = true)</ID>
     <ID>MaxLineLength:WorkoutComparisonEngineTest.kt:WorkoutComparisonEngineTest$WorkoutSet(id = 2, setNumber = 2, setType = SetType.NORMAL, weightKg = 80.0, reps = 8, isCompleted = true)</ID>
@@ -763,7 +693,6 @@
     <ID>MaxLineLength:WorkoutComparisonScreen.kt:Text(stringResource(R.string.badge_record), color = MaterialTheme.colorScheme.tertiary, fontSize = 11.sp, fontWeight = FontWeight.Bold)</ID>
     <ID>MaxLineLength:WorkoutComparisonScreen.kt:Text(text = label, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 10.sp, fontWeight = FontWeight.Bold)</ID>
     <ID>MaxLineLength:WorkoutComparisonScreen.kt:Text(text = title, color = MaterialTheme.colorScheme.onSurface, fontSize = 20.sp, fontWeight = FontWeight.Bold)</ID>
-    <ID>MaxLineLength:WorkoutComparisonScreen.kt:border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)))</ID>
     <ID>MaxLineLength:WorkoutComparisonScreen.kt:border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.tertiary))</ID>
     <ID>MaxLineLength:WorkoutComparisonScreen.kt:if (setComp.recordsUnlocked.isNotEmpty()) MaterialTheme.colorScheme.tertiary.copy(alpha = 0.6f) else Color.Transparent</ID>
     <ID>MaxLineLength:WorkoutComparisonScreen.kt:if (setComp.weightDeltaKg &gt; 0) append("+${weightUnit.formatValue(setComp.weightDeltaKg)}${weightUnit.symbol} ")</ID>
@@ -772,6 +701,32 @@
     <ID>MaxLineLength:WorkoutComparisonScreen.kt:text = stringResource(R.string.comparison_unlocked_prs_section, comparison.totalRecordsUnlocked.size)</ID>
     <ID>MaxLineLength:WorkoutComparisonScreen.kt:val dateString = dateFormat.format(Date(comparison.currentWorkout.completedAt ?: comparison.currentWorkout.startedAt)).replaceFirstChar { it.uppercase() }</ID>
     <ID>MaxLineLength:WorkoutDao.kt:WorkoutDao$suspend</ID>
+    <ID>MaxLineLength:WorkoutDashboard.kt:Icon(Icons.Default.MoreVert, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)</ID>
+    <ID>MaxLineLength:WorkoutDashboard.kt:color = if (balance.isBalanced) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant</ID>
+    <ID>MaxLineLength:WorkoutDashboard.kt:color = if (balance.isBalanced) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainerHighest</ID>
+    <ID>MaxLineLength:WorkoutDashboard.kt:color = if (currentConfig.isDeload) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSecondaryContainer</ID>
+    <ID>MaxLineLength:WorkoutDashboard.kt:color = if (currentConfig.isDeload) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.secondaryContainer</ID>
+    <ID>MaxLineLength:WorkoutDashboard.kt:contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 10.dp, vertical = 6.dp)</ID>
+    <ID>MaxLineLength:WorkoutDashboard.kt:leadingIcon = { Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null) }</ID>
+    <ID>MaxLineLength:WorkoutDashboard.kt:text = "${balance.pushCount} ${stringResource(R.string.force_push)} • ${balance.pullCount} ${stringResource(R.string.force_pull)}"</ID>
+    <ID>MaxLineLength:WorkoutDashboard.kt:text = if (exerciseNames.isNotBlank()) exerciseNames else stringResource(R.string.routine_exercises_count, routine.exercises.size)</ID>
+    <ID>MaxLineLength:WorkoutDashboard.kt:text = stringResource(R.string.badge_periodized_block, currentConfig.weekNumber, routine.periodizedCycle.totalWeeks)</ID>
+    <ID>MaxLineLength:WorkoutDashboard.kt:text = { Text(stringResource(R.string.menu_delete_routine), color = MaterialTheme.colorScheme.error) }</ID>
+    <ID>MaxLineLength:WorkoutDashboard.kt:val exerciseNames = routine.exercises.joinToString(", ") { it.exercise.displayName(context, keepEnglish) }</ID>
+    <ID>MaxLineLength:WorkoutDialogs.kt:String.format(java.util.Locale.US, "%.2f %s", calcResult.weightPerSide, weightUnit.symbol)</ID>
+    <ID>MaxLineLength:WorkoutDialogs.kt:barWeightInput = if (newBar % 1.0 == 0.0) newBar.toInt().toString() else newBar.toString()</ID>
+    <ID>MaxLineLength:WorkoutDialogs.kt:barWeightInput = if (pWeight % 1.0 == 0.0) pWeight.toInt().toString() else pWeight.toString()</ID>
+    <ID>MaxLineLength:WorkoutDialogs.kt:border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.25f))</ID>
+    <ID>MaxLineLength:WorkoutDialogs.kt:border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.35f))</ID>
+    <ID>MaxLineLength:WorkoutDialogs.kt:label = { Text("${stringResource(R.string.plate_calc_bar_weight)} (${weightUnit.symbol})", fontSize = 11.sp) }</ID>
+    <ID>MaxLineLength:WorkoutDialogs.kt:label = { Text("${stringResource(R.string.plate_calc_target_weight)} (${weightUnit.symbol})", fontSize = 11.sp) }</ID>
+    <ID>MaxLineLength:WorkoutDialogs.kt:label = { Text(stringResource(R.string.plate_calc_collars_toggle, collarStr), fontSize = 11.sp) }</ID>
+    <ID>MaxLineLength:WorkoutDialogs.kt:val collarStr = if (defaultCollars % 1.0 == 0.0) "${defaultCollars.toInt()}${weightUnit.symbol}" else "$defaultCollars${weightUnit.symbol}"</ID>
+    <ID>MaxLineLength:WorkoutDialogs.kt:val defaultCollars = remember(weightUnit) { com.kveld9.trackgym.domain.calculator.PlateCalculator.defaultCollarsWeight(weightUnit) }</ID>
+    <ID>MaxLineLength:WorkoutDialogs.kt:val label = if (plate % 1.0 == 0.0) "${plate.toInt()}${weightUnit.symbol}" else "$plate${weightUnit.symbol}"</ID>
+    <ID>MaxLineLength:WorkoutDialogs.kt:val pWeightStr = if (pWeight % 1.0 == 0.0) "${pWeight.toInt()}${weightUnit.symbol}" else "$pWeight${weightUnit.symbol}"</ID>
+    <ID>MaxLineLength:WorkoutDialogs.kt:val plateLabel = if (item.weight % 1.0 == 0.0) "${item.weight.toInt()} ${weightUnit.symbol}" else "${item.weight} ${weightUnit.symbol}"</ID>
+    <ID>MaxLineLength:WorkoutDialogs.kt:val remText = String.format(java.util.Locale.US, "%.2f %s", calcResult.remainderPerSide, weightUnit.symbol)</ID>
     <ID>MaxLineLength:WorkoutNotesComponents.kt:color = if (notes.isNotBlank()) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)</ID>
     <ID>MaxLineLength:WorkoutNotesComponents.kt:colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.5f))</ID>
     <ID>MaxLineLength:WorkoutNotesComponents.kt:tint = if (notes.isNotBlank()) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)</ID>
@@ -822,6 +777,7 @@
     <ID>TooGenericExceptionCaught:SettingsViewModel.kt:SettingsViewModel$e: Exception</ID>
     <ID>TooGenericExceptionCaught:ShareProvider.kt:ShareProvider$e: Exception</ID>
     <ID>TooGenericExceptionCaught:TrackGymApp.kt:TrackGymApp$t: Throwable</ID>
+    <ID>TooManyFunctions:DefaultExercises.kt:DefaultExercises</ID>
     <ID>TooManyFunctions:ExerciseDao.kt:ExerciseDao</ID>
     <ID>TooManyFunctions:GymRepository.kt:GymRepository</ID>
     <ID>TooManyFunctions:GymViewModel.kt:GymViewModel : ViewModel</ID>
@@ -829,9 +785,9 @@
     <ID>TooManyFunctions:SettingsViewModel.kt:SettingsViewModel : ViewModel</ID>
     <ID>TooManyFunctions:ThemePreferences.kt:ThemePreferences</ID>
     <ID>TooManyFunctions:WorkoutDao.kt:WorkoutDao</ID>
-    <ID>UnusedParameter:ExerciseCards.kt:onDeleteSet: () -&gt; Unit</ID>
     <ID>UnusedParameter:BiomechanicalClassifier.kt:BiomechanicalClassifier$category: ExerciseCategory = ExerciseCategory.BARBELL</ID>
     <ID>UnusedParameter:BiomechanicalClassifier.kt:BiomechanicalClassifier$muscleGroup: MuscleGroup = MuscleGroup.CHEST</ID>
+    <ID>UnusedParameter:ExerciseCards.kt:onDeleteSet: () -&gt; Unit</ID>
     <ID>UnusedParameter:ExerciseTechniqueDialog.kt:badgeColor: androidx.compose.ui.graphics.Color</ID>
     <ID>UnusedParameter:ExerciseTechniqueDialog.kt:badgeTextColor: androidx.compose.ui.graphics.Color</ID>
     <ID>UnusedParameter:MechanicsClassifier.kt:MechanicsClassifier$category: ExerciseCategory = ExerciseCategory.BARBELL</ID>
