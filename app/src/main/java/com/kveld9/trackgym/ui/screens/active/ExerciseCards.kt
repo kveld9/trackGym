@@ -408,7 +408,12 @@ fun WorkoutExerciseCard(
                         ?: previousSets.firstOrNull { it.weightKg > 0.0 && it.setType != SetType.WARMUP }?.weightKg
                         ?: 0.0
                     val historySessions = if (previousSets.isNotEmpty()) listOf(previousSets) else emptyList()
-                    AutoProgressionEngine.evaluate(autoProgressionRule, historySessions, workingWeight, roundingStepKg = stepKg)
+                    AutoProgressionEngine.evaluate(
+                        autoProgressionRule,
+                        historySessions,
+                        workingWeight,
+                        roundingStepKg = stepKg
+                    )
                 } else null
             }
 

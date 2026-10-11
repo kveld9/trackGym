@@ -706,11 +706,15 @@ class GymRepository(private val database: GymDatabase) {
                 val key = exDto.name.lowercase().trim()
                 val group = MuscleGroup.fromString(exDto.muscleGroup)
                 val cat = ExerciseCategory.fromString(exDto.category)
-                val mechanics = if (exDto.mechanics.isNotBlank()) exDto.mechanics else BiomechanicalClassifier.classifyMechanics(
-                    name = exDto.name,
-                    category = cat,
-                    muscleGroup = group
-                ).name
+                val mechanics = if (exDto.mechanics.isNotBlank()) {
+                    exDto.mechanics
+                } else {
+                    BiomechanicalClassifier.classifyMechanics(
+                        name = exDto.name,
+                        category = cat,
+                        muscleGroup = group
+                    ).name
+                }
                 val force = BiomechanicalClassifier.classifyForce(exDto.name, cat, group).name
                 val level = BiomechanicalClassifier.classifyDifficulty(exDto.name, cat, group, MechanicsType.fromString(mechanics)).name
 

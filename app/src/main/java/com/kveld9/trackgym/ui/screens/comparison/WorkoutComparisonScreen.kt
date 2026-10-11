@@ -205,6 +205,7 @@ fun WorkoutComparisonScreen(
     }
 }
 
+@Suppress("UNUSED_PARAMETER")
 @Composable
 fun WorkoutSummaryHeader(
     workout: Workout? = null,

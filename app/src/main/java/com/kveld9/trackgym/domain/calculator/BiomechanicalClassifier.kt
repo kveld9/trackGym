@@ -114,16 +114,14 @@ object BiomechanicalClassifier {
     ): MechanicsType {
         val lower = name.lowercase().trim()
 
-        if (isolationKeywords.any { lower.contains(it) }) {
-            return MechanicsType.ISOLATION
+        return when {
+            isolationKeywords.any { lower.contains(it) } -> MechanicsType.ISOLATION
+            // Arm exercises default to isolation unless dips or close-grip bench
+            muscleGroup == MuscleGroup.ARMS && !lower.contains("dip") && !lower.contains("close-grip") -> {
+                MechanicsType.ISOLATION
+            }
+            else -> MechanicsType.COMPOUND
         }
-
-        // Arm exercises default to isolation unless dips or close-grip bench
-        if (muscleGroup == MuscleGroup.ARMS && !lower.contains("dip") && !lower.contains("close-grip")) {
-            return MechanicsType.ISOLATION
-        }
-
-        return MechanicsType.COMPOUND
     }
 
     /**
