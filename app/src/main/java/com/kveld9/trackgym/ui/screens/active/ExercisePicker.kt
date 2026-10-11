@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.sp
 import com.kveld9.trackgym.R
 import com.kveld9.trackgym.domain.model.Exercise
 import com.kveld9.trackgym.domain.model.ExerciseCategory
+import com.kveld9.trackgym.domain.model.ExerciseModality
 import com.kveld9.trackgym.domain.model.MuscleGroup
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.platform.LocalContext
@@ -343,10 +344,15 @@ fun ExercisePickerContent(
                                 fontWeight = FontWeight.SemiBold
                             )
                             Spacer(modifier = Modifier.height(2.dp))
-                            val meta = "${stringResource(exercise.muscleGroup.nameRes)} • " +
+                            val baseMeta = "${stringResource(exercise.muscleGroup.nameRes)} • " +
                                 "${stringResource(exercise.category.nameRes)} • " +
                                 "${stringResource(exercise.force.nameRes)} • " +
                                 stringResource(exercise.level.nameRes)
+                            val meta = if (exercise.modality != ExerciseModality.STRENGTH) {
+                                "$baseMeta • ${stringResource(exercise.modality.nameRes)}"
+                            } else {
+                                baseMeta
+                            }
                             Text(
                                 text = meta,
                                 color = MaterialTheme.colorScheme.primary,
@@ -517,7 +523,12 @@ private fun RecentExerciseCard(
     val keepEnglish = LocalKeepEnglishExerciseNames.current
     val muscleLabel = stringResource(recent.muscleGroup.nameRes)
     val categoryLabel = stringResource(recent.category.nameRes)
-    val metaLabel = "$muscleLabel • $categoryLabel"
+    val modalitySuffix = if (recent.modality != ExerciseModality.STRENGTH) {
+        " • ${stringResource(recent.modality.nameRes)}"
+    } else {
+        ""
+    }
+    val metaLabel = "$muscleLabel • $categoryLabel$modalitySuffix"
 
     Surface(
         shape = RoundedCornerShape(10.dp),

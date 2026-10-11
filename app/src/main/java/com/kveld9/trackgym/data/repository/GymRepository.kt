@@ -24,6 +24,7 @@ import com.kveld9.trackgym.domain.calculator.sanitizeRoutineTargetSets
 import com.kveld9.trackgym.domain.model.DefaultExercises
 import com.kveld9.trackgym.domain.model.DuplicateExerciseNameException
 import com.kveld9.trackgym.domain.model.Exercise
+import com.kveld9.trackgym.domain.model.classifyExerciseModality
 import com.kveld9.trackgym.domain.model.normalizeExerciseName
 import com.kveld9.trackgym.domain.model.validateExerciseRename
 import com.kveld9.trackgym.domain.model.ExerciseCategory
@@ -178,10 +179,12 @@ class GymRepository(private val database: GymDatabase) {
         if (existing != null) {
             throw DuplicateExerciseNameException(conflictingName = existing.name)
         }
+        val modality = classifyExerciseModality(trimmedName)
         val entity = ExerciseEntity(
             name = trimmedName,
             muscleGroup = muscleGroup.name,
             category = category.name,
+            modality = modality.name,
             notes = notes.trim(),
             primaryMuscle = primaryMuscle?.name,
             secondaryMuscles = com.kveld9.trackgym.domain.calculator.MuscleAnatomyRegistry.serializeSecondaryMuscles(secondaryMuscles).ifBlank { null },
@@ -273,10 +276,13 @@ class GymRepository(private val database: GymDatabase) {
             com.kveld9.trackgym.domain.util.CustomCategoryCodec.serialize(it)
         } ?: current.customCategories
 
+        val modality = classifyExerciseModality(trimmedName)
+
         return current.copy(
             name = trimmedName,
             muscleGroup = muscleGroup?.name ?: current.muscleGroup,
             category = category?.name ?: current.category,
+            modality = modality.name,
             notes = notes?.trim() ?: current.notes,
             primaryMuscle = primaryMuscle?.name ?: current.primaryMuscle,
             secondaryMuscles = serializedSecondaries,
