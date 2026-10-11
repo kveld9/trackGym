@@ -140,26 +140,6 @@ fun WorkoutComparisonScreen(
                 )
             }
 
-            item {
-                WorkoutShareCard(
-                    comparison = comparison,
-                    weightUnit = weightUnit,
-                    onCapture = { bitmap ->
-                        previewBitmap = bitmap
-                    }
-                )
-            }
-
-            item {
-                MuscleHeatmapCard(
-                    state = workoutHeatmap,
-                    title = stringResource(R.string.heatmap_title_session),
-                    subtitle = stringResource(R.string.heatmap_subtitle_session),
-                    emptyMessage = stringResource(R.string.heatmap_no_muscles_session)
-                )
-            }
-
-
             // Unlocked PRs section
             if (comparison.totalRecordsUnlocked.isNotEmpty()) {
                 item {
@@ -224,6 +204,25 @@ fun WorkoutComparisonScreen(
 
             itemsIndexed(comparison.exerciseComparisons, key = { index, exComp -> "${exComp.exercise.id}_$index" }) { _, exComp ->
                 ExerciseComparisonCard(exerciseComparison = exComp, weightUnit = weightUnit)
+            }
+
+            item {
+                WorkoutShareCard(
+                    comparison = comparison,
+                    weightUnit = weightUnit,
+                    onCapture = { bitmap ->
+                        previewBitmap = bitmap
+                    }
+                )
+            }
+
+            item {
+                MuscleHeatmapCard(
+                    state = workoutHeatmap,
+                    title = stringResource(R.string.heatmap_title_session),
+                    subtitle = stringResource(R.string.heatmap_subtitle_session),
+                    emptyMessage = stringResource(R.string.heatmap_no_muscles_session)
+                )
             }
 
             item {

@@ -294,6 +294,28 @@ fun HistoryScreen(
                             .padding(horizontal = 16.dp),
                         verticalArrangement = Arrangement.spacedBy(14.dp)
                     ) {
+                        items(
+                            items = filteredCompletedWorkouts,
+                            key = { it.id },
+                            contentType = { "workout_card" }
+                        ) { workout ->
+                            WorkoutHistoryCard(
+                                workout = workout,
+                                weightUnit = weightUnit,
+                                onClick = {
+                                    viewModel.viewWorkoutDetail(workout.id)
+                                    onWorkoutClick(workout.id)
+                                },
+                                onSaveAsRoutine = {
+                                    routineNameInput = workout.name
+                                    workoutToSaveAsRoutine = workout
+                                },
+                                onShareCard = {
+                                    workoutToShare = workout
+                                }
+                            )
+                        }
+
                         // Training Consistency & Heatmap
                         item {
                             TrainingConsistencyHeader(
@@ -328,28 +350,6 @@ fun HistoryScreen(
                         item {
                             HypertrophyThresholdCard(
                                 workouts = completedWorkouts
-                            )
-                        }
-
-                        items(
-                            items = filteredCompletedWorkouts,
-                            key = { it.id },
-                            contentType = { "workout_card" }
-                        ) { workout ->
-                            WorkoutHistoryCard(
-                                workout = workout,
-                                weightUnit = weightUnit,
-                                onClick = {
-                                    viewModel.viewWorkoutDetail(workout.id)
-                                    onWorkoutClick(workout.id)
-                                },
-                                onSaveAsRoutine = {
-                                    routineNameInput = workout.name
-                                    workoutToSaveAsRoutine = workout
-                                },
-                                onShareCard = {
-                                    workoutToShare = workout
-                                }
                             )
                         }
 

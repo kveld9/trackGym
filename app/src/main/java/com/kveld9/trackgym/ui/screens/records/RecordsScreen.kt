@@ -92,6 +92,42 @@ fun RecordsScreen(
                 .padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
+            if (records.isEmpty()) {
+                item(key = "empty_records_view") {
+                    EmptyRecordsView(modifier = Modifier.padding(vertical = 32.dp))
+                }
+            } else {
+                item(key = "records_history_header") {
+                    Text(
+                        text = stringResource(R.string.records_history_section, records.size),
+                        color = MaterialTheme.colorScheme.tertiary,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 1.sp,
+                        modifier = Modifier.padding(vertical = 4.dp)
+                    )
+                }
+
+                items(
+                    items = records,
+                    key = { it.id },
+                    contentType = { "record_item" }
+                ) { pr ->
+                    val exercise = exercisesMap[pr.exerciseId]
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .animateItem()
+                    ) {
+                        RecordItemCard(
+                            record = pr,
+                            exerciseName = exercise?.displayName() ?: "Exercise",
+                            weightUnit = weightUnit
+                        )
+                    }
+                }
+            }
+
             item(key = "body_telemetry_card") {
                 com.kveld9.trackgym.ui.components.BodyTelemetryCard(
                     measurements = bodyMeasurements,
@@ -132,42 +168,6 @@ fun RecordsScreen(
                     },
                     modifier = Modifier.padding(bottom = 4.dp)
                 )
-            }
-
-            if (records.isEmpty()) {
-                item(key = "empty_records_view") {
-                    EmptyRecordsView(modifier = Modifier.padding(vertical = 32.dp))
-                }
-            } else {
-                item(key = "records_history_header") {
-                    Text(
-                        text = stringResource(R.string.records_history_section, records.size),
-                        color = MaterialTheme.colorScheme.tertiary,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Bold,
-                        letterSpacing = 1.sp,
-                        modifier = Modifier.padding(vertical = 4.dp)
-                    )
-                }
-
-                items(
-                    items = records,
-                    key = { it.id },
-                    contentType = { "record_item" }
-                ) { pr ->
-                    val exercise = exercisesMap[pr.exerciseId]
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .animateItem()
-                    ) {
-                        RecordItemCard(
-                            record = pr,
-                            exerciseName = exercise?.displayName() ?: "Exercise",
-                            weightUnit = weightUnit
-                        )
-                    }
-                }
             }
 
             item(key = "bottom_spacer") {
