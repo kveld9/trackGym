@@ -7,6 +7,7 @@ import com.kveld9.trackgym.domain.model.BodyMuscle
 import com.kveld9.trackgym.domain.model.DifficultyLevel
 import com.kveld9.trackgym.domain.model.Exercise
 import com.kveld9.trackgym.domain.model.ExerciseCategory
+import com.kveld9.trackgym.domain.model.ExerciseModality
 import com.kveld9.trackgym.domain.model.ForceType
 import com.kveld9.trackgym.domain.model.MechanicsType
 import com.kveld9.trackgym.domain.model.MuscleGroup
@@ -22,6 +23,7 @@ data class ExerciseEntity(
     val name: String,
     val muscleGroup: String,
     val category: String,
+    val modality: String = "STRENGTH",
     val notes: String = "",
     val restDurationSeconds: Int? = null,
     val warmupRampProtocol: String? = null,
@@ -41,6 +43,7 @@ data class ExerciseEntity(
             name = name,
             muscleGroup = MuscleGroup.fromString(muscleGroup),
             category = ExerciseCategory.fromString(category),
+            modality = ExerciseModality.fromString(modality),
             notes = notes,
             restDurationSeconds = restDurationSeconds,
             warmupRampProtocol = warmupRampProtocol,
@@ -63,6 +66,7 @@ data class ExerciseEntity(
                 name = domain.name,
                 muscleGroup = domain.muscleGroup.name,
                 category = domain.category.name,
+                modality = domain.modality.name,
                 notes = domain.notes,
                 restDurationSeconds = domain.restDurationSeconds,
                 warmupRampProtocol = domain.warmupRampProtocol,

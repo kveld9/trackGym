@@ -128,6 +128,11 @@
     <string name="category_bodyweight">Bodyweight</string>
     <string name="category_other">Other</string>
 
+    <!-- Exercise Modalities -->
+    <string name="modality_strength">Strength</string>
+    <string name="modality_cardio">Cardio</string>
+    <string name="modality_mobility">Mobility</string>
+
     <!-- Record Types -->
     <string name="record_max_weight">Max Weight</string>
     <string name="record_max_reps">Rep Record</string>

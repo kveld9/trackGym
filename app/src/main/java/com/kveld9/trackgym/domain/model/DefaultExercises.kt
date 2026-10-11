@@ -7535,6 +7535,14 @@ object DefaultExercises {
         )
         val force = com.kveld9.trackgym.domain.calculator.BiomechanicalClassifier.classifyForce(ex.name, ex.category, ex.muscleGroup)
         val level = com.kveld9.trackgym.domain.calculator.BiomechanicalClassifier.classifyDifficulty(ex.name, ex.category, ex.muscleGroup, mechanics)
-        ex.copy(primaryMuscle = primary, secondaryMuscles = secondaries, mechanics = mechanics, force = force, level = level)
+        val modality = classifyExerciseModality(ex.name)
+        ex.copy(
+            primaryMuscle = primary,
+            secondaryMuscles = secondaries,
+            mechanics = mechanics,
+            force = force,
+            level = level,
+            modality = modality
+        )
     }
 }

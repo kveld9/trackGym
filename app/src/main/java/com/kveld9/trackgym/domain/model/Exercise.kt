@@ -5,6 +5,7 @@ data class Exercise(
     val name: String,
     val muscleGroup: MuscleGroup,
     val category: ExerciseCategory = ExerciseCategory.BARBELL,
+    val modality: ExerciseModality = ExerciseModality.STRENGTH,
     val notes: String = "",
     val restDurationSeconds: Int? = null,
     val warmupRampProtocol: String? = null,

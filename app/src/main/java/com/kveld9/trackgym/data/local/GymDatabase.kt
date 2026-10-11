@@ -31,7 +31,7 @@ import com.kveld9.trackgym.data.local.entity.WorkoutSetEntity
         RoutineExerciseEntity::class,
         CustomExerciseCategoryEntity::class
     ],
-    version = 20,
+    version = 21,
     exportSchema = false
 )
 abstract class GymDatabase : RoomDatabase() {
@@ -272,6 +272,90 @@ abstract class GymDatabase : RoomDatabase() {
             }
         }
 
+        /**
+         * Migration 20 -> 21: Adds 'modality' column to exercises table defaulting to 'STRENGTH',
+         * then sets 'CARDIO' and 'MOBILITY' modalities using exercise name keyword heuristics.
+         * Note on execution order and tie-breaking:
+         * The CARDIO update executes first and the MOBILITY update executes second. Because the
+         * second write overwrites earlier values in SQLite, executing MOBILITY second guarantees
+         * that MOBILITY wins ties whenever an exercise name matches both categories
+         * (e.g. "Dynamic Stretch Run" or recovery/warmup drills with cardio terminology).
+         */
+        private val MIGRATION_20_21 = object : androidx.room.migration.Migration(20, 21) {
+            override fun migrate(db: androidx.sqlite.db.SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE exercises ADD COLUMN modality TEXT NOT NULL DEFAULT 'STRENGTH'")
+                updateCardioModality(db)
+                updateMobilityModality(db)
+            }
+
+            private fun updateCardioModality(db: androidx.sqlite.db.SupportSQLiteDatabase) {
+                // 1. CARDIO keyword updates (specific multi-word keywords before short ones)
+                db.execSQL(
+                    """
+                    UPDATE exercises
+                    SET modality = 'CARDIO'
+                    WHERE (
+                        LOWER(name) LIKE '%step mill%' OR
+                        LOWER(name) LIKE '%stepmill%' OR
+                        LOWER(name) LIKE '%climb mill%' OR
+                        LOWER(name) LIKE '%climbmill%' OR
+                        LOWER(name) LIKE '%jump rope%' OR
+                        LOWER(name) LIKE '%rope jump%' OR
+                        LOWER(name) LIKE '%skipping rope%' OR
+                        LOWER(name) LIKE '%rowing machine%' OR
+                        LOWER(name) LIKE '%row machine%' OR
+                        LOWER(name) LIKE '%row erg%' OR
+                        LOWER(name) LIKE '%rowing%' OR
+                        LOWER(name) LIKE '%rower%' OR
+                        LOWER(name) LIKE '%treadmill%' OR
+                        LOWER(name) LIKE '%bicycling%' OR
+                        LOWER(name) LIKE '%cycling%' OR
+                        LOWER(name) LIKE '%bike%' OR
+                        LOWER(name) LIKE '%elliptical%' OR
+                        LOWER(name) LIKE '%stair master%' OR
+                        LOWER(name) LIKE '%stairmaster%' OR
+                        LOWER(name) LIKE '%ski erg%' OR
+                        LOWER(name) LIKE '%skierg%' OR
+                        LOWER(name) LIKE '%skating%' OR
+                        LOWER(name) LIKE '%swim%' OR
+                        LOWER(name) LIKE '%sprint%' OR
+                        LOWER(name) LIKE '%run%' OR
+                        LOWER(name) LIKE '%jog%' OR
+                        LOWER(name) LIKE '%walk%' OR
+                        LOWER(name) LIKE '%row%' OR
+                        LOWER(name) LIKE '%shadow boxing%' OR
+                        LOWER(name) LIKE '%boxing%' OR
+                        LOWER(name) LIKE '%shadow%' OR
+                        LOWER(name) LIKE '%cardio%'
+                    ) AND LOWER(name) NOT LIKE '%farmer%'
+                    """.trimIndent()
+                )
+            }
+
+            private fun updateMobilityModality(db: androidx.sqlite.db.SupportSQLiteDatabase) {
+                // 2. MOBILITY keyword updates (runs second so MOBILITY wins ties over CARDIO)
+                db.execSQL(
+                    """
+                    UPDATE exercises
+                    SET modality = 'MOBILITY'
+                    WHERE (
+                        LOWER(name) LIKE '%warm-up%' OR
+                        LOWER(name) LIKE '%warmup%' OR
+                        LOWER(name) LIKE '%stretch%' OR
+                        LOWER(name) LIKE '%mobility%' OR
+                        LOWER(name) LIKE '%yoga%' OR
+                        LOWER(name) LIKE '%breathing%' OR
+                        LOWER(name) LIKE '%meditation%' OR
+                        LOWER(name) LIKE '%foam%' OR
+                        LOWER(name) LIKE '%smr%' OR
+                        LOWER(name) LIKE '%activation%' OR
+                        LOWER(name) LIKE '%drill%'
+                    )
+                    """.trimIndent()
+                )
+            }
+        }
+
         fun getInstance(context: Context): GymDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
@@ -279,7 +363,11 @@ abstract class GymDatabase : RoomDatabase() {
                     GymDatabase::class.java,
                     "trackgym_database.db"
                 )
-                    .addMigrations(MIGRATION_12_13, MIGRATION_13_14, MIGRATION_14_15, MIGRATION_15_16, MIGRATION_16_17, MIGRATION_17_18, MIGRATION_18_19, MIGRATION_19_20)
+                    .addMigrations(
+                        MIGRATION_12_13, MIGRATION_13_14, MIGRATION_14_15, MIGRATION_15_16,
+                        MIGRATION_16_17, MIGRATION_17_18, MIGRATION_18_19, MIGRATION_19_20,
+                        MIGRATION_20_21
+                    )
                     .fallbackToDestructiveMigration(dropAllTables = true)
                     .build()
                 INSTANCE = instance
