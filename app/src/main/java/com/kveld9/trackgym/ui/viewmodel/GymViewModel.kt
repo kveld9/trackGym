@@ -32,6 +32,7 @@ import com.kveld9.trackgym.domain.model.MuscleHeatmapState
 import com.kveld9.trackgym.domain.model.Routine
 import com.kveld9.trackgym.domain.model.RoutineFolder
 import com.kveld9.trackgym.domain.model.WeightUnit
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -42,10 +43,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOn
 import android.util.Log
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -55,6 +60,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 private const val TAG = "GymViewModel"
+private const val SEARCH_DEBOUNCE_MILLIS = 300L
 
 class GymViewModel(
     private val repository: GymRepository,
@@ -336,10 +342,11 @@ class GymViewModel(
     val allCustomCategories: StateFlow<List<com.kveld9.trackgym.domain.model.CustomExerciseCategory>> = repository.getAllCustomCategories()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
+    @OptIn(FlowPreview::class)
     val filteredExercises: StateFlow<List<Exercise>> = combine(
         listOf(
             allExercises,
-            _searchQuery,
+            _searchQuery.debounce(SEARCH_DEBOUNCE_MILLIS).distinctUntilChanged(),
             _selectedMuscleFilter,
             _selectedOriginFilter,
             _selectedEquipmentFilter,
@@ -387,7 +394,9 @@ class GymViewModel(
                 keepEnglish = keepEnglish
             )
         }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    }
+        .flowOn(Dispatchers.Default)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     val allRecords: StateFlow<List<PersonalRecord>> = repository.getAllRecords()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
