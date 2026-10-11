@@ -283,7 +283,6 @@
     <string name="section_sound">Sonido</string>
     <string name="section_volume_equipment">Volumen, equipo y cálculo</string>
     <string name="section_session">Sesión</string>
-    <string name="section_integrations">Integraciones</string>
     <string name="setting_auto_rest_timer_title">Temporizador automático</string>
     <string name="setting_auto_rest_timer_desc">Inicia el conteo al completar una serie</string>
     <string name="setting_default_rest_duration_title">Duración por defecto</string>
@@ -811,8 +810,6 @@
     <string name="wheel_picker_open">Ruleta Táctil</string>
 
     <!-- Strength Level Benchmarks (Item 71) -->
-    <string name="strength_benchmarks_title">Estándares de Fuerza</string>
-    <string name="strength_benchmarks_subtitle">Compara tu 1RM contra estándares poblacionales según peso corporal</string>
     <string name="strength_sex_male">Hombre</string>
     <string name="strength_sex_female">Mujer</string>
     <string name="strength_level_beginner">Principiante</string>
@@ -824,13 +821,6 @@
     <string name="core_lift_squat">Sentadilla</string>
     <string name="core_lift_deadlift">Peso Muerto</string>
     <string name="core_lift_overhead_press">Press Militar</string>
-    <string name="strength_percentile_stronger_than">Más fuerte que el %1$.1f%% de los levantadores</string>
-    <string name="strength_ratio_label">Ratio PC: %1$.2f×</string>
-    <string name="strength_next_level_target">Objetivo sig. nivel: %1$s</string>
-    <string name="strength_no_data_logged">Sin récord de 1RM registrado</string>
-    <string name="strength_profile_settings_title">Perfil para Estándares</string>
-    <string name="strength_biological_sex_label">Sexo Biológico</string>
-    <string name="strength_user_age_label">Edad</string>
     <string name="strength_user_age_years">%1$d años</string>
     <string name="settings_user_age_title">Edad del Usuario</string>
     <string name="settings_user_age_desc">Utilizado para ajustar los estándares de fuerza según la edad</string>
@@ -847,8 +837,6 @@
     <string name="setting_auto_backup_location">Ubicación: %1$s</string>
 
     <!-- Body Measurements & Telemetry (Items 59 & 60) -->
-    <string name="body_telemetry_title">Medidas Corporales</string>
-    <string name="body_telemetry_subtitle">Seguimiento de peso, grasa estimada y circunferencias corporales</string>
     <string name="body_meas_weight">Peso Corporal</string>
     <string name="body_meas_body_fat">Grasa Corporal</string>
     <string name="body_meas_neck">Cuello</string>
@@ -864,35 +852,14 @@
     <string name="body_meas_right_thigh">Muslo Derecho</string>
     <string name="body_meas_left_calf">Pantorrilla Izquierda</string>
     <string name="body_meas_right_calf">Pantorrilla Derecha</string>
-    <string name="body_meas_log_entry">Registrar Medida</string>
-    <string name="body_meas_value_label">Valor</string>
-    <string name="body_meas_no_data">Sin registros para esta métrica aún</string>
-    <string name="body_meas_latest">Último: %1$.1f %2$s</string>
-    <string name="body_meas_net_delta">Δ Neto: %1$+.1f %2$s (%3$+.1f%%)</string>
 
     <!-- Progress Photos & Visual Comparison (Items 61, 62, 63) -->
-    <string name="progress_photos_title">Fotos de Progreso</string>
-    <string name="progress_photos_subtitle">Seguimiento y comparativa visual del físico</string>
-    <string name="photo_pose_all">Todas las Poses</string>
     <string name="photo_pose_front">Frontal</string>
     <string name="photo_pose_side">Lateral</string>
     <string name="photo_pose_back">Trasera</string>
-    <string name="action_take_photo">Tomar Foto</string>
-    <string name="action_pick_photo">Importar Galería</string>
-    <string name="action_compare_photos">Comparar Antes / Después</string>
-    <string name="action_ghost_silhouette">Guía de Silueta</string>
-    <string name="progress_photos_empty">Sin fotos de progreso registradas aún</string>
-    <string name="progress_photo_notes_label">Notas (opcional)</string>
-    <string name="progress_compare_title">Comparativa Antes &amp; Después</string>
-    <string name="progress_compare_before">Antes</string>
-    <string name="progress_compare_after">Después</string>
-    <string name="progress_compare_select_hint">Selecciona dos fotos para comparar</string>
-    <string name="progress_silhouette_guide_hint">Alinea tu postura con la silueta de referencia</string>
 
     <!-- Google Health Connect Local Sync (Item 107) -->
     <string name="setting_health_connect_title">Sincronización con Health Connect</string>
-    <string name="setting_health_connect_desc">Sincroniza en privado tus sesiones y calorías quemadas directamente con Health Connect en el dispositivo</string>
-    <string name="setting_health_connect_unavailable">Health Connect no disponible en este dispositivo</string>
 
     <!-- Exercises Screen Redesign -->
     <string name="exercises_empty_title">No hay ejercicios en la biblioteca</string>

@@ -4,18 +4,14 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.kveld9.trackgym.data.local.dao.BodyMeasurementDao
 import com.kveld9.trackgym.data.local.dao.CustomExerciseCategoryDao
 import com.kveld9.trackgym.data.local.dao.ExerciseDao
 import com.kveld9.trackgym.data.local.dao.PersonalRecordDao
-import com.kveld9.trackgym.data.local.dao.ProgressPhotoDao
 import com.kveld9.trackgym.data.local.dao.RoutineDao
 import com.kveld9.trackgym.data.local.dao.WorkoutDao
-import com.kveld9.trackgym.data.local.entity.BodyMeasurementEntity
 import com.kveld9.trackgym.data.local.entity.CustomExerciseCategoryEntity
 import com.kveld9.trackgym.data.local.entity.ExerciseEntity
 import com.kveld9.trackgym.data.local.entity.PersonalRecordEntity
-import com.kveld9.trackgym.data.local.entity.ProgressPhotoEntity
 import com.kveld9.trackgym.data.local.entity.RoutineEntity
 import com.kveld9.trackgym.data.local.entity.RoutineExerciseEntity
 import com.kveld9.trackgym.data.local.entity.RoutineFolderEntity
@@ -33,11 +29,9 @@ import com.kveld9.trackgym.data.local.entity.WorkoutSetEntity
         RoutineFolderEntity::class,
         RoutineEntity::class,
         RoutineExerciseEntity::class,
-        CustomExerciseCategoryEntity::class,
-        BodyMeasurementEntity::class,
-        ProgressPhotoEntity::class
+        CustomExerciseCategoryEntity::class
     ],
-    version = 18,
+    version = 19,
     exportSchema = false
 )
 abstract class GymDatabase : RoomDatabase() {
@@ -47,8 +41,6 @@ abstract class GymDatabase : RoomDatabase() {
     abstract fun personalRecordDao(): PersonalRecordDao
     abstract fun routineDao(): RoutineDao
     abstract fun customCategoryDao(): CustomExerciseCategoryDao
-    abstract fun bodyMeasurementDao(): BodyMeasurementDao
-    abstract fun progressPhotoDao(): ProgressPhotoDao
 
     companion object {
         @Volatile
@@ -204,6 +196,13 @@ abstract class GymDatabase : RoomDatabase() {
             }
         }
 
+        private val MIGRATION_18_19 = object : androidx.room.migration.Migration(18, 19) {
+            override fun migrate(db: androidx.sqlite.db.SupportSQLiteDatabase) {
+                db.execSQL("DROP TABLE IF EXISTS progress_photos")
+                db.execSQL("DROP TABLE IF EXISTS body_measurements")
+            }
+        }
+
         fun getInstance(context: Context): GymDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
@@ -211,7 +210,7 @@ abstract class GymDatabase : RoomDatabase() {
                     GymDatabase::class.java,
                     "trackgym_database.db"
                 )
-                    .addMigrations(MIGRATION_12_13, MIGRATION_13_14, MIGRATION_14_15, MIGRATION_15_16, MIGRATION_16_17, MIGRATION_17_18)
+                    .addMigrations(MIGRATION_12_13, MIGRATION_13_14, MIGRATION_14_15, MIGRATION_15_16, MIGRATION_16_17, MIGRATION_17_18, MIGRATION_18_19)
                     .fallbackToDestructiveMigration(dropAllTables = true)
                     .build()
                 INSTANCE = instance

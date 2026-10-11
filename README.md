@@ -43,14 +43,11 @@
   - Direct weekly muscle set volume versus hypertrophy landmarks (`HypertrophyVolumeEngine`) comparing direct sets against evidence-based ranges (10–20 weekly sets).
   - Configurable volume metrics: dumbbell volume doubling and optional warm-up set exclusion.
   - High-contrast OLED shareable workout cards (`WorkoutShareCard` & `WorkoutSharePreviewDialog`) with full metrics breakdown, PR highlights, and one-tap Gallery export or system share sheet.
-- **Automated Personal Record (PR) Detection & Strength Standards**:
+- **Automated Personal Record (PR) Detection**:
   - Real-time detection upon checking off each completed set.
   - Tracks milestones: **Max Weight**, **Reps Record at a given weight**, **Best Estimated 1RM**, and **Max Set Volume**.
   - Selectable 1RM formula: *Epley*, *Brzycki*, *Wathan*, *Lander*, *Lombardi*, *Mayhew*, or *O'Conner*.
   - Immediate visual badge/banner notification and dedicated PR showcase gallery.
-  - **Strength Level Benchmarks (`StrengthBenchmarkEngine`)**: Normative population standards for core compound lifts (*Bench Press, Squat, Deadlift, Overhead Press*) stratified by bodyweight ratio, biological sex, and age attenuation. Classifies strength into 5 tiers (*Beginner, Novice, Intermediate, Advanced, Elite*) with exact percentiles (*"Stronger than X% of lifters"*) and target weight to next rank.
-  - **Anthropometric Body Telemetry & Trend Moving Average Curves (`BodyMeasurementTrendEngine`)**: Tracking of bodyweight, estimated body fat percentage, and key circumferences (*Neck, Shoulders, Chest, Left/Right Biceps, Left/Right Forearms, Waist, Hips, Left/Right Thighs, Left/Right Calves*) with raw trend lines and 3-point moving average curves to filter fluid retention fluctuations.
-  - **Progress Pictures Gallery & Before/After Comparison (`PhotoStorageManager`, `BeforeAfterComparisonDialog`, `CameraGhostSilhouette`)**: Offline gallery organizing physique photos by poses (*Front, Side, Back*), interactive dual-image split slider for comparing two dates with a draggable divider, and camera ghost silhouette alignment guide.
 - **Plate Calculator & Equipment Profiles**:
   - Multiple equipment locations (Commercial Gym, Home Gym, Hotel Gym) with custom bar weight, plate inventory, and minimum micro-loading steps.
   - Quick-switch profile bar in plate calculator dialog and settings.
@@ -65,7 +62,6 @@
     - Direct access from Android system app settings (`ACTION_APPLICATION_PREFERENCES`).
     - Android Privacy Dashboard transparency screen (`VIEW_PERMISSION_USAGE`).
     - Global uncaught exception handler with isolated crash recovery screen (`:error_process`).
-    - **Google Health Connect Local Sync (`HealthConnectSyncManager`, `HealthConnectSyncEngine`)**: Native, 100% private and offline sync of finished workout sessions and metabolic calories burned directly to Android Health Connect on device without cloud dependencies.
 - **Backup & Restore**:
   - Offline-first storage with Room Database (SQLite).
   - Storage Access Framework (SAF) JSON export/import with bounded stream parsing (10 MB limit).

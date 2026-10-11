@@ -233,17 +233,13 @@ class GymViewModel(
     val folders: StateFlow<List<RoutineFolder>> = repository.getAllFolders()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    val allBodyMeasurements: StateFlow<List<com.kveld9.trackgym.domain.model.BodyMeasurement>> = repository.getAllBodyMeasurements()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
-
     fun logBodyMeasurement(
         type: com.kveld9.trackgym.domain.model.BodyMeasurementType,
         value: Double,
-        measuredAt: Long = System.currentTimeMillis(),
-        notes: String = ""
+        @Suppress("UNUSED_PARAMETER") measuredAt: Long = System.currentTimeMillis(),
+        @Suppress("UNUSED_PARAMETER") notes: String = ""
     ) {
         viewModelScope.launch {
-            repository.logBodyMeasurement(type, value, measuredAt, notes)
             // If bodyweight was updated, synchronize with userBodyWeightKg setting
             if (type == com.kveld9.trackgym.domain.model.BodyMeasurementType.WEIGHT && value > 0.0) {
                 themePreferences?.setUserBodyWeight(value)
@@ -251,29 +247,11 @@ class GymViewModel(
         }
     }
 
-    fun deleteBodyMeasurement(id: Long) {
+    fun setUserBodyWeight(weightKg: Double) {
         viewModelScope.launch {
-            repository.deleteBodyMeasurement(id)
-        }
-    }
-
-    val allProgressPhotos: StateFlow<List<com.kveld9.trackgym.domain.model.ProgressPhoto>> = repository.getAllProgressPhotos()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
-
-    fun addProgressPhoto(
-        filePath: String,
-        pose: com.kveld9.trackgym.domain.model.ProgressPhotoPose,
-        capturedAt: Long = System.currentTimeMillis(),
-        notes: String = ""
-    ) {
-        viewModelScope.launch {
-            repository.addProgressPhoto(filePath, pose, capturedAt, notes)
-        }
-    }
-
-    fun deleteProgressPhoto(id: Long) {
-        viewModelScope.launch {
-            repository.deleteProgressPhoto(id)
+            if (weightKg > 0.0) {
+                themePreferences?.setUserBodyWeight(weightKg)
+            }
         }
     }
 
@@ -1085,14 +1063,7 @@ class GymViewModel(
                     }
                 }
 
-                // Native Google Health Connect Local Sync (Item 107)
-                val isHealthConnectEnabled = themePreferences?.themeSettings?.firstOrNull()?.healthConnectSync ?: false
-                if (isHealthConnectEnabled && healthConnectSyncManager != null) {
-                    val fullCompletedWorkout = repository.getFullWorkout(current.id)
-                    if (fullCompletedWorkout != null) {
-                        healthConnectSyncManager.syncWorkout(fullCompletedWorkout, userBodyWeight.value)
-                    }
-                }
+
             } catch (e: Exception) {
                 // Workout was removed or not found (e.g. wiped by an overwrite import)
             } finally {

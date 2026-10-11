@@ -57,8 +57,6 @@ class GymRepository(private val database: GymDatabase) {
     private val prDao = database.personalRecordDao()
     private val routineDao = database.routineDao()
     private val customCategoryDao = database.customCategoryDao()
-    private val bodyMeasurementDao = database.bodyMeasurementDao()
-    private val progressPhotoDao = database.progressPhotoDao()
 
     suspend fun ensureDefaultExercisesSeeded() = withContext(Dispatchers.IO) {
         if (exerciseDao.countExercises() == 0) {
@@ -1325,84 +1323,5 @@ class GymRepository(private val database: GymDatabase) {
 
     suspend fun deleteRoutine(routineId: Long) = withContext(Dispatchers.IO) {
         routineDao.deleteRoutine(routineId)
-    }
-
-    // BODY MEASUREMENTS (Items 59 & 60)
-    fun getAllBodyMeasurements(): Flow<List<com.kveld9.trackgym.domain.model.BodyMeasurement>> {
-        return bodyMeasurementDao.getAllMeasurements().map { list ->
-            list.map { it.toDomain() }
-        }.flowOn(Dispatchers.IO)
-    }
-
-    fun getMeasurementsByTypeAsc(type: com.kveld9.trackgym.domain.model.BodyMeasurementType): Flow<List<com.kveld9.trackgym.domain.model.BodyMeasurement>> {
-        return bodyMeasurementDao.getMeasurementsByTypeAsc(type.name).map { list ->
-            list.map { it.toDomain() }
-        }.flowOn(Dispatchers.IO)
-    }
-
-    suspend fun getLatestMeasurementByType(type: com.kveld9.trackgym.domain.model.BodyMeasurementType): com.kveld9.trackgym.domain.model.BodyMeasurement? = withContext(Dispatchers.IO) {
-        bodyMeasurementDao.getLatestMeasurementByType(type.name)?.toDomain()
-    }
-
-    suspend fun logBodyMeasurement(
-        type: com.kveld9.trackgym.domain.model.BodyMeasurementType,
-        value: Double,
-        measuredAt: Long = System.currentTimeMillis(),
-        notes: String = ""
-    ): Long = withContext(Dispatchers.IO) {
-        val entity = com.kveld9.trackgym.data.local.entity.BodyMeasurementEntity(
-            type = type.name,
-            value = value,
-            measuredAt = measuredAt,
-            notes = notes
-        )
-        bodyMeasurementDao.insertMeasurement(entity)
-    }
-
-    suspend fun deleteBodyMeasurement(id: Long) = withContext(Dispatchers.IO) {
-        bodyMeasurementDao.deleteMeasurement(id)
-    }
-
-    // PROGRESS PHOTOS (Items 61, 62, 63)
-    fun getAllProgressPhotos(): Flow<List<com.kveld9.trackgym.domain.model.ProgressPhoto>> {
-        return progressPhotoDao.getAllPhotos().map { list ->
-            list.map { it.toDomain() }
-        }.flowOn(Dispatchers.IO)
-    }
-
-    fun getProgressPhotosByPose(pose: com.kveld9.trackgym.domain.model.ProgressPhotoPose): Flow<List<com.kveld9.trackgym.domain.model.ProgressPhoto>> {
-        return progressPhotoDao.getPhotosByPose(pose.name).map { list ->
-            list.map { it.toDomain() }
-        }.flowOn(Dispatchers.IO)
-    }
-
-    suspend fun getProgressPhotoById(id: Long): com.kveld9.trackgym.domain.model.ProgressPhoto? = withContext(Dispatchers.IO) {
-        progressPhotoDao.getPhotoById(id)?.toDomain()
-    }
-
-    suspend fun addProgressPhoto(
-        filePath: String,
-        pose: com.kveld9.trackgym.domain.model.ProgressPhotoPose,
-        capturedAt: Long = System.currentTimeMillis(),
-        notes: String = ""
-    ): Long = withContext(Dispatchers.IO) {
-        val entity = com.kveld9.trackgym.data.local.entity.ProgressPhotoEntity(
-            filePath = filePath,
-            pose = pose.name,
-            capturedAt = capturedAt,
-            notes = notes
-        )
-        progressPhotoDao.insertPhoto(entity)
-    }
-
-    suspend fun deleteProgressPhoto(id: Long) = withContext(Dispatchers.IO) {
-        val photo = progressPhotoDao.getPhotoById(id)
-        if (photo != null) {
-            val file = java.io.File(photo.filePath)
-            if (file.exists()) {
-                file.delete()
-            }
-            progressPhotoDao.deletePhoto(id)
-        }
     }
 }

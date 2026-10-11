@@ -60,11 +60,6 @@ fun RecordsScreen(
 ) {
     val records by viewModel.allRecords.collectAsStateWithLifecycle()
     val exercises by viewModel.allExercises.collectAsStateWithLifecycle()
-    val userBodyWeight by viewModel.userBodyWeight.collectAsStateWithLifecycle()
-    val biologicalSex by viewModel.userBiologicalSex.collectAsStateWithLifecycle()
-    val userAge by viewModel.userAge.collectAsStateWithLifecycle()
-    val bodyMeasurements by viewModel.allBodyMeasurements.collectAsStateWithLifecycle()
-    val progressPhotos by viewModel.allProgressPhotos.collectAsStateWithLifecycle()
 
     val exercisesMap = exercises.associateBy { it.id }
 
@@ -126,48 +121,6 @@ fun RecordsScreen(
                         )
                     }
                 }
-            }
-
-            item(key = "body_telemetry_card") {
-                com.kveld9.trackgym.ui.components.BodyTelemetryCard(
-                    measurements = bodyMeasurements,
-                    onLogMeasurement = { type, value, notes ->
-                        viewModel.logBodyMeasurement(type, value, notes = notes)
-                    },
-                    onDeleteMeasurement = { id ->
-                        viewModel.deleteBodyMeasurement(id)
-                    },
-                    modifier = Modifier.padding(bottom = 4.dp)
-                )
-            }
-
-            item(key = "progress_photos_card") {
-                com.kveld9.trackgym.ui.components.ProgressPhotosCard(
-                    photos = progressPhotos,
-                    onAddPhoto = { filePath, pose, notes ->
-                        viewModel.addProgressPhoto(filePath, pose, notes = notes)
-                    },
-                    onDeletePhoto = { id ->
-                        viewModel.deleteProgressPhoto(id)
-                    },
-                    modifier = Modifier.padding(bottom = 4.dp)
-                )
-            }
-
-            item(key = "strength_standards_card") {
-                com.kveld9.trackgym.ui.components.StrengthStandardsCard(
-                    exercises = exercises,
-                    records = records,
-                    userBodyWeightKg = userBodyWeight,
-                    biologicalSex = biologicalSex,
-                    userAge = userAge,
-                    weightUnit = weightUnit,
-                    onUpdateProfile = { newSex, newAge ->
-                        viewModel.setUserBiologicalSex(newSex)
-                        viewModel.setUserAge(newAge)
-                    },
-                    modifier = Modifier.padding(bottom = 4.dp)
-                )
             }
 
             item(key = "bottom_spacer") {

@@ -46,7 +46,6 @@ import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kveld9.trackgym.BuildConfig
 import com.kveld9.trackgym.R
-import com.kveld9.trackgym.TrackGymApp
 import com.kveld9.trackgym.data.backup.DuplicatePolicy
 import com.kveld9.trackgym.domain.calculator.OneRepMaxFormula
 import com.kveld9.trackgym.domain.model.WeightUnit
@@ -148,17 +147,6 @@ fun SettingsScreen(
                 context.contentResolver.takePersistableUriPermission(uri, flags)
             }
             viewModel.setAutoBackupUri(uri.toString())
-        }
-    }
-
-    val healthConnectSyncManager = remember {
-        (context.applicationContext as? TrackGymApp)?.healthConnectSyncManager
-    }
-    val healthConnectLauncher = rememberLauncherForActivityResult(
-        contract = androidx.health.connect.client.PermissionController.createRequestPermissionResultContract()
-    ) { grantedPermissions ->
-        if (healthConnectSyncManager != null && grantedPermissions.containsAll(healthConnectSyncManager.permissions)) {
-            viewModel.setHealthConnectSync(true)
         }
     }
 
@@ -349,27 +337,7 @@ fun SettingsScreen(
                 onDisableAutoBackup = { viewModel.setAutoBackupUri(null) }
             )
 
-            // Integrations Section
-            SectionHeader(title = stringResource(R.string.section_integrations))
-            IntegrationsCard(
-                healthConnectSync = themeSettings.healthConnectSync,
-                isAvailable = healthConnectSyncManager?.isAvailable() == true,
-                onSyncChange = { enabled ->
-                    if (enabled) {
-                        if (healthConnectSyncManager?.isAvailable() == true) {
-                            healthConnectLauncher.launch(healthConnectSyncManager.permissions)
-                        } else {
-                            Toast.makeText(
-                                context,
-                                context.getString(R.string.setting_health_connect_unavailable),
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    } else {
-                        viewModel.setHealthConnectSync(false)
-                    }
-                }
-            )
+
 
             // About Section
             AboutCard(

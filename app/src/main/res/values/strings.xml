@@ -283,7 +283,6 @@
     <string name="section_sound">Sound</string>
     <string name="section_volume_equipment">Volume, Equipment &amp; Calculation</string>
     <string name="section_session">Session</string>
-    <string name="section_integrations">Integrations</string>
     <string name="setting_auto_rest_timer_title">Auto Rest Timer</string>
     <string name="setting_auto_rest_timer_desc">Start countdown when completing a set</string>
     <string name="setting_default_rest_duration_title">Default Rest Duration</string>
@@ -811,8 +810,6 @@
     <string name="wheel_picker_open">Dial Picker</string>
 
     <!-- Strength Level Benchmarks (Item 71) -->
-    <string name="strength_benchmarks_title">Strength Standards</string>
-    <string name="strength_benchmarks_subtitle">Compare your 1RM against population standards by bodyweight</string>
     <string name="strength_sex_male">Male</string>
     <string name="strength_sex_female">Female</string>
     <string name="strength_level_beginner">Beginner</string>
@@ -824,13 +821,6 @@
     <string name="core_lift_squat">Squat</string>
     <string name="core_lift_deadlift">Deadlift</string>
     <string name="core_lift_overhead_press">Overhead Press</string>
-    <string name="strength_percentile_stronger_than">Stronger than %1$.1f%% of lifters</string>
-    <string name="strength_ratio_label">BW Ratio: %1$.2f×</string>
-    <string name="strength_next_level_target">Next level target: %1$s</string>
-    <string name="strength_no_data_logged">No 1RM record logged yet</string>
-    <string name="strength_profile_settings_title">User Profile for Standards</string>
-    <string name="strength_biological_sex_label">Biological Sex</string>
-    <string name="strength_user_age_label">Age</string>
     <string name="strength_user_age_years">%1$d years</string>
     <string name="settings_user_age_title">User Age</string>
     <string name="settings_user_age_desc">Used to adjust normative strength standards for age</string>
@@ -847,8 +837,6 @@
     <string name="setting_auto_backup_location">Location: %1$s</string>
 
     <!-- Body Measurements & Telemetry (Items 59 & 60) -->
-    <string name="body_telemetry_title">Body Telemetry</string>
-    <string name="body_telemetry_subtitle">Track bodyweight, fat percentage, and anthropometric circumferences</string>
     <string name="body_meas_weight">Body Weight</string>
     <string name="body_meas_body_fat">Body Fat</string>
     <string name="body_meas_neck">Neck</string>
@@ -864,35 +852,14 @@
     <string name="body_meas_right_thigh">Right Thigh</string>
     <string name="body_meas_left_calf">Left Calf</string>
     <string name="body_meas_right_calf">Right Calf</string>
-    <string name="body_meas_log_entry">Log Measurement</string>
-    <string name="body_meas_value_label">Value</string>
-    <string name="body_meas_no_data">No measurements logged for this metric yet</string>
-    <string name="body_meas_latest">Latest: %1$.1f %2$s</string>
-    <string name="body_meas_net_delta">Net Δ: %1$+.1f %2$s (%3$+.1f%%)</string>
 
     <!-- Progress Photos & Visual Comparison (Items 61, 62, 63) -->
-    <string name="progress_photos_title">Progress Pictures</string>
-    <string name="progress_photos_subtitle">Visual physique tracking and comparison</string>
-    <string name="photo_pose_all">All Poses</string>
     <string name="photo_pose_front">Front</string>
     <string name="photo_pose_side">Side</string>
     <string name="photo_pose_back">Back</string>
-    <string name="action_take_photo">Take Picture</string>
-    <string name="action_pick_photo">Import Gallery</string>
-    <string name="action_compare_photos">Compare Before / After</string>
-    <string name="action_ghost_silhouette">Silhouette Guide</string>
-    <string name="progress_photos_empty">No progress pictures logged yet</string>
-    <string name="progress_photo_notes_label">Notes (optional)</string>
-    <string name="progress_compare_title">Before &amp; After Comparison</string>
-    <string name="progress_compare_before">Before</string>
-    <string name="progress_compare_after">After</string>
-    <string name="progress_compare_select_hint">Select two photos to compare</string>
-    <string name="progress_silhouette_guide_hint">Align your posture with the ghost silhouette</string>
 
     <!-- Google Health Connect Local Sync (Item 107) -->
     <string name="setting_health_connect_title">Google Health Connect Sync</string>
-    <string name="setting_health_connect_desc">Privately sync completed workouts and calories burned directly to Android Health Connect on device</string>
-    <string name="setting_health_connect_unavailable">Health Connect not available on this device</string>
 
     <!-- Exercises Screen Redesign -->
     <string name="exercises_empty_title">No exercises in library</string>
