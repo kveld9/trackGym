@@ -47,7 +47,17 @@ captures/
 *.key
 *.pem
 *.p12
+*.pfx
+*.rsa
+*.dsa
+*.cert
 google-services.json
+credentials.json
+secrets.json
+auth.json
+.env*
+id_rsa*
+id_ed25519*
 
 # ==============================================================================
 # DIAGNOSTICS & MEMORY DUMPS
