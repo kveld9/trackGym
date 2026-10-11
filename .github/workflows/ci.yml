@@ -16,7 +16,7 @@ on:
     branches: [main]
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -26,6 +26,10 @@ jobs:
   ci:
     name: Test, Build & Release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v7
@@ -206,6 +210,12 @@ jobs:
 
           sha256sum trackGym-*.apk > SHA256SUMS.txt
           cd ..
+
+      - name: Attest Build Provenance
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.semver.outputs.skip_release != 'true'
+        uses: actions/attest-build-provenance@v4
+        with:
+          subject-path: 'artifacts/trackGym-*.apk'
 
       # Main Workflow: 5. Create Tag & Publish GitHub Release Directly
       - name: Publish GitHub Release
