@@ -124,6 +124,10 @@ fun ExercisesScreen(
     val weightUnit by viewModel.weightUnit.collectAsStateWithLifecycle()
     val userBodyWeight by viewModel.userBodyWeight.collectAsStateWithLifecycle()
     val queryError by viewModel.exercisesError.collectAsStateWithLifecycle()
+    val createExerciseError by viewModel.createExerciseError.collectAsStateWithLifecycle()
+    val createExerciseErrorMessage = createExerciseError?.let {
+        stringResource(R.string.error_exercise_duplicate_name, it)
+    }
 
     var isLoading by rememberSaveable { mutableStateOf(allExercises.isEmpty()) }
 
@@ -197,7 +201,10 @@ fun ExercisesScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { showCreateDialog = true },
+                onClick = {
+                    viewModel.clearCreateExerciseError()
+                    showCreateDialog = true
+                },
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
                 shape = CircleShape,
@@ -257,7 +264,10 @@ fun ExercisesScreen(
                 exercises.isEmpty() -> {
                     ExerciseEmptyState(
                         hasFiltersOrSearch = hasFiltersOrSearch,
-                        onCreateExercise = { showCreateDialog = true },
+                        onCreateExercise = {
+                            viewModel.clearCreateExerciseError()
+                            showCreateDialog = true
+                        },
                         onClearFilters = { viewModel.clearAllExerciseFilters() }
                     )
                 }
@@ -324,10 +334,28 @@ fun ExercisesScreen(
     if (showCreateDialog) {
         CreateExerciseDialog(
             allCategories = allCustomCategories,
-            onDismiss = { showCreateDialog = false },
-            onCreate = { name, group, category, notes, primaryMuscle, secondaryMuscles, mechanics, force, level, customCategories ->
-                viewModel.createCustomExercise(name, group, category, notes, primaryMuscle, secondaryMuscles, mechanics, force, level, customCategories)
+            errorMessage = createExerciseErrorMessage,
+            onDismiss = {
+                viewModel.clearCreateExerciseError()
                 showCreateDialog = false
+            },
+            onClearError = { viewModel.clearCreateExerciseError() },
+            onCreate = { name, group, category, notes, primaryMuscle, secondaryMuscles, mechanics, force, level, customCategories ->
+                viewModel.createCustomExercise(
+                    name = name,
+                    muscleGroup = group,
+                    category = category,
+                    notes = notes,
+                    primaryMuscle = primaryMuscle,
+                    secondaryMuscles = secondaryMuscles,
+                    mechanics = mechanics,
+                    force = force,
+                    level = level,
+                    customCategories = customCategories,
+                    onSuccess = {
+                        showCreateDialog = false
+                    }
+                )
             }
         )
     }
@@ -715,7 +743,9 @@ fun ExerciseRowCard(
 @Composable
 fun CreateExerciseDialog(
     allCategories: List<CustomExerciseCategory> = emptyList(),
+    errorMessage: String? = null,
     onDismiss: () -> Unit,
+    onClearError: () -> Unit = {},
     onCreate: (String, MuscleGroup, ExerciseCategory, String, BodyMuscle?, List<MuscleInvolvement>, MechanicsType, ForceType, DifficultyLevel, List<String>) -> Unit
 ) {
     var name by remember { mutableStateOf("") }
@@ -760,10 +790,24 @@ fun CreateExerciseDialog(
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 OutlinedTextField(
                     value = name,
-                    onValueChange = { name = it },
+                    onValueChange = {
+                        name = it
+                        if (errorMessage != null) {
+                            onClearError()
+                        }
+                    },
                     label = { Text(stringResource(R.string.label_exercise_name)) },
                     placeholder = { Text(stringResource(R.string.placeholder_exercise_name)) },
                     singleLine = true,
+                    isError = errorMessage != null,
+                    supportingText = if (errorMessage != null) {
+                        {
+                            Text(
+                                text = errorMessage,
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        }
+                    } else null,
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = MaterialTheme.colorScheme.primary,

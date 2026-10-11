@@ -98,6 +98,7 @@
     <string name="label_muscle_group">Muscle Group</string>
     <string name="label_equipment_category">Category / Equipment</string>
     <string name="label_notes_optional">Instructions / Notes (optional)</string>
+    <string name="error_exercise_duplicate_name">An exercise named \"%1$s\" already exists</string>
 
     <!-- Records Screen -->
     <string name="records_title">Personal Records (PRs)</string>

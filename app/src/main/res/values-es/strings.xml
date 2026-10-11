@@ -98,6 +98,7 @@
     <string name="label_muscle_group">Grupo Muscular</string>
     <string name="label_equipment_category">Categoría / Equipamiento</string>
     <string name="label_notes_optional">Instrucciones / Notas (opcional)</string>
+    <string name="error_exercise_duplicate_name">Ya existe un ejercicio llamado \"%1$s\"</string>
 
     <!-- Records Screen -->
     <string name="records_title">Récords Personales (PRs)</string>

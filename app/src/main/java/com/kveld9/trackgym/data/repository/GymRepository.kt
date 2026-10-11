@@ -22,7 +22,9 @@ import com.kveld9.trackgym.domain.calculator.sanitizeRoutineDefaultReps
 import com.kveld9.trackgym.domain.calculator.sanitizeRoutineDefaultWeight
 import com.kveld9.trackgym.domain.calculator.sanitizeRoutineTargetSets
 import com.kveld9.trackgym.domain.model.DefaultExercises
+import com.kveld9.trackgym.domain.model.DuplicateExerciseNameException
 import com.kveld9.trackgym.domain.model.Exercise
+import com.kveld9.trackgym.domain.model.normalizeExerciseName
 import com.kveld9.trackgym.domain.model.ExerciseCategory
 import com.kveld9.trackgym.domain.model.ExerciseComparison
 import com.kveld9.trackgym.domain.model.MechanicsType
@@ -170,8 +172,13 @@ class GymRepository(private val database: GymDatabase) {
         level: com.kveld9.trackgym.domain.model.DifficultyLevel = com.kveld9.trackgym.domain.model.DifficultyLevel.BEGINNER,
         customCategories: List<String> = emptyList()
     ): Long = withContext(Dispatchers.IO) {
+        val trimmedName = normalizeExerciseName(name)
+        val existing = exerciseDao.getExerciseByName(trimmedName)
+        if (existing != null) {
+            throw DuplicateExerciseNameException(conflictingName = existing.name)
+        }
         val entity = ExerciseEntity(
-            name = name.trim(),
+            name = trimmedName,
             muscleGroup = muscleGroup.name,
             category = category.name,
             notes = notes.trim(),

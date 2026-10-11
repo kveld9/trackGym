@@ -3,10 +3,12 @@ package com.kveld9.trackgym.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import android.database.sqlite.SQLiteConstraintException
 import com.kveld9.trackgym.data.repository.GymRepository
 import com.kveld9.trackgym.domain.calculator.BiomechanicalClassifier
 import com.kveld9.trackgym.domain.calculator.FuzzyExerciseSearchEngine
 import com.kveld9.trackgym.domain.model.DifficultyLevel
+import com.kveld9.trackgym.domain.model.DuplicateExerciseNameException
 import com.kveld9.trackgym.domain.model.Exercise
 import com.kveld9.trackgym.domain.model.ExerciseCategory
 import com.kveld9.trackgym.domain.model.ForceType
@@ -263,6 +265,13 @@ class GymViewModel(
     fun clearExercisesError() {
         _exercisesError.value = null
         _exercisesRetryTrigger.value++
+    }
+
+    private val _createExerciseError = MutableStateFlow<String?>(null)
+    val createExerciseError: StateFlow<String?> = _createExerciseError.asStateFlow()
+
+    fun clearCreateExerciseError() {
+        _createExerciseError.value = null
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -1129,23 +1138,33 @@ class GymViewModel(
         mechanics: MechanicsType = MechanicsType.COMPOUND,
         force: ForceType? = null,
         level: DifficultyLevel? = null,
-        customCategories: List<String> = emptyList()
+        customCategories: List<String> = emptyList(),
+        onSuccess: (() -> Unit)? = null
     ) {
         val resolvedForce = force ?: BiomechanicalClassifier.classifyForce(name, category, muscleGroup)
         val resolvedLevel = level ?: BiomechanicalClassifier.classifyDifficulty(name, category, muscleGroup, mechanics)
         viewModelScope.launch {
-            repository.createCustomExercise(
-                name = name,
-                muscleGroup = muscleGroup,
-                category = category,
-                notes = notes,
-                primaryMuscle = primaryMuscle,
-                secondaryMuscles = secondaryMuscles,
-                mechanics = mechanics,
-                force = resolvedForce,
-                level = resolvedLevel,
-                customCategories = customCategories
-            )
+            try {
+                repository.createCustomExercise(
+                    name = name,
+                    muscleGroup = muscleGroup,
+                    category = category,
+                    notes = notes,
+                    primaryMuscle = primaryMuscle,
+                    secondaryMuscles = secondaryMuscles,
+                    mechanics = mechanics,
+                    force = resolvedForce,
+                    level = resolvedLevel,
+                    customCategories = customCategories
+                )
+                _createExerciseError.value = null
+                onSuccess?.invoke()
+            } catch (e: DuplicateExerciseNameException) {
+                _createExerciseError.value = e.conflictingName
+            } catch (e: SQLiteConstraintException) {
+                Log.w(TAG, "Create exercise failed with constraint", e)
+                _createExerciseError.value = name.trim()
+            }
         }
     }
 
