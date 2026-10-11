@@ -1,5 +1,6 @@
 package com.kveld9.trackgym.domain.calculator
 
+import com.kveld9.trackgym.domain.model.Exercise
 import com.kveld9.trackgym.domain.model.ExerciseCategory
 import com.kveld9.trackgym.domain.model.ExerciseHistoryEntry
 import com.kveld9.trackgym.domain.model.SetType
@@ -67,5 +68,25 @@ object ExerciseHistoryEngine {
                 )
             }
             .sortedByDescending { it.dateMillis }
+    }
+
+    /**
+     * Resolves a sequence of historical exercise IDs to distinct [Exercise] instances,
+     * maintaining recency order, ignoring missing or deleted exercise IDs, and capping
+     * the result to [limit] items.
+     */
+    fun resolveRecentExercises(
+        historyExerciseIds: List<Long>,
+        allExercises: List<Exercise>,
+        limit: Int = 8
+    ): List<Exercise> {
+        if (historyExerciseIds.isEmpty() || allExercises.isEmpty() || limit <= 0) return emptyList()
+        val exerciseMap = allExercises.associateBy { it.id }
+        return historyExerciseIds
+            .asSequence()
+            .distinct()
+            .mapNotNull { exerciseMap[it] }
+            .take(limit)
+            .toList()
     }
 }

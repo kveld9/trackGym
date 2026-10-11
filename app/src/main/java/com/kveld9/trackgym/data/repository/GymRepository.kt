@@ -579,6 +579,10 @@ class GymRepository(private val database: GymDatabase) {
         }
     }
 
+    fun getRecentCompletedExerciseIds(limit: Int = 20): Flow<List<Long>> {
+        return workoutDao.getRecentCompletedExerciseIds(limit)
+    }
+
     suspend fun getFullWorkout(workoutId: Long): Workout? = withContext(Dispatchers.IO) {
         val entity = workoutDao.getWorkoutById(workoutId) ?: return@withContext null
         buildFullWorkout(entity)

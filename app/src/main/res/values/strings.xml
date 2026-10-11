@@ -506,6 +506,7 @@
     <string name="substitute_reason_secondary">Synergist / secondary muscle</string>
     <string name="substitute_no_alternatives">No alternative exercises found for the selected equipment.</string>
     <string name="chip_filter_all_equipment">All Equipment</string>
+    <string name="section_recents">Recent</string>
 
     <!-- Exercise History Tab & Dialog -->
     <string name="action_exercise_history">Exercise History</string>

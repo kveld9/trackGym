@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteConstraintException
 import android.database.sqlite.SQLiteException
 import com.kveld9.trackgym.data.repository.GymRepository
 import com.kveld9.trackgym.domain.calculator.BiomechanicalClassifier
+import com.kveld9.trackgym.domain.calculator.ExerciseHistoryEngine
 import com.kveld9.trackgym.domain.calculator.FuzzyExerciseSearchEngine
 import com.kveld9.trackgym.domain.model.DifficultyLevel
 import com.kveld9.trackgym.domain.model.DuplicateExerciseNameException
@@ -394,6 +395,19 @@ class GymViewModel(
                 keepEnglish = keepEnglish
             )
         }
+    }
+        .flowOn(Dispatchers.Default)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    val recentExercises: StateFlow<List<Exercise>> = combine(
+        repository.getRecentCompletedExerciseIds(limit = 20),
+        allExercises
+    ) { historyIds, exercises ->
+        ExerciseHistoryEngine.resolveRecentExercises(
+            historyExerciseIds = historyIds,
+            allExercises = exercises,
+            limit = 8
+        )
     }
         .flowOn(Dispatchers.Default)
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())

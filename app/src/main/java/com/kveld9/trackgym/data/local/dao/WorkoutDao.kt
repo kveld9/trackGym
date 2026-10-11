@@ -125,4 +125,15 @@ interface WorkoutDao {
         LIMIT :limit
     """)
     suspend fun getRecentCompletedWorkoutExercises(exerciseId: Long, currentWorkoutId: Long, limit: Int = 5): List<WorkoutExerciseEntity>
+
+    @Query("""
+        SELECT we.exerciseId
+        FROM workout_exercises we
+        INNER JOIN workouts w ON we.workoutId = w.id
+        WHERE w.isCompleted = 1
+        GROUP BY we.exerciseId
+        ORDER BY MAX(COALESCE(w.completedAt, w.startedAt)) DESC, MAX(we.id) DESC
+        LIMIT :limit
+    """)
+    fun getRecentCompletedExerciseIds(limit: Int = 20): Flow<List<Long>>
 }

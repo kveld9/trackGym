@@ -10,11 +10,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -45,20 +47,64 @@ import androidx.compose.ui.unit.sp
 import com.kveld9.trackgym.R
 import com.kveld9.trackgym.domain.model.Exercise
 import com.kveld9.trackgym.domain.model.ExerciseCategory
+import com.kveld9.trackgym.domain.model.MuscleGroup
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.platform.LocalContext
 import com.kveld9.trackgym.ui.util.LocalKeepEnglishExerciseNames
 import com.kveld9.trackgym.ui.util.displayName
 
+fun shouldShowRecents(
+    exerciseToSubstitute: Exercise?,
+    searchQuery: String,
+    selectedMuscleFilter: MuscleGroup?,
+    selectedEquipmentFilter: ExerciseCategory?,
+    hasRecents: Boolean
+): Boolean {
+    return exerciseToSubstitute == null &&
+        searchQuery.isBlank() &&
+        selectedMuscleFilter == null &&
+        selectedEquipmentFilter == null &&
+        hasRecents
+}
+
+fun filterPickerExercises(
+    exercises: List<Exercise>,
+    exerciseToSubstitute: Exercise?,
+    searchQuery: String,
+    keepEnglish: Boolean,
+    selectedMuscleFilter: MuscleGroup?,
+    selectedEquipmentFilter: ExerciseCategory?
+): List<Exercise> {
+    val baseList = if (exerciseToSubstitute != null) {
+        exercises
+    } else {
+        exercises.filter { ex ->
+            (selectedMuscleFilter == null || ex.muscleGroup == selectedMuscleFilter) &&
+                (selectedEquipmentFilter == null || ex.category == selectedEquipmentFilter)
+        }
+    }
+    return if (searchQuery.isBlank()) {
+        baseList
+    } else {
+        FuzzyExerciseSearchEngine.filterAndRank(
+            query = searchQuery,
+            exercises = baseList,
+            keepEnglish = keepEnglish
+        )
+    }
+}
+
 @Composable
 fun ExercisePickerContent(
     exercises: List<Exercise>,
+    recentExercises: List<Exercise> = emptyList(),
     exerciseToSubstitute: Exercise? = null,
     onSelectExercise: (Exercise) -> Unit
 ) {
     val context = LocalContext.current
     val keepEnglish = LocalKeepEnglishExerciseNames.current
     var searchQuery by remember { mutableStateOf("") }
+    var selectedMuscleFilter by remember { mutableStateOf<MuscleGroup?>(null) }
     var selectedEquipmentFilter by remember { mutableStateOf<ExerciseCategory?>(null) }
 
     val recommendedSubstitutes = remember(exercises, exerciseToSubstitute, selectedEquipmentFilter) {
@@ -71,15 +117,22 @@ fun ExercisePickerContent(
         )
     }
 
-    val filteredList = remember(exercises, searchQuery, keepEnglish) {
-        if (searchQuery.isBlank()) exercises
-        else {
-            FuzzyExerciseSearchEngine.filterAndRank(
-                query = searchQuery,
-                exercises = exercises,
-                keepEnglish = keepEnglish
-            )
-        }
+    val filteredList = remember(
+        exercises,
+        searchQuery,
+        keepEnglish,
+        selectedMuscleFilter,
+        selectedEquipmentFilter,
+        exerciseToSubstitute
+    ) {
+        filterPickerExercises(
+            exercises = exercises,
+            exerciseToSubstitute = exerciseToSubstitute,
+            searchQuery = searchQuery,
+            keepEnglish = keepEnglish,
+            selectedMuscleFilter = selectedMuscleFilter,
+            selectedEquipmentFilter = selectedEquipmentFilter
+        )
     }
 
     Column(
@@ -102,34 +155,27 @@ fun ExercisePickerContent(
 
         if (exerciseToSubstitute != null) {
             Text(
-                text = stringResource(R.string.subtitle_substitutes_for, exerciseToSubstitute.displayName(context, keepEnglish)),
+                text = stringResource(
+                    R.string.subtitle_substitutes_for,
+                    exerciseToSubstitute.displayName(context, keepEnglish)
+                ),
                 color = MaterialTheme.colorScheme.primary,
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
 
-            // Equipment filter row for substitutes
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState())
-                    .padding(bottom = 10.dp),
-                horizontalArrangement = Arrangement.spacedBy(6.dp)
-            ) {
-                FilterChip(
-                    selected = selectedEquipmentFilter == null,
-                    onClick = { selectedEquipmentFilter = null },
-                    label = { Text(stringResource(R.string.chip_filter_all_equipment), fontSize = 12.sp) }
-                )
-                ExerciseCategory.entries.filter { it != ExerciseCategory.OTHER }.forEach { cat ->
-                    FilterChip(
-                        selected = selectedEquipmentFilter == cat,
-                        onClick = { selectedEquipmentFilter = cat },
-                        label = { Text(stringResource(cat.nameRes), fontSize = 12.sp) }
-                    )
-                }
-            }
+            SubstituteEquipmentFilterRow(
+                selectedEquipmentFilter = selectedEquipmentFilter,
+                onEquipmentSelected = { selectedEquipmentFilter = it }
+            )
+        } else {
+            AddModeFilterRows(
+                selectedMuscleFilter = selectedMuscleFilter,
+                onMuscleSelected = { selectedMuscleFilter = it },
+                selectedEquipmentFilter = selectedEquipmentFilter,
+                onEquipmentSelected = { selectedEquipmentFilter = it }
+            )
         }
 
         OutlinedTextField(
@@ -253,17 +299,24 @@ fun ExercisePickerContent(
                 }
             }
 
+            val showRecents = shouldShowRecents(
+                exerciseToSubstitute = exerciseToSubstitute,
+                searchQuery = searchQuery,
+                selectedMuscleFilter = selectedMuscleFilter,
+                selectedEquipmentFilter = selectedEquipmentFilter,
+                hasRecents = recentExercises.isNotEmpty()
+            )
+
+            if (showRecents) {
+                recentExercisesSection(
+                    recentExercises = recentExercises,
+                    onSelectExercise = onSelectExercise
+                )
+            }
+
             if (filteredList.isEmpty()) {
                 item {
-                    Text(
-                        text = stringResource(R.string.exercises_no_results_title),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        fontSize = 14.sp,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 24.dp)
-                    )
+                    EmptyPickerResults()
                 }
             } else {
                 items(
@@ -330,4 +383,185 @@ fun ExercisePickerContent(
             }
         }
     }
+}
+
+@Composable
+private fun SubstituteEquipmentFilterRow(
+    selectedEquipmentFilter: ExerciseCategory?,
+    onEquipmentSelected: (ExerciseCategory?) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .horizontalScroll(rememberScrollState())
+            .padding(bottom = 10.dp),
+        horizontalArrangement = Arrangement.spacedBy(6.dp)
+    ) {
+        FilterChip(
+            selected = selectedEquipmentFilter == null,
+            onClick = { onEquipmentSelected(null) },
+            label = { Text(stringResource(R.string.chip_filter_all_equipment), fontSize = 12.sp) }
+        )
+        ExerciseCategory.entries.filter { it != ExerciseCategory.OTHER }.forEach { cat ->
+            FilterChip(
+                selected = selectedEquipmentFilter == cat,
+                onClick = { onEquipmentSelected(cat) },
+                label = { Text(stringResource(cat.nameRes), fontSize = 12.sp) }
+            )
+        }
+    }
+}
+
+@Composable
+private fun AddModeFilterRows(
+    selectedMuscleFilter: MuscleGroup?,
+    onMuscleSelected: (MuscleGroup?) -> Unit,
+    selectedEquipmentFilter: ExerciseCategory?,
+    onEquipmentSelected: (ExerciseCategory?) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .horizontalScroll(rememberScrollState())
+            .padding(bottom = 6.dp),
+        horizontalArrangement = Arrangement.spacedBy(6.dp)
+    ) {
+        FilterChip(
+            selected = selectedMuscleFilter == null,
+            onClick = { onMuscleSelected(null) },
+            label = { Text(stringResource(R.string.routine_folder_all), fontSize = 12.sp) }
+        )
+        MuscleGroup.entries.filter { it != MuscleGroup.OTHER }.forEach { group ->
+            FilterChip(
+                selected = selectedMuscleFilter == group,
+                onClick = { onMuscleSelected(if (selectedMuscleFilter == group) null else group) },
+                label = { Text(stringResource(group.nameRes), fontSize = 12.sp) }
+            )
+        }
+    }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .horizontalScroll(rememberScrollState())
+            .padding(bottom = 10.dp),
+        horizontalArrangement = Arrangement.spacedBy(6.dp)
+    ) {
+        FilterChip(
+            selected = selectedEquipmentFilter == null,
+            onClick = { onEquipmentSelected(null) },
+            label = { Text(stringResource(R.string.chip_filter_all_equipment), fontSize = 12.sp) }
+        )
+        ExerciseCategory.entries.filter { it != ExerciseCategory.OTHER }.forEach { cat ->
+            FilterChip(
+                selected = selectedEquipmentFilter == cat,
+                onClick = { onEquipmentSelected(if (selectedEquipmentFilter == cat) null else cat) },
+                label = { Text(stringResource(cat.nameRes), fontSize = 12.sp) }
+            )
+        }
+    }
+}
+
+private fun LazyListScope.recentExercisesSection(
+    recentExercises: List<Exercise>,
+    onSelectExercise: (Exercise) -> Unit
+) {
+    item {
+        Text(
+            text = stringResource(R.string.section_recents),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            fontSize = 13.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(vertical = 4.dp)
+        )
+    }
+
+    item {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState())
+                .padding(bottom = 4.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            recentExercises.forEach { recent ->
+                RecentExerciseCard(
+                    recent = recent,
+                    onSelectExercise = onSelectExercise
+                )
+            }
+        }
+    }
+
+    item {
+        HorizontalDivider(
+            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f),
+            modifier = Modifier.padding(vertical = 8.dp)
+        )
+        Text(
+            text = stringResource(R.string.title_select_exercise),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            fontSize = 13.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(bottom = 4.dp)
+        )
+    }
+}
+
+@Composable
+private fun RecentExerciseCard(
+    recent: Exercise,
+    onSelectExercise: (Exercise) -> Unit
+) {
+    val context = LocalContext.current
+    val keepEnglish = LocalKeepEnglishExerciseNames.current
+    val muscleLabel = stringResource(recent.muscleGroup.nameRes)
+    val categoryLabel = stringResource(recent.category.nameRes)
+    val metaLabel = "$muscleLabel • $categoryLabel"
+
+    Surface(
+        shape = RoundedCornerShape(10.dp),
+        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+        modifier = Modifier
+            .defaultMinSize(minHeight = 48.dp)
+            .clip(RoundedCornerShape(10.dp))
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                shape = RoundedCornerShape(10.dp)
+            )
+            .clickable { onSelectExercise(recent) }
+    ) {
+        Column(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = recent.displayName(context, keepEnglish),
+                color = MaterialTheme.colorScheme.onSurface,
+                fontSize = 13.sp,
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 1
+            )
+            Spacer(modifier = Modifier.height(2.dp))
+            Text(
+                text = metaLabel,
+                color = MaterialTheme.colorScheme.primary,
+                fontSize = 11.sp
+            )
+        }
+    }
+}
+
+@Composable
+private fun EmptyPickerResults() {
+    Text(
+        text = stringResource(R.string.exercises_no_results_title),
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        fontSize = 14.sp,
+        textAlign = TextAlign.Center,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 24.dp)
+    )
 }

@@ -9,6 +9,7 @@ import com.kveld9.trackgym.domain.model.Workout
 import com.kveld9.trackgym.domain.model.WorkoutExercise
 import com.kveld9.trackgym.domain.model.WorkoutSet
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -276,5 +277,161 @@ class ExerciseHistoryEngineTest {
         assertEquals(1, history.size)
         assertEquals(60, history[0].bestTimeSeconds)
         assertEquals(155, history[0].totalTimeSeconds)
+    }
+
+    @Test
+    fun resolveRecentExercises_emptyHistory_returnsEmptyList() {
+        val result = ExerciseHistoryEngine.resolveRecentExercises(
+            historyExerciseIds = emptyList(),
+            allExercises = listOf(benchPress, dumbbellCurl)
+        )
+        assertTrue(result.isEmpty())
+    }
+
+    @Test
+    fun resolveRecentExercises_emptyExercises_returnsEmptyList() {
+        val result = ExerciseHistoryEngine.resolveRecentExercises(
+            historyExerciseIds = listOf(101L, 102L),
+            allExercises = emptyList()
+        )
+        assertTrue(result.isEmpty())
+    }
+
+    @Test
+    fun resolveRecentExercises_preservesRecencyOrder() {
+        val result = ExerciseHistoryEngine.resolveRecentExercises(
+            historyExerciseIds = listOf(102L, 101L),
+            allExercises = listOf(benchPress, dumbbellCurl)
+        )
+        assertEquals(listOf(dumbbellCurl, benchPress), result)
+    }
+
+    @Test
+    fun resolveRecentExercises_deduplicatesRepeatedHistoryIds() {
+        val result = ExerciseHistoryEngine.resolveRecentExercises(
+            historyExerciseIds = listOf(101L, 102L, 101L, 102L),
+            allExercises = listOf(benchPress, dumbbellCurl)
+        )
+        assertEquals(listOf(benchPress, dumbbellCurl), result)
+    }
+
+    @Test
+    fun resolveRecentExercises_toleratesMissingAndDeletedIds() {
+        val result = ExerciseHistoryEngine.resolveRecentExercises(
+            historyExerciseIds = listOf(999L, 101L, 888L),
+            allExercises = listOf(benchPress, dumbbellCurl)
+        )
+        assertEquals(listOf(benchPress), result)
+    }
+
+    @Test
+    fun resolveRecentExercises_respectsCapLimit() {
+        val squat = Exercise(
+            id = 103L,
+            name = "Barbell Squat",
+            muscleGroup = MuscleGroup.LEGS,
+            category = ExerciseCategory.BARBELL
+        )
+        val deadlift = Exercise(
+            id = 104L,
+            name = "Barbell Deadlift",
+            muscleGroup = MuscleGroup.BACK,
+            category = ExerciseCategory.BARBELL
+        )
+        val overheadPress = Exercise(
+            id = 105L,
+            name = "Overhead Press",
+            muscleGroup = MuscleGroup.SHOULDERS,
+            category = ExerciseCategory.BARBELL
+        )
+
+        val all = listOf(benchPress, dumbbellCurl, squat, deadlift, overheadPress)
+        val result = ExerciseHistoryEngine.resolveRecentExercises(
+            historyExerciseIds = listOf(105L, 104L, 103L, 102L, 101L),
+            allExercises = all,
+            limit = 3
+        )
+        assertEquals(3, result.size)
+        assertEquals(listOf(overheadPress, deadlift, squat), result)
+    }
+
+    @Test
+    fun resolveRecentExercises_zeroOrNegativeLimit_returnsEmptyList() {
+        val resultZero = ExerciseHistoryEngine.resolveRecentExercises(
+            historyExerciseIds = listOf(101L),
+            allExercises = listOf(benchPress),
+            limit = 0
+        )
+        val resultNegative = ExerciseHistoryEngine.resolveRecentExercises(
+            historyExerciseIds = listOf(101L),
+            allExercises = listOf(benchPress),
+            limit = -5
+        )
+        assertTrue(resultZero.isEmpty())
+        assertTrue(resultNegative.isEmpty())
+    }
+
+    @Test
+    fun shouldShowRecents_addModeBlankNoFiltersWithRecents_returnsTrue() {
+        val show = com.kveld9.trackgym.ui.screens.active.shouldShowRecents(
+            exerciseToSubstitute = null,
+            searchQuery = "  ",
+            selectedMuscleFilter = null,
+            selectedEquipmentFilter = null,
+            hasRecents = true
+        )
+        assertTrue(show)
+    }
+
+    @Test
+    fun shouldShowRecents_substituteMode_returnsFalse() {
+        val show = com.kveld9.trackgym.ui.screens.active.shouldShowRecents(
+            exerciseToSubstitute = benchPress,
+            searchQuery = "",
+            selectedMuscleFilter = null,
+            selectedEquipmentFilter = null,
+            hasRecents = true
+        )
+        assertFalse(show)
+    }
+
+    @Test
+    fun shouldShowRecents_nonBlankQuery_returnsFalse() {
+        val show = com.kveld9.trackgym.ui.screens.active.shouldShowRecents(
+            exerciseToSubstitute = null,
+            searchQuery = "bench",
+            selectedMuscleFilter = null,
+            selectedEquipmentFilter = null,
+            hasRecents = true
+        )
+        assertFalse(show)
+    }
+
+    @Test
+    fun shouldShowRecents_activeFilterOrEmptyRecents_returnsFalse() {
+        val showMuscle = com.kveld9.trackgym.ui.screens.active.shouldShowRecents(
+            exerciseToSubstitute = null,
+            searchQuery = "",
+            selectedMuscleFilter = MuscleGroup.CHEST,
+            selectedEquipmentFilter = null,
+            hasRecents = true
+        )
+        val showEquipment = com.kveld9.trackgym.ui.screens.active.shouldShowRecents(
+            exerciseToSubstitute = null,
+            searchQuery = "",
+            selectedMuscleFilter = null,
+            selectedEquipmentFilter = ExerciseCategory.BARBELL,
+            hasRecents = true
+        )
+        val showNoRecents = com.kveld9.trackgym.ui.screens.active.shouldShowRecents(
+            exerciseToSubstitute = null,
+            searchQuery = "",
+            selectedMuscleFilter = null,
+            selectedEquipmentFilter = null,
+            hasRecents = false
+        )
+        assertFalse(showMuscle)
+        assertFalse(showEquipment)
+        assertFalse(showNoRecents)
     }
 }

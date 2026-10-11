@@ -119,6 +119,7 @@ fun ActiveWorkoutScreen(
     val timerSecondsState = viewModel.timerSeconds.collectAsStateWithLifecycle()
     val recentPr by viewModel.recentlyUnlockedPr.collectAsStateWithLifecycle()
     val allExercises by viewModel.allExercises.collectAsStateWithLifecycle()
+    val recentExercises by viewModel.recentExercises.collectAsStateWithLifecycle()
     val weightUnit by viewModel.weightUnit.collectAsStateWithLifecycle()
     val distanceUnit by viewModel.distanceUnit.collectAsStateWithLifecycle()
     val userBodyWeight by viewModel.userBodyWeight.collectAsStateWithLifecycle()
@@ -538,6 +539,7 @@ fun ActiveWorkoutScreen(
         ) {
             ExercisePickerContent(
                 exercises = allExercises,
+                recentExercises = recentExercises,
                 onSelectExercise = { exercise ->
                     viewModel.addExerciseToActiveWorkout(exercise.id)
                     showExercisePicker = false

@@ -506,6 +506,7 @@
     <string name="substitute_reason_secondary">Músculo sinergista / secundario</string>
     <string name="substitute_no_alternatives">No se encontraron ejercicios alternativos para el equipamiento seleccionado.</string>
     <string name="chip_filter_all_equipment">Todo el equipo</string>
+    <string name="section_recents">Recientes</string>
 
     <!-- Exercise History Tab & Dialog -->
     <string name="action_exercise_history">Historial del Ejercicio</string>
