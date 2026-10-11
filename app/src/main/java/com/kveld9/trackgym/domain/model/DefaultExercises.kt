@@ -288,7 +288,6 @@ object DefaultExercises {
             muscleGroup = MuscleGroup.ARMS,
             category = ExerciseCategory.BARBELL
         ),
-        Exercise(name = "Barbell Bent Over Row", muscleGroup = MuscleGroup.BACK, category = ExerciseCategory.BARBELL),
         Exercise(
             name = "Barbell Bent Over Rowing",
             muscleGroup = MuscleGroup.BACK,
@@ -482,7 +481,6 @@ object DefaultExercises {
             muscleGroup = MuscleGroup.SHOULDERS,
             category = ExerciseCategory.BARBELL
         ),
-        Exercise(name = "Barbell Overhead Press", muscleGroup = MuscleGroup.CHEST, category = ExerciseCategory.BARBELL),
         Exercise(
             name = "Barbell Overhead Press Isometric",
             muscleGroup = MuscleGroup.SHOULDERS,
@@ -1777,7 +1775,6 @@ object DefaultExercises {
         Exercise(name = "Dancer's Stretch", muscleGroup = MuscleGroup.BACK, category = ExerciseCategory.OTHER),
         Exercise(name = "Dead Bug", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Dead Hang Stretch", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.OTHER),
-        Exercise(name = "Deadbug", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.OTHER),
         Exercise(name = "Deadhang", muscleGroup = MuscleGroup.ARMS, category = ExerciseCategory.OTHER),
         Exercise(name = "Deadlift with Chains", muscleGroup = MuscleGroup.BACK, category = ExerciseCategory.BARBELL),
         Exercise(
@@ -2183,7 +2180,6 @@ object DefaultExercises {
             category = ExerciseCategory.DUMBBELL
         ),
         Exercise(name = "Dumbbell Goblet Squat", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.DUMBBELL),
-        Exercise(name = "Dumbbell Hammer Curls", muscleGroup = MuscleGroup.ARMS, category = ExerciseCategory.DUMBBELL),
         Exercise(
             name = "Dumbbell Hang Power Cleans",
             muscleGroup = MuscleGroup.BACK,
@@ -2289,11 +2285,6 @@ object DefaultExercises {
         Exercise(name = "Dumbbell Lat Pull DB", muscleGroup = MuscleGroup.BACK, category = ExerciseCategory.DUMBBELL),
         Exercise(
             name = "Dumbbell Lateral Raise Isometric",
-            muscleGroup = MuscleGroup.SHOULDERS,
-            category = ExerciseCategory.DUMBBELL
-        ),
-        Exercise(
-            name = "Dumbbell Lateral Raises",
             muscleGroup = MuscleGroup.SHOULDERS,
             category = ExerciseCategory.DUMBBELL
         ),
@@ -2554,11 +2545,6 @@ object DefaultExercises {
         Exercise(
             name = "Dumbbell Seated Reverse Grip Concentration Curl",
             muscleGroup = MuscleGroup.ARMS,
-            category = ExerciseCategory.DUMBBELL
-        ),
-        Exercise(
-            name = "Dumbbell Seated Shoulder Press",
-            muscleGroup = MuscleGroup.SHOULDERS,
             category = ExerciseCategory.DUMBBELL
         ),
         Exercise(
@@ -2896,7 +2882,6 @@ object DefaultExercises {
             muscleGroup = MuscleGroup.ARMS,
             category = ExerciseCategory.BARBELL
         ),
-        Exercise(name = "EZ-Bar Skullcrusher", muscleGroup = MuscleGroup.ARMS, category = ExerciseCategory.BARBELL),
         Exercise(
             name = "EZ-Bar Skullcrusher SZ-bar",
             muscleGroup = MuscleGroup.ARMS,
@@ -2912,7 +2897,6 @@ object DefaultExercises {
             muscleGroup = MuscleGroup.BACK,
             category = ExerciseCategory.BAND
         ),
-        Exercise(name = "Farmer's Walk", muscleGroup = MuscleGroup.ARMS, category = ExerciseCategory.OTHER),
         Exercise(name = "Farmers Walk", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
         Exercise(name = "Fast Skipping", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Finger Curls", muscleGroup = MuscleGroup.ARMS, category = ExerciseCategory.BARBELL),
@@ -3563,11 +3547,6 @@ object DefaultExercises {
             category = ExerciseCategory.KETTLEBELL
         ),
         Exercise(
-            name = "Kettlebell Turkish Get-Up (Squat style)",
-            muscleGroup = MuscleGroup.SHOULDERS,
-            category = ExerciseCategory.KETTLEBELL
-        ),
-        Exercise(
             name = "Kettlebell Turkish Getup Squat Style",
             muscleGroup = MuscleGroup.LEGS,
             category = ExerciseCategory.KETTLEBELL
@@ -3693,7 +3672,6 @@ object DefaultExercises {
         Exercise(name = "Leg Curls (laying)", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.OTHER),
         Exercise(name = "Leg Curls (sitting)", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.OTHER),
         Exercise(name = "Leg Extension Isometric", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.OTHER),
-        Exercise(name = "Leg Extensions", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.MACHINE),
         Exercise(name = "Leg Lift", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Leg Press", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.MACHINE),
         Exercise(
@@ -4063,7 +4041,6 @@ object DefaultExercises {
             category = ExerciseCategory.BODYWEIGHT
         ),
         Exercise(name = "Lying Knee Raise", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.BODYWEIGHT),
-        Exercise(name = "Lying Leg Curls", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.MACHINE),
         Exercise(name = "Lying Leg Raise", muscleGroup = MuscleGroup.CORE, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Lying Machine Squat", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.MACHINE),
         Exercise(name = "Lying Neck Extension", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.OTHER),
@@ -4095,7 +4072,6 @@ object DefaultExercises {
         Exercise(name = "Machine Bench Press", muscleGroup = MuscleGroup.CHEST, category = ExerciseCategory.MACHINE),
         Exercise(name = "Machine Bicep Curl", muscleGroup = MuscleGroup.ARMS, category = ExerciseCategory.MACHINE),
         Exercise(name = "Machine chest fly", muscleGroup = MuscleGroup.CHEST, category = ExerciseCategory.OTHER),
-        Exercise(name = "Machine Chest Press", muscleGroup = MuscleGroup.CHEST, category = ExerciseCategory.OTHER),
         Exercise(
             name = "Machine Dip or Triceps Extension",
             muscleGroup = MuscleGroup.ARMS,
@@ -4378,7 +4354,6 @@ object DefaultExercises {
             muscleGroup = MuscleGroup.ARMS,
             category = ExerciseCategory.DUMBBELL
         ),
-        Exercise(name = "Parallel Bar Dip", muscleGroup = MuscleGroup.ARMS, category = ExerciseCategory.OTHER),
         Exercise(name = "Parallel Bar Hold", muscleGroup = MuscleGroup.ARMS, category = ExerciseCategory.OTHER),
         Exercise(name = "Pause Hack Squats", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.OTHER),
         Exercise(name = "Pec Deck", muscleGroup = MuscleGroup.CHEST, category = ExerciseCategory.OTHER),
@@ -4503,7 +4478,6 @@ object DefaultExercises {
             muscleGroup = MuscleGroup.ARMS,
             category = ExerciseCategory.BODYWEIGHT
         ),
-        Exercise(name = "Pullups", muscleGroup = MuscleGroup.BACK, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Punches", muscleGroup = MuscleGroup.ARMS, category = ExerciseCategory.BODYWEIGHT),
         Exercise(name = "Push Press", muscleGroup = MuscleGroup.SHOULDERS, category = ExerciseCategory.BODYWEIGHT),
         Exercise(
@@ -4812,7 +4786,6 @@ object DefaultExercises {
             category = ExerciseCategory.DUMBBELL
         ),
         Exercise(name = "Seated Biceps", muscleGroup = MuscleGroup.ARMS, category = ExerciseCategory.BODYWEIGHT),
-        Exercise(name = "Seated Cable Rows", muscleGroup = MuscleGroup.BACK, category = ExerciseCategory.CABLE),
         Exercise(
             name = "Seated Cable Shoulder Press",
             muscleGroup = MuscleGroup.SHOULDERS,
@@ -5374,7 +5347,6 @@ object DefaultExercises {
         Exercise(name = "Squat with Chains", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BARBELL),
         Exercise(name = "Squat with Plate Movers", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.BARBELL),
         Exercise(name = "Squats on Multipress", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.OTHER),
-        Exercise(name = "Stair Master", muscleGroup = MuscleGroup.OTHER, category = ExerciseCategory.CARDIO),
         Exercise(name = "Stairmaster", muscleGroup = MuscleGroup.LEGS, category = ExerciseCategory.CARDIO),
         Exercise(
             name = "Standing Alternating Arm Lift",
