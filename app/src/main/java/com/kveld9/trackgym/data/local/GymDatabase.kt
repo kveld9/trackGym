@@ -31,7 +31,7 @@ import com.kveld9.trackgym.data.local.entity.WorkoutSetEntity
         RoutineExerciseEntity::class,
         CustomExerciseCategoryEntity::class
     ],
-    version = 21,
+    version = 22,
     exportSchema = false
 )
 abstract class GymDatabase : RoomDatabase() {
@@ -359,6 +359,101 @@ abstract class GymDatabase : RoomDatabase() {
             }
         }
 
+        /**
+         * Migration 21 -> 22: Catalog data quality corrections for DefaultExercises.
+         *
+         * Propagates seed catalog normalizations to existing installs:
+         * - Name corrections (stripping obsolete " HD" suffixes, translating non-English titles,
+         *   and normalizing unreferenced timers). Each rename is guarded by
+         *   `NOT EXISTS (SELECT 1 FROM exercises WHERE LOWER(name) = LOWER('<new>'))` to prevent
+         *   SQLite UNIQUE constraint failures if the canonical target name already exists in the table.
+         * - Equipment category and muscle group updates for curated exercises to authoritative domain values.
+         */
+        val MIGRATION_21_22 = object : androidx.room.migration.Migration(21, 22) {
+            override fun migrate(db: androidx.sqlite.db.SupportSQLiteDatabase) {
+                // A. Exercise renames with UNIQUE collision guard
+                renameExerciseGuarded(db, "Bench Dips On Floor HD", "Bench Dips On Floor")
+                renameExerciseGuarded(db, "Bodyweight lunge HD", "Bodyweight Lunge")
+                renameExerciseGuarded(db, "Bodyweight Squat HD", "Bodyweight Squat")
+                renameExerciseGuarded(db, "High Knee Skips HD", "High Knee Skips")
+                renameExerciseGuarded(db, "Jumping Jack HD", "Jumping Jack")
+                renameExerciseGuarded(db, "Schwimmen", "Swimming")
+                renameExerciseGuarded(db, "Talons fesses", "Butt Kicks")
+                renameExerciseGuarded(db, "Supino inclinado", "Incline Bench Press")
+                renameExerciseGuarded(db, "Isometria alle parallele", "Parallel Bar Isometric Hold")
+                renameExerciseGuarded(
+                    db,
+                    "Isometria trazioni impugnatura inversa",
+                    "Reverse Grip Pull-Up Isometric Hold"
+                )
+                renameExerciseGuarded(db, "EZ-Bar Military Press mit SZ-Bar", "EZ-Bar Military Press")
+                renameExerciseGuarded(db, "Rest (for timed workouts)", "Rest Timer")
+
+                // B. Equipment category updates
+                updateCategory(db, "Machine chest fly", "MACHINE")
+                updateCategory(db, "Machine Hip Abduction", "MACHINE")
+                updateCategory(db, "Machine Lat Pulldown", "MACHINE")
+                updateCategory(db, "Pullover Machine", "MACHINE")
+                updateCategory(db, "Glute Kickback (Machine)", "MACHINE")
+                updateCategory(db, "Smith Machine Hip Raise", "SMITH_MACHINE")
+                updateCategory(db, "Smith Machine Leg Press", "SMITH_MACHINE")
+                updateCategory(db, "Smith Machine Squat", "SMITH_MACHINE")
+                updateCategory(db, "Smith Machine Bent Over Row", "SMITH_MACHINE")
+                updateCategory(db, "Smith Incline Shoulder Raise", "SMITH_MACHINE")
+                updateCategory(db, "High-Incline Smith Machine Press", "SMITH_MACHINE")
+                updateCategory(db, "Decline Smith Press", "SMITH_MACHINE")
+                updateCategory(db, "Assisted chin-ups", "BODYWEIGHT")
+                updateCategory(db, "Axle Deadlift", "BARBELL")
+                updateCategory(db, "Flat Machine Press", "MACHINE")
+                updateCategory(db, "Leverage Machine Chest Press", "MACHINE")
+                updateCategory(db, "Squats on Multipress", "SMITH_MACHINE")
+                updateCategory(db, "Calf Raises on Hackenschmitt Machine", "MACHINE")
+                updateCategory(db, "Pendulum Squat", "MACHINE")
+                updateCategory(db, "Trap Bar Shrug", "BARBELL")
+                updateCategory(db, "Pec Deck", "MACHINE")
+                updateCategory(db, "Pec deck rear delt fly", "MACHINE")
+                updateCategory(db, "Pause Hack Squats", "MACHINE")
+                updateCategory(db, "Pendular hack", "MACHINE")
+                updateCategory(db, "Radio Taiso", "OTHER")
+
+                // C. Muscle group updates
+                updateMuscleGroup(db, "Bench Press - Powerlifting", "CHEST")
+                updateMuscleGroup(db, "Bench Press with Chains", "CHEST")
+                updateMuscleGroup(db, "Cable Overhand Cable Curl", "ARMS")
+                updateMuscleGroup(db, "Australian pull-ups", "BACK")
+                updateMuscleGroup(db, "High plank", "CORE")
+                updateMuscleGroup(db, "Walking Calf Raise", "LEGS")
+                updateMuscleGroup(db, "Front lever pull-up", "BACK")
+            }
+
+            private fun renameExerciseGuarded(
+                db: androidx.sqlite.db.SupportSQLiteDatabase,
+                oldName: String,
+                newName: String
+            ) {
+                db.execSQL(
+                    "UPDATE exercises SET name = '$newName' WHERE name = '$oldName' " +
+                        "AND NOT EXISTS (SELECT 1 FROM exercises WHERE LOWER(name) = LOWER('$newName'))"
+                )
+            }
+
+            private fun updateCategory(
+                db: androidx.sqlite.db.SupportSQLiteDatabase,
+                name: String,
+                category: String
+            ) {
+                db.execSQL("UPDATE exercises SET category = '$category' WHERE name = '$name'")
+            }
+
+            private fun updateMuscleGroup(
+                db: androidx.sqlite.db.SupportSQLiteDatabase,
+                name: String,
+                muscleGroup: String
+            ) {
+                db.execSQL("UPDATE exercises SET muscleGroup = '$muscleGroup' WHERE name = '$name'")
+            }
+        }
+
         fun getInstance(context: Context): GymDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
@@ -369,7 +464,7 @@ abstract class GymDatabase : RoomDatabase() {
                     .addMigrations(
                         MIGRATION_12_13, MIGRATION_13_14, MIGRATION_14_15, MIGRATION_15_16,
                         MIGRATION_16_17, MIGRATION_17_18, MIGRATION_18_19, MIGRATION_19_20,
-                        MIGRATION_20_21
+                        MIGRATION_20_21, MIGRATION_21_22
                     )
                     .fallbackToDestructiveMigration(dropAllTables = true)
                     .build()
