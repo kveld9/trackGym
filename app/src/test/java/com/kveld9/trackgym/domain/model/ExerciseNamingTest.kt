@@ -165,5 +165,37 @@ class ExerciseNamingTest {
         )
         assertFalse(isExerciseRenameConflicting(targetExerciseId = 5L, candidateName = "   ", existingMatchId = 12L))
     }
+
+    @Test
+    fun hasExerciseReferences_withZeroCounts_returnsFalse() {
+        assertFalse(hasExerciseReferences(routineCount = 0, recordCount = 0))
+    }
+
+    @Test
+    fun hasExerciseReferences_withRoutineCountGreaterThanZero_returnsTrue() {
+        assertTrue(hasExerciseReferences(routineCount = 1, recordCount = 0))
+    }
+
+    @Test
+    fun hasExerciseReferences_withRecordCountGreaterThanZero_returnsTrue() {
+        assertTrue(hasExerciseReferences(routineCount = 0, recordCount = 2))
+    }
+
+    @Test
+    fun canonicalizeExerciseName_withMultipleWhitespaceAndMixedCase_normalizesAndLowercases() {
+        assertEquals("bench press", canonicalizeExerciseName("   Bench   Press  "))
+    }
+
+    @Test
+    fun canonicalizeExerciseName_withCanonicalName_lowercasesOnly() {
+        assertEquals("squat", canonicalizeExerciseName("Squat"))
+    }
+
+    @Test
+    fun canonicalizeExerciseName_matchesLegacyMultiSpaceRowWithCanonicalSeed() {
+        val legacyRowName = "Incline   Dumbbell   Press"
+        val canonicalSeedName = "Incline Dumbbell Press"
+        assertEquals(canonicalizeExerciseName(canonicalSeedName), canonicalizeExerciseName(legacyRowName))
+    }
 }
 

@@ -64,3 +64,20 @@ fun validateExerciseRename(
     }
     return normalized
 }
+
+/**
+ * Determines whether an exercise has references in routines or personal records
+ * that would prevent safe deletion.
+ */
+fun hasExerciseReferences(routineCount: Int, recordCount: Int): Boolean {
+    return routineCount > 0 || recordCount > 0
+}
+
+/**
+ * Produces a canonical lookup key for an exercise name by trimming, collapsing
+ * consecutive whitespace sequences into a single space via [normalizeExerciseName],
+ * and converting to lowercase.
+ */
+fun canonicalizeExerciseName(name: String): String {
+    return normalizeExerciseName(name).lowercase()
+}

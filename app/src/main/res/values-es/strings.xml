@@ -96,7 +96,7 @@
     <string name="dialog_edit_exercise_title">Editar Ejercicio</string>
     <string name="action_delete_exercise">Eliminar Ejercicio</string>
     <string name="dialog_delete_exercise_confirm">¿Eliminar el ejercicio \"%1$s\"?</string>
-    <string name="error_exercise_in_use">No se puede eliminar un ejercicio que está en uso en entrenamientos o rutinas</string>
+    <string name="error_exercise_in_use">No se puede eliminar un ejercicio que está en uso en entrenamientos, rutinas o récords</string>
     <string name="label_exercise_name">Nombre del ejercicio</string>
     <string name="placeholder_exercise_name">Ej: Press Smith Inclinado</string>
     <string name="label_muscle_group">Grupo Muscular</string>

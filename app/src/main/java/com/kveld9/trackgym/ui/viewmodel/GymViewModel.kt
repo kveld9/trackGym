@@ -12,6 +12,7 @@ import com.kveld9.trackgym.domain.calculator.FuzzyExerciseSearchEngine
 import com.kveld9.trackgym.domain.model.DifficultyLevel
 import com.kveld9.trackgym.domain.model.DuplicateExerciseNameException
 import com.kveld9.trackgym.domain.model.Exercise
+import com.kveld9.trackgym.domain.model.ExerciseInUseException
 import com.kveld9.trackgym.domain.model.ExerciseCategory
 import com.kveld9.trackgym.domain.model.ForceType
 import com.kveld9.trackgym.domain.model.MechanicsType
@@ -1199,6 +1200,8 @@ class GymViewModel(
                 onSuccess?.invoke()
             } catch (e: DuplicateExerciseNameException) {
                 _createExerciseError.value = e.conflictingName
+            } catch (e: IllegalArgumentException) {
+                _createExerciseError.value = e.message ?: name.trim()
             } catch (e: SQLiteConstraintException) {
                 Log.w(TAG, "Create exercise failed with constraint", e)
                 _createExerciseError.value = name.trim()
@@ -1265,9 +1268,15 @@ class GymViewModel(
                 repository.deleteExerciseById(exerciseId)
                 _exerciseDeleteError.value = null
                 onSuccess?.invoke()
+            } catch (e: ExerciseInUseException) {
+                Log.w(TAG, "Delete exercise failed: exercise is in use", e)
+                _exerciseDeleteError.value = "IN_USE"
             } catch (e: SQLiteConstraintException) {
                 Log.w(TAG, "Delete exercise failed: exercise is in use", e)
                 _exerciseDeleteError.value = "IN_USE"
+            } catch (e: IllegalArgumentException) {
+                Log.w(TAG, "Delete exercise failed: invalid argument", e)
+                _exerciseDeleteError.value = e.message ?: "INVALID_ARGUMENT"
             } catch (e: SQLiteException) {
                 Log.w(TAG, "Delete exercise failed", e)
                 _exerciseDeleteError.value = e.message ?: "UNKNOWN"

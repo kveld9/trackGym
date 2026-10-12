@@ -36,4 +36,7 @@ interface PersonalRecordDao {
 
     @Query("SELECT * FROM personal_records WHERE exerciseId = :exerciseId AND recordType = :recordType ORDER BY recordValue DESC LIMIT 1")
     suspend fun getBestRecord(exerciseId: Long, recordType: String): PersonalRecordEntity?
+
+    @Query("SELECT COUNT(*) FROM personal_records WHERE exerciseId = :exerciseId")
+    suspend fun countRecordReferences(exerciseId: Long): Int
 }

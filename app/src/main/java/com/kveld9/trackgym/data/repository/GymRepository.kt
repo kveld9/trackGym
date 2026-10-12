@@ -24,7 +24,11 @@ import com.kveld9.trackgym.domain.calculator.sanitizeRoutineTargetSets
 import com.kveld9.trackgym.domain.model.DefaultExercises
 import com.kveld9.trackgym.domain.model.DuplicateExerciseNameException
 import com.kveld9.trackgym.domain.model.Exercise
+import com.kveld9.trackgym.domain.model.ExerciseInUseException
+import com.kveld9.trackgym.domain.model.ExerciseModality
+import com.kveld9.trackgym.domain.model.canonicalizeExerciseName
 import com.kveld9.trackgym.domain.model.classifyExerciseModality
+import com.kveld9.trackgym.domain.model.hasExerciseReferences
 import com.kveld9.trackgym.domain.model.normalizeExerciseName
 import com.kveld9.trackgym.domain.model.validateExerciseRename
 import com.kveld9.trackgym.domain.model.ExerciseCategory
@@ -299,6 +303,16 @@ class GymRepository(private val database: GymDatabase) {
 
     suspend fun deleteExerciseById(exerciseId: Long) = withContext(Dispatchers.IO) {
         val entity = exerciseDao.getExerciseById(exerciseId) ?: return@withContext
+        val routineCount = routineDao.countRoutineReferences(exerciseId)
+        val recordCount = prDao.countRecordReferences(exerciseId)
+        if (hasExerciseReferences(routineCount, recordCount)) {
+            val reason = if (routineCount > 0) {
+                ExerciseInUseException.Reason.ROUTINE
+            } else {
+                ExerciseInUseException.Reason.RECORD
+            }
+            throw ExerciseInUseException(exerciseId = exerciseId, reason = reason)
+        }
         exerciseDao.deleteExercise(entity)
     }
 
