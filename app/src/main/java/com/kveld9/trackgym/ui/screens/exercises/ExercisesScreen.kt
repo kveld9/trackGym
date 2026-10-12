@@ -383,7 +383,7 @@ fun ExercisesScreen(
         val target = exerciseToEdit!!
         CreateExerciseDialog(
             allCategories = allCustomCategories,
-            errorMessage = renameExerciseErrorMessage ?: createExerciseErrorMessage,
+            errorMessage = renameExerciseErrorMessage,
             title = stringResource(R.string.dialog_edit_exercise_title),
             initialExercise = target,
             onDismiss = {
