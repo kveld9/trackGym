@@ -1,5 +1,7 @@
 package com.kveld9.trackgym.data.backup
 
+import com.kveld9.trackgym.domain.model.ExerciseModality
+import com.kveld9.trackgym.domain.model.classifyExerciseModality
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
@@ -156,7 +158,7 @@ class JsonBackupManagerTest {
     }
 
     @Test
-    fun parseAndValidateJson_legacyBackupWithoutModality_defaultsToNull() {
+    fun parseAndValidateJson_legacyBackupWithoutModality_derivesModalityFromName() {
         val legacyJson = """
             {
                 "version": 1,
@@ -165,11 +167,11 @@ class JsonBackupManagerTest {
                 "exercises": [
                     {
                         "id": 1,
-                        "name": "Bicep Curl",
-                        "muscleGroup": "ARMS",
-                        "category": "DUMBBELL",
+                        "name": "Treadmill Run",
+                        "muscleGroup": "CARDIO",
+                        "category": "CARDIO",
                         "notes": "",
-                        "isCustom": true,
+                        "isCustom": false,
                         "createdAt": 1700000000000
                     }
                 ],
@@ -182,6 +184,11 @@ class JsonBackupManagerTest {
         assertTrue(result.isSuccess)
         val dto = result.getOrNull()
         assertNotNull(dto)
-        assertEquals(null, dto!!.exercises[0].modality)
+        val exDto = dto!!.exercises[0]
+        assertEquals(null, exDto.modality)
+        val resolvedModality = exDto.modality?.let {
+            ExerciseModality.fromString(it)
+        } ?: classifyExerciseModality(exDto.name)
+        assertEquals(ExerciseModality.CARDIO, resolvedModality)
     }
 }

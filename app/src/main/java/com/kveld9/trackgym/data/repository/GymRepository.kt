@@ -865,7 +865,9 @@ class GymRepository(private val database: GymDatabase) {
                         name = exDto.name.trim(),
                         muscleGroup = exDto.muscleGroup,
                         category = exDto.category,
-                        modality = ExerciseModality.fromString(exDto.modality).name,
+                        modality = (exDto.modality?.let {
+                            ExerciseModality.fromString(it)
+                        } ?: classifyExerciseModality(exDto.name)).name,
                         notes = exDto.notes,
                         isCustom = exDto.isCustom,
                         createdAt = if (exDto.createdAt > 0) exDto.createdAt else System.currentTimeMillis(),
@@ -883,7 +885,9 @@ class GymRepository(private val database: GymDatabase) {
                         name = exDto.name.trim(),
                         muscleGroup = exDto.muscleGroup,
                         category = exDto.category,
-                        modality = ExerciseModality.fromString(exDto.modality).name,
+                        modality = (exDto.modality?.let {
+                            ExerciseModality.fromString(it)
+                        } ?: classifyExerciseModality(exDto.name)).name,
                         notes = exDto.notes,
                         isCustom = exDto.isCustom,
                         createdAt = exDto.createdAt,
