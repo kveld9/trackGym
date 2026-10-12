@@ -854,11 +854,11 @@ class GymRepository(private val database: GymDatabase) {
             val exerciseNameToIdMap = mutableMapOf<String, Long>()
             val existingExercises = exerciseDao.getAllExercisesSync()
             existingExercises.forEach {
-                exerciseNameToIdMap[it.name.lowercase().trim()] = it.id
+                exerciseNameToIdMap[canonicalizeExerciseName(it.name)] = it.id
             }
 
             for (exDto in backup.exercises) {
-                val key = exDto.name.lowercase().trim()
+                val key = canonicalizeExerciseName(exDto.name)
                 val group = MuscleGroup.fromString(exDto.muscleGroup)
                 val cat = ExerciseCategory.fromString(exDto.category)
                 val mechanics = if (exDto.mechanics.isNotBlank()) {
@@ -892,6 +892,7 @@ class GymRepository(private val database: GymDatabase) {
                     insertedCount++
                 } else if (policy == DuplicatePolicy.OVERWRITE_ALL) {
                     val existingId = exerciseNameToIdMap[key]!!
+                    val existing = exerciseDao.getExerciseById(existingId)
                     val updated = ExerciseEntity(
                         id = existingId,
                         name = exDto.name.trim(),
@@ -939,7 +940,7 @@ class GymRepository(private val database: GymDatabase) {
                 insertedCount++
 
                 for (weDto in wDto.exercises) {
-                    val exKey = weDto.exerciseName.lowercase().trim()
+                    val exKey = canonicalizeExerciseName(weDto.exerciseName)
                     var exId = exerciseNameToIdMap[exKey]
                     if (exId == null) {
                         val mech = BiomechanicalClassifier.classifyMechanics(weDto.exerciseName)
@@ -987,7 +988,7 @@ class GymRepository(private val database: GymDatabase) {
 
             // 3. Process Personal Records
             for (prDto in backup.personalRecords) {
-                val exKey = prDto.exerciseName.lowercase().trim()
+                val exKey = canonicalizeExerciseName(prDto.exerciseName)
                 val exId = exerciseNameToIdMap[exKey] ?: continue
                 val prEntity = PersonalRecordEntity(
                     exerciseId = exId,
@@ -1252,10 +1253,10 @@ class GymRepository(private val database: GymDatabase) {
         )
         val routineId = routineDao.insertRoutine(routineEntity)
         val existingExercises = exerciseDao.getAllExercisesSync()
-        val existingByName = existingExercises.associateBy { it.name.lowercase().trim() }
+        val existingByName = existingExercises.associateBy { canonicalizeExerciseName(it.name) }
 
         val routineExercises = dto.exercises.mapIndexed { index, exDto ->
-            var exerciseId = existingByName[exDto.name.lowercase().trim()]?.id
+            var exerciseId = existingByName[canonicalizeExerciseName(exDto.name)]?.id
             if (exerciseId == null) {
                 val group = try {
                     MuscleGroup.valueOf(exDto.muscleGroup.uppercase())
