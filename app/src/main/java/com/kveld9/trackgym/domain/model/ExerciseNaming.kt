@@ -1,5 +1,7 @@
 package com.kveld9.trackgym.domain.model
 
+import java.util.Locale
+
 private val MULTIPLE_WHITESPACE_REGEX = Regex("\\s+")
 
 /**
@@ -79,5 +81,5 @@ fun hasExerciseReferences(routineCount: Int, recordCount: Int): Boolean {
  * and converting to lowercase.
  */
 fun canonicalizeExerciseName(name: String): String {
-    return normalizeExerciseName(name).lowercase()
+    return normalizeExerciseName(name).lowercase(Locale.ROOT)
 }

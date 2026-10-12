@@ -1,5 +1,6 @@
 package com.kveld9.trackgym.domain.model
 
+import java.util.Locale
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -207,6 +208,18 @@ class ExerciseNamingTest {
             canonicalizeExerciseName(it) == canonicalTarget
         }
         assertEquals("Bench Press", matchedStoredName)
+    }
+
+    @Test
+    fun canonicalizeExerciseName_withTurkishLocale_lowercasesToRootAscii() {
+        val originalLocale = Locale.getDefault()
+        try {
+            Locale.setDefault(Locale.forLanguageTag("tr-TR"))
+            assertEquals("bike", canonicalizeExerciseName("BIKE"))
+            assertEquals("bike", canonicalizeExerciseName("BiKe"))
+        } finally {
+            Locale.setDefault(originalLocale)
+        }
     }
 }
 
