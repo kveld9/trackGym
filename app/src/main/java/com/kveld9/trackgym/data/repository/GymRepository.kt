@@ -70,10 +70,10 @@ class GymRepository(private val database: GymDatabase) {
             exerciseDao.insertAll(entities)
         } else {
             val existingNames = exerciseDao.getAllExercisesSync()
-                .map { it.name.lowercase().trim() }
+                .map { canonicalizeExerciseName(it.name) }
                 .toSet()
             val missing = DefaultExercises.list
-                .filter { it.name.lowercase().trim() !in existingNames }
+                .filter { canonicalizeExerciseName(it.name) !in existingNames }
                 .map { ExerciseEntity.fromDomain(it) }
             if (missing.isNotEmpty()) {
                 exerciseDao.insertAll(missing)
