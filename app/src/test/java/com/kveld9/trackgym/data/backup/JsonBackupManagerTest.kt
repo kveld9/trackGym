@@ -19,7 +19,8 @@ class JsonBackupManagerTest {
                 muscleGroup = "CHEST",
                 category = "BARBELL",
                 notes = "Primary push movement",
-                isCustom = false
+                isCustom = false,
+                modality = "STRENGTH"
             )
         )
 
@@ -78,6 +79,7 @@ class JsonBackupManagerTest {
         assertEquals("TrackGym", dto.app)
         assertEquals(1, dto.exercises.size)
         assertEquals("Bench Press", dto.exercises[0].name)
+        assertEquals("STRENGTH", dto.exercises[0].modality)
         assertEquals(1, dto.workouts.size)
         assertEquals("Push Day", dto.workouts[0].title)
         assertEquals(1, dto.workouts[0].exercises[0].sets.size)
@@ -151,5 +153,35 @@ class JsonBackupManagerTest {
         val dto = result.getOrNull()
         assertNotNull(dto)
         assertEquals("", dto!!.exercises[0].mechanics)
+    }
+
+    @Test
+    fun parseAndValidateJson_legacyBackupWithoutModality_defaultsToNull() {
+        val legacyJson = """
+            {
+                "version": 1,
+                "exportedAt": "2026-10-06T00:00:00Z",
+                "app": "TrackGym",
+                "exercises": [
+                    {
+                        "id": 1,
+                        "name": "Bicep Curl",
+                        "muscleGroup": "ARMS",
+                        "category": "DUMBBELL",
+                        "notes": "",
+                        "isCustom": true,
+                        "createdAt": 1700000000000
+                    }
+                ],
+                "workouts": [],
+                "personalRecords": []
+            }
+        """.trimIndent()
+
+        val result = backupManager.parseAndValidateJson(legacyJson)
+        assertTrue(result.isSuccess)
+        val dto = result.getOrNull()
+        assertNotNull(dto)
+        assertEquals(null, dto!!.exercises[0].modality)
     }
 }

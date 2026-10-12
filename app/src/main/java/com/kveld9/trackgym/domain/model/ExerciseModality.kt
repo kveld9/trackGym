@@ -15,7 +15,8 @@ enum class ExerciseModality(@get:StringRes val nameRes: Int, val displayName: St
     MOBILITY(R.string.modality_mobility, "Mobility");
 
     companion object {
-        fun fromString(value: String): ExerciseModality {
+        fun fromString(value: String?): ExerciseModality {
+            if (value == null) return STRENGTH
             return entries.find {
                 it.name.equals(value, ignoreCase = true) ||
                 it.displayName.equals(value, ignoreCase = true)

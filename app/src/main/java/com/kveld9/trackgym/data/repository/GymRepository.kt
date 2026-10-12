@@ -740,7 +740,8 @@ class GymRepository(private val database: GymDatabase) {
                 notes = it.notes,
                 isCustom = it.isCustom,
                 createdAt = it.createdAt,
-                mechanics = it.mechanics
+                mechanics = it.mechanics,
+                modality = it.modality
             )
         }
 
@@ -846,6 +847,7 @@ class GymRepository(private val database: GymDatabase) {
                         name = exDto.name.trim(),
                         muscleGroup = exDto.muscleGroup,
                         category = exDto.category,
+                        modality = ExerciseModality.fromString(exDto.modality).name,
                         notes = exDto.notes,
                         isCustom = exDto.isCustom,
                         createdAt = if (exDto.createdAt > 0) exDto.createdAt else System.currentTimeMillis(),
@@ -863,6 +865,7 @@ class GymRepository(private val database: GymDatabase) {
                         name = exDto.name.trim(),
                         muscleGroup = exDto.muscleGroup,
                         category = exDto.category,
+                        modality = ExerciseModality.fromString(exDto.modality).name,
                         notes = exDto.notes,
                         isCustom = exDto.isCustom,
                         createdAt = exDto.createdAt,
@@ -907,6 +910,7 @@ class GymRepository(private val database: GymDatabase) {
                             name = weDto.exerciseName.trim(),
                             muscleGroup = MuscleGroup.OTHER.name,
                             category = ExerciseCategory.BARBELL.name,
+                            modality = classifyExerciseModality(weDto.exerciseName).name,
                             isCustom = true,
                             mechanics = mech.name,
                             force = force,

@@ -25,7 +25,8 @@ data class ExerciseBackupDto(
     val notes: String = "",
     val isCustom: Boolean = false,
     val createdAt: Long = 0,
-    val mechanics: String = ""
+    val mechanics: String = "",
+    val modality: String? = null
 )
 
 @Serializable
