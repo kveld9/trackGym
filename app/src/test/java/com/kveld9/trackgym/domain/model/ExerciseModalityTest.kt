@@ -49,6 +49,32 @@ class ExerciseModalityTest {
     }
 
     @Test
+    fun parseOrNull_parsesValidNamesAndDisplayNames() {
+        assertEquals(ExerciseModality.STRENGTH, ExerciseModality.parseOrNull("STRENGTH"))
+        assertEquals(ExerciseModality.STRENGTH, ExerciseModality.parseOrNull("Strength"))
+        assertEquals(ExerciseModality.STRENGTH, ExerciseModality.parseOrNull("strength"))
+
+        assertEquals(ExerciseModality.CARDIO, ExerciseModality.parseOrNull("CARDIO"))
+        assertEquals(ExerciseModality.CARDIO, ExerciseModality.parseOrNull("Cardio"))
+        assertEquals(ExerciseModality.CARDIO, ExerciseModality.parseOrNull("cardio"))
+
+        assertEquals(ExerciseModality.MOBILITY, ExerciseModality.parseOrNull("MOBILITY"))
+        assertEquals(ExerciseModality.MOBILITY, ExerciseModality.parseOrNull("Mobility"))
+        assertEquals(ExerciseModality.MOBILITY, ExerciseModality.parseOrNull("mobility"))
+    }
+
+    @Test
+    fun parseOrNull_nullUnknownOrEmpty_returnsNull() {
+        assertEquals(null, ExerciseModality.parseOrNull(null))
+        assertEquals(null, ExerciseModality.parseOrNull("UNKNOWN"))
+        assertEquals(null, ExerciseModality.parseOrNull("YOGA"))
+        assertEquals(null, ExerciseModality.parseOrNull("OTHER"))
+        assertEquals(null, ExerciseModality.parseOrNull("BARBELL"))
+        assertEquals(null, ExerciseModality.parseOrNull(""))
+        assertEquals(null, ExerciseModality.parseOrNull("   "))
+    }
+
+    @Test
     fun classifyExerciseModality_cardioRepresentativeNames() {
         val cardioCases = listOf(
             "Run",

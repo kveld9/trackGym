@@ -186,9 +186,43 @@ class JsonBackupManagerTest {
         assertNotNull(dto)
         val exDto = dto!!.exercises[0]
         assertEquals(null, exDto.modality)
-        val resolvedModality = exDto.modality?.let {
-            ExerciseModality.fromString(it)
-        } ?: classifyExerciseModality(exDto.name)
+        val resolvedModality = ExerciseModality.parseOrNull(exDto.modality)
+            ?: classifyExerciseModality(exDto.name)
+        assertEquals(ExerciseModality.CARDIO, resolvedModality)
+    }
+
+    @Test
+    fun parseAndValidateJson_unknownModalityString_derivesModalityFromName() {
+        val jsonWithUnknownModality = """
+            {
+                "version": 1,
+                "exportedAt": "2026-10-06T00:00:00Z",
+                "app": "TrackGym",
+                "exercises": [
+                    {
+                        "id": 1,
+                        "name": "Treadmill Run",
+                        "muscleGroup": "CARDIO",
+                        "category": "CARDIO",
+                        "notes": "",
+                        "isCustom": false,
+                        "createdAt": 1700000000000,
+                        "modality": "YOGA"
+                    }
+                ],
+                "workouts": [],
+                "personalRecords": []
+            }
+        """.trimIndent()
+
+        val result = backupManager.parseAndValidateJson(jsonWithUnknownModality)
+        assertTrue(result.isSuccess)
+        val dto = result.getOrNull()
+        assertNotNull(dto)
+        val exDto = dto!!.exercises[0]
+        assertEquals("YOGA", exDto.modality)
+        val resolvedModality = ExerciseModality.parseOrNull(exDto.modality)
+            ?: classifyExerciseModality(exDto.name)
         assertEquals(ExerciseModality.CARDIO, resolvedModality)
     }
 }
