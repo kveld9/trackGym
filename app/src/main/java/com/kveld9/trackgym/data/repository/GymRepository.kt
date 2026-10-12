@@ -402,10 +402,15 @@ class GymRepository(private val database: GymDatabase) {
         val initialWeight = prevCompletedSets.firstOrNull()?.weightKg ?: 0.0
         val initialReps = prevCompletedSets.firstOrNull()?.reps ?: 0
 
+        val initialSetType = if (exercise.modality == ExerciseModality.CARDIO) {
+            SetType.CARDIO
+        } else {
+            SetType.NORMAL
+        }
         val initialSet = WorkoutSetEntity(
             workoutExerciseId = weId,
             setNumber = 1,
-            setType = SetType.NORMAL.name,
+            setType = initialSetType.name,
             weightKg = initialWeight,
             reps = initialReps,
             isCompleted = false
@@ -474,10 +479,18 @@ class GymRepository(private val database: GymDatabase) {
             sets.forEach { set ->
                 workoutDao.deleteWorkoutSet(set.id)
             }
+            val newExercise = exerciseDao.getExerciseById(newExerciseId)
+            val initialSetType = if (newExercise?.let {
+                ExerciseModality.fromString(it.modality) == ExerciseModality.CARDIO
+            } == true) {
+                SetType.CARDIO
+            } else {
+                SetType.NORMAL
+            }
             val initial = WorkoutSetEntity(
                 workoutExerciseId = workoutExerciseId,
                 setNumber = 1,
-                setType = SetType.NORMAL.name,
+                setType = initialSetType.name,
                 weightKg = 0.0,
                 reps = 0,
                 isCompleted = false
@@ -1146,6 +1159,14 @@ class GymRepository(private val database: GymDatabase) {
             val weId = workoutDao.insertWorkoutExercise(weEntity)
             val effectiveTargetSets = re.targetSets
             val effectiveWeight = re.defaultWeightKg
+            val exerciseEntity = exerciseDao.getExerciseById(re.exerciseId)
+            val initialSetType = if (exerciseEntity?.let {
+                ExerciseModality.fromString(it.modality) == ExerciseModality.CARDIO
+            } == true) {
+                SetType.CARDIO
+            } else {
+                SetType.NORMAL
+            }
 
             for (setIndex in 1..effectiveTargetSets) {
                 val setEntity = WorkoutSetEntity(
@@ -1154,7 +1175,7 @@ class GymRepository(private val database: GymDatabase) {
                     weightKg = effectiveWeight,
                     reps = re.defaultReps,
                     isCompleted = false,
-                    setType = SetType.NORMAL.name
+                    setType = initialSetType.name
                 )
                 workoutDao.insertWorkoutSet(setEntity)
             }
