@@ -1247,63 +1247,84 @@ class GymRepository(private val database: GymDatabase) {
 
 
     suspend fun importRoutineFromShareDto(dto: RoutineShareDto): Long = withContext(Dispatchers.IO) {
-        val routineEntity = RoutineEntity(
-            name = dto.name.ifBlank { "Imported Routine" },
-            notes = dto.notes
-        )
-        val routineId = routineDao.insertRoutine(routineEntity)
-        val existingExercises = exerciseDao.getAllExercisesSync()
-        val existingByName = existingExercises.associateBy { canonicalizeExerciseName(it.name) }
-
-        val routineExercises = dto.exercises.mapIndexed { index, exDto ->
-            var exerciseId = existingByName[canonicalizeExerciseName(exDto.name)]?.id
-            if (exerciseId == null) {
-                val group = try {
-                    MuscleGroup.valueOf(exDto.muscleGroup.uppercase())
-                } catch (_: Exception) {
-                    MuscleGroup.OTHER
-                }
-                val cat = try {
-                    ExerciseCategory.valueOf(exDto.category.uppercase())
-                } catch (_: Exception) {
-                    ExerciseCategory.OTHER
-                }
-                val classifiedMechanics = BiomechanicalClassifier.classifyMechanics(
-                    name = exDto.name,
-                    category = cat,
-                    muscleGroup = group
-                )
-                val newEntity = ExerciseEntity(
-                    name = exDto.name.trim(),
-                    muscleGroup = group.name,
-                    category = cat.name,
-                    isCustom = true,
-                    mechanics = classifiedMechanics.name,
-                    force = BiomechanicalClassifier.classifyForce(
-                        name = exDto.name,
-                        category = cat,
-                        muscleGroup = group
-                    ).name,
-                    level = BiomechanicalClassifier.classifyDifficulty(
-                        name = exDto.name,
-                        category = cat,
-                        muscleGroup = group,
-                        mechanics = classifiedMechanics
-                    ).name
-                )
-                exerciseId = exerciseDao.insertExercise(newEntity)
-            }
-            RoutineExerciseEntity(
-                routineId = routineId,
-                exerciseId = exerciseId,
-                orderIndex = index,
-                targetSets = exDto.targetSets.coerceAtLeast(1),
-                defaultWeightKg = exDto.defaultWeightKg,
-                defaultReps = exDto.defaultReps
+        database.withTransaction {
+            val routineEntity = RoutineEntity(
+                name = dto.name.ifBlank { "Imported Routine" },
+                notes = dto.notes
             )
+            val routineId = routineDao.insertRoutine(routineEntity)
+            val existingExercises = exerciseDao.getAllExercisesSync()
+            val existingByName = existingExercises.associate {
+                canonicalizeExerciseName(it.name) to it.id
+            }.toMutableMap()
+
+            val routineExercises = dto.exercises.mapIndexed { index, exDto ->
+                val exerciseId = resolveShareExerciseId(
+                    existingByName = existingByName,
+                    exerciseName = exDto.name,
+                    muscleGroup = exDto.muscleGroup,
+                    category = exDto.category
+                )
+                RoutineExerciseEntity(
+                    routineId = routineId,
+                    exerciseId = exerciseId,
+                    orderIndex = index,
+                    targetSets = exDto.targetSets.coerceAtLeast(1),
+                    defaultWeightKg = exDto.defaultWeightKg,
+                    defaultReps = exDto.defaultReps
+                )
+            }
+            routineDao.insertRoutineExercises(routineExercises)
+            routineId
         }
-        routineDao.insertRoutineExercises(routineExercises)
-        routineId
+    }
+
+    private suspend fun resolveShareExerciseId(
+        existingByName: MutableMap<String, Long>,
+        exerciseName: String,
+        muscleGroup: String,
+        category: String
+    ): Long {
+        val exerciseKey = canonicalizeExerciseName(exerciseName)
+        existingByName[exerciseKey]?.let { return it }
+
+        val group = try {
+            MuscleGroup.valueOf(muscleGroup.uppercase())
+        } catch (_: Exception) {
+            MuscleGroup.OTHER
+        }
+        val cat = try {
+            ExerciseCategory.valueOf(category.uppercase())
+        } catch (_: Exception) {
+            ExerciseCategory.OTHER
+        }
+        val classifiedMechanics = BiomechanicalClassifier.classifyMechanics(
+            name = exerciseName,
+            category = cat,
+            muscleGroup = group
+        )
+        val newEntity = ExerciseEntity(
+            name = exerciseName.trim(),
+            muscleGroup = group.name,
+            category = cat.name,
+            modality = classifyExerciseModality(exerciseName).name,
+            isCustom = true,
+            mechanics = classifiedMechanics.name,
+            force = BiomechanicalClassifier.classifyForce(
+                name = exerciseName,
+                category = cat,
+                muscleGroup = group
+            ).name,
+            level = BiomechanicalClassifier.classifyDifficulty(
+                name = exerciseName,
+                category = cat,
+                muscleGroup = group,
+                mechanics = classifiedMechanics
+            ).name
+        )
+        val newId = exerciseDao.insertExercise(newEntity)
+        existingByName[exerciseKey] = newId
+        return newId
     }
 
     suspend fun syncRoutineWithWorkoutValues(routineId: Long, workout: Workout) = withContext(Dispatchers.IO) {
