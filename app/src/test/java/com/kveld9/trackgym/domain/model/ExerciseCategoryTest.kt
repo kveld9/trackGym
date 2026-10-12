@@ -60,4 +60,51 @@ class ExerciseCategoryTest {
             exerciseNames.contains("Swim") || exerciseNames.contains("Swimming Crawl Style")
         )
     }
+
+    @Test
+    fun classifyLegacyCardioCategory_machineKeywords_resolveToMachine() {
+        assertEquals(ExerciseCategory.MACHINE, classifyLegacyCardioCategory("Treadmill"))
+        assertEquals(ExerciseCategory.MACHINE, classifyLegacyCardioCategory("Stationary Bike"))
+        assertEquals(ExerciseCategory.MACHINE, classifyLegacyCardioCategory("Elliptical Trainer"))
+        assertEquals(ExerciseCategory.MACHINE, classifyLegacyCardioCategory("Indoor Rowing"))
+    }
+
+    @Test
+    fun classifyLegacyCardioCategory_dumbbellKeywords_resolveToDumbbell() {
+        assertEquals(ExerciseCategory.DUMBBELL, classifyLegacyCardioCategory("Dumbbell Complex"))
+    }
+
+    @Test
+    fun classifyLegacyCardioCategory_bodyweightKeywords_resolveToBodyweight() {
+        assertEquals(ExerciseCategory.BODYWEIGHT, classifyLegacyCardioCategory("Outdoor Run"))
+        assertEquals(ExerciseCategory.BODYWEIGHT, classifyLegacyCardioCategory("Pool Swim"))
+        assertEquals(ExerciseCategory.BODYWEIGHT, classifyLegacyCardioCategory("Morning Jog"))
+        assertEquals(ExerciseCategory.BODYWEIGHT, classifyLegacyCardioCategory("Brisk Walk"))
+        assertEquals(ExerciseCategory.BODYWEIGHT, classifyLegacyCardioCategory("100m Sprint"))
+        assertEquals(ExerciseCategory.BODYWEIGHT, classifyLegacyCardioCategory("Shadow Boxing"))
+    }
+
+    @Test
+    fun classifyLegacyCardioCategory_genericOrUnknown_fallsBackToOther() {
+        assertEquals(ExerciseCategory.OTHER, classifyLegacyCardioCategory("Cardio Blast"))
+        assertEquals(ExerciseCategory.OTHER, classifyLegacyCardioCategory("Unknown Conditioning"))
+        assertEquals(ExerciseCategory.OTHER, classifyLegacyCardioCategory(""))
+        assertEquals(ExerciseCategory.OTHER, classifyLegacyCardioCategory("   "))
+    }
+
+    @Test
+    fun classifyLegacyCardioCategory_caseInsensitivity_matchesAllCasingVariants() {
+        assertEquals(ExerciseCategory.MACHINE, classifyLegacyCardioCategory("TREADMILL"))
+        assertEquals(ExerciseCategory.MACHINE, classifyLegacyCardioCategory("bIkE"))
+        assertEquals(ExerciseCategory.DUMBBELL, classifyLegacyCardioCategory("DUMBBELL PRESS"))
+        assertEquals(ExerciseCategory.BODYWEIGHT, classifyLegacyCardioCategory("sPrInT"))
+        assertEquals(ExerciseCategory.BODYWEIGHT, classifyLegacyCardioCategory("sWiM"))
+    }
+
+    @Test
+    fun classifyLegacyCardioCategory_priorityOrder_machineWinsOverBodyweight() {
+        assertEquals(ExerciseCategory.MACHINE, classifyLegacyCardioCategory("Treadmill Run"))
+        assertEquals(ExerciseCategory.MACHINE, classifyLegacyCardioCategory("Bike Sprint"))
+    }
 }
+

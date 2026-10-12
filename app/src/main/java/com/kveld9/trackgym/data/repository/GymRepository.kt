@@ -28,6 +28,7 @@ import com.kveld9.trackgym.domain.model.ExerciseInUseException
 import com.kveld9.trackgym.domain.model.ExerciseModality
 import com.kveld9.trackgym.domain.model.canonicalizeExerciseName
 import com.kveld9.trackgym.domain.model.classifyExerciseModality
+import com.kveld9.trackgym.domain.model.classifyLegacyCardioCategory
 import com.kveld9.trackgym.domain.model.hasExerciseReferences
 import com.kveld9.trackgym.domain.model.normalizeExerciseName
 import com.kveld9.trackgym.domain.model.validateExerciseRename
@@ -860,7 +861,11 @@ class GymRepository(private val database: GymDatabase) {
             for (exDto in backup.exercises) {
                 val key = canonicalizeExerciseName(exDto.name)
                 val group = MuscleGroup.fromString(exDto.muscleGroup)
-                val cat = ExerciseCategory.fromString(exDto.category)
+                val cat = if (exDto.category.equals("CARDIO", ignoreCase = true)) {
+                    classifyLegacyCardioCategory(exDto.name)
+                } else {
+                    ExerciseCategory.fromString(exDto.category)
+                }
                 val mechanics = if (exDto.mechanics.isNotBlank()) {
                     exDto.mechanics
                 } else {
@@ -877,7 +882,7 @@ class GymRepository(private val database: GymDatabase) {
                     val newEntity = ExerciseEntity(
                         name = exDto.name.trim(),
                         muscleGroup = exDto.muscleGroup,
-                        category = exDto.category,
+                        category = cat.name,
                         modality = (ExerciseModality.parseOrNull(exDto.modality)
                             ?: classifyExerciseModality(exDto.name)).name,
                         notes = exDto.notes,
@@ -897,7 +902,7 @@ class GymRepository(private val database: GymDatabase) {
                         id = existingId,
                         name = exDto.name.trim(),
                         muscleGroup = exDto.muscleGroup,
-                        category = exDto.category,
+                        category = cat.name,
                         modality = (ExerciseModality.parseOrNull(exDto.modality)
                             ?: classifyExerciseModality(exDto.name)).name,
                         notes = exDto.notes,
@@ -1293,10 +1298,10 @@ class GymRepository(private val database: GymDatabase) {
         } catch (_: Exception) {
             MuscleGroup.OTHER
         }
-        val cat = try {
-            ExerciseCategory.valueOf(category.uppercase())
-        } catch (_: Exception) {
-            ExerciseCategory.OTHER
+        val cat = if (category.equals("CARDIO", ignoreCase = true)) {
+            classifyLegacyCardioCategory(exerciseName)
+        } else {
+            ExerciseCategory.fromString(category)
         }
         val classifiedMechanics = BiomechanicalClassifier.classifyMechanics(
             name = exerciseName,
