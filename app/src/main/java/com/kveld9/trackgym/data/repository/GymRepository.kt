@@ -911,7 +911,7 @@ class GymRepository(private val database: GymDatabase) {
                         level = level,
                         customCategories = existing?.customCategories ?: "",
                         isCustom = exDto.isCustom,
-                        createdAt = exDto.createdAt
+                        createdAt = if (exDto.createdAt > 0) exDto.createdAt else System.currentTimeMillis()
                     )
                     exerciseDao.insertExercise(updated)
                 }
