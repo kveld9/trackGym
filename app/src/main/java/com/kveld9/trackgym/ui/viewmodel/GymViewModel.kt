@@ -1254,15 +1254,14 @@ class GymViewModel(
                     customCategories = customCategories
                 )
                 _renameExerciseError.value = null
-                _createExerciseError.value = null
                 onSuccess?.invoke()
             } catch (e: DuplicateExerciseNameException) {
                 _renameExerciseError.value = e.conflictingName
-                _createExerciseError.value = e.conflictingName
+            } catch (e: IllegalArgumentException) {
+                _renameExerciseError.value = e.message ?: newName.trim()
             } catch (e: SQLiteConstraintException) {
                 Log.w(TAG, "Rename exercise failed with constraint", e)
                 _renameExerciseError.value = newName.trim()
-                _createExerciseError.value = newName.trim()
             }
         }
     }
