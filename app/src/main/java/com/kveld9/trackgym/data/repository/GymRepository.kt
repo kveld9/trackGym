@@ -900,11 +900,17 @@ class GymRepository(private val database: GymDatabase) {
                         modality = (ExerciseModality.parseOrNull(exDto.modality)
                             ?: classifyExerciseModality(exDto.name)).name,
                         notes = exDto.notes,
-                        isCustom = exDto.isCustom,
-                        createdAt = exDto.createdAt,
+                        restDurationSeconds = existing?.restDurationSeconds,
+                        warmupRampProtocol = existing?.warmupRampProtocol,
+                        autoProgressionRule = existing?.autoProgressionRule,
+                        primaryMuscle = existing?.primaryMuscle,
+                        secondaryMuscles = existing?.secondaryMuscles,
                         mechanics = mechanics,
                         force = force,
-                        level = level
+                        level = level,
+                        customCategories = existing?.customCategories ?: "",
+                        isCustom = exDto.isCustom,
+                        createdAt = exDto.createdAt
                     )
                     exerciseDao.insertExercise(updated)
                 }
