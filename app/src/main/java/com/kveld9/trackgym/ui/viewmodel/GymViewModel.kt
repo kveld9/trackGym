@@ -1216,11 +1216,11 @@ class GymViewModel(
         category: ExerciseCategory? = null,
         notes: String? = null,
         primaryMuscle: com.kveld9.trackgym.domain.model.BodyMuscle? = null,
-        secondaryMuscles: List<com.kveld9.trackgym.domain.model.MuscleInvolvement> = emptyList(),
-        mechanics: MechanicsType = MechanicsType.COMPOUND,
+        secondaryMuscles: List<com.kveld9.trackgym.domain.model.MuscleInvolvement>? = null,
+        mechanics: MechanicsType? = null,
         force: ForceType? = null,
         level: DifficultyLevel? = null,
-        customCategories: List<String> = emptyList(),
+        customCategories: List<String>? = null,
         onSuccess: (() -> Unit)? = null
     ) {
         val resolvedForce = force ?: (muscleGroup?.let { group ->
@@ -1230,7 +1230,12 @@ class GymViewModel(
         })
         val resolvedLevel = level ?: (muscleGroup?.let { group ->
             category?.let { cat ->
-                BiomechanicalClassifier.classifyDifficulty(newName, cat, group, mechanics)
+                BiomechanicalClassifier.classifyDifficulty(
+                    newName,
+                    cat,
+                    group,
+                    mechanics ?: MechanicsType.COMPOUND
+                )
             }
         })
         viewModelScope.launch {
