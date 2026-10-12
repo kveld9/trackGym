@@ -3210,6 +3210,3391 @@ object ExerciseTranslationRegistry {
             "Dumbbell close grip bench press",
             R.string.exercise_dumbbell_close_grip_bench_press,
             "Press banca agarre cerrado con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Concentration Curl",
+            R.string.exercise_dumbbell_concentration_curl,
+            "Curl concentrado con mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell Cross-Bench Dumbbell Pullovers",
+            R.string.exercise_dumbbell_cross_bench_dumbbell_pullovers,
+            "Pullover cruzado en banco con mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell Crunches",
+            R.string.exercise_dumbbell_crunches,
+            "Crunches con mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell Curl",
+            R.string.exercise_dumbbell_curl,
+            "Curl con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Curl - With Shoulder Elevated",
+            R.string.exercise_dumbbell_curl_with_shoulder_elevated,
+            "Curl con mancuerna con hombro elevado"
+        ),
+        TranslationEntry(
+            "Dumbbell Curtsey Lunge",
+            R.string.exercise_dumbbell_curtsey_lunge,
+            "Zancada cruzada con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell DB Underhand bench press",
+            R.string.exercise_dumbbell_db_underhand_bench_press,
+            "Press de banca supino con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell DB Upper Chest Variation",
+            R.string.exercise_dumbbell_db_upper_chest_variation,
+            "Variación de pecho superior con mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell Deadlift",
+            R.string.exercise_dumbbell_deadlift,
+            "Peso muerto con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Decline Bench Press",
+            R.string.exercise_dumbbell_decline_bench_press,
+            "Press de banca declinado con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Decline Fly",
+            R.string.exercise_dumbbell_decline_fly,
+            "Aperturas declinadas con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Devil’s Press",
+            R.string.exercise_dumbbell_devils_press,
+            "Devil's press con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell donkey kick",
+            R.string.exercise_dumbbell_donkey_kick,
+            "Patada de burro con mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell drag curls",
+            R.string.exercise_dumbbell_drag_curls,
+            "Drag curl con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Drop Curl",
+            R.string.exercise_dumbbell_drop_curl,
+            "Drop curl con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Elbows Tucked DB Bench Press",
+            R.string.exercise_dumbbell_elbows_tucked_db_bench_press,
+            "Press de banca codos pegados con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell farmer's carry",
+            R.string.exercise_dumbbell_farmers_carry,
+            "Paseo del granjero con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Floor Press",
+            R.string.exercise_dumbbell_floor_press,
+            "Press de suelo con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Fly",
+            R.string.exercise_dumbbell_fly,
+            "Aperturas con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Fly With Dumbbells, Decline Bench",
+            R.string.exercise_dumbbell_fly_with_dumbbells_decline_bench,
+            "Aperturas declinadas en banco con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Forearm Curls (underhand grip)",
+            R.string.exercise_dumbbell_forearm_curls_underhand_grip,
+            "Curl de antebrazo supino con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Frog Hip Thrust",
+            R.string.exercise_dumbbell_frog_hip_thrust,
+            "Hip thrust en rana con mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell Frog Press",
+            R.string.exercise_dumbbell_frog_press,
+            "Press rana con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Front Raise",
+            R.string.exercise_dumbbell_front_raise,
+            "Elevaciones frontales con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Front Squat",
+            R.string.exercise_dumbbell_front_squat,
+            "Sentadilla frontal con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Glute Bridge Single-Arm Press",
+            R.string.exercise_dumbbell_glute_bridge_single_arm_press,
+            "Puente de glúteos con press a un brazo"
+        ),
+        TranslationEntry(
+            "Dumbbell Goblet Squat",
+            R.string.exercise_dumbbell_goblet_squat,
+            "Sentadilla copa con mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell Hang Power Cleans",
+            R.string.exercise_dumbbell_hang_power_cleans,
+            "Cargada colgada de potencia con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Helms Row",
+            R.string.exercise_dumbbell_helms_row,
+            "Remo Helms con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Hex Press",
+            R.string.exercise_dumbbell_hex_press,
+            "Hex press con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Hip Thrust",
+            R.string.exercise_dumbbell_hip_thrust,
+            "Hip thrust con mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell Incline Bench Press",
+            R.string.exercise_dumbbell_incline_bench_press,
+            "Press de banca inclinado con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Incline Bench Reverse Fly",
+            R.string.exercise_dumbbell_incline_bench_reverse_fly,
+            "Aperturas inversas banco inclinado mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell Incline Biceps Curl",
+            R.string.exercise_dumbbell_incline_biceps_curl,
+            "Curl de bíceps inclinado con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Incline Chest-Supported Dumbbell Row",
+            R.string.exercise_dumbbell_incline_chest_supported_dumbbell_row,
+            "Remo inclinado pecho apoyado con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Incline Dumbbell Row",
+            R.string.exercise_dumbbell_incline_dumbbell_row,
+            "Remo inclinado con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Incline Fly",
+            R.string.exercise_dumbbell_incline_fly,
+            "Aperturas inclinadas con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Incline Hammer Curl",
+            R.string.exercise_dumbbell_incline_hammer_curl,
+            "Curl martillo inclinado con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Incline OHP DB",
+            R.string.exercise_dumbbell_incline_ohp_db,
+            "Press de hombros inclinado con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Incline Rear Fly",
+            R.string.exercise_dumbbell_incline_rear_fly,
+            "Elevaciones posteriores inclinadas mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell Incline Row",
+            R.string.exercise_dumbbell_incline_row,
+            "Remo inclinado con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Incline Shoulder Raise",
+            R.string.exercise_dumbbell_incline_shoulder_raise,
+            "Elevación de hombros inclinada con mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell Incline Static Hold",
+            R.string.exercise_dumbbell_incline_static_hold,
+            "Sostenimiento estático inclinado mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Incline Y Raise",
+            R.string.exercise_dumbbell_incline_y_raise,
+            "Elevaciones en Y inclinadas con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Ipsilateral Single Leg Stiff Leg Deadlift",
+            R.string.exercise_dumbbell_ipsilateral_single_leg_stiff_leg_deadlift,
+            "Peso muerto rígido ipsilateral a una pierna"
+        ),
+        TranslationEntry(
+            "Dumbbell Kettlebell One Legged Deadlift",
+            R.string.exercise_dumbbell_kettlebell_one_legged_deadlift,
+            "Peso muerto a una pierna con mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell Kickback",
+            R.string.exercise_dumbbell_kickback,
+            "Patada de tríceps con mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell Kong Curl",
+            R.string.exercise_dumbbell_kong_curl,
+            "Kong curl con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Kreis Press DB",
+            R.string.exercise_dumbbell_kreis_press_db,
+            "Press circular con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Lat Pull DB",
+            R.string.exercise_dumbbell_lat_pull_db,
+            "Jalón dorsal con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Lateral Raise Isometric",
+            R.string.exercise_dumbbell_lateral_raise_isometric,
+            "Elevaciones laterales isométricas mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Lateral-to-Front Raises",
+            R.string.exercise_dumbbell_lateral_to_front_raises,
+            "Elevaciones laterales a frontales mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Lento Avanti Seduto",
+            R.string.exercise_dumbbell_lento_avanti_seduto,
+            "Press militar sentado con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Lunge",
+            R.string.exercise_dumbbell_lunge,
+            "Zancada con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Lunges Standing",
+            R.string.exercise_dumbbell_lunges_standing,
+            "Zancadas de pie con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Lying Dumbbell Curls",
+            R.string.exercise_dumbbell_lying_dumbbell_curls,
+            "Curl acostado con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Lying Dumbbell Row SS Seated Shrug",
+            R.string.exercise_dumbbell_lying_dumbbell_row_ss_seated_shrug,
+            "Remo acostado y encogimiento sentado"
+        ),
+        TranslationEntry(
+            "Dumbbell Lying Neutral Grip Row on Rack",
+            R.string.exercise_dumbbell_lying_neutral_grip_row_on_rack,
+            "Remo acostado agarre neutro en rack"
+        ),
+        TranslationEntry(
+            "Dumbbell Lying on Floor Chest Press",
+            R.string.exercise_dumbbell_lying_on_floor_chest_press,
+            "Press de pecho en suelo con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Lying One-Arm Rear Lateral Raise",
+            R.string.exercise_dumbbell_lying_one_arm_rear_lateral_raise,
+            "Elevación posterior acostado a un brazo"
+        ),
+        TranslationEntry(
+            "Dumbbell Lying Pronation",
+            R.string.exercise_dumbbell_lying_pronation,
+            "Pronación acostado con mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell Lying Rear Lateral Raise",
+            R.string.exercise_dumbbell_lying_rear_lateral_raise,
+            "Elevaciones posteriores acostado mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Lying Rotator Cuff Exercise",
+            R.string.exercise_dumbbell_lying_rotator_cuff_exercise,
+            "Rotadores de hombro acostado con mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell Lying Seal Row on Rack",
+            R.string.exercise_dumbbell_lying_seal_row_on_rack,
+            "Remo foca acostado en rack con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Lying Supination",
+            R.string.exercise_dumbbell_lying_supination,
+            "Supinación acostado con mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell Lying Triceps Kickback",
+            R.string.exercise_dumbbell_lying_triceps_kickback,
+            "Patada de tríceps acostado con mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell No Leg Drive Dumbbell Chest Press",
+            R.string.exercise_dumbbell_no_leg_drive_dumbbell_chest_press,
+            "Press de pecho sin impulso con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell One Arm Bent Over Row",
+            R.string.exercise_dumbbell_one_arm_bent_over_row,
+            "Remo inclinado a un brazo con mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell One Arm Snatch",
+            R.string.exercise_dumbbell_one_arm_snatch,
+            "Arrancada a un brazo con mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell One Arm Triceps Extension on Bench",
+            R.string.exercise_dumbbell_one_arm_triceps_extension_on_bench,
+            "Extensión tríceps a un brazo en banco"
+        ),
+        TranslationEntry(
+            "Dumbbell One-Arm Heavy Row",
+            R.string.exercise_dumbbell_one_arm_heavy_row,
+            "Remo pesado a un brazo con mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell One-Arm Shoulder Press",
+            R.string.exercise_dumbbell_one_arm_shoulder_press,
+            "Press de hombros a un brazo con mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell One-Arm Triceps Extension",
+            R.string.exercise_dumbbell_one_arm_triceps_extension,
+            "Extensión de tríceps a un brazo mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell One-Arm Upright Row",
+            R.string.exercise_dumbbell_one_arm_upright_row,
+            "Remo al mentón a un brazo con mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell or Machine Calf Raise",
+            R.string.exercise_dumbbell_or_machine_calf_raise,
+            "Elevación de talones con mancuerna o máquina"
+        ),
+        TranslationEntry(
+            "Dumbbell Overhead Lunge",
+            R.string.exercise_dumbbell_overhead_lunge,
+            "Zancada sobre la cabeza con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Patadas traseras",
+            R.string.exercise_dumbbell_patadas_traseras,
+            "Patadas traseras con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Preacher Curl",
+            R.string.exercise_dumbbell_preacher_curl,
+            "Curl predicador con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Preacher Curl - Externally Rotated",
+            R.string.exercise_dumbbell_preacher_curl_externally_rotated,
+            "Curl predicador rotación externa mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Preacher Curl - Internally Rotated",
+            R.string.exercise_dumbbell_preacher_curl_internally_rotated,
+            "Curl predicador rotación interna mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Preacher Curl Isometric",
+            R.string.exercise_dumbbell_preacher_curl_isometric,
+            "Curl predicador isométrico con mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell Prone Incline Curl",
+            R.string.exercise_dumbbell_prone_incline_curl,
+            "Curl inclinado en prono con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Pullover",
+            R.string.exercise_dumbbell_pullover,
+            "Pullover con mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell Push-Up",
+            R.string.exercise_dumbbell_push_up,
+            "Flexiones sobre mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Raise",
+            R.string.exercise_dumbbell_raise,
+            "Elevaciones con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Rear Delt Fly",
+            R.string.exercise_dumbbell_rear_delt_fly,
+            "Aperturas posteriores con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Rear Delt Raises",
+            R.string.exercise_dumbbell_rear_delt_raises,
+            "Elevaciones posteriores con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Rear Lateral Raise",
+            R.string.exercise_dumbbell_rear_lateral_raise,
+            "Elevaciones laterales posteriores mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Rear Lunge",
+            R.string.exercise_dumbbell_rear_lunge,
+            "Zancada hacia atrás con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Renegade Row",
+            R.string.exercise_dumbbell_renegade_row,
+            "Remo renegado con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Reverse Fly",
+            R.string.exercise_dumbbell_reverse_fly,
+            "Aperturas inversas con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Reverse Grip Biceps Curl",
+            R.string.exercise_dumbbell_reverse_grip_biceps_curl,
+            "Curl bíceps agarre inverso con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Reverse Wrist Curl",
+            R.string.exercise_dumbbell_reverse_wrist_curl,
+            "Curl de muñeca inverso con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell roman chair RDLS",
+            R.string.exercise_dumbbell_roman_chair_rdls,
+            "Peso muerto rumano en silla romana"
+        ),
+        TranslationEntry(
+            "Dumbbell Romanian Deadlift",
+            R.string.exercise_dumbbell_romanian_deadlift,
+            "Peso muerto rumano con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Russian Twist",
+            R.string.exercise_dumbbell_russian_twist,
+            "Giro ruso con mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell Scaption",
+            R.string.exercise_dumbbell_scaption,
+            "Escaption con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Seated Arnold Press",
+            R.string.exercise_dumbbell_seated_arnold_press,
+            "Press Arnold sentado con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Seated Box Jump",
+            R.string.exercise_dumbbell_seated_box_jump,
+            "Salto al cajón sentado con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Seated Dumbbell Curls",
+            R.string.exercise_dumbbell_seated_dumbbell_curls,
+            "Curl sentado con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Seated Dumbbell Side Lateral",
+            R.string.exercise_dumbbell_seated_dumbbell_side_lateral,
+            "Elevaciones laterales sentado con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Seated Lateral Raise",
+            R.string.exercise_dumbbell_seated_lateral_raise,
+            "Elevaciones laterales sentado con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Seated One-Leg Calf Raise",
+            R.string.exercise_dumbbell_seated_one_leg_calf_raise,
+            "Elevación talón sentado una pierna mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell Seated Palms-Up Wrist Curl",
+            R.string.exercise_dumbbell_seated_palms_up_wrist_curl,
+            "Curl de muñeca sentado palmas arriba"
+        ),
+        TranslationEntry(
+            "Dumbbell Seated Preacher Curl",
+            R.string.exercise_dumbbell_seated_preacher_curl,
+            "Curl predicador sentado con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Seated rear delt rise",
+            R.string.exercise_dumbbell_seated_rear_delt_rise,
+            "Elevaciones posteriores sentado mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Seated Reverse Grip Concentration Curl",
+            R.string.exercise_dumbbell_seated_reverse_grip_concentration_curl,
+            "Curl concentrado inverso sentado mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell Seated Triceps Press",
+            R.string.exercise_dumbbell_seated_triceps_press,
+            "Press de tríceps sentado con mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell Seated W Curl",
+            R.string.exercise_dumbbell_seated_w_curl,
+            "Curl en W sentado con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Shoulder Dumbbell Pendular Exercise",
+            R.string.exercise_dumbbell_shoulder_dumbbell_pendular_exercise,
+            "Ejercicio pendular de hombro con mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell Shoulder External Rotation with Dumbbell",
+            R.string.exercise_dumbbell_shoulder_external_rotation_with_dumbbell,
+            "Rotación externa de hombro con mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell Shoulder Press",
+            R.string.exercise_dumbbell_shoulder_press,
+            "Press de hombros con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Shoulder Raise (Dumbbell)",
+            R.string.exercise_dumbbell_shoulder_raise_dumbbell,
+            "Elevación de hombros con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Shoulder Raise Side and Front DB",
+            R.string.exercise_dumbbell_shoulder_raise_side_and_front_db,
+            "Elevación lateral y frontal de hombro"
+        ),
+        TranslationEntry(
+            "Dumbbell Shoulder Rotations",
+            R.string.exercise_dumbbell_shoulder_rotations,
+            "Rotaciones de hombro con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Shrug",
+            R.string.exercise_dumbbell_shrug,
+            "Encogimientos con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Side Bend",
+            R.string.exercise_dumbbell_side_bend,
+            "Flexión lateral con mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell Side Bends on Machine",
+            R.string.exercise_dumbbell_side_bends_on_machine,
+            "Flexión lateral en máquina con mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell Side Dumbbell Trunk Flexion",
+            R.string.exercise_dumbbell_side_dumbbell_trunk_flexion,
+            "Flexión lateral de tronco con mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell Side Squat",
+            R.string.exercise_dumbbell_side_squat,
+            "Sentadilla lateral con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Single Leg Calf Raise",
+            R.string.exercise_dumbbell_single_leg_calf_raise,
+            "Elevación de talón a una pierna mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell Single Leg Hip Thrust",
+            R.string.exercise_dumbbell_single_leg_hip_thrust,
+            "Hip thrust a una pierna con mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell Single Leg Romanian Deadlift Leg Raise",
+            R.string.exercise_dumbbell_single_leg_romanian_deadlift_leg_raise,
+            "Peso muerto rumano una pierna con elevación"
+        ),
+        TranslationEntry(
+            "Dumbbell Single Leg Split Squat",
+            R.string.exercise_dumbbell_single_leg_split_squat,
+            "Sentadilla búlgara con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Single-arm Preacher Curl",
+            R.string.exercise_dumbbell_single_arm_preacher_curl,
+            "Curl predicador a un brazo con mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell Sit-Up",
+            R.string.exercise_dumbbell_sit_up,
+            "Sit-up con mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell Snatch",
+            R.string.exercise_dumbbell_snatch,
+            "Arrancada con mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell Split Squat",
+            R.string.exercise_dumbbell_split_squat,
+            "Sentadilla dividida con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Squat",
+            R.string.exercise_dumbbell_squat,
+            "Sentadilla con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Squat To A Bench",
+            R.string.exercise_dumbbell_squat_to_a_bench,
+            "Sentadilla a un banco con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Squeeze Bench Press",
+            R.string.exercise_dumbbell_squeeze_bench_press,
+            "Squeeze press de banca con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Standing Bicep Curl",
+            R.string.exercise_dumbbell_standing_bicep_curl,
+            "Curl de bíceps de pie con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Standing Calf Raise",
+            R.string.exercise_dumbbell_standing_calf_raise,
+            "Elevación de talones de pie con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Standing Lateral Raise",
+            R.string.exercise_dumbbell_standing_lateral_raise,
+            "Elevaciones laterales de pie con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Standing Overhead Press",
+            R.string.exercise_dumbbell_standing_overhead_press,
+            "Press militar de pie con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Step-Up",
+            R.string.exercise_dumbbell_step_up,
+            "Subidas al cajón con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Suitcase Carry",
+            R.string.exercise_dumbbell_suitcase_carry,
+            "Paseo de la maleta con mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell sumo deadlift",
+            R.string.exercise_dumbbell_sumo_deadlift,
+            "Peso muerto sumo con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Sumo Squat",
+            R.string.exercise_dumbbell_sumo_squat,
+            "Sentadilla sumo con mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell Supine Hip Abduction",
+            R.string.exercise_dumbbell_supine_hip_abduction,
+            "Abducción de cadera supina con mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell Tate Press",
+            R.string.exercise_dumbbell_tate_press,
+            "Tate press con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Thruster",
+            R.string.exercise_dumbbell_thruster,
+            "Thruster con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Tricep Extension -Pronated Grip",
+            R.string.exercise_dumbbell_tricep_extension_pronated_grip,
+            "Extensión de tríceps prono con mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell Triceps Extension",
+            R.string.exercise_dumbbell_triceps_extension,
+            "Extensión de tríceps con mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell Triceps Overhead (Dumbbell)",
+            R.string.exercise_dumbbell_triceps_overhead_dumbbell,
+            "Extensión de tríceps sobre cabeza mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell Turkish Get-Up",
+            R.string.exercise_dumbbell_turkish_get_up,
+            "Levantamiento turco con mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell Underhand Dead Row",
+            R.string.exercise_dumbbell_underhand_dead_row,
+            "Remo muerto supino con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Upright Row",
+            R.string.exercise_dumbbell_upright_row,
+            "Remo al mentón con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Waiter Biceps Curl",
+            R.string.exercise_dumbbell_waiter_biceps_curl,
+            "Curl camarero con mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell Walking Lunge",
+            R.string.exercise_dumbbell_walking_lunge,
+            "Zancadas caminando con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Weighted Crunch",
+            R.string.exercise_dumbbell_weighted_crunch,
+            "Crunch con carga con mancuerna"
+        ),
+        TranslationEntry(
+            "Dumbbell wide bicep curls",
+            R.string.exercise_dumbbell_wide_bicep_curls,
+            "Curl de bíceps ancho con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell Wrist curl, dumbbells",
+            R.string.exercise_dumbbell_wrist_curl_dumbbells,
+            "Curl de muñeca con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbell YTWL Exercise",
+            R.string.exercise_dumbbell_ytwl_exercise,
+            "Ejercicio YTWL con mancuernas"
+        ),
+        TranslationEntry(
+            "Dumbbells on Scott Machine",
+            R.string.exercise_dumbbells_on_scott_machine,
+            "Curl Scott con mancuernas"
+        ),
+        TranslationEntry(
+            "Dynamic Back Stretch",
+            R.string.exercise_dynamic_back_stretch,
+            "Estiramiento dinámico de espalda"
+        ),
+        TranslationEntry(
+            "Dynamic Chest Stretch",
+            R.string.exercise_dynamic_chest_stretch,
+            "Estiramiento dinámico de pecho"
+        ),
+        TranslationEntry(
+            "Dynamic Planche",
+            R.string.exercise_dynamic_planche,
+            "Plancha dinámica"
+        ),
+        TranslationEntry(
+            "Dynamic side plank",
+            R.string.exercise_dynamic_side_plank,
+            "Plancha lateral dinámica"
+        ),
+        TranslationEntry(
+            "Easy Continuous Swim (Freestyle)",
+            R.string.exercise_easy_continuous_swim_freestyle,
+            "Nado continuo suave (estilo libre)"
+        ),
+        TranslationEntry(
+            "Elbow Circles",
+            R.string.exercise_elbow_circles,
+            "Círculos de codos"
+        ),
+        TranslationEntry(
+            "Elbow Lever",
+            R.string.exercise_elbow_lever,
+            "Palanca de codos"
+        ),
+        TranslationEntry(
+            "Elbow to Knee",
+            R.string.exercise_elbow_to_knee,
+            "Codo a rodilla"
+        ),
+        TranslationEntry(
+            "Elbow Up and Down Dynamic Plank",
+            R.string.exercise_elbow_up_and_down_dynamic_plank,
+            "Plancha dinámica subiendo y bajando codos"
+        ),
+        TranslationEntry(
+            "Elbows Back",
+            R.string.exercise_elbows_back,
+            "Codos atrás"
+        ),
+        TranslationEntry(
+            "Elephant Walks",
+            R.string.exercise_elephant_walks,
+            "Paso de elefante"
+        ),
+        TranslationEntry(
+            "Elevated Back Lunge",
+            R.string.exercise_elevated_back_lunge,
+            "Zancada hacia atrás elevada"
+        ),
+        TranslationEntry(
+            "Elevated Cable Rows",
+            R.string.exercise_elevated_cable_rows,
+            "Remo elevado en polea"
+        ),
+        TranslationEntry(
+            "Elevated Hamstring Stretch",
+            R.string.exercise_elevated_hamstring_stretch,
+            "Estiramiento elevado de isquiotibiales"
+        ),
+        TranslationEntry(
+            "Elevated prayer stretch",
+            R.string.exercise_elevated_prayer_stretch,
+            "Estiramiento de la oración elevado"
+        ),
+        TranslationEntry(
+            "Elliptical",
+            R.string.exercise_elliptical,
+            "Elíptica"
+        ),
+        TranslationEntry(
+            "Elliptical Machine Walk",
+            R.string.exercise_elliptical_machine_walk,
+            "Caminata en máquina elíptica"
+        ),
+        TranslationEntry(
+            "Elliptical Trainer",
+            R.string.exercise_elliptical_trainer,
+            "Entrenador elíptico"
+        ),
+        TranslationEntry(
+            "Exercise Ball Crunch",
+            R.string.exercise_exercise_ball_crunch,
+            "Crunch en pelota de ejercicio"
+        ),
+        TranslationEntry(
+            "Exercise Ball Pull-In",
+            R.string.exercise_exercise_ball_pull_in,
+            "Encogimiento en pelota de ejercicio"
+        ),
+        TranslationEntry(
+            "Exercise Band Dorsiflexion",
+            R.string.exercise_exercise_band_dorsiflexion,
+            "Dorsiflexión con banda elástica"
+        ),
+        TranslationEntry(
+            "Exercise Band Plantarflexion",
+            R.string.exercise_exercise_band_plantarflexion,
+            "Plantiflexión con banda elástica"
+        ),
+        TranslationEntry(
+            "Explosive Push Ups",
+            R.string.exercise_explosive_push_ups,
+            "Flexiones explosivas"
+        ),
+        TranslationEntry(
+            "Extended Arm Child's Pose",
+            R.string.exercise_extended_arm_childs_pose,
+            "Postura del niño con brazos extendidos"
+        ),
+        TranslationEntry(
+            "Extended Range One-Arm Kettlebell Floor Press",
+            R.string.exercise_extended_range_one_arm_kettlebell_floor_press,
+            "Press de suelo a un brazo rango extendido kettlebell"
+        ),
+        TranslationEntry(
+            "External Rotation",
+            R.string.exercise_external_rotation,
+            "Rotación externa"
+        ),
+        TranslationEntry(
+            "External Rotation with Band",
+            R.string.exercise_external_rotation_with_band,
+            "Rotación externa con banda"
+        ),
+        TranslationEntry(
+            "External Rotation with Cable",
+            R.string.exercise_external_rotation_with_cable,
+            "Rotación externa en polea"
+        ),
+        TranslationEntry(
+            "Extreme Lat Stretch",
+            R.string.exercise_extreme_lat_stretch,
+            "Estiramiento extremo de dorsales"
+        ),
+        TranslationEntry(
+            "Extreme Pec Stretch",
+            R.string.exercise_extreme_pec_stretch,
+            "Estiramiento extremo de pectorales"
+        ),
+        TranslationEntry(
+            "Extreme Shoulder Stretch",
+            R.string.exercise_extreme_shoulder_stretch,
+            "Estiramiento extremo de hombros"
+        ),
+        TranslationEntry(
+            "Ez Barbell Standing Back Wrist Curl",
+            R.string.exercise_ez_barbell_standing_back_wrist_curl,
+            "Curl de muñeca de pie tras nuca barra EZ"
+        ),
+        TranslationEntry(
+            "Ez Barbell Standing Wide Grip Biceps Curl",
+            R.string.exercise_ez_barbell_standing_wide_grip_biceps_curl,
+            "Curl de bíceps de pie agarre ancho barra EZ"
+        ),
+        TranslationEntry(
+            "EZ-Bar Biceps Curls With SZ-bar",
+            R.string.exercise_ez_bar_biceps_curls_with_sz_bar,
+            "Curl de bíceps con barra SZ"
+        ),
+        TranslationEntry(
+            "EZ-Bar Curl",
+            R.string.exercise_ez_bar_curl,
+            "Curl con barra EZ"
+        ),
+        TranslationEntry(
+            "EZ-Bar Floor Skull Crusher",
+            R.string.exercise_ez_bar_floor_skull_crusher,
+            "Press francés de suelo con barra EZ"
+        ),
+        TranslationEntry(
+            "EZ-Bar Military Press",
+            R.string.exercise_ez_bar_military_press,
+            "Press militar con barra EZ"
+        ),
+        TranslationEntry(
+            "EZ-Bar Overhead Triceps Extension",
+            R.string.exercise_ez_bar_overhead_triceps_extension,
+            "Extensión de tríceps sobre cabeza barra EZ"
+        ),
+        TranslationEntry(
+            "EZ-Bar Preacher Curls",
+            R.string.exercise_ez_bar_preacher_curls,
+            "Curl predicador con barra EZ"
+        ),
+        TranslationEntry(
+            "EZ-Bar Reverse Bar Curl",
+            R.string.exercise_ez_bar_reverse_bar_curl,
+            "Curl inverso con barra EZ"
+        ),
+        TranslationEntry(
+            "EZ-Bar Reverse Preacher Curl (Close Grip)",
+            R.string.exercise_ez_bar_reverse_preacher_curl_close_grip,
+            "Curl predicador inverso cerrado barra EZ"
+        ),
+        TranslationEntry(
+            "EZ-Bar Skullcrusher SZ-bar",
+            R.string.exercise_ez_bar_skullcrusher_sz_bar,
+            "Press francés con barra SZ"
+        ),
+        TranslationEntry(
+            "EZ-Bar Upright Row, SZ-bar",
+            R.string.exercise_ez_bar_upright_row_sz_bar,
+            "Remo al mentón con barra SZ"
+        ),
+        TranslationEntry(
+            "Face pulls with yellow/green band",
+            R.string.exercise_face_pulls_with_yellow_green_band,
+            "Face pull con banda elástica"
+        ),
+        TranslationEntry(
+            "Farmers Walk",
+            R.string.exercise_farmers_walk,
+            "Paseo del granjero"
+        ),
+        TranslationEntry(
+            "Fast Skipping",
+            R.string.exercise_fast_skipping,
+            "Salto de cuerda rápido"
+        ),
+        TranslationEntry(
+            "Finger Curls",
+            R.string.exercise_finger_curls,
+            "Curl de dedos con barra"
+        ),
+        TranslationEntry(
+            "Finger Pushup",
+            R.string.exercise_finger_pushup,
+            "Flexiones sobre los dedos"
+        ),
+        TranslationEntry(
+            "Fingerboard 20 mm edge",
+            R.string.exercise_fingerboard_20_mm_edge,
+            "Suspensiones en regleta de 20 mm"
+        ),
+        TranslationEntry(
+            "Fire Hydrant Circles",
+            R.string.exercise_fire_hydrant_circles,
+            "Círculos boca abajo en hidrante"
+        ),
+        TranslationEntry(
+            "Flat Bench Cable Flyes",
+            R.string.exercise_flat_bench_cable_flyes,
+            "Aperturas en banco plano en polea"
+        ),
+        TranslationEntry(
+            "Flat Bench Leg Pull-In",
+            R.string.exercise_flat_bench_leg_pull_in,
+            "Encogimiento de piernas en banco plano"
+        ),
+        TranslationEntry(
+            "Flat Bench Lying Leg Raise",
+            R.string.exercise_flat_bench_lying_leg_raise,
+            "Elevación de piernas en banco plano"
+        ),
+        TranslationEntry(
+            "Flat Machine Press",
+            R.string.exercise_flat_machine_press,
+            "Press plano en máquina"
+        ),
+        TranslationEntry(
+            "FlexBar Tyler Twist",
+            R.string.exercise_flexbar_tyler_twist,
+            "Giro Tyler con FlexBar"
+        ),
+        TranslationEntry(
+            "FlexBar Wrist Extension",
+            R.string.exercise_flexbar_wrist_extension,
+            "Extensión de muñeca con FlexBar"
+        ),
+        TranslationEntry(
+            "FlexBar Wrist Flexion",
+            R.string.exercise_flexbar_wrist_flexion,
+            "Flexión de muñeca con FlexBar"
+        ),
+        TranslationEntry(
+            "Flexor Incline Dumbbell Curls",
+            R.string.exercise_flexor_incline_dumbbell_curls,
+            "Curl flexor inclinado con mancuernas"
+        ),
+        TranslationEntry(
+            "Floor dips",
+            R.string.exercise_floor_dips,
+            "Fondos en el suelo"
+        ),
+        TranslationEntry(
+            "Floor Glider Hamstring Curls",
+            R.string.exercise_floor_glider_hamstring_curls,
+            "Curl de isquiotibiales con deslizador"
+        ),
+        TranslationEntry(
+            "Floor Glute-Ham Raise",
+            R.string.exercise_floor_glute_ham_raise,
+            "Elevación glúteo-femoral en suelo"
+        ),
+        TranslationEntry(
+            "Floor Press",
+            R.string.exercise_floor_press,
+            "Press de suelo con barra"
+        ),
+        TranslationEntry(
+            "Floor Press with Chains",
+            R.string.exercise_floor_press_with_chains,
+            "Press de suelo con cadenas"
+        ),
+        TranslationEntry(
+            "Flutter Kicks",
+            R.string.exercise_flutter_kicks,
+            "Patadas de tijera"
+        ),
+        TranslationEntry(
+            "Foam Roll IT Band",
+            R.string.exercise_foam_roll_it_band,
+            "Rodillo de espuma en banda iliotibial"
+        ),
+        TranslationEntry(
+            "Foam Roller Adductors",
+            R.string.exercise_foam_roller_adductors,
+            "Rodillo de espuma en aductores"
+        ),
+        TranslationEntry(
+            "Foam Roller Anterior tibialis",
+            R.string.exercise_foam_roller_anterior_tibialis,
+            "Rodillo de espuma en tibial anterior"
+        ),
+        TranslationEntry(
+            "Foam Roller Gluteus",
+            R.string.exercise_foam_roller_gluteus,
+            "Rodillo de espuma en glúteos"
+        ),
+        TranslationEntry(
+            "Foam Roller Iliotibial band",
+            R.string.exercise_foam_roller_iliotibial_band,
+            "Rodillo de espuma en banda iliotibial"
+        ),
+        TranslationEntry(
+            "Foam Roller quadriceps",
+            R.string.exercise_foam_roller_quadriceps,
+            "Rodillo de espuma en cuádriceps"
+        ),
+        TranslationEntry(
+            "Foot-SMR",
+            R.string.exercise_foot_smr,
+            "Liberación miofascial del pie"
+        ),
+        TranslationEntry(
+            "Forward arm circles",
+            R.string.exercise_forward_arm_circles,
+            "Círculos de brazos hacia adelante"
+        ),
+        TranslationEntry(
+            "Forward Drag with Press",
+            R.string.exercise_forward_drag_with_press,
+            "Arrastre frontal con press"
+        ),
+        TranslationEntry(
+            "Forward shoulder rotation",
+            R.string.exercise_forward_shoulder_rotation,
+            "Rotación frontal de hombros"
+        ),
+        TranslationEntry(
+            "Frankenstein Squat",
+            R.string.exercise_frankenstein_squat,
+            "Sentadilla Frankenstein"
+        ),
+        TranslationEntry(
+            "Freehand Jump Squat",
+            R.string.exercise_freehand_jump_squat,
+            "Sentadilla libre con salto"
+        ),
+        TranslationEntry(
+            "Frog Hops",
+            R.string.exercise_frog_hops,
+            "Saltos de rana"
+        ),
+        TranslationEntry(
+            "Frog Jump",
+            R.string.exercise_frog_jump,
+            "Salto de rana"
+        ),
+        TranslationEntry(
+            "Frog Sit-Ups",
+            R.string.exercise_frog_sit_ups,
+            "Sit-ups en rana"
+        ),
+        TranslationEntry(
+            "Frog stand",
+            R.string.exercise_frog_stand,
+            "Equilibrio en postura de rana"
+        ),
+        TranslationEntry(
+            "Frog Stretch",
+            R.string.exercise_frog_stretch,
+            "Estiramiento de rana"
+        ),
+        TranslationEntry(
+            "Front Barbell Squat To A Bench",
+            R.string.exercise_front_barbell_squat_to_a_bench,
+            "Sentadilla frontal con barra a un banco"
+        ),
+        TranslationEntry(
+            "Front Box Jump",
+            R.string.exercise_front_box_jump,
+            "Salto frontal al cajón"
+        ),
+        TranslationEntry(
+            "Front Cone Hops (or hurdle hops)",
+            R.string.exercise_front_cone_hops_or_hurdle_hops,
+            "Saltos frontales sobre conos o vallas"
+        ),
+        TranslationEntry(
+            "Front Elbow Plank",
+            R.string.exercise_front_elbow_plank,
+            "Plancha frontal sobre codos"
+        ),
+        TranslationEntry(
+            "Front Incline Dumbbell Raise",
+            R.string.exercise_front_incline_dumbbell_raise,
+            "Elevación frontal inclinada con mancuernas"
+        ),
+        TranslationEntry(
+            "Front Leg Raises",
+            R.string.exercise_front_leg_raises,
+            "Elevaciones frontales de piernas"
+        ),
+        TranslationEntry(
+            "Front Lever",
+            R.string.exercise_front_lever,
+            "Front lever"
+        ),
+        TranslationEntry(
+            "Front Lever Hold",
+            R.string.exercise_front_lever_hold,
+            "Mantenimiento en front lever"
+        ),
+        TranslationEntry(
+            "Front lever pull-up",
+            R.string.exercise_front_lever_pull_up,
+            "Dominada en front lever"
+        ),
+        TranslationEntry(
+            "Front lever tuck",
+            R.string.exercise_front_lever_tuck,
+            "Front lever agrupado"
+        ),
+        TranslationEntry(
+            "Front neck stretch",
+            R.string.exercise_front_neck_stretch,
+            "Estiramiento frontal de cuello"
+        ),
+        TranslationEntry(
+            "Front Plank",
+            R.string.exercise_front_plank,
+            "Plancha frontal"
+        ),
+        TranslationEntry(
+            "Front Plate Raise",
+            R.string.exercise_front_plate_raise,
+            "Elevación frontal con disco"
+        ),
+        TranslationEntry(
+            "Front Raise And Pullover",
+            R.string.exercise_front_raise_and_pullover,
+            "Elevación frontal y pullover con barra"
+        ),
+        TranslationEntry(
+            "Front Split Stretch",
+            R.string.exercise_front_split_stretch,
+            "Estiramiento de split frontal"
+        ),
+        TranslationEntry(
+            "Front Squat (Clean Grip)",
+            R.string.exercise_front_squat_clean_grip,
+            "Sentadilla frontal con agarre de cargada"
+        ),
+        TranslationEntry(
+            "Front Squats With Two Kettlebells",
+            R.string.exercise_front_squats_with_two_kettlebells,
+            "Sentadillas frontales con dos kettlebells"
+        ),
+        TranslationEntry(
+            "Front Two-Dumbbell Raise",
+            R.string.exercise_front_two_dumbbell_raise,
+            "Elevación frontal con dos mancuernas"
+        ),
+        TranslationEntry(
+            "Front Wood Chop",
+            R.string.exercise_front_wood_chop,
+            "Leñador frontal"
+        ),
+        TranslationEntry(
+            "Full Range-Of-Motion Lat Pulldown",
+            R.string.exercise_full_range_of_motion_lat_pulldown,
+            "Jalón dorsal en polea rango completo"
+        ),
+        TranslationEntry(
+            "Full Sit Outs",
+            R.string.exercise_full_sit_outs,
+            "Sit outs completos"
+        ),
+        TranslationEntry(
+            "Gentle Reverse Kegels",
+            R.string.exercise_gentle_reverse_kegels,
+            "Kegels inversos suaves"
+        ),
+        TranslationEntry(
+            "Gentle Thoracic Rotation",
+            R.string.exercise_gentle_thoracic_rotation,
+            "Rotación torácica suave"
+        ),
+        TranslationEntry(
+            "Gentle Upward-Facing Dog / Cobra",
+            R.string.exercise_gentle_upward_facing_dog_cobra,
+            "Perro boca arriba suave o cobra"
+        ),
+        TranslationEntry(
+            "Gironda Sternum Chins",
+            R.string.exercise_gironda_sternum_chins,
+            "Dominadas al esternón Gironda"
+        ),
+        TranslationEntry(
+            "Glute Bridge",
+            R.string.exercise_glute_bridge,
+            "Puente de glúteos"
+        ),
+        TranslationEntry(
+            "Glute Bridge From Bench",
+            R.string.exercise_glute_bridge_from_bench,
+            "Puente de glúteos desde banco"
+        ),
+        TranslationEntry(
+            "Glute Drive",
+            R.string.exercise_glute_drive,
+            "Glute drive en máquina"
+        ),
+        TranslationEntry(
+            "Glute Ham Raise",
+            R.string.exercise_glute_ham_raise,
+            "Elevación glúteo-femoral"
+        ),
+        TranslationEntry(
+            "Glute Kickback",
+            R.string.exercise_glute_kickback,
+            "Patada de glúteos"
+        ),
+        TranslationEntry(
+            "Glute Kickback (Machine)",
+            R.string.exercise_glute_kickback_machine,
+            "Patada de glúteos en máquina"
+        ),
+        TranslationEntry(
+            "Glute Stretch",
+            R.string.exercise_glute_stretch,
+            "Estiramiento de glúteos"
+        ),
+        TranslationEntry(
+            "Goblet Squat",
+            R.string.exercise_goblet_squat,
+            "Sentadilla copa con kettlebell"
+        ),
+        TranslationEntry(
+            "Good Morning",
+            R.string.exercise_good_morning,
+            "Buenos días con barra"
+        ),
+        TranslationEntry(
+            "Good Morning off Pins",
+            R.string.exercise_good_morning_off_pins,
+            "Buenos días desde soportes con barra"
+        ),
+        TranslationEntry(
+            "Gorilla Chin/Crunch",
+            R.string.exercise_gorilla_chin_crunch,
+            "Dominada y crunch gorila"
+        ),
+        TranslationEntry(
+            "Groin and Back Stretch",
+            R.string.exercise_groin_and_back_stretch,
+            "Estiramiento de ingle y espalda"
+        ),
+        TranslationEntry(
+            "Groiners",
+            R.string.exercise_groiners,
+            "Groiners"
+        ),
+        TranslationEntry(
+            "Guided or free meditation",
+            R.string.exercise_guided_or_free_meditation,
+            "Meditación guiada o libre"
+        ),
+        TranslationEntry(
+            "Hack Squat",
+            R.string.exercise_hack_squat,
+            "Sentadilla hack en máquina"
+        ),
+        TranslationEntry(
+            "Hammer Curls",
+            R.string.exercise_hammer_curls,
+            "Curl martillo con mancuernas"
+        ),
+        TranslationEntry(
+            "Hammer Grip Incline DB Bench Press",
+            R.string.exercise_hammer_grip_incline_db_bench_press,
+            "Press inclinado agarre martillo con mancuernas"
+        ),
+        TranslationEntry(
+            "Hammerstrength Decline Chest Press",
+            R.string.exercise_hammerstrength_decline_chest_press,
+            "Press declinado Hammer Strength"
+        ),
+        TranslationEntry(
+            "Hamstring Bridge",
+            R.string.exercise_hamstring_bridge,
+            "Puente para isquiotibiales"
+        ),
+        TranslationEntry(
+            "Hamstring Chokes",
+            R.string.exercise_hamstring_chokes,
+            "Contracciones de isquiotibiales"
+        ),
+        TranslationEntry(
+            "Hamstring Foam roller",
+            R.string.exercise_hamstring_foam_roller,
+            "Rodillo de espuma en isquiotibiales"
+        ),
+        TranslationEntry(
+            "Hamstring Kicks",
+            R.string.exercise_hamstring_kicks,
+            "Patadas para isquiotibiales"
+        ),
+        TranslationEntry(
+            "Hamstring Stretch",
+            R.string.exercise_hamstring_stretch,
+            "Estiramiento de isquiotibiales"
+        ),
+        TranslationEntry(
+            "Hamstring-SMR",
+            R.string.exercise_hamstring_smr,
+            "Liberación miofascial de isquiotibiales"
+        ),
+        TranslationEntry(
+            "Hand Grip",
+            R.string.exercise_hand_grip,
+            "Apretón de manos con pinza"
+        ),
+        TranslationEntry(
+            "Handstand",
+            R.string.exercise_handstand,
+            "Pino de manos"
+        ),
+        TranslationEntry(
+            "Handstand Hold on Wall",
+            R.string.exercise_handstand_hold_on_wall,
+            "Mantenimiento en pino contra la pared"
+        ),
+        TranslationEntry(
+            "Handstand Push-Ups",
+            R.string.exercise_handstand_push_ups,
+            "Flexiones en pino"
+        ),
+        TranslationEntry(
+            "Hang Clean",
+            R.string.exercise_hang_clean,
+            "Cargada colgada con barra"
+        ),
+        TranslationEntry(
+            "Hang Clean - Below the Knees",
+            R.string.exercise_hang_clean_below_the_knees,
+            "Cargada colgada por debajo de rodillas barra"
+        ),
+        TranslationEntry(
+            "Hang Snatch",
+            R.string.exercise_hang_snatch,
+            "Arrancada colgada con barra"
+        ),
+        TranslationEntry(
+            "Hang Snatch - Below Knees",
+            R.string.exercise_hang_snatch_below_knees,
+            "Arrancada colgada por debajo de rodillas barra"
+        ),
+        TranslationEntry(
+            "Hanging Bar Good Morning",
+            R.string.exercise_hanging_bar_good_morning,
+            "Buenos días con barra colgada"
+        ),
+        TranslationEntry(
+            "Hanging Front Lever Raise",
+            R.string.exercise_hanging_front_lever_raise,
+            "Elevaciones a front lever colgado"
+        ),
+        TranslationEntry(
+            "Hanging Knee Raise",
+            R.string.exercise_hanging_knee_raise,
+            "Elevación de rodillas colgado"
+        ),
+        TranslationEntry(
+            "Hanging Leg Hip Raise",
+            R.string.exercise_hanging_leg_hip_raise,
+            "Elevación de piernas y cadera colgado"
+        ),
+        TranslationEntry(
+            "Hanging Pike",
+            R.string.exercise_hanging_pike,
+            "Pike colgado en barra"
+        ),
+        TranslationEntry(
+            "Hanging Straight Leg Hip Raise",
+            R.string.exercise_hanging_straight_leg_hip_raise,
+            "Elevación de piernas rectas y cadera colgado"
+        ),
+        TranslationEntry(
+            "Hanging Straight Leg Raise",
+            R.string.exercise_hanging_straight_leg_raise,
+            "Elevación de piernas rectas colgado"
+        ),
+        TranslationEntry(
+            "Happy Baby",
+            R.string.exercise_happy_baby,
+            "Postura del bebé feliz"
+        ),
+        TranslationEntry(
+            "Head tilts",
+            R.string.exercise_head_tilts,
+            "Inclinaciones de cabeza"
+        ),
+        TranslationEntry(
+            "Head turns",
+            R.string.exercise_head_turns,
+            "Giros de cabeza"
+        ),
+        TranslationEntry(
+            "Heaving Snatch Balance",
+            R.string.exercise_heaving_snatch_balance,
+            "Snatch balance con impulso con barra"
+        ),
+        TranslationEntry(
+            "Heavy Bag Thrust",
+            R.string.exercise_heavy_bag_thrust,
+            "Empujes a saco pesado"
+        ),
+        TranslationEntry(
+            "Heel Touches",
+            R.string.exercise_heel_touches,
+            "Toques de talón"
+        ),
+        TranslationEntry(
+            "High Cable Curls",
+            R.string.exercise_high_cable_curls,
+            "Curl en polea alta"
+        ),
+        TranslationEntry(
+            "High Knee Jumps",
+            R.string.exercise_high_knee_jumps,
+            "Saltos con rodillas al pecho"
+        ),
+        TranslationEntry(
+            "High Knee Skips",
+            R.string.exercise_high_knee_skips,
+            "Skiping con rodillas altas"
+        ),
+        TranslationEntry(
+            "High knees",
+            R.string.exercise_high_knees,
+            "Rodillas al pecho"
+        ),
+        TranslationEntry(
+            "High plank",
+            R.string.exercise_high_plank,
+            "Plancha alta sobre manos"
+        ),
+        TranslationEntry(
+            "High Pull",
+            R.string.exercise_high_pull,
+            "Tirón alto"
+        ),
+        TranslationEntry(
+            "High-Incline Smith Machine Press",
+            R.string.exercise_high_incline_smith_machine_press,
+            "Press inclinado alto en máquina Smith"
+        ),
+        TranslationEntry(
+            "Hindu Pushups",
+            R.string.exercise_hindu_pushups,
+            "Flexiones hindúes"
+        ),
+        TranslationEntry(
+            "Hindu Squats",
+            R.string.exercise_hindu_squats,
+            "Sentadillas hindúes"
+        ),
+        TranslationEntry(
+            "Hip Bridge",
+            R.string.exercise_hip_bridge,
+            "Puente de cadera"
+        ),
+        TranslationEntry(
+            "Hip Circles",
+            R.string.exercise_hip_circles,
+            "Círculos de cadera"
+        ),
+        TranslationEntry(
+            "Hip Circles (prone)",
+            R.string.exercise_hip_circles_prone,
+            "Círculos de cadera en prono"
+        ),
+        TranslationEntry(
+            "Hip Crossover",
+            R.string.exercise_hip_crossover,
+            "Cruce de cadera"
+        ),
+        TranslationEntry(
+            "Hip Extension with Bands",
+            R.string.exercise_hip_extension_with_bands,
+            "Extensión de cadera con banda elástica"
+        ),
+        TranslationEntry(
+            "Hip Flexion with Band",
+            R.string.exercise_hip_flexion_with_band,
+            "Flexión de cadera con banda elástica"
+        ),
+        TranslationEntry(
+            "Hip Flexor Stretch",
+            R.string.exercise_hip_flexor_stretch,
+            "Estiramiento de flexores de cadera"
+        ),
+        TranslationEntry(
+            "Hip Lift with Band",
+            R.string.exercise_hip_lift_with_band,
+            "Elevación de cadera con banda elástica"
+        ),
+        TranslationEntry(
+            "Hip Raise, Lying",
+            R.string.exercise_hip_raise_lying,
+            "Elevación de cadera acostado"
+        ),
+        TranslationEntry(
+            "Hip Thrusts",
+            R.string.exercise_hip_thrusts,
+            "Hip thrusts"
+        ),
+        TranslationEntry(
+            "Hip-Out and Hip-In Lateral Steps",
+            R.string.exercise_hip_out_and_hip_in_lateral_steps,
+            "Pasos laterales de cadera con banda"
+        ),
+        TranslationEntry(
+            "Hollow Hold",
+            R.string.exercise_hollow_hold,
+            "Hollow hold"
+        ),
+        TranslationEntry(
+            "Hollow Rock",
+            R.string.exercise_hollow_rock,
+            "Hollow rock"
+        ),
+        TranslationEntry(
+            "Horizontal Shoulder Flexion Stretch",
+            R.string.exercise_horizontal_shoulder_flexion_stretch,
+            "Estiramiento de flexión horizontal de hombros"
+        ),
+        TranslationEntry(
+            "Horizontal traction isometry",
+            R.string.exercise_horizontal_traction_isometry,
+            "Isometría de tracción horizontal"
+        ),
+        TranslationEntry(
+            "Horse Stance (Side Splits)",
+            R.string.exercise_horse_stance_side_splits,
+            "Postura de caballo (apertura lateral)"
+        ),
+        TranslationEntry(
+            "Hug A Ball",
+            R.string.exercise_hug_a_ball,
+            "Abrazo a pelota"
+        ),
+        TranslationEntry(
+            "Hug Knees To Chest",
+            R.string.exercise_hug_knees_to_chest,
+            "Abrazo de rodillas al pecho"
+        ),
+        TranslationEntry(
+            "Hurdle Hops",
+            R.string.exercise_hurdle_hops,
+            "Saltos de vallas"
+        ),
+        TranslationEntry(
+            "Hyper Y W Combo",
+            R.string.exercise_hyper_y_w_combo,
+            "Combo hiperextensión en Y y W"
+        ),
+        TranslationEntry(
+            "Hyperextension",
+            R.string.exercise_hyperextension,
+            "Hiperextensión"
+        ),
+        TranslationEntry(
+            "Hyperextensions (Back Extensions)",
+            R.string.exercise_hyperextensions_back_extensions,
+            "Hiperextensiones de espalda"
+        ),
+        TranslationEntry(
+            "Hyperextensions With No Hyperextension Bench",
+            R.string.exercise_hyperextensions_with_no_hyperextension_bench,
+            "Hiperextensiones en suelo sin banco"
+        ),
+        TranslationEntry(
+            "Ice cream maker",
+            R.string.exercise_ice_cream_maker,
+            "Ice cream maker"
+        ),
+        TranslationEntry(
+            "Iliotibial Tract-SMR",
+            R.string.exercise_iliotibial_tract_smr,
+            "Liberación miofascial del tracto iliotibial"
+        ),
+        TranslationEntry(
+            "Inchworm",
+            R.string.exercise_inchworm,
+            "Gusano (inchworm)"
+        ),
+        TranslationEntry(
+            "Incline Barbell Triceps Extension",
+            R.string.exercise_incline_barbell_triceps_extension,
+            "Extensión de tríceps con barra inclinado"
+        ),
+        TranslationEntry(
+            "Incline Bench Press - MP",
+            R.string.exercise_incline_bench_press_mp,
+            "Press de banca inclinado en multipower"
+        ),
+        TranslationEntry(
+            "Incline Bench Pull",
+            R.string.exercise_incline_bench_pull,
+            "Remo tumbado en banco inclinado"
+        ),
+        TranslationEntry(
+            "Incline Cable Chest Press",
+            R.string.exercise_incline_cable_chest_press,
+            "Press de pecho inclinado en polea"
+        ),
+        TranslationEntry(
+            "Incline Cable Flye",
+            R.string.exercise_incline_cable_flye,
+            "Aperturas inclinadas en polea"
+        ),
+        TranslationEntry(
+            "Incline Crunches",
+            R.string.exercise_incline_crunches,
+            "Crunches en banco inclinado"
+        ),
+        TranslationEntry(
+            "Incline Dumbbell Bench With Palms Facing In",
+            R.string.exercise_incline_dumbbell_bench_with_palms_facing_in,
+            "Press inclinado con mancuernas agarre neutro"
+        ),
+        TranslationEntry(
+            "Incline Dumbbell Curl",
+            R.string.exercise_incline_dumbbell_curl,
+            "Curl inclinado con mancuernas"
+        ),
+        TranslationEntry(
+            "Incline Dumbbell Flyes",
+            R.string.exercise_incline_dumbbell_flyes,
+            "Aperturas inclinadas con mancuernas"
+        ),
+        TranslationEntry(
+            "Incline Dumbbell Flyes - With A Twist",
+            R.string.exercise_incline_dumbbell_flyes_with_a_twist,
+            "Aperturas inclinadas con mancuernas y giro"
+        ),
+        TranslationEntry(
+            "Incline Hammer Curls",
+            R.string.exercise_incline_hammer_curls,
+            "Curl martillo inclinado con mancuernas"
+        ),
+        TranslationEntry(
+            "Incline Inner Biceps Curl",
+            R.string.exercise_incline_inner_biceps_curl,
+            "Curl inclinado de bíceps interno mancuernas"
+        ),
+        TranslationEntry(
+            "Incline Plank With Alternate Floor Touch",
+            R.string.exercise_incline_plank_with_alternate_floor_touch,
+            "Plancha inclinada con toques alternos de suelo"
+        ),
+        TranslationEntry(
+            "Incline Push Press",
+            R.string.exercise_incline_push_press,
+            "Push press inclinado"
+        ),
+        TranslationEntry(
+            "Incline Push-Up",
+            R.string.exercise_incline_push_up,
+            "Flexiones inclinadas"
+        ),
+        TranslationEntry(
+            "Incline Push-Up Close-Grip",
+            R.string.exercise_incline_push_up_close_grip,
+            "Flexiones inclinadas con agarre cerrado"
+        ),
+        TranslationEntry(
+            "Incline Push-Up Depth Jump",
+            R.string.exercise_incline_push_up_depth_jump,
+            "Flexiones inclinadas con salto en profundidad"
+        ),
+        TranslationEntry(
+            "Incline Push-Up Medium",
+            R.string.exercise_incline_push_up_medium,
+            "Flexiones inclinadas con agarre medio"
+        ),
+        TranslationEntry(
+            "Incline Push-Up Reverse Grip",
+            R.string.exercise_incline_push_up_reverse_grip,
+            "Flexiones inclinadas con agarre supino"
+        ),
+        TranslationEntry(
+            "Incline Push-Up Wide",
+            R.string.exercise_incline_push_up_wide,
+            "Flexiones inclinadas con agarre ancho"
+        ),
+        TranslationEntry(
+            "Incline Pushup on Box",
+            R.string.exercise_incline_pushup_on_box,
+            "Flexiones inclinadas sobre cajón"
+        ),
+        TranslationEntry(
+            "Incline Row - Rings",
+            R.string.exercise_incline_row_rings,
+            "Remo inclinado en anillas"
+        ),
+        TranslationEntry(
+            "Incline Shoulder Press Up",
+            R.string.exercise_incline_shoulder_press_up,
+            "Press inclinado hacia arriba de hombros"
+        ),
+        TranslationEntry(
+            "Incline Skull Crush",
+            R.string.exercise_incline_skull_crush,
+            "Press francés inclinado"
+        ),
+        TranslationEntry(
+            "Inline Skating",
+            R.string.exercise_inline_skating,
+            "Patinaje en línea"
+        ),
+        TranslationEntry(
+            "Intermediate Groin Stretch",
+            R.string.exercise_intermediate_groin_stretch,
+            "Estiramiento intermedio de ingle"
+        ),
+        TranslationEntry(
+            "Intermediate Hip Flexor and Quad Stretch",
+            R.string.exercise_intermediate_hip_flexor_and_quad_stretch,
+            "Estiramiento intermedio de psoas y cuádriceps"
+        ),
+        TranslationEntry(
+            "Internal Rotation with Band",
+            R.string.exercise_internal_rotation_with_band,
+            "Rotación interna con banda elástica"
+        ),
+        TranslationEntry(
+            "Inverted Lat Pull Down",
+            R.string.exercise_inverted_lat_pull_down,
+            "Jalón dorsal invertido"
+        ),
+        TranslationEntry(
+            "Inverted Row",
+            R.string.exercise_inverted_row,
+            "Remo invertido"
+        ),
+        TranslationEntry(
+            "Inverted Row with Straps",
+            R.string.exercise_inverted_row_with_straps,
+            "Remo invertido con correas de suspensión"
+        ),
+        TranslationEntry(
+            "Iron Cross",
+            R.string.exercise_iron_cross,
+            "Cruz de hierro con mancuernas"
+        ),
+        TranslationEntry(
+            "Iron Crosses (stretch)",
+            R.string.exercise_iron_crosses_stretch,
+            "Estiramiento de cruz de hierro"
+        ),
+        TranslationEntry(
+            "Parallel Bar Isometric Hold",
+            R.string.exercise_parallel_bar_isometric_hold,
+            "Mantenimiento isométrico en paralelas"
+        ),
+        TranslationEntry(
+            "Reverse Grip Pull-Up Isometric Hold",
+            R.string.exercise_reverse_grip_pull_up_isometric_hold,
+            "Isometría en dominada con agarre supino"
+        ),
+        TranslationEntry(
+            "Isometric Chest Squeezes",
+            R.string.exercise_isometric_chest_squeezes,
+            "Apretón isométrico de pecho"
+        ),
+        TranslationEntry(
+            "Isometric Neck Exercise - Front And Back",
+            R.string.exercise_isometric_neck_exercise_front_and_back,
+            "Ejercicio isométrico de cuello frontal y dorsal"
+        ),
+        TranslationEntry(
+            "Isometric Neck Exercise - Sides",
+            R.string.exercise_isometric_neck_exercise_sides,
+            "Ejercicio isométrico de cuello lateral"
+        ),
+        TranslationEntry(
+            "Isometric Squat to Failure",
+            R.string.exercise_isometric_squat_to_failure,
+            "Sentadilla isométrica al fallo"
+        ),
+        TranslationEntry(
+            "Isometric Wipers",
+            R.string.exercise_isometric_wipers,
+            "Limpiaparabrisas isométricos"
+        ),
+        TranslationEntry(
+            "IT Band and Glute Stretch",
+            R.string.exercise_it_band_and_glute_stretch,
+            "Estiramiento de cintilla iliotibial y glúteo"
+        ),
+        TranslationEntry(
+            "Jack Knife Sit-Up",
+            R.string.exercise_jack_knife_sit_up,
+            "Sit-up en navaja"
+        ),
+        TranslationEntry(
+            "Janda Sit-Up",
+            R.string.exercise_janda_sit_up,
+            "Sit-up Janda"
+        ),
+        TranslationEntry(
+            "Jefferson Squats",
+            R.string.exercise_jefferson_squats,
+            "Sentadilla Jefferson con barra"
+        ),
+        TranslationEntry(
+            "Jerk Balance",
+            R.string.exercise_jerk_balance,
+            "Jerk balance con barra"
+        ),
+        TranslationEntry(
+            "Jerk Dip Squat",
+            R.string.exercise_jerk_dip_squat,
+            "Sentadilla jerk dip con barra"
+        ),
+        TranslationEntry(
+            "JM Press",
+            R.string.exercise_jm_press,
+            "Press JM con barra"
+        ),
+        TranslationEntry(
+            "Jogging",
+            R.string.exercise_jogging,
+            "Trote"
+        ),
+        TranslationEntry(
+            "Jogging, Treadmill",
+            R.string.exercise_jogging_treadmill,
+            "Trote en cinta"
+        ),
+        TranslationEntry(
+            "Jump Box",
+            R.string.exercise_jump_box,
+            "Salto al cajón"
+        ),
+        TranslationEntry(
+            "Jump Rope",
+            R.string.exercise_jump_rope,
+            "Salto de cuerda"
+        ),
+        TranslationEntry(
+            "Jump rope: basic jumps",
+            R.string.exercise_jump_rope_basic_jumps,
+            "Salto de cuerda: saltos básicos"
+        ),
+        TranslationEntry(
+            "Jump Shrug",
+            R.string.exercise_jump_shrug,
+            "Encogimiento con salto"
+        ),
+        TranslationEntry(
+            "Jump Split",
+            R.string.exercise_jump_split,
+            "Salto en tijera"
+        ),
+        TranslationEntry(
+            "Jump Squat",
+            R.string.exercise_jump_squat,
+            "Sentadilla con salto"
+        ),
+        TranslationEntry(
+            "Jumping Jack",
+            R.string.exercise_jumping_jack,
+            "Jumping jacks"
+        ),
+        TranslationEntry(
+            "Keg Load",
+            R.string.exercise_keg_load,
+            "Carga de barril"
+        ),
+        TranslationEntry(
+            "Kegel Exercise",
+            R.string.exercise_kegel_exercise,
+            "Ejercicios de Kegel"
+        ),
+        TranslationEntry(
+            "Kettlebell 2 Handed Kettlebell Swing",
+            R.string.exercise_kettlebell_2_handed_kettlebell_swing,
+            "Swing con kettlebell a dos manos"
+        ),
+        TranslationEntry(
+            "Kettlebell Arnold Press",
+            R.string.exercise_kettlebell_arnold_press,
+            "Press Arnold con kettlebell"
+        ),
+        TranslationEntry(
+            "Kettlebell Around Head Rotation",
+            R.string.exercise_kettlebell_around_head_rotation,
+            "Rotación alrededor de cabeza con kettlebell"
+        ),
+        TranslationEntry(
+            "Kettlebell Biceps Curl",
+            R.string.exercise_kettlebell_biceps_curl,
+            "Curl de bíceps con kettlebell"
+        ),
+        TranslationEntry(
+            "Kettlebell Curl with kettlebell two hands",
+            R.string.exercise_kettlebell_curl_with_kettlebell_two_hands,
+            "Curl a dos manos con kettlebell"
+        ),
+        TranslationEntry(
+            "Kettlebell Dead Clean",
+            R.string.exercise_kettlebell_dead_clean,
+            "Cargada muerta con kettlebell"
+        ),
+        TranslationEntry(
+            "Kettlebell deadlifts",
+            R.string.exercise_kettlebell_deadlifts,
+            "Peso muerto con kettlebells"
+        ),
+        TranslationEntry(
+            "Kettlebell Double Kettlebell Clean and Press",
+            R.string.exercise_kettlebell_double_kettlebell_clean_and_press,
+            "Cargada y press con dos kettlebells"
+        ),
+        TranslationEntry(
+            "Kettlebell Double Kettlebell Front Squat",
+            R.string.exercise_kettlebell_double_kettlebell_front_squat,
+            "Sentadilla frontal con dos kettlebells"
+        ),
+        TranslationEntry(
+            "Kettlebell Dynamic side hold",
+            R.string.exercise_kettlebell_dynamic_side_hold,
+            "Sostén lateral dinámico con kettlebell"
+        ),
+        TranslationEntry(
+            "Kettlebell Figure 8",
+            R.string.exercise_kettlebell_figure_8,
+            "Figura en 8 con kettlebell"
+        ),
+        TranslationEntry(
+            "Kettlebell Goblet Squat",
+            R.string.exercise_kettlebell_goblet_squat,
+            "Sentadilla goblet con kettlebell"
+        ),
+        TranslationEntry(
+            "Kettlebell Gorilla Row",
+            R.string.exercise_kettlebell_gorilla_row,
+            "Remo gorila con kettlebells"
+        ),
+        TranslationEntry(
+            "Kettlebell Halo",
+            R.string.exercise_kettlebell_halo,
+            "Halo con kettlebell"
+        ),
+        TranslationEntry(
+            "Kettlebell Halo with Overhead Extension",
+            R.string.exercise_kettlebell_halo_with_overhead_extension,
+            "Halo con extensión sobre cabeza con kettlebell"
+        ),
+        TranslationEntry(
+            "Kettlebell Hang Clean",
+            R.string.exercise_kettlebell_hang_clean,
+            "Cargada colgada con kettlebell"
+        ),
+        TranslationEntry(
+            "Kettlebell Hip Airplane",
+            R.string.exercise_kettlebell_hip_airplane,
+            "Avión de cadera con kettlebell"
+        ),
+        TranslationEntry(
+            "Kettlebell One-handed Kettlebell Curls",
+            R.string.exercise_kettlebell_one_handed_kettlebell_curls,
+            "Curl a una mano con kettlebell"
+        ),
+        TranslationEntry(
+            "Kettlebell One-Legged Deadlift",
+            R.string.exercise_kettlebell_one_legged_deadlift,
+            "Peso muerto a una pierna con kettlebell"
+        ),
+        TranslationEntry(
+            "Kettlebell Overhead Triceps Extension",
+            R.string.exercise_kettlebell_overhead_triceps_extension,
+            "Extensión de tríceps sobre cabeza con kettlebell"
+        ),
+        TranslationEntry(
+            "Kettlebell Pass Between The Legs",
+            R.string.exercise_kettlebell_pass_between_the_legs,
+            "Paso entre piernas con kettlebell"
+        ),
+        TranslationEntry(
+            "Kettlebell Pirate Ships",
+            R.string.exercise_kettlebell_pirate_ships,
+            "Barco pirata con kettlebell"
+        ),
+        TranslationEntry(
+            "Kettlebell Pistol Squat",
+            R.string.exercise_kettlebell_pistol_squat,
+            "Sentadilla pistol con kettlebell"
+        ),
+        TranslationEntry(
+            "Kettlebell Seated Press",
+            R.string.exercise_kettlebell_seated_press,
+            "Press sentado con kettlebell"
+        ),
+        TranslationEntry(
+            "Kettlebell Seesaw Press",
+            R.string.exercise_kettlebell_seesaw_press,
+            "Press balancín con kettlebells"
+        ),
+        TranslationEntry(
+            "Kettlebell Single Arm Clean",
+            R.string.exercise_kettlebell_single_arm_clean,
+            "Cargada a un brazo con kettlebell"
+        ),
+        TranslationEntry(
+            "Kettlebell Single Arm Plank to Row",
+            R.string.exercise_kettlebell_single_arm_plank_to_row,
+            "Plancha con remo a un brazo con kettlebell"
+        ),
+        TranslationEntry(
+            "Kettlebell Single Arm Shoulder Press",
+            R.string.exercise_kettlebell_single_arm_shoulder_press,
+            "Press de hombro a un brazo con kettlebell"
+        ),
+        TranslationEntry(
+            "Kettlebell Single-Leg Balance with Kettlebell Circles",
+            R.string.exercise_kettlebell_single_leg_balance_with_kettlebell_circles,
+            "Equilibrio unipodal con círculos de kettlebell"
+        ),
+        TranslationEntry(
+            "Kettlebell Single-Leg Lunge with Kettlebell:",
+            R.string.exercise_kettlebell_single_leg_lunge_with_kettlebell,
+            "Zancada a una pierna con kettlebell"
+        ),
+        TranslationEntry(
+            "Kettlebell Snatch",
+            R.string.exercise_kettlebell_snatch,
+            "Arrancada con kettlebell"
+        ),
+        TranslationEntry(
+            "Kettlebell Standing Slingshots",
+            R.string.exercise_kettlebell_standing_slingshots,
+            "Slingshots de pie con kettlebell"
+        ),
+        TranslationEntry(
+            "Kettlebell Strict Press",
+            R.string.exercise_kettlebell_strict_press,
+            "Press estricto con kettlebell"
+        ),
+        TranslationEntry(
+            "Kettlebell Sumo Deadlift",
+            R.string.exercise_kettlebell_sumo_deadlift,
+            "Peso muerto sumo con kettlebell"
+        ),
+        TranslationEntry(
+            "Kettlebell Sumo High Pull",
+            R.string.exercise_kettlebell_sumo_high_pull,
+            "Tirón alto sumo con kettlebell"
+        ),
+        TranslationEntry(
+            "Kettlebell Sumo Squat",
+            R.string.exercise_kettlebell_sumo_squat,
+            "Sentadilla sumo con kettlebell"
+        ),
+        TranslationEntry(
+            "Kettlebell Swings",
+            R.string.exercise_kettlebell_swings,
+            "Swings con kettlebell"
+        ),
+        TranslationEntry(
+            "Kettlebell Thruster",
+            R.string.exercise_kettlebell_thruster,
+            "Thruster con kettlebell"
+        ),
+        TranslationEntry(
+            "Kettlebell Turkish Get-Up (Lunge style)",
+            R.string.exercise_kettlebell_turkish_get_up_lunge_style,
+            "Levantamiento turco con kettlebell (estilo zancada)"
+        ),
+        TranslationEntry(
+            "Kettlebell Turkish Getup Squat Style",
+            R.string.exercise_kettlebell_turkish_getup_squat_style,
+            "Levantamiento turco kettlebell (estilo sentadilla)"
+        ),
+        TranslationEntry(
+            "Kettlebell Windmill",
+            R.string.exercise_kettlebell_windmill,
+            "Molino con kettlebell"
+        ),
+        TranslationEntry(
+            "Kick with Board",
+            R.string.exercise_kick_with_board,
+            "Pataleo con tabla de natación"
+        ),
+        TranslationEntry(
+            "Kipping Muscle Up",
+            R.string.exercise_kipping_muscle_up,
+            "Muscle-up con impulso (kipping)"
+        ),
+        TranslationEntry(
+            "Knee Across The Body",
+            R.string.exercise_knee_across_the_body,
+            "Rodilla cruzada al cuerpo"
+        ),
+        TranslationEntry(
+            "Knee Circles",
+            R.string.exercise_knee_circles,
+            "Círculos de rodillas"
+        ),
+        TranslationEntry(
+            "Knee Push-ups",
+            R.string.exercise_knee_push_ups,
+            "Flexiones de rodillas"
+        ),
+        TranslationEntry(
+            "Knee Raises",
+            R.string.exercise_knee_raises,
+            "Elevaciones de rodillas"
+        ),
+        TranslationEntry(
+            "Knee to Chest Stretch",
+            R.string.exercise_knee_to_chest_stretch,
+            "Estiramiento de rodilla al pecho"
+        ),
+        TranslationEntry(
+            "Knee Tuck Jump",
+            R.string.exercise_knee_tuck_jump,
+            "Salto con rodillas al pecho"
+        ),
+        TranslationEntry(
+            "Knee/Hip Raise On Parallel Bars",
+            R.string.exercise_knee_hip_raise_on_parallel_bars,
+            "Elevación de rodillas/cadera en paralelas"
+        ),
+        TranslationEntry(
+            "Kneeling Arm Drill",
+            R.string.exercise_kneeling_arm_drill,
+            "Técnica de braceo de rodillas"
+        ),
+        TranslationEntry(
+            "Kneeling Cable Crunch With Alternating Oblique Twists",
+            R.string.exercise_kneeling_cable_crunch_with_alternating_oblique_twists,
+            "Crunch en polea de rodillas con giro oblicuo"
+        ),
+        TranslationEntry(
+            "Kneeling Cable Triceps Extension",
+            R.string.exercise_kneeling_cable_triceps_extension,
+            "Extensión de tríceps en polea de rodillas"
+        ),
+        TranslationEntry(
+            "Kneeling Forearm Stretch",
+            R.string.exercise_kneeling_forearm_stretch,
+            "Estiramiento de antebrazos de rodillas"
+        ),
+        TranslationEntry(
+            "Kneeling High Pulley Row",
+            R.string.exercise_kneeling_high_pulley_row,
+            "Remo en polea alta de rodillas"
+        ),
+        TranslationEntry(
+            "Kneeling Hip Flexor",
+            R.string.exercise_kneeling_hip_flexor,
+            "Estiramiento de flexor de cadera de rodillas"
+        ),
+        TranslationEntry(
+            "Kneeling Jump Squat",
+            R.string.exercise_kneeling_jump_squat,
+            "Sentadilla de rodillas con salto con barra"
+        ),
+        TranslationEntry(
+            "Kneeling kickbacks",
+            R.string.exercise_kneeling_kickbacks,
+            "Patada trasera de glúteos de rodillas"
+        ),
+        TranslationEntry(
+            "Kneeling Pushup",
+            R.string.exercise_kneeling_pushup,
+            "Flexiones de rodillas en el suelo"
+        ),
+        TranslationEntry(
+            "Kneeling Single-Arm High Pulley Row",
+            R.string.exercise_kneeling_single_arm_high_pulley_row,
+            "Remo en polea alta a un brazo de rodillas"
+        ),
+        TranslationEntry(
+            "Kneeling Squat",
+            R.string.exercise_kneeling_squat,
+            "Sentadilla de rodillas con barra"
+        ),
+        TranslationEntry(
+            "Kneeling Superman",
+            R.string.exercise_kneeling_superman,
+            "Superman de rodillas (bird-dog)"
+        ),
+        TranslationEntry(
+            "Knieheben Beinhebemaschine",
+            R.string.exercise_knieheben_beinhebemaschine,
+            "Elevación de rodillas en torre de fondos"
+        ),
+        TranslationEntry(
+            "Knieheben Beinhebemaschine seitlich",
+            R.string.exercise_knieheben_beinhebemaschine_seitlich,
+            "Elevación de rodillas lateral en torre de fondos"
+        ),
+        TranslationEntry(
+            "Kroc Row",
+            R.string.exercise_kroc_row,
+            "Remo Kroc con mancuerna"
+        ),
+        TranslationEntry(
+            "L Hold",
+            R.string.exercise_l_hold,
+            "Mantenimiento en L"
+        ),
+        TranslationEntry(
+            "L Sit",
+            R.string.exercise_l_sit,
+            "L-sit"
+        ),
+        TranslationEntry(
+            "L-Sit (Foot Supported)",
+            R.string.exercise_l_sit_foot_supported,
+            "L-sit con apoyo de pies"
+        ),
+        TranslationEntry(
+            "L-Sit Pull-ups",
+            R.string.exercise_l_sit_pull_ups,
+            "Dominadas en L-sit"
+        ),
+        TranslationEntry(
+            "Landmine",
+            R.string.exercise_landmine,
+            "Landmine"
+        ),
+        TranslationEntry(
+            "Landmine 180",
+            R.string.exercise_landmine_180,
+            "Landmine 180"
+        ),
+        TranslationEntry(
+            "Landmine 180's",
+            R.string.exercise_landmine_180s,
+            "Landmine 180 con barra"
+        ),
+        TranslationEntry(
+            "Landmine Linear Jammer",
+            R.string.exercise_landmine_linear_jammer,
+            "Empuje jammer con landmine"
+        ),
+        TranslationEntry(
+            "Landmine Single Arm Press",
+            R.string.exercise_landmine_single_arm_press,
+            "Press a un brazo con landmine"
+        ),
+        TranslationEntry(
+            "Landmine Squat and Press",
+            R.string.exercise_landmine_squat_and_press,
+            "Sentadilla y press con landmine"
+        ),
+        TranslationEntry(
+            "Lat Pull Down (Leaning Back)",
+            R.string.exercise_lat_pull_down_leaning_back,
+            "Jalón dorsal en polea inclinado atrás"
+        ),
+        TranslationEntry(
+            "Lat Pull Down (Straight Back)",
+            R.string.exercise_lat_pull_down_straight_back,
+            "Jalón dorsal en polea espalda recta"
+        ),
+        TranslationEntry(
+            "Lateral Bound",
+            R.string.exercise_lateral_bound,
+            "Saltos laterales de patinador"
+        ),
+        TranslationEntry(
+            "Lateral Box Jump",
+            R.string.exercise_lateral_box_jump,
+            "Salto lateral al cajón"
+        ),
+        TranslationEntry(
+            "Lateral Cone Hops",
+            R.string.exercise_lateral_cone_hops,
+            "Saltos laterales sobre cono"
+        ),
+        TranslationEntry(
+            "Lateral Push Off",
+            R.string.exercise_lateral_push_off,
+            "Empuje lateral sobre cajón"
+        ),
+        TranslationEntry(
+            "Lateral Raise - With Bands",
+            R.string.exercise_lateral_raise_with_bands,
+            "Elevaciones laterales con banda elástica"
+        ),
+        TranslationEntry(
+            "Lateral Walk",
+            R.string.exercise_lateral_walk,
+            "Caminata lateral con banda"
+        ),
+        TranslationEntry(
+            "Latissimus Dorsi-SMR",
+            R.string.exercise_latissimus_dorsi_smr,
+            "Liberación miofascial del dorsal ancho"
+        ),
+        TranslationEntry(
+            "Left levator scapulae stretch",
+            R.string.exercise_left_levator_scapulae_stretch,
+            "Estiramiento del elevador de la escápula izquierdo"
+        ),
+        TranslationEntry(
+            "Left neck stretch",
+            R.string.exercise_left_neck_stretch,
+            "Estiramiento de cuello izquierdo"
+        ),
+        TranslationEntry(
+            "Leg and hip stretch",
+            R.string.exercise_leg_and_hip_stretch,
+            "Estiramiento de pierna y cadera"
+        ),
+        TranslationEntry(
+            "Leg Curl",
+            R.string.exercise_leg_curl,
+            "Curl femoral"
+        ),
+        TranslationEntry(
+            "Leg curl with elastic",
+            R.string.exercise_leg_curl_with_elastic,
+            "Curl femoral con banda elástica"
+        ),
+        TranslationEntry(
+            "Leg Curls (laying)",
+            R.string.exercise_leg_curls_laying,
+            "Curl femoral tumbado"
+        ),
+        TranslationEntry(
+            "Leg Curls (sitting)",
+            R.string.exercise_leg_curls_sitting,
+            "Curl femoral sentado"
+        ),
+        TranslationEntry(
+            "Leg Extension Isometric",
+            R.string.exercise_leg_extension_isometric,
+            "Extensión isométrica de piernas"
+        ),
+        TranslationEntry(
+            "Leg Lift",
+            R.string.exercise_leg_lift,
+            "Elevación de piernas"
+        ),
+        TranslationEntry(
+            "Leg Press",
+            R.string.exercise_leg_press,
+            "Prensa de piernas"
+        ),
+        TranslationEntry(
+            "Leg Press on Hackenschmidt Machine",
+            R.string.exercise_leg_press_on_hackenschmidt_machine,
+            "Prensa de piernas en máquina Hackenschmidt"
+        ),
+        TranslationEntry(
+            "Leg Press Toe Press",
+            R.string.exercise_leg_press_toe_press,
+            "Prensa de gemelos en máquina de piernas"
+        ),
+        TranslationEntry(
+            "Leg Presses (narrow)",
+            R.string.exercise_leg_presses_narrow,
+            "Prensa de piernas con pies juntos"
+        ),
+        TranslationEntry(
+            "Leg Presses (wide)",
+            R.string.exercise_leg_presses_wide,
+            "Prensa de piernas con pies separados"
+        ),
+        TranslationEntry(
+            "Leg Pull-In",
+            R.string.exercise_leg_pull_in,
+            "Encogimiento de piernas"
+        ),
+        TranslationEntry(
+            "Leg Raise",
+            R.string.exercise_leg_raise,
+            "Elevación de piernas"
+        ),
+        TranslationEntry(
+            "Leg Raise Dragon Flag",
+            R.string.exercise_leg_raise_dragon_flag,
+            "Dragon flag con elevación de piernas"
+        ),
+        TranslationEntry(
+            "Leg raises pull up bar",
+            R.string.exercise_leg_raises_pull_up_bar,
+            "Elevación de piernas en barra de dominadas"
+        ),
+        TranslationEntry(
+            "Leg Raises, Standing",
+            R.string.exercise_leg_raises_standing,
+            "Elevación de piernas de pie"
+        ),
+        TranslationEntry(
+            "Leg Swings (Front–Back)",
+            R.string.exercise_leg_swings_front_back,
+            "Balanceos de pierna (adelante y atrás)"
+        ),
+        TranslationEntry(
+            "Leg Wheel",
+            R.string.exercise_leg_wheel,
+            "Rueda de piernas"
+        ),
+        TranslationEntry(
+            "Leg-Over Floor Press",
+            R.string.exercise_leg_over_floor_press,
+            "Press de suelo con pierna cruzada"
+        ),
+        TranslationEntry(
+            "Leg-Up Hamstring Stretch",
+            R.string.exercise_leg_up_hamstring_stretch,
+            "Estiramiento de isquiotibiales con pierna arriba"
+        ),
+        TranslationEntry(
+            "Legend Chest Press",
+            R.string.exercise_legend_chest_press,
+            "Press de pecho Legend"
+        ),
+        TranslationEntry(
+            "Legend Incline Bench Press",
+            R.string.exercise_legend_incline_bench_press,
+            "Press de banca inclinado Legend"
+        ),
+        TranslationEntry(
+            "Lever Alternate Biceps Curl",
+            R.string.exercise_lever_alternate_biceps_curl,
+            "Curl de bíceps alterno en máquina de palanca"
+        ),
+        TranslationEntry(
+            "Lever Back Extension",
+            R.string.exercise_lever_back_extension,
+            "Extensión de espalda en máquina de palanca"
+        ),
+        TranslationEntry(
+            "Lever Belt Squat",
+            R.string.exercise_lever_belt_squat,
+            "Sentadilla con cinturón en máquina"
+        ),
+        TranslationEntry(
+            "Lever Bent Over Row",
+            R.string.exercise_lever_bent_over_row,
+            "Remo inclinado en máquina de palanca"
+        ),
+        TranslationEntry(
+            "Lever Bent Over Row Plate Loaded",
+            R.string.exercise_lever_bent_over_row_plate_loaded,
+            "Remo inclinado de palanca con discos"
+        ),
+        TranslationEntry(
+            "Lever Bent Over Row with V-Bar Plate Loaded",
+            R.string.exercise_lever_bent_over_row_with_v_bar_plate_loaded,
+            "Remo de palanca con agarre en V con discos"
+        ),
+        TranslationEntry(
+            "Lever Biceps Curl",
+            R.string.exercise_lever_biceps_curl,
+            "Curl de bíceps en máquina de palanca"
+        ),
+        TranslationEntry(
+            "Lever Chest Press",
+            R.string.exercise_lever_chest_press,
+            "Press de pecho en máquina de palanca"
+        ),
+        TranslationEntry(
+            "Lever Chest Press Plate Loaded",
+            R.string.exercise_lever_chest_press_plate_loaded,
+            "Press de pecho de palanca con discos"
+        ),
+        TranslationEntry(
+            "Lever Cross Lat Pulldown",
+            R.string.exercise_lever_cross_lat_pulldown,
+            "Jalón dorsal cruzado en máquina de palanca"
+        ),
+        TranslationEntry(
+            "Lever Decline Chest Press",
+            R.string.exercise_lever_decline_chest_press,
+            "Press de pecho declinado en máquina de palanca"
+        ),
+        TranslationEntry(
+            "Lever Front Pulldown",
+            R.string.exercise_lever_front_pulldown,
+            "Jalón frontal en máquina de palanca"
+        ),
+        TranslationEntry(
+            "Lever High Row",
+            R.string.exercise_lever_high_row,
+            "Remo alto en máquina de palanca"
+        ),
+        TranslationEntry(
+            "Lever High Row Plate Loaded",
+            R.string.exercise_lever_high_row_plate_loaded,
+            "Remo alto de palanca con discos"
+        ),
+        TranslationEntry(
+            "Lever Hip Thrust",
+            R.string.exercise_lever_hip_thrust,
+            "Hip thrust en máquina de palanca"
+        ),
+        TranslationEntry(
+            "Lever Horizontal One Leg Press",
+            R.string.exercise_lever_horizontal_one_leg_press,
+            "Prensa horizontal a una pierna en máquina"
+        ),
+        TranslationEntry(
+            "Lever Incline Chest Press",
+            R.string.exercise_lever_incline_chest_press,
+            "Press inclinado en máquina de palanca"
+        ),
+        TranslationEntry(
+            "Lever Lateral Raise",
+            R.string.exercise_lever_lateral_raise,
+            "Elevaciones laterales en máquina de palanca"
+        ),
+        TranslationEntry(
+            "Lever Leg Extension",
+            R.string.exercise_lever_leg_extension,
+            "Extensión de piernas en máquina de palanca"
+        ),
+        TranslationEntry(
+            "Lever Low Row",
+            R.string.exercise_lever_low_row,
+            "Remo bajo en máquina de palanca"
+        ),
+        TranslationEntry(
+            "Lever Low Row Plate Loaded",
+            R.string.exercise_lever_low_row_plate_loaded,
+            "Remo bajo de palanca con discos"
+        ),
+        TranslationEntry(
+            "Lever Lying Leg Curl",
+            R.string.exercise_lever_lying_leg_curl,
+            "Curl femoral acostado en máquina de palanca"
+        ),
+        TranslationEntry(
+            "Lever Lying T-Bar Row",
+            R.string.exercise_lever_lying_t_bar_row,
+            "Remo en T acostado en máquina de palanca"
+        ),
+        TranslationEntry(
+            "Lever Military Press",
+            R.string.exercise_lever_military_press,
+            "Press militar en máquina de palanca"
+        ),
+        TranslationEntry(
+            "Lever Military Press Plate Loaded",
+            R.string.exercise_lever_military_press_plate_loaded,
+            "Press militar de palanca con discos"
+        ),
+        TranslationEntry(
+            "Lever Neutral Grip Seated Row Plate Loaded",
+            R.string.exercise_lever_neutral_grip_seated_row_plate_loaded,
+            "Remo sentado agarre neutro de palanca con discos"
+        ),
+        TranslationEntry(
+            "Lever One Leg Extension",
+            R.string.exercise_lever_one_leg_extension,
+            "Extensión a una pierna en máquina de palanca"
+        ),
+        TranslationEntry(
+            "Lever Pec Deck Fly",
+            R.string.exercise_lever_pec_deck_fly,
+            "Aperturas pec deck en máquina de palanca"
+        ),
+        TranslationEntry(
+            "Lever Pendulum Squat",
+            R.string.exercise_lever_pendulum_squat,
+            "Sentadilla péndulo en máquina"
+        ),
+        TranslationEntry(
+            "Lever Pendulum Squat Plate Loaded",
+            R.string.exercise_lever_pendulum_squat_plate_loaded,
+            "Sentadilla péndulo de palanca con discos"
+        ),
+        TranslationEntry(
+            "Lever Preacher Curl",
+            R.string.exercise_lever_preacher_curl,
+            "Curl predicador en máquina de palanca"
+        ),
+        TranslationEntry(
+            "Lever Pullover",
+            R.string.exercise_lever_pullover,
+            "Pullover en máquina de palanca"
+        ),
+        TranslationEntry(
+            "Lever Pullover Plate Loaded",
+            R.string.exercise_lever_pullover_plate_loaded,
+            "Pullover de palanca con discos"
+        ),
+        TranslationEntry(
+            "Lever Pure Rear Kick",
+            R.string.exercise_lever_pure_rear_kick,
+            "Patada trasera en máquina de palanca"
+        ),
+        TranslationEntry(
+            "Lever Reverse Hyperextension",
+            R.string.exercise_lever_reverse_hyperextension,
+            "Hiperextensión inversa en máquina de palanca"
+        ),
+        TranslationEntry(
+            "Lever Reverse Hyperextension Plate Loaded",
+            R.string.exercise_lever_reverse_hyperextension_plate_loaded,
+            "Hiperextensión inversa de palanca con discos"
+        ),
+        TranslationEntry(
+            "Lever Rotary Calf",
+            R.string.exercise_lever_rotary_calf,
+            "Gemelos rotatorio en máquina de palanca"
+        ),
+        TranslationEntry(
+            "Lever Seated Calf Raise",
+            R.string.exercise_lever_seated_calf_raise,
+            "Elevación de gemelos sentado en máquina"
+        ),
+        TranslationEntry(
+            "Lever Seated Calf Raise Plate Loaded",
+            R.string.exercise_lever_seated_calf_raise_plate_loaded,
+            "Elevación de gemelos sentado palanca con discos"
+        ),
+        TranslationEntry(
+            "Lever Seated Crunch",
+            R.string.exercise_lever_seated_crunch,
+            "Crunch sentado en máquina de palanca"
+        ),
+        TranslationEntry(
+            "Lever Seated Crunch Chest Pad",
+            R.string.exercise_lever_seated_crunch_chest_pad,
+            "Crunch sentado con apoyo de pecho en máquina"
+        ),
+        TranslationEntry(
+            "Lever Seated Dip",
+            R.string.exercise_lever_seated_dip,
+            "Fondos sentado en máquina de palanca"
+        ),
+        TranslationEntry(
+            "Lever Seated Fly",
+            R.string.exercise_lever_seated_fly,
+            "Aperturas sentado en máquina de palanca"
+        ),
+        TranslationEntry(
+            "Lever Seated Hip Abduction",
+            R.string.exercise_lever_seated_hip_abduction,
+            "Abducción de cadera sentado en máquina"
+        ),
+        TranslationEntry(
+            "Lever Seated Hip Adduction",
+            R.string.exercise_lever_seated_hip_adduction,
+            "Aducción de cadera sentado en máquina"
+        ),
+        TranslationEntry(
+            "Lever Seated Leg Curl",
+            R.string.exercise_lever_seated_leg_curl,
+            "Curl femoral sentado en máquina de palanca"
+        ),
+        TranslationEntry(
+            "Lever Seated Leg Extension",
+            R.string.exercise_lever_seated_leg_extension,
+            "Extensión de piernas sentado en máquina"
+        ),
+        TranslationEntry(
+            "Lever Seated Leg Press",
+            R.string.exercise_lever_seated_leg_press,
+            "Prensa de piernas sentado en máquina"
+        ),
+        TranslationEntry(
+            "Lever Seated Reverse Fly",
+            R.string.exercise_lever_seated_reverse_fly,
+            "Pájaros sentado en máquina de palanca"
+        ),
+        TranslationEntry(
+            "Lever Seated Row",
+            R.string.exercise_lever_seated_row,
+            "Remo sentado en máquina de palanca"
+        ),
+        TranslationEntry(
+            "Lever Seated Shoulder Press",
+            R.string.exercise_lever_seated_shoulder_press,
+            "Press de hombros sentado en máquina de palanca"
+        ),
+        TranslationEntry(
+            "Lever Shrug",
+            R.string.exercise_lever_shrug,
+            "Encogimiento de hombros en máquina de palanca"
+        ),
+        TranslationEntry(
+            "Lever Shrug Plate Loaded",
+            R.string.exercise_lever_shrug_plate_loaded,
+            "Encogimiento de palanca con discos"
+        ),
+        TranslationEntry(
+            "Lever Squat",
+            R.string.exercise_lever_squat,
+            "Sentadilla en máquina de palanca"
+        ),
+        TranslationEntry(
+            "Lever Squat Plate Loaded",
+            R.string.exercise_lever_squat_plate_loaded,
+            "Sentadilla de palanca con discos"
+        ),
+        TranslationEntry(
+            "Lever Standing Calf Raise",
+            R.string.exercise_lever_standing_calf_raise,
+            "Elevación de gemelos de pie en máquina"
+        ),
+        TranslationEntry(
+            "Lever Standing Rear Kick",
+            R.string.exercise_lever_standing_rear_kick,
+            "Patada trasera de pie en máquina de palanca"
+        ),
+        TranslationEntry(
+            "Lever Standing Single Leg Calf Raise",
+            R.string.exercise_lever_standing_single_leg_calf_raise,
+            "Elevación de gemelos a una pierna en máquina"
+        ),
+        TranslationEntry(
+            "Lever Standing Single Leg Curl Plate Loaded",
+            R.string.exercise_lever_standing_single_leg_curl_plate_loaded,
+            "Curl femoral a una pierna de palanca con discos"
+        ),
+        TranslationEntry(
+            "Lever T-Bar Row",
+            R.string.exercise_lever_t_bar_row,
+            "Remo en T en máquina de palanca"
+        ),
+        TranslationEntry(
+            "Lever T-Bar Row Plate Loaded",
+            R.string.exercise_lever_t_bar_row_plate_loaded,
+            "Remo en T de palanca con discos"
+        ),
+        TranslationEntry(
+            "Lever Torso Rotation",
+            R.string.exercise_lever_torso_rotation,
+            "Rotación de torso en máquina de palanca"
+        ),
+        TranslationEntry(
+            "Lever Triceps Dip Plate Loaded",
+            R.string.exercise_lever_triceps_dip_plate_loaded,
+            "Fondos de tríceps de palanca con discos"
+        ),
+        TranslationEntry(
+            "Lever Triceps Extension",
+            R.string.exercise_lever_triceps_extension,
+            "Extensión de tríceps en máquina de palanca"
+        ),
+        TranslationEntry(
+            "Lever Vertical Squat",
+            R.string.exercise_lever_vertical_squat,
+            "Sentadilla vertical en máquina de palanca"
+        ),
+        TranslationEntry(
+            "Leverage Chest Press",
+            R.string.exercise_leverage_chest_press,
+            "Press de pecho de palanca"
+        ),
+        TranslationEntry(
+            "Leverage Deadlift",
+            R.string.exercise_leverage_deadlift,
+            "Peso muerto en máquina de palanca"
+        ),
+        TranslationEntry(
+            "Leverage Decline Chest Press",
+            R.string.exercise_leverage_decline_chest_press,
+            "Press declinado de palanca"
+        ),
+        TranslationEntry(
+            "Leverage High Row",
+            R.string.exercise_leverage_high_row,
+            "Remo alto en máquina de palanca articulada"
+        ),
+        TranslationEntry(
+            "Leverage Incline Chest Press",
+            R.string.exercise_leverage_incline_chest_press,
+            "Press inclinado de palanca"
+        ),
+        TranslationEntry(
+            "Leverage Iso Row",
+            R.string.exercise_leverage_iso_row,
+            "Remo unilateral en máquina de palanca"
+        ),
+        TranslationEntry(
+            "Leverage Machine Chest Press",
+            R.string.exercise_leverage_machine_chest_press,
+            "Press de pecho en máquina Leverage"
+        ),
+        TranslationEntry(
+            "Leverage Machine Iso Row",
+            R.string.exercise_leverage_machine_iso_row,
+            "Remo unilateral en máquina Leverage"
+        ),
+        TranslationEntry(
+            "Leverage Shoulder Press",
+            R.string.exercise_leverage_shoulder_press,
+            "Press de hombros de palanca"
+        ),
+        TranslationEntry(
+            "Leverage Shrug",
+            R.string.exercise_leverage_shrug,
+            "Encogimiento de hombros de palanca"
+        ),
+        TranslationEntry(
+            "Levitation Crunch",
+            R.string.exercise_levitation_crunch,
+            "Crunch levitación"
+        ),
+        TranslationEntry(
+            "Limber 11",
+            R.string.exercise_limber_11,
+            "Rutina Limber 11"
+        ),
+        TranslationEntry(
+            "Linear 3-Part Start Technique",
+            R.string.exercise_linear_3_part_start_technique,
+            "Técnica de salida lineal en 3 partes"
+        ),
+        TranslationEntry(
+            "Linear Acceleration Wall Drill",
+            R.string.exercise_linear_acceleration_wall_drill,
+            "Ejercicio de aceleración lineal contra pared"
+        ),
+        TranslationEntry(
+            "Linear Depth Jump",
+            R.string.exercise_linear_depth_jump,
+            "Salto en profundidad lineal"
+        ),
+        TranslationEntry(
+            "Log Lift",
+            R.string.exercise_log_lift,
+            "Levantamiento de tronco (log press)"
+        ),
+        TranslationEntry(
+            "London Bridges",
+            R.string.exercise_london_bridges,
+            "Puentes de Londres"
+        ),
+        TranslationEntry(
+            "Long Distance Running",
+            R.string.exercise_long_distance_running,
+            "Carrera de larga distancia"
+        ),
+        TranslationEntry(
+            "Long Lunge Pulse Stretch",
+            R.string.exercise_long_lunge_pulse_stretch,
+            "Estiramiento en zancada larga con rebotes"
+        ),
+        TranslationEntry(
+            "Looking At Ceiling",
+            R.string.exercise_looking_at_ceiling,
+            "Mirada al techo (estiramiento de cuello)"
+        ),
+        TranslationEntry(
+            "Low Cable Crossover",
+            R.string.exercise_low_cable_crossover,
+            "Cruce en polea baja"
+        ),
+        TranslationEntry(
+            "Low Cable Triceps Extension",
+            R.string.exercise_low_cable_triceps_extension,
+            "Extensión de tríceps en polea baja"
+        ),
+        TranslationEntry(
+            "Low Pulley Row To Neck",
+            R.string.exercise_low_pulley_row_to_neck,
+            "Remo al cuello en polea baja"
+        ),
+        TranslationEntry(
+            "Lower Back Curl",
+            R.string.exercise_lower_back_curl,
+            "Flexión de espalda baja"
+        ),
+        TranslationEntry(
+            "Lower Back Extensions",
+            R.string.exercise_lower_back_extensions,
+            "Extensiones lumbares"
+        ),
+        TranslationEntry(
+            "Lower Back-SMR",
+            R.string.exercise_lower_back_smr,
+            "Liberación miofascial de espalda baja"
+        ),
+        TranslationEntry(
+            "Lunge Pass Through",
+            R.string.exercise_lunge_pass_through,
+            "Paso de kettlebell bajo zancada"
+        ),
+        TranslationEntry(
+            "Lunge Sprint",
+            R.string.exercise_lunge_sprint,
+            "Sprint desde zancada"
+        ),
+        TranslationEntry(
+            "Lunge with Twist Stretch",
+            R.string.exercise_lunge_with_twist_stretch,
+            "Estiramiento en zancada con torsión"
+        ),
+        TranslationEntry(
+            "Lunges",
+            R.string.exercise_lunges,
+            "Zancadas"
+        ),
+        TranslationEntry(
+            "Lying Bent Leg Groin",
+            R.string.exercise_lying_bent_leg_groin,
+            "Estiramiento acostado de aductores flexionado"
+        ),
+        TranslationEntry(
+            "Lying Cable Curl",
+            R.string.exercise_lying_cable_curl,
+            "Curl tumbado en polea"
+        ),
+        TranslationEntry(
+            "Lying Cambered Barbell Row",
+            R.string.exercise_lying_cambered_barbell_row,
+            "Remo tumbado con barra curvada"
+        ),
+        TranslationEntry(
+            "Lying Close-Grip Bar Curl On High Pulley",
+            R.string.exercise_lying_close_grip_bar_curl_on_high_pulley,
+            "Curl tumbado agarre cerrado en polea alta"
+        ),
+        TranslationEntry(
+            "Lying Close-Grip Barbell Triceps Extension Behind The Head",
+            R.string.exercise_lying_close_grip_barbell_triceps_extension_behind_the_head,
+            "Press francés tras nuca agarre cerrado"
+        ),
+        TranslationEntry(
+            "Lying Close-Grip Barbell Triceps Press To Chin",
+            R.string.exercise_lying_close_grip_barbell_triceps_press_to_chin,
+            "Press francés al mentón con barra"
+        ),
+        TranslationEntry(
+            "Lying Crossover",
+            R.string.exercise_lying_crossover,
+            "Cruce de piernas acostado"
+        ),
+        TranslationEntry(
+            "Lying Dumbbell Tricep Extension",
+            R.string.exercise_lying_dumbbell_tricep_extension,
+            "Extensión de tríceps acostado con mancuernas"
+        ),
+        TranslationEntry(
+            "Lying Elbow to Knee",
+            R.string.exercise_lying_elbow_to_knee,
+            "Codo a rodilla acostado"
+        ),
+        TranslationEntry(
+            "Lying Face Down Plate Neck Resistance",
+            R.string.exercise_lying_face_down_plate_neck_resistance,
+            "Extensión de cuello prono con disco"
+        ),
+        TranslationEntry(
+            "Lying Face Up Plate Neck Resistance",
+            R.string.exercise_lying_face_up_plate_neck_resistance,
+            "Flexión de cuello supino con disco"
+        ),
+        TranslationEntry(
+            "Lying Figure Four Stretch",
+            R.string.exercise_lying_figure_four_stretch,
+            "Estiramiento en figura de 4 acostado"
+        ),
+        TranslationEntry(
+            "Lying Glute",
+            R.string.exercise_lying_glute,
+            "Estiramiento acostado de glúteos"
+        ),
+        TranslationEntry(
+            "Lying Hamstring",
+            R.string.exercise_lying_hamstring,
+            "Estiramiento acostado de isquiotibiales"
+        ),
+        TranslationEntry(
+            "Lying Hamstring Stretch with Band",
+            R.string.exercise_lying_hamstring_stretch_with_band,
+            "Estiramiento de isquiotibiales con banda"
+        ),
+        TranslationEntry(
+            "Lying High Bench Barbell Curl",
+            R.string.exercise_lying_high_bench_barbell_curl,
+            "Curl tumbado en banco alto con barra"
+        ),
+        TranslationEntry(
+            "Lying Hip Leg Raise on Floor",
+            R.string.exercise_lying_hip_leg_raise_on_floor,
+            "Elevación de cadera y pierna en suelo"
+        ),
+        TranslationEntry(
+            "Lying Knee Raise",
+            R.string.exercise_lying_knee_raise,
+            "Elevación de rodillas acostado"
+        ),
+        TranslationEntry(
+            "Lying Leg Raise",
+            R.string.exercise_lying_leg_raise,
+            "Elevación de piernas acostado"
+        ),
+        TranslationEntry(
+            "Lying Machine Squat",
+            R.string.exercise_lying_machine_squat,
+            "Sentadilla en máquina acostado"
+        ),
+        TranslationEntry(
+            "Lying Neck Extension",
+            R.string.exercise_lying_neck_extension,
+            "Extensión de cuello acostado"
+        ),
+        TranslationEntry(
+            "Lying Neck Flexion",
+            R.string.exercise_lying_neck_flexion,
+            "Flexión de cuello acostado"
+        ),
+        TranslationEntry(
+            "Lying One-Arm Lateral Raise",
+            R.string.exercise_lying_one_arm_lateral_raise,
+            "Elevación lateral tumbado a un brazo"
+        ),
+        TranslationEntry(
+            "Lying Prone Quadriceps",
+            R.string.exercise_lying_prone_quadriceps,
+            "Estiramiento de cuádriceps en prono"
+        ),
+        TranslationEntry(
+            "Lying Rear Delt Raise",
+            R.string.exercise_lying_rear_delt_raise,
+            "Pájaros acostado con mancuernas"
+        ),
+        TranslationEntry(
+            "Lying Scissors Cross",
+            R.string.exercise_lying_scissors_cross,
+            "Tijeras cruzadas acostado"
+        ),
+        TranslationEntry(
+            "Lying Supine Dumbbell Curl",
+            R.string.exercise_lying_supine_dumbbell_curl,
+            "Curl acostado boca arriba con mancuernas"
+        ),
+        TranslationEntry(
+            "Lying T-Bar Row",
+            R.string.exercise_lying_t_bar_row,
+            "Remo en T tumbado"
+        ),
+        TranslationEntry(
+            "Lying Toe Touch",
+            R.string.exercise_lying_toe_touch,
+            "Toques de puntas acostado"
+        ),
+        TranslationEntry(
+            "Lying Triceps Press",
+            R.string.exercise_lying_triceps_press,
+            "Press de tríceps acostado con barra"
+        ),
+        TranslationEntry(
+            "Machine Bench Press",
+            R.string.exercise_machine_bench_press,
+            "Press de banca en máquina"
+        ),
+        TranslationEntry(
+            "Machine Bicep Curl",
+            R.string.exercise_machine_bicep_curl,
+            "Curl de bíceps en máquina"
+        ),
+        TranslationEntry(
+            "Machine chest fly",
+            R.string.exercise_machine_chest_fly,
+            "Aperturas de pecho en máquina"
+        ),
+        TranslationEntry(
+            "Machine Dip or Triceps Extension",
+            R.string.exercise_machine_dip_or_triceps_extension,
+            "Fondos o extensión de tríceps en máquina"
+        ),
+        TranslationEntry(
+            "Machine glute extension",
+            R.string.exercise_machine_glute_extension,
+            "Extensión de glúteos en máquina"
+        ),
+        TranslationEntry(
+            "Machine Hip Abduction",
+            R.string.exercise_machine_hip_abduction,
+            "Abducción de cadera en máquina"
+        ),
+        TranslationEntry(
+            "Machine Incline Chest Press",
+            R.string.exercise_machine_incline_chest_press,
+            "Press inclinado de pecho en máquina"
+        ),
+        TranslationEntry(
+            "Machine Lat Pulldown",
+            R.string.exercise_machine_lat_pulldown,
+            "Jalón dorsal en máquina"
+        ),
+        TranslationEntry(
+            "Machine Lateral Raise",
+            R.string.exercise_machine_lateral_raise,
+            "Elevaciones laterales en máquina"
+        ),
+        TranslationEntry(
+            "Machine Preacher Curls",
+            R.string.exercise_machine_preacher_curls,
+            "Curl predicador en máquina"
+        ),
+        TranslationEntry(
+            "Machine Seated Calf Raise",
+            R.string.exercise_machine_seated_calf_raise,
+            "Elevación de gemelos sentado en máquina"
+        ),
+        TranslationEntry(
+            "Machine Shoulder (Military) Press",
+            R.string.exercise_machine_shoulder_military_press,
+            "Press militar de hombros en máquina"
+        ),
+        TranslationEntry(
+            "Machine Side Lateral Raises",
+            R.string.exercise_machine_side_lateral_raises,
+            "Elevaciones laterales en máquina guiada"
+        ),
+        TranslationEntry(
+            "Machine Triceps Extension",
+            R.string.exercise_machine_triceps_extension,
+            "Extensión de tríceps en máquina"
+        ),
+        TranslationEntry(
+            "March or jog in place",
+            R.string.exercise_march_or_jog_in_place,
+            "Marcha o trote en el sitio"
+        ),
+        TranslationEntry(
+            "Marching High Knees",
+            R.string.exercise_marching_high_knees,
+            "Marcha con rodillas altas"
+        ),
+        TranslationEntry(
+            "Medicine ball booklet crunch",
+            R.string.exercise_medicine_ball_booklet_crunch,
+            "Crunch libro con balón medicinal"
+        ),
+        TranslationEntry(
+            "Medicine Ball Chest Pass",
+            R.string.exercise_medicine_ball_chest_pass,
+            "Pase de pecho con balón medicinal"
+        ),
+        TranslationEntry(
+            "Medicine Ball Full Twist",
+            R.string.exercise_medicine_ball_full_twist,
+            "Giro completo con balón medicinal"
+        ),
+        TranslationEntry(
+            "Medicine Ball Scoop Throw",
+            R.string.exercise_medicine_ball_scoop_throw,
+            "Lanzamiento en cuchara con balón medicinal"
+        ),
+        TranslationEntry(
+            "Medicine Ball Slam",
+            R.string.exercise_medicine_ball_slam,
+            "Slam con balón medicinal"
+        ),
+        TranslationEntry(
+            "Medicine Ball Throw Squat with Wall",
+            R.string.exercise_medicine_ball_throw_squat_with_wall,
+            "Sentadilla y lanzamiento a pared con balón"
+        ),
+        TranslationEntry(
+            "Medicine ball twist",
+            R.string.exercise_medicine_ball_twist,
+            "Giro ruso con balón medicinal"
+        ),
+        TranslationEntry(
+            "Middle Back Shrug",
+            R.string.exercise_middle_back_shrug,
+            "Encogimiento para espalda media"
+        ),
+        TranslationEntry(
+            "Middle Back Stretch",
+            R.string.exercise_middle_back_stretch,
+            "Estiramiento de espalda media"
+        ),
+        TranslationEntry(
+            "Mixed Grip Chin",
+            R.string.exercise_mixed_grip_chin,
+            "Dominada con agarre mixto"
+        ),
+        TranslationEntry(
+            "Monster Walk",
+            R.string.exercise_monster_walk,
+            "Caminata de monstruo con banda"
+        ),
+        TranslationEntry(
+            "Mountain Climbers",
+            R.string.exercise_mountain_climbers,
+            "Escaladores (mountain climbers)"
+        ),
+        TranslationEntry(
+            "Moving Claw Series",
+            R.string.exercise_moving_claw_series,
+            "Serie de garra en movimiento"
+        ),
+        TranslationEntry(
+            "Muscle Snatch",
+            R.string.exercise_muscle_snatch,
+            "Arrancada de fuerza (muscle snatch)"
+        ),
+        TranslationEntry(
+            "Muscle-Up",
+            R.string.exercise_muscle_up,
+            "Muscle-up"
+        ),
+        TranslationEntry(
+            "Muscleup on Vertical Bar",
+            R.string.exercise_muscleup_on_vertical_bar,
+            "Muscle-up en barra vertical"
+        ),
+        TranslationEntry(
+            "Narrow Stance Hack Squats",
+            R.string.exercise_narrow_stance_hack_squats,
+            "Sentadilla hack con pies juntos"
+        ),
+        TranslationEntry(
+            "Narrow Stance Leg Press",
+            R.string.exercise_narrow_stance_leg_press,
+            "Prensa de piernas con pies juntos máquina"
+        ),
+        TranslationEntry(
+            "Narrow Stance Squats",
+            R.string.exercise_narrow_stance_squats,
+            "Sentadilla con pies juntos barra"
+        ),
+        TranslationEntry(
+            "Natural Glute Ham Raise",
+            R.string.exercise_natural_glute_ham_raise,
+            "Elevación glúteo-femoral natural en suelo"
+        ),
+        TranslationEntry(
+            "Neck CARs",
+            R.string.exercise_neck_cars,
+            "Rotaciones articulares controladas de cuello"
+        ),
+        TranslationEntry(
+            "Neck half circles",
+            R.string.exercise_neck_half_circles,
+            "Semicírculos de cuello"
+        ),
+        TranslationEntry(
+            "Neck Press",
+            R.string.exercise_neck_press,
+            "Press al cuello (Guillotine press)"
+        ),
+        TranslationEntry(
+            "Neck-SMR",
+            R.string.exercise_neck_smr,
+            "Liberación miofascial de cuello"
+        ),
+        TranslationEntry(
+            "Negative Crunches",
+            R.string.exercise_negative_crunches,
+            "Crunches negativos"
+        ),
+        TranslationEntry(
+            "Neutral-grip pull-ups or TRX rows",
+            R.string.exercise_neutral_grip_pull_ups_or_trx_rows,
+            "Dominadas neutras o remo en TRX"
+        ),
+        TranslationEntry(
+            "No push-up burpees",
+            R.string.exercise_no_push_up_burpees,
+            "Burpees sin flexión"
+        ),
+        TranslationEntry(
+            "Nordic Curl",
+            R.string.exercise_nordic_curl,
+            "Curl nórdico"
         )
     )
 
