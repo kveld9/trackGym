@@ -3,6 +3,7 @@ package com.kveld9.trackgym.domain.calculator
 import com.kveld9.trackgym.domain.model.DefaultExercises
 import com.kveld9.trackgym.domain.model.Exercise
 import com.kveld9.trackgym.domain.model.ExerciseCategory
+import com.kveld9.trackgym.domain.model.ExerciseModality
 import com.kveld9.trackgym.domain.model.MechanicsType
 import com.kveld9.trackgym.domain.model.MuscleGroup
 import org.junit.Assert.assertEquals
@@ -103,5 +104,74 @@ class ExerciseSubstitutionEngineTest {
         )
 
         assertTrue(substitutes.isEmpty())
+    }
+
+    @Test
+    fun findSubstitutes_prefersCandidateWithMatchingModality() {
+        val target = Exercise(
+            id = 1L,
+            name = "Flat Dumbbell Press",
+            muscleGroup = MuscleGroup.CHEST,
+            category = ExerciseCategory.DUMBBELL,
+            modality = ExerciseModality.STRENGTH,
+            mechanics = MechanicsType.COMPOUND
+        )
+        val strengthCandidate = Exercise(
+            id = 2L,
+            name = "Incline Dumbbell Press",
+            muscleGroup = MuscleGroup.CHEST,
+            category = ExerciseCategory.DUMBBELL,
+            modality = ExerciseModality.STRENGTH,
+            mechanics = MechanicsType.COMPOUND
+        )
+        val cardioCandidate = Exercise(
+            id = 3L,
+            name = "Chest Cable Conditioning",
+            muscleGroup = MuscleGroup.CHEST,
+            category = ExerciseCategory.DUMBBELL,
+            modality = ExerciseModality.CARDIO,
+            mechanics = MechanicsType.COMPOUND
+        )
+
+        val substitutes = ExerciseSubstitutionEngine.findSubstitutes(
+            target = target,
+            allExercises = listOf(strengthCandidate, cardioCandidate)
+        )
+
+        assertEquals(2, substitutes.size)
+        assertEquals("Incline Dumbbell Press", substitutes[0].exercise.name)
+        assertEquals("Chest Cable Conditioning", substitutes[1].exercise.name)
+        assertTrue(substitutes[0].matchScore > substitutes[1].matchScore)
+        assertEquals(10, substitutes[0].matchScore - substitutes[1].matchScore)
+    }
+
+    @Test
+    fun findSubstitutes_crossModalityReturnedWhenNoCloserCandidateExists() {
+        val target = Exercise(
+            id = 1L,
+            name = "Target Strength Movement",
+            muscleGroup = MuscleGroup.LEGS,
+            category = ExerciseCategory.MACHINE,
+            modality = ExerciseModality.STRENGTH,
+            mechanics = MechanicsType.COMPOUND
+        )
+        val crossModalityCandidate = Exercise(
+            id = 2L,
+            name = "Leg Cardio Machine",
+            muscleGroup = MuscleGroup.LEGS,
+            category = ExerciseCategory.MACHINE,
+            modality = ExerciseModality.CARDIO,
+            mechanics = MechanicsType.COMPOUND
+        )
+
+        val substitutes = ExerciseSubstitutionEngine.findSubstitutes(
+            target = target,
+            allExercises = listOf(crossModalityCandidate)
+        )
+
+        assertEquals(1, substitutes.size)
+        assertEquals("Leg Cardio Machine", substitutes[0].exercise.name)
+        assertEquals(ExerciseModality.CARDIO, substitutes[0].exercise.modality)
+        assertTrue("Candidate should retain positive score without matching modality", substitutes[0].matchScore > 0)
     }
 }

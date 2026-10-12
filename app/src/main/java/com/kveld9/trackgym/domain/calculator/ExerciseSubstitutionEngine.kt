@@ -35,6 +35,8 @@ data class ExerciseSubstitute(
  */
 object ExerciseSubstitutionEngine {
 
+    private const val SAME_MODALITY_BONUS = 10
+
     /**
      * Finds and ranks suitable substitute exercises for a given target exercise.
      *
@@ -101,6 +103,11 @@ object ExerciseSubstitutionEngine {
             }
 
             var finalScore = baseScore
+
+            // Modality preference: matching training modality is preferred (+10)
+            if (candidate.modality == target.modality) {
+                finalScore += SAME_MODALITY_BONUS
+            }
 
             // Bonus for secondary muscle overlap (up to +9)
             val sharedSecondaries = targetSecondaries.intersect(candidateSecondaries).size
