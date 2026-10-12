@@ -197,5 +197,16 @@ class ExerciseNamingTest {
         val canonicalSeedName = "Incline Dumbbell Press"
         assertEquals(canonicalizeExerciseName(canonicalSeedName), canonicalizeExerciseName(legacyRowName))
     }
+
+    @Test
+    fun canonicalizeExerciseName_findsConflictingStoredDisplayName() {
+        val existingNames = listOf("Barbell Back Squat", "Incline Dumbbell Press", "Bench Press")
+        val candidateName = "  bench   PRESS "
+        val canonicalTarget = canonicalizeExerciseName(candidateName)
+        val matchedStoredName = existingNames.firstOrNull {
+            canonicalizeExerciseName(it) == canonicalTarget
+        }
+        assertEquals("Bench Press", matchedStoredName)
+    }
 }
 

@@ -179,7 +179,10 @@ class GymRepository(private val database: GymDatabase) {
         customCategories: List<String> = emptyList()
     ): Long = withContext(Dispatchers.IO) {
         val trimmedName = normalizeExerciseName(name)
-        val existing = exerciseDao.getExerciseByName(trimmedName)
+        val canonicalTarget = canonicalizeExerciseName(trimmedName)
+        val existing = exerciseDao.getAllExercisesSync().firstOrNull {
+            canonicalizeExerciseName(it.name) == canonicalTarget
+        }
         if (existing != null) {
             throw DuplicateExerciseNameException(conflictingName = existing.name)
         }
