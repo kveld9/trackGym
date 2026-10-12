@@ -31,7 +31,7 @@ import com.kveld9.trackgym.data.local.entity.WorkoutSetEntity
         RoutineExerciseEntity::class,
         CustomExerciseCategoryEntity::class
     ],
-    version = 23,
+    version = 24,
     exportSchema = false
 )
 abstract class GymDatabase : RoomDatabase() {
@@ -481,6 +481,45 @@ abstract class GymDatabase : RoomDatabase() {
             }
         }
 
+        /**
+         * Migration 23 -> 24: Re-classify mobility exercises incorrectly set to STRENGTH by MIGRATION_22_23.
+         *
+         * Heals exercises containing 'farmer' that are mobility/stretch movements rather than farmer carries.
+         */
+        val MIGRATION_23_24 = object : androidx.room.migration.Migration(23, 24) {
+            override fun migrate(db: androidx.sqlite.db.SupportSQLiteDatabase) {
+                updateFarmerMobilityModality(db)
+            }
+
+            private fun updateFarmerMobilityModality(db: androidx.sqlite.db.SupportSQLiteDatabase) {
+                db.execSQL(
+                    """
+                    UPDATE exercises
+                    SET modality = 'MOBILITY'
+                    WHERE LOWER(name) LIKE '%farmer%'
+                    AND (
+                        LOWER(name) LIKE '%warm-up%' OR
+                        LOWER(name) LIKE '%warmup%' OR
+                        LOWER(name) LIKE '%stretch%' OR
+                        LOWER(name) LIKE '%mobility%' OR
+                        LOWER(name) LIKE '%yoga%' OR
+                        LOWER(name) LIKE '%breathing%' OR
+                        LOWER(name) LIKE '%meditation%' OR
+                        LOWER(name) LIKE '%foam%' OR
+                        LOWER(name) LIKE '%smr%' OR
+                        LOWER(name) LIKE '%activation%' OR
+                        LOWER(name) LIKE '%drill%'
+                    )
+                    AND NOT (
+                        LOWER(name) LIKE '%farmers walk%' OR
+                        LOWER(name) LIKE '%farmer''s walk%' OR
+                        LOWER(name) LIKE '%farmer walk%'
+                    )
+                    """.trimIndent()
+                )
+            }
+        }
+
         fun getInstance(context: Context): GymDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
@@ -491,7 +530,7 @@ abstract class GymDatabase : RoomDatabase() {
                     .addMigrations(
                         MIGRATION_12_13, MIGRATION_13_14, MIGRATION_14_15, MIGRATION_15_16,
                         MIGRATION_16_17, MIGRATION_17_18, MIGRATION_18_19, MIGRATION_19_20,
-                        MIGRATION_20_21, MIGRATION_21_22, MIGRATION_22_23
+                        MIGRATION_20_21, MIGRATION_21_22, MIGRATION_22_23, MIGRATION_23_24
                     )
                     .fallbackToDestructiveMigration(dropAllTables = true)
                     .build()

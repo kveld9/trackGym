@@ -173,6 +173,19 @@ class ExerciseModalityTest {
     }
 
     @Test
+    fun classifyExerciseModality_farmerMobilityMovements_resolveToMobility() {
+        val farmerMobilityCases = listOf(
+            "Farmer Stretch",
+            "Farmer Warmup Drill",
+            "Farmer Mobility Flow"
+        )
+        farmerMobilityCases.forEach { name ->
+            val message = "Expected MOBILITY for farmer movement: $name"
+            assertEquals(message, ExerciseModality.MOBILITY, classifyExerciseModality(name))
+        }
+    }
+
+    @Test
     fun defaultExercisesCatalog_populatesAllModalities() {
         val catalog = DefaultExercises.list
         assertTrue(catalog.isNotEmpty())
