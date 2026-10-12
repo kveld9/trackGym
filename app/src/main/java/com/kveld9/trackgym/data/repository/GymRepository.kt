@@ -1169,6 +1169,7 @@ class GymRepository(private val database: GymDatabase) {
         )
         val workoutId = workoutDao.insertWorkout(workoutEntity)
         val routineExercises = routineDao.getExercisesForRoutine(routineId)
+        val exerciseModalities = exerciseDao.getAllExercisesSync().associate { it.id to it.modality }
 
         for (re in routineExercises) {
             val weEntity = WorkoutExerciseEntity(
@@ -1179,10 +1180,8 @@ class GymRepository(private val database: GymDatabase) {
             val weId = workoutDao.insertWorkoutExercise(weEntity)
             val effectiveTargetSets = re.targetSets
             val effectiveWeight = re.defaultWeightKg
-            val exerciseEntity = exerciseDao.getExerciseById(re.exerciseId)
-            val initialSetType = if (exerciseEntity?.let {
-                ExerciseModality.fromString(it.modality) == ExerciseModality.CARDIO
-            } == true) {
+            val modality = ExerciseModality.fromString(exerciseModalities[re.exerciseId])
+            val initialSetType = if (modality == ExerciseModality.CARDIO) {
                 SetType.CARDIO
             } else {
                 SetType.NORMAL
