@@ -2,6 +2,7 @@ package com.kveld9.trackgym.domain.model
 
 import androidx.annotation.StringRes
 import com.kveld9.trackgym.R
+import java.util.Locale
 
 /**
  * Exercise modality axis classifying physical training intent:
@@ -106,7 +107,7 @@ private val cardioPaddedShortKeywords = listOf(
  * When names overlap between mobility and cardio (e.g. dynamic stretch runs), MOBILITY takes precedence.
  */
 fun classifyExerciseModality(name: String): ExerciseModality {
-    val clean = name.lowercase().trim()
+    val clean = name.lowercase(Locale.ROOT).trim()
     val padded = " $clean "
     return when {
         clean.isEmpty() -> ExerciseModality.STRENGTH
