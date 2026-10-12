@@ -178,37 +178,43 @@ class GymRepository(private val database: GymDatabase) {
         level: com.kveld9.trackgym.domain.model.DifficultyLevel = com.kveld9.trackgym.domain.model.DifficultyLevel.BEGINNER,
         customCategories: List<String> = emptyList()
     ): Long = withContext(Dispatchers.IO) {
-        val trimmedName = normalizeExerciseName(name)
-        val canonicalTarget = canonicalizeExerciseName(trimmedName)
-        val existing = exerciseDao.getAllExercisesSync().firstOrNull {
-            canonicalizeExerciseName(it.name) == canonicalTarget
-        }
-        if (existing != null) {
-            throw DuplicateExerciseNameException(conflictingName = existing.name)
-        }
-        val modality = classifyExerciseModality(trimmedName)
-        val entity = ExerciseEntity(
-            name = trimmedName,
-            muscleGroup = muscleGroup.name,
-            category = category.name,
-            modality = modality.name,
-            notes = notes.trim(),
-            primaryMuscle = primaryMuscle?.name,
-            secondaryMuscles = com.kveld9.trackgym.domain.calculator.MuscleAnatomyRegistry.serializeSecondaryMuscles(secondaryMuscles).ifBlank { null },
-            mechanics = mechanics.name,
-            force = force.name,
-            level = level.name,
-            customCategories = com.kveld9.trackgym.domain.util.CustomCategoryCodec.serialize(customCategories),
-            isCustom = true
-        )
-        val id = exerciseDao.insertExercise(entity)
-        for (cat in customCategories) {
-            val trimmed = cat.trim()
-            if (trimmed.isNotBlank()) {
-                customCategoryDao.insertCategory(com.kveld9.trackgym.data.local.entity.CustomExerciseCategoryEntity(name = trimmed))
+        database.withTransaction {
+            val trimmedName = normalizeExerciseName(name)
+            val canonicalTarget = canonicalizeExerciseName(trimmedName)
+            val existing = exerciseDao.getAllExercisesSync().firstOrNull {
+                canonicalizeExerciseName(it.name) == canonicalTarget
             }
+            if (existing != null) {
+                throw DuplicateExerciseNameException(conflictingName = existing.name)
+            }
+            val modality = classifyExerciseModality(trimmedName)
+            val entity = ExerciseEntity(
+                name = trimmedName,
+                muscleGroup = muscleGroup.name,
+                category = category.name,
+                modality = modality.name,
+                notes = notes.trim(),
+                primaryMuscle = primaryMuscle?.name,
+                secondaryMuscles = com.kveld9.trackgym.domain.calculator.MuscleAnatomyRegistry
+                    .serializeSecondaryMuscles(secondaryMuscles)
+                    .ifBlank { null },
+                mechanics = mechanics.name,
+                force = force.name,
+                level = level.name,
+                customCategories = com.kveld9.trackgym.domain.util.CustomCategoryCodec.serialize(customCategories),
+                isCustom = true
+            )
+            val id = exerciseDao.insertExercise(entity)
+            for (cat in customCategories) {
+                val trimmed = cat.trim()
+                if (trimmed.isNotBlank()) {
+                    customCategoryDao.insertCategory(
+                        com.kveld9.trackgym.data.local.entity.CustomExerciseCategoryEntity(name = trimmed)
+                    )
+                }
+            }
+            id
         }
-        id
     }
 
     suspend fun renameExercise(
@@ -224,41 +230,48 @@ class GymRepository(private val database: GymDatabase) {
         level: com.kveld9.trackgym.domain.model.DifficultyLevel? = null,
         customCategories: List<String>? = null
     ): Exercise = withContext(Dispatchers.IO) {
-        val trimmedName = normalizeExerciseName(newName)
-        val existing = exerciseDao.getExerciseByName(trimmedName)
-        validateExerciseRename(
-            targetExerciseId = exerciseId,
-            candidateName = trimmedName,
-            existingMatchId = existing?.id,
-            existingMatchName = existing?.name
-        )
+        database.withTransaction {
+            val trimmedName = normalizeExerciseName(newName)
+            val canonicalTarget = canonicalizeExerciseName(trimmedName)
+            val existing = exerciseDao.getAllExercisesSync().firstOrNull {
+                canonicalizeExerciseName(it.name) == canonicalTarget
+            }
+            validateExerciseRename(
+                targetExerciseId = exerciseId,
+                candidateName = trimmedName,
+                existingMatchId = existing?.id,
+                existingMatchName = existing?.name
+            )
 
-        val current = exerciseDao.getExerciseById(exerciseId)
-            ?: throw IllegalArgumentException("Exercise with id $exerciseId not found")
+            val current = exerciseDao.getExerciseById(exerciseId)
+                ?: throw IllegalArgumentException("Exercise with id $exerciseId not found")
 
-        val updated = mergeExerciseEdits(
-            current = current,
-            muscleGroup = muscleGroup,
-            category = category,
-            notes = notes,
-            primaryMuscle = primaryMuscle,
-            secondaryMuscles = secondaryMuscles,
-            mechanics = mechanics,
-            force = force,
-            level = level,
-            customCategories = customCategories,
-            trimmedName = trimmedName
-        )
-        exerciseDao.updateExercise(updated)
-        if (customCategories != null) {
-            for (cat in customCategories) {
-                val trimmed = cat.trim()
-                if (trimmed.isNotBlank()) {
-                    customCategoryDao.insertCategory(com.kveld9.trackgym.data.local.entity.CustomExerciseCategoryEntity(name = trimmed))
+            val updated = mergeExerciseEdits(
+                current = current,
+                muscleGroup = muscleGroup,
+                category = category,
+                notes = notes,
+                primaryMuscle = primaryMuscle,
+                secondaryMuscles = secondaryMuscles,
+                mechanics = mechanics,
+                force = force,
+                level = level,
+                customCategories = customCategories,
+                trimmedName = trimmedName
+            )
+            exerciseDao.updateExercise(updated)
+            if (customCategories != null) {
+                for (cat in customCategories) {
+                    val trimmed = cat.trim()
+                    if (trimmed.isNotBlank()) {
+                        customCategoryDao.insertCategory(
+                            com.kveld9.trackgym.data.local.entity.CustomExerciseCategoryEntity(name = trimmed)
+                        )
+                    }
                 }
             }
+            updated.toDomain()
         }
-        updated.toDomain()
     }
 
     private fun mergeExerciseEdits(
