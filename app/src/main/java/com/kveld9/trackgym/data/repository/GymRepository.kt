@@ -306,17 +306,19 @@ class GymRepository(private val database: GymDatabase) {
 
     suspend fun deleteExerciseById(exerciseId: Long) = withContext(Dispatchers.IO) {
         val entity = exerciseDao.getExerciseById(exerciseId) ?: return@withContext
-        val routineCount = routineDao.countRoutineReferences(exerciseId)
-        val recordCount = prDao.countRecordReferences(exerciseId)
-        if (hasExerciseReferences(routineCount, recordCount)) {
-            val reason = if (routineCount > 0) {
-                ExerciseInUseException.Reason.ROUTINE
-            } else {
-                ExerciseInUseException.Reason.RECORD
+        database.withTransaction {
+            val routineCount = routineDao.countRoutineReferences(exerciseId)
+            val recordCount = prDao.countRecordReferences(exerciseId)
+            if (hasExerciseReferences(routineCount, recordCount)) {
+                val reason = if (routineCount > 0) {
+                    ExerciseInUseException.Reason.ROUTINE
+                } else {
+                    ExerciseInUseException.Reason.RECORD
+                }
+                throw ExerciseInUseException(exerciseId = exerciseId, reason = reason)
             }
-            throw ExerciseInUseException(exerciseId = exerciseId, reason = reason)
+            exerciseDao.deleteExercise(entity)
         }
-        exerciseDao.deleteExercise(entity)
     }
 
     suspend fun updateExerciseNotes(exerciseId: Long, notes: String) = withContext(Dispatchers.IO) {
