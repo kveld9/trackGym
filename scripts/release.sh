@@ -25,7 +25,6 @@
 set -euo pipefail
 
 DRY_RUN=false
-ASSUME_YES=false
 
 print_usage() {
   cat <<'EOF'
@@ -37,7 +36,6 @@ Options:
   --dry-run       Run build, staging, and validation, but skip Git tag creation,
                   Git tag push, and GitHub release publication. Prints each
                   skipped command.
-  -y, --yes       Skip interactive confirmation prompt before publishing.
   -h, --help      Display this help message and exit.
 
 Requirements:
@@ -55,10 +53,6 @@ while [ $# -gt 0 ]; do
   case "$1" in
     --dry-run)
       DRY_RUN=true
-      shift
-      ;;
-    -y|--yes)
-      ASSUME_YES=true
       shift
       ;;
     -h|--help)
@@ -290,7 +284,7 @@ EOF
 )"
 
 # ------------------------------------------------------------------------------
-# 6. Summary & User Confirmation
+# 6. Summary
 # ------------------------------------------------------------------------------
 echo ""
 echo "=================================================="
@@ -302,23 +296,6 @@ for f in "${STAGED_FILES[@]}"; do
 done
 echo "=================================================="
 echo ""
-
-if [ "$ASSUME_YES" = false ] && [ "$DRY_RUN" = false ]; then
-  if [ -t 0 ]; then
-    read -r -p "Proceed with creating tag '${TAG}', pushing to origin, and publishing release? [y/N] " response
-    case "$response" in
-      [yY][eE][sS]|[yY])
-        ;;
-      *)
-        echo "Release aborted by user."
-        exit 0
-        ;;
-    esac
-  else
-    echo "Error: Non-interactive session detected. Pass --yes to confirm publishing." >&2
-    exit 1
-  fi
-fi
 
 # ------------------------------------------------------------------------------
 # 7. Publish or Dry-Run
