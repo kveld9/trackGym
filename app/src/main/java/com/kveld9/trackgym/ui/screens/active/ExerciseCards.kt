@@ -150,9 +150,7 @@ fun WorkoutExerciseCard(
         border = if (supersetColor != null) {
             BorderStroke(2.dp, supersetColor)
         } else {
-            CardDefaults.outlinedCardBorder().copy(
-                brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.subtleBorder)
-            )
+            BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
         }
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -660,6 +658,7 @@ fun SwipeableSetRow(
     onUpdateSet: (WorkoutSet) -> Unit,
     onToggleComplete: (Double, Int) -> Unit,
     onDeleteSet: () -> Unit,
+    showDeleteButton: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     val dismissState = rememberSwipeToDismissBoxState(
@@ -715,9 +714,51 @@ fun SwipeableSetRow(
             onOpenWheelPicker = onOpenWheelPicker,
             onUpdateSet = onUpdateSet,
             onToggleComplete = onToggleComplete,
-            onDeleteSet = onDeleteSet
+            onDeleteSet = onDeleteSet,
+            showDeleteButton = showDeleteButton
         )
     }
+}
+
+@Composable
+fun SetRow(
+    set: WorkoutSet,
+    weightUnit: WeightUnit = WeightUnit.KG,
+    distanceUnit: DistanceUnit = DistanceUnit.KM,
+    userBodyWeightKg: Double = 70.0,
+    previousSet: WorkoutSet? = null,
+    showInlinePlates: Boolean = true,
+    getReadySeconds: Int = 0,
+    audioCuePlayer: com.kveld9.trackgym.ui.audio.WorkoutAudioCuePlayer? = null,
+    timerSoundName: String = "DIGITAL_BEEP",
+    onOpenPlateCalculator: (Double) -> Unit = {},
+    onOpenRpeCalculator: () -> Unit = {},
+    onOpenWheelPicker: () -> Unit = {},
+    onUpdateSet: (WorkoutSet) -> Unit,
+    onToggleComplete: (Double, Int) -> Unit,
+    onDeleteSet: () -> Unit,
+    showDeleteButton: Boolean = false,
+    modifier: Modifier = Modifier
+) {
+    SwipeableSetRow(
+        set = set,
+        weightUnit = weightUnit,
+        distanceUnit = distanceUnit,
+        userBodyWeightKg = userBodyWeightKg,
+        previousSet = previousSet,
+        showInlinePlates = showInlinePlates,
+        getReadySeconds = getReadySeconds,
+        audioCuePlayer = audioCuePlayer,
+        timerSoundName = timerSoundName,
+        onOpenPlateCalculator = onOpenPlateCalculator,
+        onOpenRpeCalculator = onOpenRpeCalculator,
+        onOpenWheelPicker = onOpenWheelPicker,
+        onUpdateSet = onUpdateSet,
+        onToggleComplete = onToggleComplete,
+        onDeleteSet = onDeleteSet,
+        showDeleteButton = showDeleteButton,
+        modifier = modifier
+    )
 }
 
 @Composable
@@ -736,7 +777,8 @@ fun SetRowItem(
     onOpenWheelPicker: () -> Unit = {},
     onUpdateSet: (WorkoutSet) -> Unit,
     onToggleComplete: (Double, Int) -> Unit,
-    onDeleteSet: () -> Unit
+    onDeleteSet: () -> Unit,
+    showDeleteButton: Boolean = false
 ) {
     var weightText by remember(set.id) {
         mutableStateOf(
@@ -864,11 +906,6 @@ fun SetRowItem(
     }
 
     var showSetTypePicker by remember { mutableStateOf(false) }
-
-    val checkBgColor by animateColorAsState(
-        targetValue = if (set.isCompleted) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh,
-        label = "checkColor"
-    )
 
     val badgeColor = when (set.setType) {
         SetType.NORMAL -> if (set.isCompleted) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
@@ -1010,17 +1047,13 @@ fun SetRowItem(
                         placeholder = {
                             Text(
                                 text = ghostDistanceDisplay ?: "0.0",
-                                color = if (ghostDistanceDisplay != null) {
-                                    MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
-                                } else {
-                                    MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)
-                                }
+                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.70f)
                             )
                         },
                         singleLine = true,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                         textStyle = androidx.compose.ui.text.TextStyle(textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onSurface, fontSize = 15.sp),
-                        modifier = Modifier.fillMaxWidth().height(48.dp),
+                        modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = 48.dp),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = MaterialTheme.colorScheme.primary,
                             unfocusedBorderColor = MaterialTheme.colorScheme.subtleBorder,
@@ -1046,11 +1079,7 @@ fun SetRowItem(
                             }
                             Text(
                                 text = weightPlaceholder,
-                                color = if (ghostWeightDisplay != null) {
-                                    MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
-                                } else {
-                                    MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)
-                                }
+                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.70f)
                             )
                         },
                         trailingIcon = {
@@ -1071,7 +1100,7 @@ fun SetRowItem(
                         textStyle = androidx.compose.ui.text.TextStyle(textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onSurface, fontSize = 15.sp),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(48.dp)
+                            .defaultMinSize(minHeight = 48.dp)
                             .onFocusChanged { focusState ->
                                 if (focusState.isFocused) {
                                     showQuickAdjust = true
@@ -1112,11 +1141,7 @@ fun SetRowItem(
                         }
                         Text(
                             text = repsPlaceholder,
-                            color = if (ghostRepsDisplay != null || isDuration || isCardio) {
-                                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
-                            } else {
-                                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)
-                            }
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.70f)
                         )
                     },
                     trailingIcon = if (isDuration || isCardio) {
@@ -1153,7 +1178,7 @@ fun SetRowItem(
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     textStyle = androidx.compose.ui.text.TextStyle(textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onSurface, fontSize = 15.sp),
-                    modifier = Modifier.fillMaxWidth().height(48.dp),
+                    modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = 48.dp),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = MaterialTheme.colorScheme.primary,
                         unfocusedBorderColor = MaterialTheme.colorScheme.subtleBorder,
@@ -1165,78 +1190,69 @@ fun SetRowItem(
             }
 
             // Complete Checkbox Button (48x48 dp minimum touch target)
-            Box(
-                modifier = Modifier
-                    .size(48.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(checkBgColor)
-                    .clickable {
-                        isStopwatchRunning = false
-                        val finalWeightKg = if (isCardio) {
+            SetActionButtons(
+                isCompleted = set.isCompleted,
+                showDeleteButton = showDeleteButton,
+                onDeleteSet = onDeleteSet,
+                onToggleComplete = {
+                    isStopwatchRunning = false
+                    val finalWeightKg = if (isCardio) {
+                        0.0
+                    } else {
+                        val typedDisplay = weightText.replace(',', '.').toDoubleOrNull()
+                        if (typedDisplay != null) {
+                            weightUnit.toKg(typedDisplay)
+                        } else if (set.weightKg > 0.0) {
+                            set.weightKg
+                        } else if (previousSet != null && previousSet.weightKg > 0.0) {
+                            previousSet.weightKg
+                        } else {
                             0.0
+                        }
+                    }
+
+                    val finalReps = if (isDuration || isCardio) {
+                        val parsedSec = com.kveld9.trackgym.domain.util.DurationFormatter.parseInputToSeconds(repsText)
+                        if (parsedSec > 0) parsedSec
+                        else (set.durationSeconds ?: set.reps)
+                    } else {
+                        val typedReps = repsText.toIntOrNull()
+                        if (typedReps != null) {
+                            typedReps
+                        } else if (set.reps > 0) {
+                            set.reps
+                        } else if (previousSet != null && previousSet.reps > 0) {
+                            previousSet.reps
                         } else {
-                            val typedDisplay = weightText.replace(',', '.').toDoubleOrNull()
-                            if (typedDisplay != null) {
-                                weightUnit.toKg(typedDisplay)
-                            } else if (set.weightKg > 0.0) {
-                                set.weightKg
-                            } else if (previousSet != null && previousSet.weightKg > 0.0) {
-                                previousSet.weightKg
-                            } else {
-                                0.0
-                            }
+                            0
                         }
+                    }
 
-                        val finalReps = if (isDuration || isCardio) {
-                            val parsedSec = com.kveld9.trackgym.domain.util.DurationFormatter.parseInputToSeconds(repsText)
-                            if (parsedSec > 0) parsedSec
-                            else (set.durationSeconds ?: set.reps)
+                    if (isCardio) {
+                        val parsedDist = distanceText.replace(',', '.').toDoubleOrNull()
+                            ?: ghostDistanceDisplay?.replace(',', '.')?.toDoubleOrNull()
+                        val distKm = parsedDist?.let { distanceUnit.toKm(it) }
+                        val cal = CardioCalculator.calculateCaloriesBurned(finalReps, userBodyWeightKg)
+                        onUpdateSet(set.copy(distanceKm = distKm, caloriesBurned = cal))
+                    } else {
+                        if (weightText.isBlank()) {
+                            weightText = weightUnit.formatValue(finalWeightKg)
+                        }
+                    }
+
+                    if (repsText.isBlank() && finalReps > 0) {
+                        repsText = if (isDuration || isCardio) {
+                            com.kveld9.trackgym.domain.util.DurationFormatter.formatSecondsToMmSs(finalReps)
                         } else {
-                            val typedReps = repsText.toIntOrNull()
-                            if (typedReps != null) {
-                                typedReps
-                            } else if (set.reps > 0) {
-                                set.reps
-                            } else if (previousSet != null && previousSet.reps > 0) {
-                                previousSet.reps
-                            } else {
-                                0
-                            }
+                            finalReps.toString()
                         }
+                    }
 
-                        if (isCardio) {
-                            val parsedDist = distanceText.replace(',', '.').toDoubleOrNull()
-                                ?: ghostDistanceDisplay?.replace(',', '.')?.toDoubleOrNull()
-                            val distKm = parsedDist?.let { distanceUnit.toKm(it) }
-                            val cal = CardioCalculator.calculateCaloriesBurned(finalReps, userBodyWeightKg)
-                            onUpdateSet(set.copy(distanceKm = distKm, caloriesBurned = cal))
-                        } else {
-                            if (weightText.isBlank()) {
-                                weightText = weightUnit.formatValue(finalWeightKg)
-                            }
-                        }
-
-                        if (repsText.isBlank() && finalReps > 0) {
-                            repsText = if (isDuration || isCardio) {
-                                com.kveld9.trackgym.domain.util.DurationFormatter.formatSecondsToMmSs(finalReps)
-                            } else {
-                                finalReps.toString()
-                            }
-                        }
-
-                        showQuickAdjust = false
-                        getReadyCountdown = null
-                        onToggleComplete(finalWeightKg, finalReps)
-                    },
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Check,
-                    contentDescription = stringResource(R.string.desc_complete_set),
-                    tint = if (set.isCompleted) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
+                    showQuickAdjust = false
+                    getReadyCountdown = null
+                    onToggleComplete(finalWeightKg, finalReps)
+                }
+            )
         }
 
         if (getReadyCountdown != null) {
@@ -1481,6 +1497,67 @@ fun SetRpeChip(
             fontSize = 11.sp,
             fontWeight = if (rpe != null) FontWeight.Bold else FontWeight.Medium
         )
+    }
+}
+
+@Composable
+private fun SetActionButtons(
+    isCompleted: Boolean,
+    onToggleComplete: () -> Unit,
+    showDeleteButton: Boolean = false,
+    onDeleteSet: () -> Unit = {},
+    modifier: Modifier = Modifier
+) {
+    val checkBgColor by animateColorAsState(
+        targetValue = if (isCompleted) {
+            MaterialTheme.colorScheme.primary
+        } else {
+            MaterialTheme.colorScheme.surfaceContainerHigh
+        },
+        label = "checkColor"
+    )
+
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        if (showDeleteButton) {
+            IconButton(
+                onClick = onDeleteSet,
+                modifier = Modifier
+                    .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
+                    .size(48.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = stringResource(R.string.action_delete_set),
+                    tint = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+        }
+
+        Box(
+            modifier = Modifier
+                .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
+                .size(48.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(checkBgColor)
+                .clickable(onClick = onToggleComplete),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Default.Check,
+                contentDescription = stringResource(R.string.desc_complete_set),
+                tint = if (isCompleted) {
+                    MaterialTheme.colorScheme.onPrimary
+                } else {
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                },
+                modifier = Modifier.size(24.dp)
+            )
+        }
     }
 }
 
