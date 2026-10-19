@@ -119,6 +119,13 @@ fun TrackGymNavHost(
                 weightUnit = weightUnit,
                 onWorkoutClick = { workoutId ->
                     viewModel.viewWorkoutDetail(workoutId)
+                },
+                onStartWorkoutClick = {
+                    navController.navigate(NavTab.TRAIN.name) {
+                        popUpTo(NavTab.TRAIN.name) { saveState = true }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
                 }
             )
         }
@@ -130,7 +137,14 @@ fun TrackGymNavHost(
         composable(NavTab.RECORDS.name) {
             RecordsScreen(
                 viewModel = viewModel,
-                weightUnit = weightUnit
+                weightUnit = weightUnit,
+                onStartWorkoutClick = {
+                    navController.navigate(NavTab.TRAIN.name) {
+                        popUpTo(NavTab.TRAIN.name) { saveState = true }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
             )
         }
         composable(NavTab.SETTINGS.name) {
