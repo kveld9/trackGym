@@ -25,6 +25,7 @@
 set -euo pipefail
 
 DRY_RUN=false
+ALLOW_UNPUSHED=false
 
 print_usage() {
   cat <<'EOF'
@@ -33,15 +34,19 @@ Usage: ./scripts/release.sh [OPTIONS]
 Compile, stage, tag, and publish a new GitHub Release for TrackGym.
 
 Options:
-  --dry-run       Run build, staging, and validation, but skip Git tag creation,
-                  Git tag push, and GitHub release publication. Prints each
-                  skipped command.
-  -h, --help      Display this help message and exit.
+  --dry-run          Run build, staging, and validation, but skip Git tag creation,
+                     Git tag push, and GitHub release publication. Prints each
+                     skipped command.
+  --allow-unpushed   Allow releasing when local 'main' is ahead of 'origin/main'.
+                     Releases unpushed commits without requiring prior push.
+  -h, --help         Display this help message and exit.
 
 Requirements:
   - Must be run from repository root.
   - Current Git branch must be 'main'.
   - Working tree must be clean (no uncommitted or untracked changes).
+  - Remote 'origin' must exist and local 'main' must be in sync with 'origin/main'
+    (unless --allow-unpushed is specified for commits ahead).
   - GitHub CLI ('gh') must be installed and authenticated ('gh auth status').
 EOF
 }
@@ -53,6 +58,10 @@ while [ $# -gt 0 ]; do
   case "$1" in
     --dry-run)
       DRY_RUN=true
+      shift
+      ;;
+    --allow-unpushed)
+      ALLOW_UNPUSHED=true
       shift
       ;;
     -h|--help)
@@ -84,6 +93,39 @@ fi
 
 if [ -n "$(git status --porcelain)" ]; then
   echo "Error: Working tree is dirty. Stash, commit, or discard uncommitted changes before releasing." >&2
+  exit 1
+fi
+
+if ! git remote get-url origin >/dev/null 2>&1; then
+  echo "Error: Remote 'origin' is not configured." >&2
+  exit 1
+fi
+
+echo "Fetching latest refs from origin..."
+if ! git fetch origin main; then
+  echo "Error: Failed to fetch 'origin main'. Check network connectivity and remote access." >&2
+  exit 1
+fi
+
+if ! git rev-parse --verify origin/main >/dev/null 2>&1; then
+  echo "Error: Remote branch 'origin/main' does not exist." >&2
+  exit 1
+fi
+
+BEHIND_COUNT="$(git rev-list --count HEAD..origin/main)"
+AHEAD_COUNT="$(git rev-list --count origin/main..HEAD)"
+
+if [ "$BEHIND_COUNT" -gt 0 ] && [ "$AHEAD_COUNT" -gt 0 ]; then
+  echo "Error: Local branch 'main' and 'origin/main' have diverged (ahead ${AHEAD_COUNT}, behind ${BEHIND_COUNT})." >&2
+  echo "Please reconcile branches with origin/main before releasing." >&2
+  exit 1
+elif [ "$BEHIND_COUNT" -gt 0 ]; then
+  echo "Error: Local branch 'main' is behind 'origin/main' by ${BEHIND_COUNT} commit(s)." >&2
+  echo "Please fast-forward local main ('git pull --ff-only origin main') before releasing." >&2
+  exit 1
+elif [ "$AHEAD_COUNT" -gt 0 ] && [ "$ALLOW_UNPUSHED" = false ]; then
+  echo "Error: Local branch 'main' has ${AHEAD_COUNT} unpushed commit(s) ahead of 'origin/main'." >&2
+  echo "Push commits to origin/main or pass '--allow-unpushed' to proceed." >&2
   exit 1
 fi
 
