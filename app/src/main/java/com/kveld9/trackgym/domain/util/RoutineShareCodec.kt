@@ -32,6 +32,9 @@ data class RoutineShareDto(
 
 object RoutineShareCodec {
     private const val PREFIX = "tgroutine:"
+    private const val KEY_SET_TYPE = "setType"
+    private const val KEY_SETS = "sets"
+    private const val KEY_EXERCISES = "exercises"
     val json = Json {
         ignoreUnknownKeys = true
         encodeDefaults = true
@@ -55,7 +58,7 @@ object RoutineShareCodec {
         }.getOrElse {
             val obj = elem as? JsonObject ?: return@getOrElse null
             runCatching {
-                val sanitized = JsonObject(obj.filterKeys { it != "setType" })
+                val sanitized = JsonObject(obj.filterKeys { it != KEY_SET_TYPE })
                 json.decodeFromJsonElement<RoutineSetPlan>(sanitized)
             }.getOrNull()
         }
@@ -144,12 +147,12 @@ object RoutineShareCodec {
         val baseEx = runCatching {
             json.decodeFromJsonElement(
                 RoutineShareExerciseDto.serializer(),
-                JsonObject(exObj.filterKeys { it != "sets" })
+                JsonObject(exObj.filterKeys { it != KEY_SETS })
             )
         }.getOrNull() ?: return null
 
-        val recoveredSets = if ("sets" in exObj) {
-            val survivors = recoverSetPlans(exObj["sets"])
+        val recoveredSets = if (KEY_SETS in exObj) {
+            val survivors = recoverSetPlans(exObj[KEY_SETS])
             if (survivors.isNotEmpty()) {
                 sanitizeRoutineSetPlans(survivors)
             } else {
@@ -171,9 +174,9 @@ object RoutineShareCodec {
             val rootElement = json.parseToJsonElement(jsonString) as? JsonObject ?: return@runCatching null
             val baseDto = json.decodeFromJsonElement(
                 RoutineShareDto.serializer(),
-                JsonObject(rootElement.filterKeys { it != "exercises" })
+                JsonObject(rootElement.filterKeys { it != KEY_EXERCISES })
             )
-            val exercisesArray = rootElement["exercises"] as? JsonArray
+            val exercisesArray = rootElement[KEY_EXERCISES] as? JsonArray
             if (exercisesArray == null) {
                 baseDto
             } else {

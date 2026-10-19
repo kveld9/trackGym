@@ -1153,24 +1153,6 @@ class GymRepository(private val database: GymDatabase) {
         routineDao.deleteRoutineExercise(routineExerciseId)
     }
 
-    suspend fun updateRoutineExercise(
-        routineExerciseId: Long,
-        targetSets: Int,
-        defaultWeightKg: Double,
-        defaultReps: Int
-    ) = withContext(Dispatchers.IO) {
-        // withTransaction guarantees crash-atomicity; mutex serializes concurrent writers.
-        routinePlanMutationMutex.withLock {
-            val safeSets = sanitizeRoutineTargetSets(targetSets)
-            val safeWeight = sanitizeRoutineDefaultWeight(defaultWeightKg)
-            val safeReps = sanitizeRoutineDefaultReps(defaultReps)
-            val plans = List(safeSets) {
-                RoutineSetPlan(weightKg = safeWeight, reps = safeReps)
-            }
-            updateRoutineExercisePlans(routineExerciseId, plans)
-        }
-    }
-
     suspend fun updateRoutineExercisePlans(
         routineExerciseId: Long,
         plans: List<RoutineSetPlan>

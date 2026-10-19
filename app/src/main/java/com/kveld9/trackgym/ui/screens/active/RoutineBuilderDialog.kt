@@ -100,32 +100,6 @@ fun RoutineBuilderDialog(
 }
 
 @Composable
-fun RoutineBuilderDialog(
-    routine: Routine,
-    allExercises: List<Exercise>,
-    onAddExercise: (Long) -> Unit,
-    onRemoveExercise: (Long) -> Unit,
-    onUpdateExercise: (Long, Int, Double, Int) -> Unit,
-    onMoveExercise: (Int, Int) -> Unit,
-    onDismiss: () -> Unit
-) {
-    RoutineBuilderDialog(
-        routine = routine,
-        allExercises = allExercises,
-        onAddExercise = onAddExercise,
-        onRemoveExercise = onRemoveExercise,
-        onMoveExercise = onMoveExercise,
-        onUpdateSetPlan = { id, _, plan ->
-            onUpdateExercise(id, 1, plan.weightKg, plan.reps)
-        },
-        onAddSet = {},
-        onRemoveSet = { _, _ -> },
-        onDuplicateSet = { _, _ -> },
-        onDismiss = onDismiss
-    )
-}
-
-@Composable
 private fun RoutineBuilderExercisePicker(
     allExercises: List<Exercise>,
     onSelectExercise: (Long) -> Unit,

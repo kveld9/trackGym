@@ -81,12 +81,6 @@ interface RoutineDao {
 
     @Query(
         "UPDATE routine_exercises SET targetSets = :targetSets, " +
-            "defaultWeightKg = :defaultWeightKg, defaultReps = :defaultReps WHERE id = :id"
-    )
-    suspend fun updateRoutineExerciseDetails(id: Long, targetSets: Int, defaultWeightKg: Double, defaultReps: Int)
-
-    @Query(
-        "UPDATE routine_exercises SET targetSets = :targetSets, " +
             "defaultWeightKg = :defaultWeightKg, defaultReps = :defaultReps, " +
             "setPlansJson = :setPlansJson WHERE id = :id"
     )

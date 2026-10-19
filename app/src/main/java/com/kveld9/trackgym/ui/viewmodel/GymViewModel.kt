@@ -851,17 +851,6 @@ class GymViewModel(
         }
     }
 
-    fun updateRoutineExercise(
-        routineExerciseId: Long,
-        targetSets: Int,
-        defaultWeightKg: Double,
-        defaultReps: Int
-    ) {
-        viewModelScope.launch {
-            repository.updateRoutineExercise(routineExerciseId, targetSets, defaultWeightKg, defaultReps)
-        }
-    }
-
     fun updateRoutineSetPlan(
         routineExerciseId: Long,
         setIndex: Int,
