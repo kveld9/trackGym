@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,6 +19,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.EmojiEvents
+import androidx.compose.material.icons.filled.FitnessCenter
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -56,7 +60,8 @@ import java.util.Locale
 fun RecordsScreen(
     viewModel: GymViewModel,
     modifier: Modifier = Modifier,
-    weightUnit: WeightUnit = WeightUnit.KG
+    weightUnit: WeightUnit = WeightUnit.KG,
+    onStartWorkoutClick: () -> Unit = {}
 ) {
     val records by viewModel.allRecords.collectAsStateWithLifecycle()
     val exercises by viewModel.allExercises.collectAsStateWithLifecycle()
@@ -80,18 +85,21 @@ fun RecordsScreen(
         containerColor = MaterialTheme.colorScheme.background,
         modifier = modifier.screenEnterTransition()
     ) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            if (records.isEmpty()) {
-                item(key = "empty_records_view") {
-                    EmptyRecordsView(modifier = Modifier.padding(vertical = 32.dp))
-                }
-            } else {
+        if (records.isEmpty()) {
+            EmptyRecordsView(
+                onStartWorkoutClick = onStartWorkoutClick,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+            )
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(horizontal = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
                 item(key = "records_history_header") {
                     Text(
                         text = stringResource(R.string.records_history_section, records.size),
@@ -121,10 +129,10 @@ fun RecordsScreen(
                         )
                     }
                 }
-            }
 
-            item(key = "bottom_spacer") {
-                Spacer(modifier = Modifier.height(120.dp))
+                item(key = "bottom_spacer") {
+                    Spacer(modifier = Modifier.height(120.dp))
+                }
             }
         }
     }
@@ -216,7 +224,10 @@ fun RecordItemCard(
 }
 
 @Composable
-fun EmptyRecordsView(modifier: Modifier = Modifier) {
+fun EmptyRecordsView(
+    modifier: Modifier = Modifier,
+    onStartWorkoutClick: (() -> Unit)? = null
+) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -233,7 +244,7 @@ fun EmptyRecordsView(modifier: Modifier = Modifier) {
                 Icon(
                     imageVector = Icons.Default.EmojiEvents,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    tint = MaterialTheme.colorScheme.tertiary,
                     modifier = Modifier.size(40.dp)
                 )
             }
@@ -251,6 +262,37 @@ fun EmptyRecordsView(modifier: Modifier = Modifier) {
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             fontSize = 14.sp,
             textAlign = TextAlign.Center
+        )
+        if (onStartWorkoutClick != null) {
+            Spacer(modifier = Modifier.height(24.dp))
+            StartWorkoutCtaButton(onClick = onStartWorkoutClick)
+        }
+    }
+}
+
+@Composable
+private fun StartWorkoutCtaButton(onClick: () -> Unit) {
+    Button(
+        onClick = onClick,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary
+        ),
+        shape = RoundedCornerShape(12.dp),
+        modifier = Modifier
+            .defaultMinSize(minHeight = 48.dp)
+            .height(48.dp)
+    ) {
+        Icon(
+            imageVector = Icons.Default.FitnessCenter,
+            contentDescription = null,
+            modifier = Modifier.size(20.dp)
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            text = stringResource(R.string.tab_train),
+            fontWeight = FontWeight.Bold,
+            fontSize = 15.sp
         )
     }
 }
