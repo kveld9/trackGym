@@ -210,17 +210,19 @@ fun ExercisesScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    viewModel.clearCreateExerciseError()
-                    showCreateDialog = true
-                },
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary,
-                shape = CircleShape,
-                modifier = Modifier.padding(bottom = 80.dp)
-            ) {
-                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.action_create_exercise))
+            if (exercises.isNotEmpty()) {
+                FloatingActionButton(
+                    onClick = {
+                        viewModel.clearCreateExerciseError()
+                        showCreateDialog = true
+                    },
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                    shape = CircleShape,
+                    modifier = Modifier.padding(bottom = 80.dp)
+                ) {
+                    Icon(Icons.Default.Add, contentDescription = stringResource(R.string.action_create_exercise))
+                }
             }
         },
         containerColor = MaterialTheme.colorScheme.background,
