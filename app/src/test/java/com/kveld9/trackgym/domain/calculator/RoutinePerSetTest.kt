@@ -8,6 +8,7 @@ import com.kveld9.trackgym.domain.model.RoutineExercise
 import com.kveld9.trackgym.domain.model.RoutineSetPlan
 import com.kveld9.trackgym.domain.model.SetType
 import com.kveld9.trackgym.domain.util.RoutineShareCodec
+import com.kveld9.trackgym.data.repository.parseSetPlansJson
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
@@ -233,5 +234,107 @@ class RoutinePerSetTest {
         assertEquals(1, cleanedList[0].reps)
         assertEquals(40.0, cleanedList[1].weightKg, 0.001)
         assertEquals(1, cleanedList[1].reps)
+    }
+
+    @Test
+    fun `unknown setType element coerced to NORMAL with siblings preserved`() {
+        val json = """
+            [
+                {"weightKg": 100.0, "reps": 5, "setType": "NORMAL"},
+                {"weightKg": 80.0, "reps": 10, "setType": "SUPERSET"},
+                {"weightKg": 60.0, "reps": 12, "setType": "DROP"}
+            ]
+        """.trimIndent()
+
+        val plans = parseSetPlansJson(
+            jsonStr = json,
+            fallbackSets = 3,
+            fallbackWeight = 50.0,
+            fallbackReps = 10
+        )
+
+        assertEquals(3, plans.size)
+        assertEquals(100.0, plans[0].weightKg, 0.001)
+        assertEquals(5, plans[0].reps)
+        assertEquals(SetType.NORMAL, plans[0].setType)
+
+        assertEquals(80.0, plans[1].weightKg, 0.001)
+        assertEquals(10, plans[1].reps)
+        assertEquals(SetType.NORMAL, plans[1].setType)
+
+        assertEquals(60.0, plans[2].weightKg, 0.001)
+        assertEquals(12, plans[2].reps)
+        assertEquals(SetType.DROP, plans[2].setType)
+    }
+
+    @Test
+    fun `fully-unknown list falls back to legacy`() {
+        val json = """
+            [
+                "not an object",
+                {"weightKg": "not-a-number"}
+            ]
+        """.trimIndent()
+
+        val plans = parseSetPlansJson(
+            jsonStr = json,
+            fallbackSets = 4,
+            fallbackWeight = 75.0,
+            fallbackReps = 8
+        )
+
+        assertEquals(4, plans.size)
+        plans.forEach { plan ->
+            assertEquals(75.0, plan.weightKg, 0.001)
+            assertEquals(8, plan.reps)
+            assertEquals(SetType.NORMAL, plan.setType)
+        }
+    }
+
+    @Test
+    fun `malformed element skipped`() {
+        val json = """
+            [
+                {"weightKg": 100.0, "reps": 5, "setType": "NORMAL"},
+                "malformed-entry",
+                {"weightKg": "invalid", "reps": 10},
+                {"weightKg": 70.0, "reps": 12, "setType": "DROP"}
+            ]
+        """.trimIndent()
+
+        val plans = parseSetPlansJson(
+            jsonStr = json,
+            fallbackSets = 3,
+            fallbackWeight = 50.0,
+            fallbackReps = 10
+        )
+
+        assertEquals(2, plans.size)
+        assertEquals(100.0, plans[0].weightKg, 0.001)
+        assertEquals(5, plans[0].reps)
+        assertEquals(SetType.NORMAL, plans[0].setType)
+
+        assertEquals(70.0, plans[1].weightKg, 0.001)
+        assertEquals(12, plans[1].reps)
+        assertEquals(SetType.DROP, plans[1].setType)
+    }
+
+    @Test
+    fun `empty JSON array falls back to legacy`() {
+        val json = "[]"
+
+        val plans = parseSetPlansJson(
+            jsonStr = json,
+            fallbackSets = 3,
+            fallbackWeight = 60.0,
+            fallbackReps = 12
+        )
+
+        assertEquals(3, plans.size)
+        plans.forEach { plan ->
+            assertEquals(60.0, plan.weightKg, 0.001)
+            assertEquals(12, plan.reps)
+            assertEquals(SetType.NORMAL, plan.setType)
+        }
     }
 }
