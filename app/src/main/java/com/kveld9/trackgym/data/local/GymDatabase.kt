@@ -31,7 +31,7 @@ import com.kveld9.trackgym.data.local.entity.WorkoutSetEntity
         RoutineExerciseEntity::class,
         CustomExerciseCategoryEntity::class
     ],
-    version = 24,
+    version = 25,
     exportSchema = false
 )
 abstract class GymDatabase : RoomDatabase() {
@@ -520,6 +520,46 @@ abstract class GymDatabase : RoomDatabase() {
             }
         }
 
+        /**
+         * Migration 24 -> 25: Adds 'setPlansJson' column to routine_exercises table.
+         * Populates initial JSON plans by repeating legacy targetSets/defaultWeightKg/defaultReps.
+         */
+        val MIGRATION_24_25 = object : androidx.room.migration.Migration(24, 25) {
+            override fun migrate(db: androidx.sqlite.db.SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE routine_exercises ADD COLUMN setPlansJson TEXT DEFAULT NULL")
+                val cursor = db.query(
+                    "SELECT id, targetSets, defaultWeightKg, defaultReps FROM routine_exercises"
+                )
+                val updates = mutableListOf<Triple<Long, Int, Pair<Double, Int>>>()
+                cursor.use {
+                    val idIdx = cursor.getColumnIndexOrThrow("id")
+                    val setsIdx = cursor.getColumnIndexOrThrow("targetSets")
+                    val weightIdx = cursor.getColumnIndexOrThrow("defaultWeightKg")
+                    val repsIdx = cursor.getColumnIndexOrThrow("defaultReps")
+                    while (cursor.moveToNext()) {
+                        val id = cursor.getLong(idIdx)
+                        val sets = cursor.getInt(setsIdx)
+                        val weight = cursor.getDouble(weightIdx)
+                        val reps = cursor.getInt(repsIdx)
+                        updates.add(Triple(id, sets, Pair(weight, reps)))
+                    }
+                }
+                for ((id, sets, pair) in updates) {
+                    val (weight, reps) = pair
+                    val count = if (sets > 0) sets else 3
+                    val safeWeight = if (weight >= 0.0) weight else 0.0
+                    val safeReps = if (reps > 0) reps else 10
+                    val plansJson = List(count) {
+                        """{"weightKg":$safeWeight,"reps":$safeReps,"setType":"NORMAL"}"""
+                    }.joinToString(prefix = "[", postfix = "]", separator = ",")
+                    db.execSQL(
+                        "UPDATE routine_exercises SET setPlansJson = ? WHERE id = ?",
+                        arrayOf<Any>(plansJson, id)
+                    )
+                }
+            }
+        }
+
         fun getInstance(context: Context): GymDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
@@ -530,7 +570,8 @@ abstract class GymDatabase : RoomDatabase() {
                     .addMigrations(
                         MIGRATION_12_13, MIGRATION_13_14, MIGRATION_14_15, MIGRATION_15_16,
                         MIGRATION_16_17, MIGRATION_17_18, MIGRATION_18_19, MIGRATION_19_20,
-                        MIGRATION_20_21, MIGRATION_21_22, MIGRATION_22_23, MIGRATION_23_24
+                        MIGRATION_20_21, MIGRATION_21_22, MIGRATION_22_23, MIGRATION_23_24,
+                        MIGRATION_24_25
                     )
                     .fallbackToDestructiveMigration(dropAllTables = true)
                     .build()

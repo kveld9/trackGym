@@ -384,6 +384,12 @@
     <string name="routine_builder_target_sets">Series</string>
     <string name="routine_builder_target_reps">Reps</string>
     <string name="routine_builder_default_weight">Peso</string>
+    <string name="routine_builder_add_set">Añadir serie</string>
+    <string name="routine_builder_duplicate_last">Duplicar última</string>
+    <string name="routine_builder_set_n">Serie %1$d</string>
+    <string name="routine_builder_top_set">Top Set</string>
+    <string name="routine_builder_back_off">Back-off</string>
+    <string name="routine_builder_normal_set">Normal</string>
     <string name="menu_edit_routine">Editar rutina</string>
     <string name="action_done">Listo</string>
     <string name="dialog_save_routine_title">Guardar como plantilla de rutina</string>

@@ -321,8 +321,17 @@ fun ActiveWorkoutScreen(
             onRemoveExerciseFromRoutine = { routineExerciseId ->
                 viewModel.removeExerciseFromRoutine(routineExerciseId)
             },
-            onUpdateRoutineExercise = { routineExerciseId, sets, weight, reps ->
-                viewModel.updateRoutineExercise(routineExerciseId, sets, weight, reps)
+            onUpdateRoutineSetPlan = { routineExerciseId, setIndex, plan ->
+                viewModel.updateRoutineSetPlan(routineExerciseId, setIndex, plan)
+            },
+            onAddRoutineSet = { routineExerciseId ->
+                viewModel.addRoutineSet(routineExerciseId)
+            },
+            onRemoveRoutineSet = { routineExerciseId, setIndex ->
+                viewModel.removeRoutineSet(routineExerciseId, setIndex)
+            },
+            onDuplicateRoutineSet = { routineExerciseId, setIndex ->
+                viewModel.duplicateRoutineSet(routineExerciseId, setIndex)
             },
             onMoveRoutineExercise = { routineId, fromIndex, toIndex ->
                 viewModel.moveRoutineExercise(routineId, fromIndex, toIndex)

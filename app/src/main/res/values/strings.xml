@@ -384,6 +384,12 @@
     <string name="routine_builder_target_sets">Sets</string>
     <string name="routine_builder_target_reps">Reps</string>
     <string name="routine_builder_default_weight">Weight</string>
+    <string name="routine_builder_add_set">Add Set</string>
+    <string name="routine_builder_duplicate_last">Duplicate Last</string>
+    <string name="routine_builder_set_n">Set %1$d</string>
+    <string name="routine_builder_top_set">Top Set</string>
+    <string name="routine_builder_back_off">Back-off</string>
+    <string name="routine_builder_normal_set">Normal</string>
     <string name="menu_edit_routine">Edit Routine</string>
     <string name="action_done">Done</string>
     <string name="dialog_save_routine_title">Save as Routine Template</string>

@@ -48,6 +48,7 @@ import com.kveld9.trackgym.R
 import com.kveld9.trackgym.domain.calculator.RoutineBiomechanicalBalanceEngine
 import com.kveld9.trackgym.domain.model.Exercise
 import com.kveld9.trackgym.domain.model.Routine
+import com.kveld9.trackgym.domain.model.RoutineSetPlan
 
 @Composable
 fun RoutineBuilderDialog(
@@ -55,8 +56,11 @@ fun RoutineBuilderDialog(
     allExercises: List<Exercise>,
     onAddExercise: (Long) -> Unit,
     onRemoveExercise: (Long) -> Unit,
-    onUpdateExercise: (Long, Int, Double, Int) -> Unit,
     onMoveExercise: (Int, Int) -> Unit,
+    onUpdateSetPlan: (routineExerciseId: Long, setIndex: Int, plan: RoutineSetPlan) -> Unit,
+    onAddSet: (routineExerciseId: Long) -> Unit,
+    onRemoveSet: (routineExerciseId: Long, setIndex: Int) -> Unit,
+    onDuplicateSet: (routineExerciseId: Long, setIndex: Int) -> Unit,
     onDismiss: () -> Unit
 ) {
     var showExercisePicker by remember { mutableStateOf(false) }
@@ -84,12 +88,41 @@ fun RoutineBuilderDialog(
                     onOpenPicker = { showExercisePicker = true },
                     onDismiss = onDismiss,
                     onRemoveExercise = onRemoveExercise,
-                    onUpdateExercise = onUpdateExercise,
+                    onUpdateSetPlan = onUpdateSetPlan,
+                    onAddSet = onAddSet,
+                    onRemoveSet = onRemoveSet,
+                    onDuplicateSet = onDuplicateSet,
                     onMoveExercise = onMoveExercise
                 )
             }
         }
     }
+}
+
+@Composable
+fun RoutineBuilderDialog(
+    routine: Routine,
+    allExercises: List<Exercise>,
+    onAddExercise: (Long) -> Unit,
+    onRemoveExercise: (Long) -> Unit,
+    onUpdateExercise: (Long, Int, Double, Int) -> Unit,
+    onMoveExercise: (Int, Int) -> Unit,
+    onDismiss: () -> Unit
+) {
+    RoutineBuilderDialog(
+        routine = routine,
+        allExercises = allExercises,
+        onAddExercise = onAddExercise,
+        onRemoveExercise = onRemoveExercise,
+        onMoveExercise = onMoveExercise,
+        onUpdateSetPlan = { id, _, plan ->
+            onUpdateExercise(id, 1, plan.weightKg, plan.reps)
+        },
+        onAddSet = {},
+        onRemoveSet = { _, _ -> },
+        onDuplicateSet = { _, _ -> },
+        onDismiss = onDismiss
+    )
 }
 
 @Composable
@@ -140,7 +173,10 @@ private fun RoutineBuilderContent(
     onOpenPicker: () -> Unit,
     onDismiss: () -> Unit,
     onRemoveExercise: (Long) -> Unit,
-    onUpdateExercise: (Long, Int, Double, Int) -> Unit,
+    onUpdateSetPlan: (Long, Int, RoutineSetPlan) -> Unit,
+    onAddSet: (Long) -> Unit,
+    onRemoveSet: (Long, Int) -> Unit,
+    onDuplicateSet: (Long, Int) -> Unit,
     onMoveExercise: (Int, Int) -> Unit
 ) {
     Column(
@@ -179,10 +215,11 @@ private fun RoutineBuilderContent(
                         canMoveDown = index < routine.exercises.size - 1,
                         onMoveUp = { onMoveExercise(index, index - 1) },
                         onMoveDown = { onMoveExercise(index, index + 1) },
-                        onRemove = { onRemoveExercise(re.id) },
-                        onUpdate = { sets, weight, reps ->
-                            onUpdateExercise(re.id, sets, weight, reps)
-                        }
+                        onRemoveExercise = { onRemoveExercise(re.id) },
+                        onUpdateSetPlan = { setIndex, plan -> onUpdateSetPlan(re.id, setIndex, plan) },
+                        onAddSet = { onAddSet(re.id) },
+                        onRemoveSet = { setIndex -> onRemoveSet(re.id, setIndex) },
+                        onDuplicateSet = { setIndex -> onDuplicateSet(re.id, setIndex) }
                     )
                 }
             }

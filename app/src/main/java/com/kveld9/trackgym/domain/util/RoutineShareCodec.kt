@@ -1,7 +1,7 @@
 package com.kveld9.trackgym.domain.util
 
-import android.util.Base64
 import com.kveld9.trackgym.domain.model.Routine
+import com.kveld9.trackgym.domain.model.RoutineSetPlan
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import java.nio.charset.StandardCharsets
@@ -13,12 +13,13 @@ data class RoutineShareExerciseDto(
     val category: String = "OTHER",
     val targetSets: Int = 3,
     val defaultWeightKg: Double = 0.0,
-    val defaultReps: Int = 10
+    val defaultReps: Int = 10,
+    val sets: List<RoutineSetPlan> = emptyList()
 )
 
 @Serializable
 data class RoutineShareDto(
-    val version: Int = 1,
+    val version: Int = 2,
     val name: String,
     val notes: String = "",
     val exercises: List<RoutineShareExerciseDto> = emptyList()
@@ -26,14 +27,38 @@ data class RoutineShareDto(
 
 object RoutineShareCodec {
     private const val PREFIX = "tgroutine:"
-    private val json = Json {
+    val json = Json {
         ignoreUnknownKeys = true
         encodeDefaults = true
     }
 
+    private fun base64Encode(bytes: ByteArray): String {
+        return try {
+            android.util.Base64.encodeToString(bytes, android.util.Base64.NO_WRAP)
+        } catch (_: Throwable) {
+            java.util.Base64.getEncoder().encodeToString(bytes)
+        }
+    }
+
+    private fun base64Decode(token: String): ByteArray {
+        return try {
+            android.util.Base64.decode(token, android.util.Base64.DEFAULT)
+        } catch (_: Throwable) {
+            java.util.Base64.getDecoder().decode(token)
+        }
+    }
+
+    private fun formatWeight(weightKg: Double): String {
+        return if (weightKg % 1.0 == 0.0) {
+            weightKg.toInt().toString()
+        } else {
+            weightKg.toString()
+        }
+    }
+
     fun encodeToShareText(routine: Routine): String {
         val dto = RoutineShareDto(
-            version = 1,
+            version = 2,
             name = routine.name,
             notes = routine.notes,
             exercises = routine.exercises.map { re ->
@@ -43,12 +68,13 @@ object RoutineShareCodec {
                     category = re.exercise.category.name,
                     targetSets = re.targetSets,
                     defaultWeightKg = re.defaultWeightKg,
-                    defaultReps = re.defaultReps
+                    defaultReps = re.defaultReps,
+                    sets = re.sets
                 )
             }
         )
         val jsonString = json.encodeToString(RoutineShareDto.serializer(), dto)
-        val base64 = Base64.encodeToString(jsonString.toByteArray(StandardCharsets.UTF_8), Base64.NO_WRAP)
+        val base64 = base64Encode(jsonString.toByteArray(StandardCharsets.UTF_8))
 
         val summaryBuilder = StringBuilder()
         summaryBuilder.append("TrackGym Routine: ").append(routine.name).append("\n")
@@ -58,9 +84,21 @@ object RoutineShareCodec {
         summaryBuilder.append("\nExercises:\n")
         routine.exercises.forEach { re ->
             summaryBuilder.append("- ").append(re.exercise.name).append(": ")
-                .append(re.targetSets).append(" sets")
-            if (re.defaultWeightKg > 0.0 || re.defaultReps > 0) {
-                summaryBuilder.append(" (").append(re.defaultWeightKg).append(" kg x ").append(re.defaultReps).append(" reps)")
+            val plans = re.sets
+            val allSame = plans.isNotEmpty() && plans.all {
+                it.weightKg == plans[0].weightKg && it.reps == plans[0].reps
+            }
+            if (plans.isEmpty() || allSame) {
+                summaryBuilder.append(re.targetSets).append(" sets")
+                if (re.defaultWeightKg > 0.0 || re.defaultReps > 0) {
+                    val w = formatWeight(re.defaultWeightKg)
+                    summaryBuilder.append(" ($w kg x ${re.defaultReps} reps)")
+                }
+            } else {
+                val setsDesc = plans.joinToString(", ") { plan ->
+                    "${formatWeight(plan.weightKg)}kg x${plan.reps}"
+                }
+                summaryBuilder.append(plans.size).append(" sets (").append(setsDesc).append(")")
             }
             summaryBuilder.append("\n")
         }
@@ -76,7 +114,7 @@ object RoutineShareCodec {
             rawText.trim()
         }
         return try {
-            val decodedBytes = Base64.decode(token, Base64.DEFAULT)
+            val decodedBytes = base64Decode(token)
             val jsonString = String(decodedBytes, StandardCharsets.UTF_8)
             json.decodeFromString(RoutineShareDto.serializer(), jsonString)
         } catch (_: Exception) {

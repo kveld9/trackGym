@@ -20,7 +20,11 @@ import com.kveld9.trackgym.domain.calculator.WorkoutComparisonEngine
 import com.kveld9.trackgym.domain.calculator.resolveNewRoutineName
 import com.kveld9.trackgym.domain.calculator.sanitizeRoutineDefaultReps
 import com.kveld9.trackgym.domain.calculator.sanitizeRoutineDefaultWeight
+import com.kveld9.trackgym.domain.calculator.sanitizeRoutineSetPlan
+import com.kveld9.trackgym.domain.calculator.sanitizeRoutineSetPlans
 import com.kveld9.trackgym.domain.calculator.sanitizeRoutineTargetSets
+import com.kveld9.trackgym.domain.model.RoutineSetPlan
+import com.kveld9.trackgym.domain.util.RoutineShareCodec
 import com.kveld9.trackgym.domain.model.DefaultExercises
 import com.kveld9.trackgym.domain.model.DuplicateExerciseNameException
 import com.kveld9.trackgym.domain.model.Exercise
@@ -1050,13 +1054,17 @@ class GymRepository(private val database: GymDatabase) {
                 val exercisesForRoutine = exercisesByRoutine[entity.id].orEmpty()
                 val mappedExercises = exercisesForRoutine.mapNotNull { re ->
                     val ex = exerciseMap[re.exerciseId]?.toDomain() ?: return@mapNotNull null
+                    val plans = parseSetPlansJson(
+                        re.setPlansJson,
+                        re.targetSets,
+                        re.defaultWeightKg,
+                        re.defaultReps
+                    )
                     RoutineExercise(
                         id = re.id,
                         exercise = ex,
                         orderIndex = re.orderIndex,
-                        targetSets = re.targetSets,
-                        defaultWeightKg = re.defaultWeightKg,
-                        defaultReps = re.defaultReps
+                        sets = plans
                     )
                 }
                 Routine(
@@ -1076,21 +1084,54 @@ class GymRepository(private val database: GymDatabase) {
         }.flowOn(Dispatchers.IO)
     }
 
+    private fun parseSetPlansJson(
+        jsonStr: String?,
+        fallbackSets: Int,
+        fallbackWeight: Double,
+        fallbackReps: Int
+    ): List<RoutineSetPlan> {
+        if (!jsonStr.isNullOrBlank()) {
+            val parsed = runCatching {
+                RoutineShareCodec.json.decodeFromString<List<RoutineSetPlan>>(jsonStr)
+            }.getOrNull()
+            if (!parsed.isNullOrEmpty()) {
+                return sanitizeRoutineSetPlans(parsed)
+            }
+        }
+        return sanitizeRoutineSetPlans(
+            null,
+            fallbackSets = fallbackSets,
+            fallbackWeight = fallbackWeight,
+            fallbackReps = fallbackReps
+        )
+    }
+
+    private fun serializeSetPlans(plans: List<RoutineSetPlan>): String {
+        return RoutineShareCodec.json.encodeToString(plans)
+    }
+
     suspend fun addExerciseToRoutine(
         routineId: Long,
         exerciseId: Long,
         targetSets: Int = 3,
         defaultWeightKg: Double = 0.0,
-        defaultReps: Int = 10
+        defaultReps: Int = 10,
+        initialPlans: List<RoutineSetPlan>? = null
     ): Long = withContext(Dispatchers.IO) {
         val existing = routineDao.getExercisesForRoutine(routineId)
+        val plans = if (!initialPlans.isNullOrEmpty()) {
+            sanitizeRoutineSetPlans(initialPlans)
+        } else {
+            sanitizeRoutineSetPlans(null, targetSets, defaultWeightKg, defaultReps)
+        }
         val entity = RoutineExerciseEntity(
             routineId = routineId,
             exerciseId = exerciseId,
             orderIndex = existing.size,
-            targetSets = sanitizeRoutineTargetSets(targetSets),
-            defaultWeightKg = sanitizeRoutineDefaultWeight(defaultWeightKg),
-            defaultReps = sanitizeRoutineDefaultReps(defaultReps)
+            targetSets = plans.size,
+            defaultWeightKg = plans.firstOrNull()?.weightKg ?: 0.0,
+            defaultReps = plans.firstOrNull()?.reps ?: 10,
+            setPlansJson = serializeSetPlans(plans)
         )
         routineDao.insertRoutineExercise(entity)
     }
@@ -1105,12 +1146,95 @@ class GymRepository(private val database: GymDatabase) {
         defaultWeightKg: Double,
         defaultReps: Int
     ) = withContext(Dispatchers.IO) {
-        routineDao.updateRoutineExerciseDetails(
+        val safeSets = sanitizeRoutineTargetSets(targetSets)
+        val safeWeight = sanitizeRoutineDefaultWeight(defaultWeightKg)
+        val safeReps = sanitizeRoutineDefaultReps(defaultReps)
+        val plans = List(safeSets) {
+            RoutineSetPlan(weightKg = safeWeight, reps = safeReps)
+        }
+        updateRoutineExercisePlans(routineExerciseId, plans)
+    }
+
+    suspend fun updateRoutineExercisePlans(
+        routineExerciseId: Long,
+        plans: List<RoutineSetPlan>
+    ) = withContext(Dispatchers.IO) {
+        val safePlans = sanitizeRoutineSetPlans(plans)
+        routineDao.updateRoutineExercisePlans(
             id = routineExerciseId,
-            targetSets = sanitizeRoutineTargetSets(targetSets),
-            defaultWeightKg = sanitizeRoutineDefaultWeight(defaultWeightKg),
-            defaultReps = sanitizeRoutineDefaultReps(defaultReps)
+            targetSets = safePlans.size,
+            defaultWeightKg = safePlans.firstOrNull()?.weightKg ?: 0.0,
+            defaultReps = safePlans.firstOrNull()?.reps ?: 10,
+            setPlansJson = serializeSetPlans(safePlans)
         )
+    }
+
+    suspend fun updateRoutineSetPlan(
+        routineExerciseId: Long,
+        setIndex: Int,
+        updatedPlan: RoutineSetPlan
+    ) = withContext(Dispatchers.IO) {
+        val exercise = routineDao.getRoutineExerciseById(routineExerciseId) ?: return@withContext
+        val currentPlans = parseSetPlansJson(
+            exercise.setPlansJson,
+            exercise.targetSets,
+            exercise.defaultWeightKg,
+            exercise.defaultReps
+        ).toMutableList()
+        if (setIndex in currentPlans.indices) {
+            currentPlans[setIndex] = sanitizeRoutineSetPlan(updatedPlan)
+            updateRoutineExercisePlans(routineExerciseId, currentPlans)
+        }
+    }
+
+    suspend fun addRoutineSet(
+        routineExerciseId: Long
+    ) = withContext(Dispatchers.IO) {
+        val exercise = routineDao.getRoutineExerciseById(routineExerciseId) ?: return@withContext
+        val currentPlans = parseSetPlansJson(
+            exercise.setPlansJson,
+            exercise.targetSets,
+            exercise.defaultWeightKg,
+            exercise.defaultReps
+        ).toMutableList()
+        val lastPlan = currentPlans.lastOrNull() ?: RoutineSetPlan()
+        currentPlans.add(lastPlan.copy())
+        updateRoutineExercisePlans(routineExerciseId, currentPlans)
+    }
+
+    suspend fun removeRoutineSet(
+        routineExerciseId: Long,
+        setIndex: Int
+    ) = withContext(Dispatchers.IO) {
+        val exercise = routineDao.getRoutineExerciseById(routineExerciseId) ?: return@withContext
+        val currentPlans = parseSetPlansJson(
+            exercise.setPlansJson,
+            exercise.targetSets,
+            exercise.defaultWeightKg,
+            exercise.defaultReps
+        ).toMutableList()
+        if (currentPlans.size > 1 && setIndex in currentPlans.indices) {
+            currentPlans.removeAt(setIndex)
+            updateRoutineExercisePlans(routineExerciseId, currentPlans)
+        }
+    }
+
+    suspend fun duplicateRoutineSet(
+        routineExerciseId: Long,
+        setIndex: Int
+    ) = withContext(Dispatchers.IO) {
+        val exercise = routineDao.getRoutineExerciseById(routineExerciseId) ?: return@withContext
+        val currentPlans = parseSetPlansJson(
+            exercise.setPlansJson,
+            exercise.targetSets,
+            exercise.defaultWeightKg,
+            exercise.defaultReps
+        ).toMutableList()
+        if (setIndex in currentPlans.indices) {
+            val toCopy = currentPlans[setIndex]
+            currentPlans.add(setIndex + 1, toCopy.copy())
+            updateRoutineExercisePlans(routineExerciseId, currentPlans)
+        }
     }
 
     suspend fun moveRoutineExercise(routineId: Long, fromIndex: Int, toIndex: Int) = withContext(Dispatchers.IO) {
@@ -1149,18 +1273,28 @@ class GymRepository(private val database: GymDatabase) {
         val routineId = routineDao.insertRoutine(routineEntity)
 
         val routineExercises = workout.exercises.mapIndexed { index, we ->
-            val workingSets = we.sets.filter { it.setType != SetType.WARMUP }
-            val primarySet = workingSets.firstOrNull { it.isCompleted }
-                ?: workingSets.firstOrNull()
-                ?: we.sets.firstOrNull()
-            val targetCount = if (workingSets.isNotEmpty()) workingSets.size else we.sets.size.coerceAtLeast(1)
+            val sourceSets = we.sets.filter { it.setType != SetType.WARMUP && it.isCompleted }
+                .ifEmpty { we.sets.filter { it.setType != SetType.WARMUP } }
+                .ifEmpty { we.sets }
+            val plans = if (sourceSets.isNotEmpty()) {
+                sourceSets.map { s ->
+                    RoutineSetPlan(
+                        weightKg = sanitizeRoutineDefaultWeight(s.weightKg),
+                        reps = sanitizeRoutineDefaultReps(s.reps),
+                        setType = s.setType
+                    )
+                }
+            } else {
+                List(3) { RoutineSetPlan() }
+            }
             RoutineExerciseEntity(
                 routineId = routineId,
                 exerciseId = we.exercise.id,
                 orderIndex = index,
-                targetSets = targetCount.coerceAtLeast(1),
-                defaultWeightKg = primarySet?.weightKg ?: 0.0,
-                defaultReps = primarySet?.reps ?: 10
+                targetSets = plans.size,
+                defaultWeightKg = plans.firstOrNull()?.weightKg ?: 0.0,
+                defaultReps = plans.firstOrNull()?.reps ?: 10,
+                setPlansJson = serializeSetPlans(plans)
             )
         }
         routineDao.insertRoutineExercises(routineExercises)
@@ -1190,23 +1324,33 @@ class GymRepository(private val database: GymDatabase) {
                 orderIndex = re.orderIndex
             )
             val weId = workoutDao.insertWorkoutExercise(weEntity)
-            val effectiveTargetSets = re.targetSets
-            val effectiveWeight = re.defaultWeightKg
             val modality = ExerciseModality.fromString(exerciseModalities[re.exerciseId])
-            val initialSetType = if (modality == ExerciseModality.CARDIO) {
+            val defaultSetType = if (modality == ExerciseModality.CARDIO) {
                 SetType.CARDIO
             } else {
                 SetType.NORMAL
             }
 
-            for (setIndex in 1..effectiveTargetSets) {
+            val plans = parseSetPlansJson(
+                re.setPlansJson,
+                re.targetSets,
+                re.defaultWeightKg,
+                re.defaultReps
+            )
+
+            plans.forEachIndexed { index, plan ->
+                val effectiveType = if (plan.setType != SetType.NORMAL) {
+                    plan.setType
+                } else {
+                    defaultSetType
+                }
                 val setEntity = WorkoutSetEntity(
                     workoutExerciseId = weId,
-                    setNumber = setIndex,
-                    weightKg = effectiveWeight,
-                    reps = re.defaultReps,
+                    setNumber = index + 1,
+                    weightKg = plan.weightKg,
+                    reps = plan.reps,
                     isCompleted = false,
-                    setType = initialSetType.name
+                    setType = effectiveType.name
                 )
                 workoutDao.insertWorkoutSet(setEntity)
             }
@@ -1237,7 +1381,8 @@ class GymRepository(private val database: GymDatabase) {
                 orderIndex = re.orderIndex,
                 targetSets = re.targetSets,
                 defaultWeightKg = re.defaultWeightKg,
-                defaultReps = re.defaultReps
+                defaultReps = re.defaultReps,
+                setPlansJson = re.setPlansJson
             )
         }
         routineDao.insertRoutineExercises(duplicatedExercises)
@@ -1270,13 +1415,24 @@ class GymRepository(private val database: GymDatabase) {
                     muscleGroup = exDto.muscleGroup,
                     category = exDto.category
                 )
+                val plans = if (exDto.sets.isNotEmpty()) {
+                    sanitizeRoutineSetPlans(exDto.sets)
+                } else {
+                    sanitizeRoutineSetPlans(
+                        null,
+                        fallbackSets = exDto.targetSets,
+                        fallbackWeight = exDto.defaultWeightKg,
+                        fallbackReps = exDto.defaultReps
+                    )
+                }
                 RoutineExerciseEntity(
                     routineId = routineId,
                     exerciseId = exerciseId,
                     orderIndex = index,
-                    targetSets = exDto.targetSets.coerceAtLeast(1),
-                    defaultWeightKg = exDto.defaultWeightKg,
-                    defaultReps = exDto.defaultReps
+                    targetSets = plans.size,
+                    defaultWeightKg = plans.firstOrNull()?.weightKg ?: 0.0,
+                    defaultReps = plans.firstOrNull()?.reps ?: 10,
+                    setPlansJson = serializeSetPlans(plans)
                 )
             }
             routineDao.insertRoutineExercises(routineExercises)
@@ -1341,19 +1497,36 @@ class GymRepository(private val database: GymDatabase) {
         workout.exercises.forEachIndexed { index, we ->
             val existingRe = exerciseMap[we.exercise.id]
             val completedSets = we.sets.filter { it.isCompleted && it.setType != SetType.WARMUP }
-            val effectiveSet = completedSets.lastOrNull() ?: we.sets.lastOrNull()
-            val newDefaultWeight = effectiveSet?.weightKg ?: existingRe?.defaultWeightKg ?: 0.0
-            val newDefaultReps = effectiveSet?.reps ?: existingRe?.defaultReps ?: 10
-            val targetCount = if (completedSets.isNotEmpty()) completedSets.size else (existingRe?.targetSets ?: we.sets.size.coerceAtLeast(1))
+            val sourceSets = completedSets.ifEmpty {
+                we.sets.filter { it.setType != SetType.WARMUP }
+            }.ifEmpty { we.sets }
+
+            val plans = if (sourceSets.isNotEmpty()) {
+                sourceSets.map { s ->
+                    RoutineSetPlan(
+                        weightKg = sanitizeRoutineDefaultWeight(s.weightKg),
+                        reps = sanitizeRoutineDefaultReps(s.reps),
+                        setType = s.setType
+                    )
+                }
+            } else {
+                parseSetPlansJson(
+                    existingRe?.setPlansJson,
+                    existingRe?.targetSets ?: 3,
+                    existingRe?.defaultWeightKg ?: 0.0,
+                    existingRe?.defaultReps ?: 10
+                )
+            }
 
             updatedRoutineExercises.add(
                 RoutineExerciseEntity(
                     routineId = routineId,
                     exerciseId = we.exercise.id,
                     orderIndex = index,
-                    targetSets = targetCount.coerceAtLeast(1),
-                    defaultWeightKg = newDefaultWeight,
-                    defaultReps = newDefaultReps
+                    targetSets = plans.size,
+                    defaultWeightKg = plans.firstOrNull()?.weightKg ?: 0.0,
+                    defaultReps = plans.firstOrNull()?.reps ?: 10,
+                    setPlansJson = serializeSetPlans(plans)
                 )
             )
         }

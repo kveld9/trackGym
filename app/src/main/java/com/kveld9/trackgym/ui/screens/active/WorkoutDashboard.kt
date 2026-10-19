@@ -3,6 +3,7 @@ package com.kveld9.trackgym.ui.screens.active
 import com.kveld9.trackgym.ui.theme.subtleBorder
 import android.content.Intent
 import com.kveld9.trackgym.domain.calculator.RoutineBiomechanicalBalanceEngine
+import com.kveld9.trackgym.domain.model.RoutineSetPlan
 import com.kveld9.trackgym.domain.util.RoutineShareCodec
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -92,7 +93,10 @@ fun EmptyWorkoutDashboard(
     allExercises: List<Exercise> = emptyList(),
     onAddExerciseToRoutine: ((Long, Long) -> Unit)? = null,
     onRemoveExerciseFromRoutine: ((Long) -> Unit)? = null,
-    onUpdateRoutineExercise: ((Long, Int, Double, Int) -> Unit)? = null,
+    onUpdateRoutineSetPlan: ((Long, Int, RoutineSetPlan) -> Unit)? = null,
+    onAddRoutineSet: ((Long) -> Unit)? = null,
+    onRemoveRoutineSet: ((Long, Int) -> Unit)? = null,
+    onDuplicateRoutineSet: ((Long, Int) -> Unit)? = null,
     onMoveRoutineExercise: ((Long, Int, Int) -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
@@ -456,8 +460,17 @@ fun EmptyWorkoutDashboard(
             onRemoveExercise = { routineExerciseId ->
                 onRemoveExerciseFromRoutine?.invoke(routineExerciseId)
             },
-            onUpdateExercise = { routineExerciseId, targetSets, defaultWeightKg, defaultReps ->
-                onUpdateRoutineExercise?.invoke(routineExerciseId, targetSets, defaultWeightKg, defaultReps)
+            onUpdateSetPlan = { routineExerciseId, setIndex, plan ->
+                onUpdateRoutineSetPlan?.invoke(routineExerciseId, setIndex, plan)
+            },
+            onAddSet = { routineExerciseId ->
+                onAddRoutineSet?.invoke(routineExerciseId)
+            },
+            onRemoveSet = { routineExerciseId, setIndex ->
+                onRemoveRoutineSet?.invoke(routineExerciseId, setIndex)
+            },
+            onDuplicateSet = { routineExerciseId, setIndex ->
+                onDuplicateRoutineSet?.invoke(routineExerciseId, setIndex)
             },
             onMoveExercise = { fromIndex, toIndex ->
                 onMoveRoutineExercise?.invoke(routineToBuild.id, fromIndex, toIndex)

@@ -33,6 +33,7 @@ import com.kveld9.trackgym.domain.model.GymEquipmentProfile
 import com.kveld9.trackgym.domain.model.MuscleHeatmapState
 import com.kveld9.trackgym.domain.model.Routine
 import com.kveld9.trackgym.domain.model.RoutineFolder
+import com.kveld9.trackgym.domain.model.RoutineSetPlan
 import com.kveld9.trackgym.domain.model.WeightUnit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -858,6 +859,34 @@ class GymViewModel(
     ) {
         viewModelScope.launch {
             repository.updateRoutineExercise(routineExerciseId, targetSets, defaultWeightKg, defaultReps)
+        }
+    }
+
+    fun updateRoutineSetPlan(
+        routineExerciseId: Long,
+        setIndex: Int,
+        plan: RoutineSetPlan
+    ) {
+        viewModelScope.launch {
+            repository.updateRoutineSetPlan(routineExerciseId, setIndex, plan)
+        }
+    }
+
+    fun addRoutineSet(routineExerciseId: Long) {
+        viewModelScope.launch {
+            repository.addRoutineSet(routineExerciseId)
+        }
+    }
+
+    fun removeRoutineSet(routineExerciseId: Long, setIndex: Int) {
+        viewModelScope.launch {
+            repository.removeRoutineSet(routineExerciseId, setIndex)
+        }
+    }
+
+    fun duplicateRoutineSet(routineExerciseId: Long, setIndex: Int) {
+        viewModelScope.launch {
+            repository.duplicateRoutineSet(routineExerciseId, setIndex)
         }
     }
 

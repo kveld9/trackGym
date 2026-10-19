@@ -76,11 +76,27 @@ interface RoutineDao {
     @Query("DELETE FROM routine_exercises WHERE id = :id")
     suspend fun deleteRoutineExercise(id: Long)
 
+    @Query("SELECT * FROM routine_exercises WHERE id = :id")
+    suspend fun getRoutineExerciseById(id: Long): RoutineExerciseEntity?
+
     @Query(
         "UPDATE routine_exercises SET targetSets = :targetSets, " +
             "defaultWeightKg = :defaultWeightKg, defaultReps = :defaultReps WHERE id = :id"
     )
     suspend fun updateRoutineExerciseDetails(id: Long, targetSets: Int, defaultWeightKg: Double, defaultReps: Int)
+
+    @Query(
+        "UPDATE routine_exercises SET targetSets = :targetSets, " +
+            "defaultWeightKg = :defaultWeightKg, defaultReps = :defaultReps, " +
+            "setPlansJson = :setPlansJson WHERE id = :id"
+    )
+    suspend fun updateRoutineExercisePlans(
+        id: Long,
+        targetSets: Int,
+        defaultWeightKg: Double,
+        defaultReps: Int,
+        setPlansJson: String
+    )
 
     @Query("UPDATE routine_exercises SET orderIndex = :orderIndex WHERE id = :id")
     suspend fun updateRoutineExerciseOrder(id: Long, orderIndex: Int)

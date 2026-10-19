@@ -31,5 +31,6 @@ data class RoutineExerciseEntity(
     val orderIndex: Int = 0,
     val targetSets: Int = 3,
     val defaultWeightKg: Double = 0.0,
-    val defaultReps: Int = 10
+    val defaultReps: Int = 10,
+    val setPlansJson: String? = null
 )
