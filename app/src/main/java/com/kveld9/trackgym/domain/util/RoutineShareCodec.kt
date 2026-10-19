@@ -42,19 +42,22 @@ object RoutineShareCodec {
         val fastDecoded = runCatching {
             json.decodeFromJsonElement<List<RoutineSetPlan>>(array)
         }.getOrNull()
-        if (!fastDecoded.isNullOrEmpty()) {
-            return fastDecoded
+        return if (!fastDecoded.isNullOrEmpty()) {
+            fastDecoded
+        } else {
+            array.mapNotNull(::recoverSetPlanElement)
         }
-        return array.mapNotNull { elem ->
+    }
+
+    private fun recoverSetPlanElement(elem: JsonElement): RoutineSetPlan? {
+        return runCatching {
+            json.decodeFromJsonElement<RoutineSetPlan>(elem)
+        }.getOrElse {
+            val obj = elem as? JsonObject ?: return@getOrElse null
             runCatching {
-                json.decodeFromJsonElement<RoutineSetPlan>(elem)
-            }.getOrElse {
-                val obj = elem as? JsonObject ?: return@getOrElse null
-                runCatching {
-                    val sanitized = JsonObject(obj.filterKeys { it != "setType" })
-                    json.decodeFromJsonElement<RoutineSetPlan>(sanitized)
-                }.getOrNull()
-            }
+                val sanitized = JsonObject(obj.filterKeys { it != "setType" })
+                json.decodeFromJsonElement<RoutineSetPlan>(sanitized)
+            }.getOrNull()
         }
     }
 
@@ -134,6 +137,10 @@ object RoutineShareCodec {
 
     private fun recoverExercise(exElem: JsonElement): RoutineShareExerciseDto? {
         val exObj = exElem as? JsonObject ?: return null
+        return decodeExerciseWithSets(exObj)
+    }
+
+    private fun decodeExerciseWithSets(exObj: JsonObject): RoutineShareExerciseDto? {
         val baseEx = runCatching {
             json.decodeFromJsonElement(
                 RoutineShareExerciseDto.serializer(),
@@ -159,6 +166,25 @@ object RoutineShareCodec {
         return baseEx.copy(sets = recoveredSets)
     }
 
+    private fun recoverRoutineDto(jsonString: String): RoutineShareDto? {
+        return runCatching {
+            val rootElement = json.parseToJsonElement(jsonString) as? JsonObject ?: return@runCatching null
+            val baseDto = json.decodeFromJsonElement(
+                RoutineShareDto.serializer(),
+                JsonObject(rootElement.filterKeys { it != "exercises" })
+            )
+            val exercisesArray = rootElement["exercises"] as? JsonArray
+            if (exercisesArray == null) {
+                baseDto
+            } else {
+                val recovered = exercisesArray.map { exElem ->
+                    recoverExercise(exElem) ?: return@runCatching null
+                }
+                baseDto.copy(exercises = recovered)
+            }
+        }.getOrNull()
+    }
+
     fun decodeFromText(rawText: String): RoutineShareDto? {
         val tokenIndex = rawText.indexOf(PREFIX)
         val token = if (tokenIndex != -1) {
@@ -176,23 +202,12 @@ object RoutineShareCodec {
         val fastParsed = runCatching {
             json.decodeFromString(RoutineShareDto.serializer(), jsonString)
         }.getOrNull()
-        if (fastParsed != null && (fastParsed.exercises.isEmpty() || fastParsed.exercises.all { it.sets.isNotEmpty() })) {
-            return fastParsed
-        }
-
-        return try {
-            val rootElement = json.parseToJsonElement(jsonString) as? JsonObject ?: return null
-            val baseDto = json.decodeFromJsonElement(
-                RoutineShareDto.serializer(),
-                JsonObject(rootElement.filterKeys { it != "exercises" })
-            )
-            val exercisesArray = rootElement["exercises"] as? JsonArray ?: return baseDto
-            val recoveredExercises = exercisesArray.map { exElem ->
-                recoverExercise(exElem) ?: return null
-            }
-            baseDto.copy(exercises = recoveredExercises)
-        } catch (_: Exception) {
-            null
+        val fastParsedValid = fastParsed != null &&
+            (fastParsed.exercises.isEmpty() || fastParsed.exercises.all { it.sets.isNotEmpty() })
+        return if (fastParsedValid) {
+            fastParsed
+        } else {
+            recoverRoutineDto(jsonString)
         }
     }
 }

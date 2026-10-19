@@ -1159,13 +1159,16 @@ class GymRepository(private val database: GymDatabase) {
         defaultWeightKg: Double,
         defaultReps: Int
     ) = withContext(Dispatchers.IO) {
-        val safeSets = sanitizeRoutineTargetSets(targetSets)
-        val safeWeight = sanitizeRoutineDefaultWeight(defaultWeightKg)
-        val safeReps = sanitizeRoutineDefaultReps(defaultReps)
-        val plans = List(safeSets) {
-            RoutineSetPlan(weightKg = safeWeight, reps = safeReps)
+        // withTransaction guarantees crash-atomicity; mutex serializes concurrent writers.
+        routinePlanMutationMutex.withLock {
+            val safeSets = sanitizeRoutineTargetSets(targetSets)
+            val safeWeight = sanitizeRoutineDefaultWeight(defaultWeightKg)
+            val safeReps = sanitizeRoutineDefaultReps(defaultReps)
+            val plans = List(safeSets) {
+                RoutineSetPlan(weightKg = safeWeight, reps = safeReps)
+            }
+            updateRoutineExercisePlans(routineExerciseId, plans)
         }
-        updateRoutineExercisePlans(routineExerciseId, plans)
     }
 
     suspend fun updateRoutineExercisePlans(

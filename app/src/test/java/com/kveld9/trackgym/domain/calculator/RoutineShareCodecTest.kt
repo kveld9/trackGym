@@ -149,7 +149,9 @@ class RoutineShareCodecTest {
             "tgroutine:" + Base64.getEncoder().encodeToString("not json at all".toByteArray(Charsets.UTF_8)),
             "tgroutine:" + Base64.getEncoder().encodeToString("""{"random": "value"}""".toByteArray(Charsets.UTF_8)),
             "tgroutine:" + Base64.getEncoder().encodeToString("""[1, 2, 3]""".toByteArray(Charsets.UTF_8)),
-            "tgroutine:" + Base64.getEncoder().encodeToString("""{"name": "Bad Ex", "exercises": ["not-an-object"]}""".toByteArray(Charsets.UTF_8))
+            "tgroutine:" + Base64.getEncoder().encodeToString(
+                """{"name": "Bad Ex", "exercises": ["not-an-object"]}""".toByteArray(Charsets.UTF_8)
+            )
         )
 
         garbageCases.forEach { shareText ->
