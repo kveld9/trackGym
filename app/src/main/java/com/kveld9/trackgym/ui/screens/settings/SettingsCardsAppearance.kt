@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -115,8 +116,9 @@ private fun ThemeModeRow(
                 selected = isSelected,
                 onClick = { onSetThemeMode(mode) },
                 shape = SegmentedButtonDefaults.itemShape(index = index, count = themeOptions.size),
+                modifier = Modifier.defaultMinSize(minHeight = 48.dp),
                 icon = {
-                    SegmentedButtonDefaults.Icon(active = isSelected) {
+                    SegmentedButtonDefaults.Icon(active = themeMode == mode) {
                         Icon(
                             imageVector = icon,
                             contentDescription = null,
@@ -176,6 +178,7 @@ private fun ExerciseLanguageRow(
                 selected = isSelected,
                 onClick = { onSetExerciseLanguage(lang) },
                 shape = SegmentedButtonDefaults.itemShape(index = index, count = languageOptions.size),
+                modifier = Modifier.defaultMinSize(minHeight = 48.dp),
                 label = {
                     Text(
                         text = label,
