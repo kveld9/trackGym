@@ -59,10 +59,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.json.JsonArray
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.decodeFromJsonElement
 
 class GymRepository(private val database: GymDatabase) {
 
@@ -71,6 +70,7 @@ class GymRepository(private val database: GymDatabase) {
     private val prDao = database.personalRecordDao()
     private val routineDao = database.routineDao()
     private val customCategoryDao = database.customCategoryDao()
+    private val routinePlanMutationMutex = Mutex()
 
     suspend fun ensureDefaultExercisesSeeded() = withContext(Dispatchers.IO) {
         if (exerciseDao.countExercises() == 0) {
@@ -1101,20 +1101,10 @@ class GymRepository(private val database: GymDatabase) {
                 val survivors = if (!fastParsed.isNullOrEmpty()) {
                     fastParsed
                 } else {
-                    val array = runCatching {
-                        RoutineShareCodec.json.parseToJsonElement(jsonStr) as? JsonArray
+                    val element = runCatching {
+                        RoutineShareCodec.json.parseToJsonElement(jsonStr)
                     }.getOrNull()
-                    array?.mapNotNull { elem ->
-                        runCatching {
-                            RoutineShareCodec.json.decodeFromJsonElement<RoutineSetPlan>(elem)
-                        }.getOrElse {
-                            val obj = elem as? JsonObject ?: return@getOrElse null
-                            runCatching {
-                                val sanitized = JsonObject(obj.filterKeys { it != "setType" })
-                                RoutineShareCodec.json.decodeFromJsonElement<RoutineSetPlan>(sanitized)
-                            }.getOrNull()
-                        }
-                    }.orEmpty()
+                    RoutineShareCodec.recoverSetPlans(element)
                 }
                 if (survivors.isNotEmpty()) {
                     return sanitizeRoutineSetPlans(survivors)
@@ -1197,17 +1187,20 @@ class GymRepository(private val database: GymDatabase) {
         setIndex: Int,
         updatedPlan: RoutineSetPlan
     ) = withContext(Dispatchers.IO) {
-        database.withTransaction {
-            val exercise = routineDao.getRoutineExerciseById(routineExerciseId) ?: return@withTransaction
-            val currentPlans = parseSetPlansJson(
-                exercise.setPlansJson,
-                exercise.targetSets,
-                exercise.defaultWeightKg,
-                exercise.defaultReps
-            ).toMutableList()
-            if (setIndex in currentPlans.indices) {
-                currentPlans[setIndex] = sanitizeRoutineSetPlan(updatedPlan)
-                updateRoutineExercisePlans(routineExerciseId, currentPlans)
+        // withTransaction guarantees crash-atomicity; mutex serializes concurrent writers.
+        routinePlanMutationMutex.withLock {
+            database.withTransaction {
+                val exercise = routineDao.getRoutineExerciseById(routineExerciseId) ?: return@withTransaction
+                val currentPlans = parseSetPlansJson(
+                    exercise.setPlansJson,
+                    exercise.targetSets,
+                    exercise.defaultWeightKg,
+                    exercise.defaultReps
+                ).toMutableList()
+                if (setIndex in currentPlans.indices) {
+                    currentPlans[setIndex] = sanitizeRoutineSetPlan(updatedPlan)
+                    updateRoutineExercisePlans(routineExerciseId, currentPlans)
+                }
             }
         }
     }
@@ -1215,17 +1208,20 @@ class GymRepository(private val database: GymDatabase) {
     suspend fun addRoutineSet(
         routineExerciseId: Long
     ) = withContext(Dispatchers.IO) {
-        database.withTransaction {
-            val exercise = routineDao.getRoutineExerciseById(routineExerciseId) ?: return@withTransaction
-            val currentPlans = parseSetPlansJson(
-                exercise.setPlansJson,
-                exercise.targetSets,
-                exercise.defaultWeightKg,
-                exercise.defaultReps
-            ).toMutableList()
-            val lastPlan = currentPlans.lastOrNull() ?: RoutineSetPlan()
-            currentPlans.add(lastPlan.copy())
-            updateRoutineExercisePlans(routineExerciseId, currentPlans)
+        // withTransaction guarantees crash-atomicity; mutex serializes concurrent writers.
+        routinePlanMutationMutex.withLock {
+            database.withTransaction {
+                val exercise = routineDao.getRoutineExerciseById(routineExerciseId) ?: return@withTransaction
+                val currentPlans = parseSetPlansJson(
+                    exercise.setPlansJson,
+                    exercise.targetSets,
+                    exercise.defaultWeightKg,
+                    exercise.defaultReps
+                ).toMutableList()
+                val lastPlan = currentPlans.lastOrNull() ?: RoutineSetPlan()
+                currentPlans.add(lastPlan.copy())
+                updateRoutineExercisePlans(routineExerciseId, currentPlans)
+            }
         }
     }
 
@@ -1233,17 +1229,20 @@ class GymRepository(private val database: GymDatabase) {
         routineExerciseId: Long,
         setIndex: Int
     ) = withContext(Dispatchers.IO) {
-        database.withTransaction {
-            val exercise = routineDao.getRoutineExerciseById(routineExerciseId) ?: return@withTransaction
-            val currentPlans = parseSetPlansJson(
-                exercise.setPlansJson,
-                exercise.targetSets,
-                exercise.defaultWeightKg,
-                exercise.defaultReps
-            ).toMutableList()
-            if (currentPlans.size > 1 && setIndex in currentPlans.indices) {
-                currentPlans.removeAt(setIndex)
-                updateRoutineExercisePlans(routineExerciseId, currentPlans)
+        // withTransaction guarantees crash-atomicity; mutex serializes concurrent writers.
+        routinePlanMutationMutex.withLock {
+            database.withTransaction {
+                val exercise = routineDao.getRoutineExerciseById(routineExerciseId) ?: return@withTransaction
+                val currentPlans = parseSetPlansJson(
+                    exercise.setPlansJson,
+                    exercise.targetSets,
+                    exercise.defaultWeightKg,
+                    exercise.defaultReps
+                ).toMutableList()
+                if (currentPlans.size > 1 && setIndex in currentPlans.indices) {
+                    currentPlans.removeAt(setIndex)
+                    updateRoutineExercisePlans(routineExerciseId, currentPlans)
+                }
             }
         }
     }
@@ -1252,18 +1251,21 @@ class GymRepository(private val database: GymDatabase) {
         routineExerciseId: Long,
         setIndex: Int
     ) = withContext(Dispatchers.IO) {
-        database.withTransaction {
-            val exercise = routineDao.getRoutineExerciseById(routineExerciseId) ?: return@withTransaction
-            val currentPlans = parseSetPlansJson(
-                exercise.setPlansJson,
-                exercise.targetSets,
-                exercise.defaultWeightKg,
-                exercise.defaultReps
-            ).toMutableList()
-            if (setIndex in currentPlans.indices) {
-                val toCopy = currentPlans[setIndex]
-                currentPlans.add(setIndex + 1, toCopy.copy())
-                updateRoutineExercisePlans(routineExerciseId, currentPlans)
+        // withTransaction guarantees crash-atomicity; mutex serializes concurrent writers.
+        routinePlanMutationMutex.withLock {
+            database.withTransaction {
+                val exercise = routineDao.getRoutineExerciseById(routineExerciseId) ?: return@withTransaction
+                val currentPlans = parseSetPlansJson(
+                    exercise.setPlansJson,
+                    exercise.targetSets,
+                    exercise.defaultWeightKg,
+                    exercise.defaultReps
+                ).toMutableList()
+                if (setIndex in currentPlans.indices) {
+                    val toCopy = currentPlans[setIndex]
+                    currentPlans.add(setIndex + 1, toCopy.copy())
+                    updateRoutineExercisePlans(routineExerciseId, currentPlans)
+                }
             }
         }
     }

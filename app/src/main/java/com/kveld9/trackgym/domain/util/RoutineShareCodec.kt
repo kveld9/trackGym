@@ -1,9 +1,14 @@
 package com.kveld9.trackgym.domain.util
 
+import com.kveld9.trackgym.domain.calculator.sanitizeRoutineSetPlans
 import com.kveld9.trackgym.domain.model.Routine
 import com.kveld9.trackgym.domain.model.RoutineSetPlan
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.decodeFromJsonElement
 import java.nio.charset.StandardCharsets
 
 @Serializable
@@ -30,6 +35,27 @@ object RoutineShareCodec {
     val json = Json {
         ignoreUnknownKeys = true
         encodeDefaults = true
+    }
+
+    internal fun recoverSetPlans(element: JsonElement?): List<RoutineSetPlan> {
+        val array = element as? JsonArray ?: return emptyList()
+        val fastDecoded = runCatching {
+            json.decodeFromJsonElement<List<RoutineSetPlan>>(array)
+        }.getOrNull()
+        if (!fastDecoded.isNullOrEmpty()) {
+            return fastDecoded
+        }
+        return array.mapNotNull { elem ->
+            runCatching {
+                json.decodeFromJsonElement<RoutineSetPlan>(elem)
+            }.getOrElse {
+                val obj = elem as? JsonObject ?: return@getOrElse null
+                runCatching {
+                    val sanitized = JsonObject(obj.filterKeys { it != "setType" })
+                    json.decodeFromJsonElement<RoutineSetPlan>(sanitized)
+                }.getOrNull()
+            }
+        }
     }
 
     private fun base64Encode(bytes: ByteArray): String {
@@ -106,6 +132,33 @@ object RoutineShareCodec {
         return summaryBuilder.toString()
     }
 
+    private fun recoverExercise(exElem: JsonElement): RoutineShareExerciseDto? {
+        val exObj = exElem as? JsonObject ?: return null
+        val baseEx = runCatching {
+            json.decodeFromJsonElement(
+                RoutineShareExerciseDto.serializer(),
+                JsonObject(exObj.filterKeys { it != "sets" })
+            )
+        }.getOrNull() ?: return null
+
+        val recoveredSets = if ("sets" in exObj) {
+            val survivors = recoverSetPlans(exObj["sets"])
+            if (survivors.isNotEmpty()) {
+                sanitizeRoutineSetPlans(survivors)
+            } else {
+                sanitizeRoutineSetPlans(
+                    null,
+                    fallbackSets = baseEx.targetSets,
+                    fallbackWeight = baseEx.defaultWeightKg,
+                    fallbackReps = baseEx.defaultReps
+                )
+            }
+        } else {
+            emptyList()
+        }
+        return baseEx.copy(sets = recoveredSets)
+    }
+
     fun decodeFromText(rawText: String): RoutineShareDto? {
         val tokenIndex = rawText.indexOf(PREFIX)
         val token = if (tokenIndex != -1) {
@@ -113,10 +166,31 @@ object RoutineShareCodec {
         } else {
             rawText.trim()
         }
-        return try {
+        val jsonString = try {
             val decodedBytes = base64Decode(token)
-            val jsonString = String(decodedBytes, StandardCharsets.UTF_8)
+            String(decodedBytes, StandardCharsets.UTF_8)
+        } catch (_: Exception) {
+            return null
+        }
+
+        val fastParsed = runCatching {
             json.decodeFromString(RoutineShareDto.serializer(), jsonString)
+        }.getOrNull()
+        if (fastParsed != null && (fastParsed.exercises.isEmpty() || fastParsed.exercises.all { it.sets.isNotEmpty() })) {
+            return fastParsed
+        }
+
+        return try {
+            val rootElement = json.parseToJsonElement(jsonString) as? JsonObject ?: return null
+            val baseDto = json.decodeFromJsonElement(
+                RoutineShareDto.serializer(),
+                JsonObject(rootElement.filterKeys { it != "exercises" })
+            )
+            val exercisesArray = rootElement["exercises"] as? JsonArray ?: return baseDto
+            val recoveredExercises = exercisesArray.map { exElem ->
+                recoverExercise(exElem) ?: return null
+            }
+            baseDto.copy(exercises = recoveredExercises)
         } catch (_: Exception) {
             null
         }
