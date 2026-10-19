@@ -182,6 +182,7 @@ fun FloatingRestTimer(
 fun ActiveWorkoutTopBar(
     timerSeconds: () -> Long,
     scrollBehavior: TopAppBarScrollBehavior? = null,
+    hasExercises: Boolean = true,
     onFinishClick: () -> Unit,
     onCancelClick: () -> Unit,
     onSaveAsRoutineClick: () -> Unit
@@ -253,12 +254,24 @@ fun ActiveWorkoutTopBar(
             }
 
             Spacer(modifier = Modifier.width(4.dp))
+            val (finishContainerColor, finishContentColor) = if (hasExercises) {
+                MaterialTheme.colorScheme.primary to MaterialTheme.colorScheme.onPrimary
+            } else {
+                MaterialTheme.colorScheme.surfaceContainerHigh to MaterialTheme.colorScheme.onSurfaceVariant
+            }
             Button(
                 onClick = onFinishClick,
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = finishContainerColor,
+                    contentColor = finishContentColor
+                ),
                 shape = RoundedCornerShape(10.dp)
             ) {
-                Text(stringResource(R.string.action_finish), color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Bold)
+                Text(
+                    text = stringResource(R.string.action_finish),
+                    color = finishContentColor,
+                    fontWeight = FontWeight.Bold
+                )
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)

@@ -340,12 +340,14 @@ fun ActiveWorkoutScreen(
         )
     } else {
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+        val hasExercises = !activeWorkout?.exercises.isNullOrEmpty()
         Scaffold(
             snackbarHost = { SnackbarHost(snackbarHostState) },
             topBar = {
                 ActiveWorkoutTopBar(
                     timerSeconds = { timerSecondsState.value },
                     scrollBehavior = scrollBehavior,
+                    hasExercises = hasExercises,
                     onFinishClick = { showFinishDialog = true },
                     onCancelClick = { showDiscardDialog = true },
                     onSaveAsRoutineClick = {
@@ -513,19 +515,31 @@ fun ActiveWorkoutScreen(
                     }
 
                     item {
+                        val (addBtnContainerColor, addBtnContentColor) = if (hasExercises) {
+                            MaterialTheme.colorScheme.surfaceContainerHigh to MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.primary to MaterialTheme.colorScheme.onPrimary
+                        }
                         Button(
                             onClick = { showExercisePicker = true },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(52.dp),
                             shape = RoundedCornerShape(12.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh)
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = addBtnContainerColor,
+                                contentColor = addBtnContentColor
+                            )
                         ) {
-                            Icon(Icons.Default.Add, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                            Icon(
+                                Icons.Default.Add,
+                                contentDescription = null,
+                                tint = addBtnContentColor
+                            )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
                                 text = stringResource(R.string.btn_add_exercise),
-                                color = MaterialTheme.colorScheme.primary,
+                                color = addBtnContentColor,
                                 fontWeight = FontWeight.SemiBold
                             )
                         }
