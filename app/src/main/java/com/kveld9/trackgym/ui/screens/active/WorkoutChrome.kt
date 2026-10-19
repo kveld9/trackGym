@@ -1,5 +1,6 @@
 package com.kveld9.trackgym.ui.screens.active
 
+import java.util.Locale
 import com.kveld9.trackgym.ui.theme.subtleBorder
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -187,9 +188,14 @@ fun ActiveWorkoutTopBar(
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
     val elapsed = timerSeconds()
-    val minutes = elapsed / 60
+    val hours = elapsed / 3600
+    val minutes = (elapsed % 3600) / 60
     val seconds = elapsed % 60
-    val timeFormatted = String.format("%02d:%02d", minutes, seconds)
+    val timeFormatted = if (hours > 0) {
+        String.format(Locale.US, "%02d:%02d:%02d", hours, minutes, seconds)
+    } else {
+        String.format(Locale.US, "%02d:%02d", minutes, seconds)
+    }
 
     TopAppBar(
         scrollBehavior = scrollBehavior,
