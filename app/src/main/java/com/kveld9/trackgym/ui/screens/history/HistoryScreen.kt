@@ -31,6 +31,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.AlertDialog
@@ -94,7 +95,8 @@ fun HistoryScreen(
     viewModel: GymViewModel,
     onWorkoutClick: (Long) -> Unit,
     modifier: Modifier = Modifier,
-    weightUnit: WeightUnit = WeightUnit.KG
+    weightUnit: WeightUnit = WeightUnit.KG,
+    onStartWorkoutClick: () -> Unit = {}
 ) {
     val completedWorkouts by viewModel.completedWorkouts.collectAsStateWithLifecycle()
     val consistencyStats by viewModel.consistencyStats.collectAsStateWithLifecycle()
@@ -145,7 +147,10 @@ fun HistoryScreen(
         modifier = modifier
     ) { paddingValues ->
         if (completedWorkouts.isEmpty()) {
-            EmptyHistoryView(modifier = Modifier.padding(paddingValues))
+            EmptyHistoryView(
+                onStartWorkoutClick = onStartWorkoutClick,
+                modifier = Modifier.padding(paddingValues)
+            )
         } else {
             Column(
                 modifier = Modifier
@@ -694,7 +699,10 @@ private fun WorkoutCardStatsRow(
 }
 
 @Composable
-fun EmptyHistoryView(modifier: Modifier = Modifier) {
+fun EmptyHistoryView(
+    modifier: Modifier = Modifier,
+    onStartWorkoutClick: (() -> Unit)? = null
+) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -729,6 +737,37 @@ fun EmptyHistoryView(modifier: Modifier = Modifier) {
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             fontSize = 14.sp,
             textAlign = TextAlign.Center
+        )
+        if (onStartWorkoutClick != null) {
+            Spacer(modifier = Modifier.height(24.dp))
+            StartWorkoutCtaButton(onClick = onStartWorkoutClick)
+        }
+    }
+}
+
+@Composable
+private fun StartWorkoutCtaButton(onClick: () -> Unit) {
+    Button(
+        onClick = onClick,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary
+        ),
+        shape = RoundedCornerShape(12.dp),
+        modifier = Modifier
+            .defaultMinSize(minHeight = 48.dp)
+            .height(48.dp)
+    ) {
+        Icon(
+            imageVector = Icons.Default.FitnessCenter,
+            contentDescription = null,
+            modifier = Modifier.size(20.dp)
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            text = stringResource(R.string.tab_train),
+            fontWeight = FontWeight.Bold,
+            fontSize = 15.sp
         )
     }
 }
