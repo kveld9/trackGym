@@ -150,7 +150,7 @@ fun WorkoutExerciseCard(
         border = if (supersetColor != null) {
             BorderStroke(2.dp, supersetColor)
         } else {
-            BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+            BorderStroke(1.dp, MaterialTheme.colorScheme.subtleBorder)
         }
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -658,7 +658,6 @@ fun SwipeableSetRow(
     onUpdateSet: (WorkoutSet) -> Unit,
     onToggleComplete: (Double, Int) -> Unit,
     onDeleteSet: () -> Unit,
-    showDeleteButton: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     val dismissState = rememberSwipeToDismissBoxState(
@@ -714,51 +713,9 @@ fun SwipeableSetRow(
             onOpenWheelPicker = onOpenWheelPicker,
             onUpdateSet = onUpdateSet,
             onToggleComplete = onToggleComplete,
-            onDeleteSet = onDeleteSet,
-            showDeleteButton = showDeleteButton
+            onDeleteSet = onDeleteSet
         )
     }
-}
-
-@Composable
-fun SetRow(
-    set: WorkoutSet,
-    weightUnit: WeightUnit = WeightUnit.KG,
-    distanceUnit: DistanceUnit = DistanceUnit.KM,
-    userBodyWeightKg: Double = 70.0,
-    previousSet: WorkoutSet? = null,
-    showInlinePlates: Boolean = true,
-    getReadySeconds: Int = 0,
-    audioCuePlayer: com.kveld9.trackgym.ui.audio.WorkoutAudioCuePlayer? = null,
-    timerSoundName: String = "DIGITAL_BEEP",
-    onOpenPlateCalculator: (Double) -> Unit = {},
-    onOpenRpeCalculator: () -> Unit = {},
-    onOpenWheelPicker: () -> Unit = {},
-    onUpdateSet: (WorkoutSet) -> Unit,
-    onToggleComplete: (Double, Int) -> Unit,
-    onDeleteSet: () -> Unit,
-    showDeleteButton: Boolean = false,
-    modifier: Modifier = Modifier
-) {
-    SwipeableSetRow(
-        set = set,
-        weightUnit = weightUnit,
-        distanceUnit = distanceUnit,
-        userBodyWeightKg = userBodyWeightKg,
-        previousSet = previousSet,
-        showInlinePlates = showInlinePlates,
-        getReadySeconds = getReadySeconds,
-        audioCuePlayer = audioCuePlayer,
-        timerSoundName = timerSoundName,
-        onOpenPlateCalculator = onOpenPlateCalculator,
-        onOpenRpeCalculator = onOpenRpeCalculator,
-        onOpenWheelPicker = onOpenWheelPicker,
-        onUpdateSet = onUpdateSet,
-        onToggleComplete = onToggleComplete,
-        onDeleteSet = onDeleteSet,
-        showDeleteButton = showDeleteButton,
-        modifier = modifier
-    )
 }
 
 @Composable
@@ -777,8 +734,7 @@ fun SetRowItem(
     onOpenWheelPicker: () -> Unit = {},
     onUpdateSet: (WorkoutSet) -> Unit,
     onToggleComplete: (Double, Int) -> Unit,
-    onDeleteSet: () -> Unit,
-    showDeleteButton: Boolean = false
+    onDeleteSet: () -> Unit
 ) {
     var weightText by remember(set.id) {
         mutableStateOf(
@@ -1192,8 +1148,6 @@ fun SetRowItem(
             // Complete Checkbox Button (48x48 dp minimum touch target)
             SetActionButtons(
                 isCompleted = set.isCompleted,
-                showDeleteButton = showDeleteButton,
-                onDeleteSet = onDeleteSet,
                 onToggleComplete = {
                     isStopwatchRunning = false
                     val finalWeightKg = if (isCardio) {
@@ -1504,8 +1458,6 @@ fun SetRpeChip(
 private fun SetActionButtons(
     isCompleted: Boolean,
     onToggleComplete: () -> Unit,
-    showDeleteButton: Boolean = false,
-    onDeleteSet: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val checkBgColor by animateColorAsState(
@@ -1522,22 +1474,6 @@ private fun SetActionButtons(
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (showDeleteButton) {
-            IconButton(
-                onClick = onDeleteSet,
-                modifier = Modifier
-                    .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
-                    .size(48.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = stringResource(R.string.action_delete_set),
-                    tint = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.size(20.dp)
-                )
-            }
-        }
-
         Box(
             modifier = Modifier
                 .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)

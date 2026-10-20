@@ -20,6 +20,28 @@ class DurationFormatterTest {
     }
 
     @Test
+    fun formatSecondsToWorkoutTime_formatsTimesAcrossThresholdsCorrectly() {
+        // Negative values and zero
+        assertEquals("00:00", DurationFormatter.formatSecondsToWorkoutTime(-15))
+        assertEquals("00:00", DurationFormatter.formatSecondsToWorkoutTime(0))
+
+        // < 3600 (under 1 hour: mm:ss)
+        assertEquals("00:45", DurationFormatter.formatSecondsToWorkoutTime(45))
+        assertEquals("02:30", DurationFormatter.formatSecondsToWorkoutTime(150))
+        assertEquals("59:59", DurationFormatter.formatSecondsToWorkoutTime(3599))
+
+        // >= 3600 (1 hour and above: hh:mm:ss)
+        assertEquals("01:00:00", DurationFormatter.formatSecondsToWorkoutTime(3600))
+        assertEquals("01:01:05", DurationFormatter.formatSecondsToWorkoutTime(3665))
+        assertEquals("02:02:02", DurationFormatter.formatSecondsToWorkoutTime(7322))
+
+        // >= 86400 (24 hours and above, e.g. 25 hours -> 25:00:00)
+        assertEquals("24:00:00", DurationFormatter.formatSecondsToWorkoutTime(86400))
+        assertEquals("25:00:00", DurationFormatter.formatSecondsToWorkoutTime(90000))
+        assertEquals("25:01:30", DurationFormatter.formatSecondsToWorkoutTime(90090))
+    }
+
+    @Test
     fun parseInputToSeconds_digitsOnlyTwoOrFewer_parsesAsSeconds() {
         assertEquals(0, DurationFormatter.parseInputToSeconds(""))
         assertEquals(9, DurationFormatter.parseInputToSeconds("9"))

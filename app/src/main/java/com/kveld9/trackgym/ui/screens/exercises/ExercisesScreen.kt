@@ -210,7 +210,7 @@ fun ExercisesScreen(
             )
         },
         floatingActionButton = {
-            if (exercises.isNotEmpty()) {
+            if (exercises.isNotEmpty() || hasFiltersOrSearch) {
                 FloatingActionButton(
                     onClick = {
                         viewModel.clearCreateExerciseError()
