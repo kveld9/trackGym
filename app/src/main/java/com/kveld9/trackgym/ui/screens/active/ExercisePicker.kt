@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
@@ -31,6 +32,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
@@ -53,6 +55,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.platform.LocalContext
 import com.kveld9.trackgym.ui.util.LocalKeepEnglishExerciseNames
 import com.kveld9.trackgym.ui.util.displayName
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
+
+private const val SEARCH_DEBOUNCE_MS = 80L
 
 fun shouldShowRecents(
     exerciseToSubstitute: Exercise?,
@@ -98,6 +105,8 @@ fun filterPickerExercises(
 @Composable
 fun ExercisePickerContent(
     exercises: List<Exercise>,
+    modifier: Modifier = Modifier.fillMaxSize(),
+    showHeaderTitle: Boolean = true,
     recentExercises: List<Exercise> = emptyList(),
     exerciseToSubstitute: Exercise? = null,
     onSelectExercise: (Exercise) -> Unit
@@ -118,41 +127,59 @@ fun ExercisePickerContent(
         )
     }
 
-    val filteredList = remember(
-        exercises,
-        searchQuery,
-        keepEnglish,
-        selectedMuscleFilter,
-        selectedEquipmentFilter,
-        exerciseToSubstitute
-    ) {
-        filterPickerExercises(
-            exercises = exercises,
-            exerciseToSubstitute = exerciseToSubstitute,
-            searchQuery = searchQuery,
-            keepEnglish = keepEnglish,
-            selectedMuscleFilter = selectedMuscleFilter,
-            selectedEquipmentFilter = selectedEquipmentFilter
+    var filteredList by remember(exercises, selectedMuscleFilter, selectedEquipmentFilter) {
+        mutableStateOf(
+            filterPickerExercises(
+                exercises = exercises,
+                exerciseToSubstitute = exerciseToSubstitute,
+                searchQuery = "",
+                keepEnglish = keepEnglish,
+                selectedMuscleFilter = selectedMuscleFilter,
+                selectedEquipmentFilter = selectedEquipmentFilter
+            )
         )
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(540.dp)
-            .padding(16.dp)
+    LaunchedEffect(
+        searchQuery,
+        selectedMuscleFilter,
+        selectedEquipmentFilter,
+        exercises,
+        keepEnglish,
+        exerciseToSubstitute
     ) {
-        Text(
-            text = if (exerciseToSubstitute != null) {
-                stringResource(R.string.title_substitutes)
-            } else {
-                stringResource(R.string.title_select_exercise)
-            },
-            color = MaterialTheme.colorScheme.onSurface,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = if (exerciseToSubstitute != null) 2.dp else 8.dp)
-        )
+        if (searchQuery.isNotBlank()) {
+            delay(SEARCH_DEBOUNCE_MS)
+        }
+        val computed = withContext(Dispatchers.Default) {
+            filterPickerExercises(
+                exercises = exercises,
+                exerciseToSubstitute = exerciseToSubstitute,
+                searchQuery = searchQuery,
+                keepEnglish = keepEnglish,
+                selectedMuscleFilter = selectedMuscleFilter,
+                selectedEquipmentFilter = selectedEquipmentFilter
+            )
+        }
+        filteredList = computed
+    }
+
+    Column(
+        modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+    ) {
+        if (showHeaderTitle) {
+            Text(
+                text = if (exerciseToSubstitute != null) {
+                    stringResource(R.string.title_substitutes)
+                } else {
+                    stringResource(R.string.title_select_exercise)
+                },
+                color = MaterialTheme.colorScheme.onSurface,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = if (exerciseToSubstitute != null) 2.dp else 8.dp)
+            )
+        }
 
         if (exerciseToSubstitute != null) {
             Text(
@@ -325,68 +352,67 @@ fun ExercisePickerContent(
                     key = { it.id },
                     contentType = { "exercise_row" }
                 ) { exercise ->
-                    Row(
-                        modifier = Modifier
-                            .animateItem()
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(MaterialTheme.colorScheme.surfaceContainerHigh)
-                            .clickable { onSelectExercise(exercise) }
-                            .padding(14.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Column {
-                            Text(
-                                text = exercise.displayName(),
-                                color = MaterialTheme.colorScheme.onSurface,
-                                fontSize = 15.sp,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                            Spacer(modifier = Modifier.height(2.dp))
-                            val baseMeta = "${stringResource(exercise.muscleGroup.nameRes)} • " +
-                                "${stringResource(exercise.category.nameRes)} • " +
-                                "${stringResource(exercise.force.nameRes)} • " +
-                                stringResource(exercise.level.nameRes)
-                            val meta = if (exercise.modality != ExerciseModality.STRENGTH) {
-                                "$baseMeta • ${stringResource(exercise.modality.nameRes)}"
-                            } else {
-                                baseMeta
-                            }
-                            Text(
-                                text = meta,
-                                color = MaterialTheme.colorScheme.primary,
-                                fontSize = 12.sp
-                            )
-                        }
-                        if (exercise.isCustom) {
-                            Text(
-                                text = stringResource(R.string.badge_manual),
-                                color = MaterialTheme.colorScheme.primary,
-                                fontSize = 10.sp,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier
-                                    .border(1.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(4.dp))
-                                    .padding(horizontal = 6.dp, vertical = 2.dp)
-                            )
-                        } else {
-                            Text(
-                                text = stringResource(R.string.badge_preloaded),
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                fontSize = 10.sp,
-                                fontWeight = FontWeight.Medium,
-                                modifier = Modifier
-                                    .border(
-                                        width = 1.dp,
-                                        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
-                                        shape = RoundedCornerShape(4.dp)
-                                    )
-                                    .padding(horizontal = 6.dp, vertical = 2.dp)
-                            )
-                        }
-                    }
+                    ExercisePickerItemRow(
+                        exercise = exercise,
+                        onSelect = { onSelectExercise(exercise) }
+                    )
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun ExercisePickerItemRow(
+    exercise: Exercise,
+    onSelect: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(10.dp))
+            .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+            .clickable(onClick = onSelect)
+            .padding(14.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = exercise.displayName(),
+                color = MaterialTheme.colorScheme.onSurface,
+                fontSize = 15.sp,
+                fontWeight = FontWeight.SemiBold
+            )
+            Spacer(modifier = Modifier.height(2.dp))
+            val baseMeta = "${stringResource(exercise.muscleGroup.nameRes)} • " +
+                "${stringResource(exercise.category.nameRes)} • " +
+                "${stringResource(exercise.force.nameRes)} • " +
+                stringResource(exercise.level.nameRes)
+            val meta = if (exercise.modality != ExerciseModality.STRENGTH) {
+                "$baseMeta • ${stringResource(exercise.modality.nameRes)}"
+            } else {
+                baseMeta
+            }
+            Text(
+                text = meta,
+                color = MaterialTheme.colorScheme.primary,
+                fontSize = 12.sp
+            )
+        }
+        if (exercise.isCustom) {
+            Spacer(Modifier.width(8.dp))
+            Text(
+                text = stringResource(R.string.badge_manual),
+                color = MaterialTheme.colorScheme.primary,
+                fontSize = 10.sp,
+                fontWeight = FontWeight.Bold,
+                softWrap = false,
+                maxLines = 1,
+                modifier = Modifier
+                    .border(1.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(4.dp))
+                    .padding(horizontal = 6.dp, vertical = 2.dp)
+            )
         }
     }
 }

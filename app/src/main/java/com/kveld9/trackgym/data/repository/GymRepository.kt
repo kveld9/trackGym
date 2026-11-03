@@ -1126,7 +1126,7 @@ class GymRepository(private val database: GymDatabase) {
     suspend fun addExerciseToRoutine(
         routineId: Long,
         exerciseId: Long,
-        targetSets: Int = 3,
+        targetSets: Int = 1,
         defaultWeightKg: Double = 0.0,
         defaultReps: Int = 10,
         initialPlans: List<RoutineSetPlan>? = null
@@ -1303,7 +1303,7 @@ class GymRepository(private val database: GymDatabase) {
                     )
                 }
             } else {
-                List(3) { RoutineSetPlan() }
+                List(1) { RoutineSetPlan() }
             }
             RoutineExerciseEntity(
                 routineId = routineId,

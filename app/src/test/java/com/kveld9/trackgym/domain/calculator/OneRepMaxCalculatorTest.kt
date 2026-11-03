@@ -79,12 +79,12 @@ class OneRepMaxCalculatorTest {
         OneRepMaxFormula.entries.forEach { formula ->
             assert(formula.formulaExpression.isNotBlank()) { "Formula $formula expression must not be blank" }
         }
-        assertEquals("w × (1 + r / 30)", OneRepMaxFormula.EPLEY.formulaExpression)
-        assertEquals("w × 36 / (37 − r)", OneRepMaxFormula.BRZYCKI.formulaExpression)
+        assertEquals("w·(1 + r / 30)", OneRepMaxFormula.EPLEY.formulaExpression)
+        assertEquals("w·36 / (37 − r)", OneRepMaxFormula.BRZYCKI.formulaExpression)
         assertEquals("100·w / (48.8 + 53.8·e⁻⁰·⁰⁷⁵·ʳ)", OneRepMaxFormula.WATHAN.formulaExpression)
         assertEquals("100·w / (101.3 − 2.67·r)", OneRepMaxFormula.LANDER.formulaExpression)
-        assertEquals("w × r⁰·¹", OneRepMaxFormula.LOMBARDI.formulaExpression)
+        assertEquals("w·r⁰·¹", OneRepMaxFormula.LOMBARDI.formulaExpression)
         assertEquals("100·w / (52.2 + 41.9·e⁻⁰·⁰⁵⁵·ʳ)", OneRepMaxFormula.MAYHEW.formulaExpression)
-        assertEquals("w × (1 + 0.025·r)", OneRepMaxFormula.OCONNER.formulaExpression)
+        assertEquals("w·(1 + 0.025·r)", OneRepMaxFormula.OCONNER.formulaExpression)
     }
 }

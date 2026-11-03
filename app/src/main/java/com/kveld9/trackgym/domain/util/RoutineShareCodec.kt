@@ -16,7 +16,7 @@ data class RoutineShareExerciseDto(
     val name: String,
     val muscleGroup: String = "OTHER",
     val category: String = "OTHER",
-    val targetSets: Int = 3,
+    val targetSets: Int = 1,
     val defaultWeightKg: Double = 0.0,
     val defaultReps: Int = 10,
     val sets: List<RoutineSetPlan> = emptyList()

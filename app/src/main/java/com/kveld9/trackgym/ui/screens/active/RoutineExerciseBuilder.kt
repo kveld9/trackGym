@@ -125,7 +125,7 @@ fun RoutineExerciseBuilderCard(
 
             routineExercise.sets.forEachIndexed { setIndex, plan ->
                 HorizontalDivider(
-                    modifier = Modifier.padding(vertical = 8.dp),
+                    modifier = Modifier.padding(vertical = 4.dp),
                     color = MaterialTheme.colorScheme.surfaceContainerHighest
                 )
                 RoutineExerciseSetRow(
@@ -153,6 +153,46 @@ fun RoutineExerciseBuilderCard(
 }
 
 @Composable
+private fun RoutineSetSteppers(
+    plan: RoutineSetPlan,
+    onUpdatePlan: (RoutineSetPlan) -> Unit
+) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        val weightText = if (plan.weightKg % 1.0 == 0.0) {
+            "${plan.weightKg.toInt()} kg"
+        } else {
+            "${plan.weightKg} kg"
+        }
+        RoutineCompactStepper(
+            valueText = weightText,
+            onDecrement = {
+                val next = (plan.weightKg - 2.5).coerceAtLeast(0.0)
+                onUpdatePlan(plan.copy(weightKg = next))
+            },
+            onIncrement = {
+                val next = plan.weightKg + 2.5
+                onUpdatePlan(plan.copy(weightKg = next))
+            }
+        )
+
+        RoutineCompactStepper(
+            valueText = "${plan.reps} reps",
+            onDecrement = {
+                if (plan.reps > 1) {
+                    onUpdatePlan(plan.copy(reps = plan.reps - 1))
+                }
+            },
+            onIncrement = {
+                onUpdatePlan(plan.copy(reps = plan.reps + 1))
+            }
+        )
+    }
+}
+
+@Composable
 private fun RoutineExerciseSetRow(
     setIndex: Int,
     plan: RoutineSetPlan,
@@ -163,95 +203,49 @@ private fun RoutineExerciseSetRow(
 ) {
     val badgeType = resolveRoutineSetBadgeType(setIndex, allPlans)
 
-    Column(modifier = Modifier.fillMaxWidth()) {
-        RoutineExerciseSetHeader(
-            setIndex = setIndex,
-            badgeType = badgeType,
-            plan = plan,
-            canDelete = canDelete,
-            onToggleType = {
-                val nextType = when (plan.setType) {
-                    SetType.NORMAL -> SetType.WARMUP
-                    SetType.WARMUP -> SetType.DROP
-                    else -> SetType.NORMAL
-                }
-                onUpdatePlan(plan.copy(setType = nextType))
-            },
-            onRemoveSet = onRemoveSet
-        )
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            val weightText = if (plan.weightKg % 1.0 == 0.0) {
-                "${plan.weightKg.toInt()} kg"
-            } else {
-                "${plan.weightKg} kg"
-            }
-            RoutineSetStepper(
-                label = stringResource(R.string.routine_builder_default_weight),
-                valueText = weightText,
-                onDecrement = {
-                    val next = (plan.weightKg - 2.5).coerceAtLeast(0.0)
-                    onUpdatePlan(plan.copy(weightKg = next))
-                },
-                onIncrement = {
-                    val next = plan.weightKg + 2.5
-                    onUpdatePlan(plan.copy(weightKg = next))
-                }
-            )
-
-            RoutineSetStepper(
-                label = stringResource(R.string.routine_builder_target_reps),
-                valueText = plan.reps.toString(),
-                onDecrement = {
-                    if (plan.reps > 1) {
-                        onUpdatePlan(plan.copy(reps = plan.reps - 1))
-                    }
-                },
-                onIncrement = {
-                    onUpdatePlan(plan.copy(reps = plan.reps + 1))
-                }
-            )
-        }
-    }
-}
-
-@Composable
-private fun RoutineExerciseSetHeader(
-    setIndex: Int,
-    badgeType: RoutineSetBadgeType,
-    plan: RoutineSetPlan,
-    canDelete: Boolean,
-    onToggleType: () -> Unit,
-    onRemoveSet: () -> Unit
-) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(44.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        // Left: set number and badge
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
             Text(
                 text = stringResource(R.string.routine_builder_set_n, setIndex + 1),
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface
             )
-            Spacer(modifier = Modifier.width(8.dp))
             RoutineSetBadge(
                 badgeType = badgeType,
                 plan = plan,
-                onToggleType = onToggleType
+                onToggleType = {
+                    val nextType = when (plan.setType) {
+                        SetType.NORMAL -> SetType.WARMUP
+                        SetType.WARMUP -> SetType.DROP
+                        else -> SetType.NORMAL
+                    }
+                    onUpdatePlan(plan.copy(setType = nextType))
+                }
             )
         }
 
+        // Center: two compact steppers (weight, reps)
+        RoutineSetSteppers(
+            plan = plan,
+            onUpdatePlan = onUpdatePlan
+        )
+
+        // Right: delete icon button
         IconButton(
             onClick = onRemoveSet,
             enabled = canDelete,
-            modifier = Modifier.size(48.dp)
+            modifier = Modifier.size(36.dp)
         ) {
             Icon(
                 Icons.Default.Delete,
@@ -261,8 +255,53 @@ private fun RoutineExerciseSetHeader(
                 } else {
                     MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
                 },
-                modifier = Modifier.size(20.dp)
+                modifier = Modifier.size(18.dp)
             )
+        }
+    }
+}
+
+@Composable
+private fun RoutineCompactStepper(
+    valueText: String,
+    onDecrement: () -> Unit,
+    onIncrement: () -> Unit
+) {
+    Surface(
+        shape = RoundedCornerShape(8.dp),
+        color = MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha = 0.5f)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.height(32.dp)
+        ) {
+            IconButton(
+                onClick = onDecrement,
+                modifier = Modifier.size(32.dp)
+            ) {
+                Icon(
+                    Icons.Default.Remove,
+                    contentDescription = null,
+                    modifier = Modifier.size(16.dp)
+                )
+            }
+            Text(
+                text = valueText,
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.padding(horizontal = 4.dp)
+            )
+            IconButton(
+                onClick = onIncrement,
+                modifier = Modifier.size(32.dp)
+            ) {
+                Icon(
+                    Icons.Default.Add,
+                    contentDescription = null,
+                    modifier = Modifier.size(16.dp)
+                )
+            }
         }
     }
 }
@@ -446,45 +485,4 @@ private fun RoutineExerciseHeaderRow(
     }
 }
 
-@Composable
-private fun RoutineSetStepper(
-    label: String,
-    valueText: String,
-    onDecrement: () -> Unit,
-    onIncrement: () -> Unit
-) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            IconButton(
-                onClick = onDecrement,
-                modifier = Modifier.size(48.dp)
-            ) {
-                Icon(
-                    Icons.Default.Remove,
-                    contentDescription = null,
-                    modifier = Modifier.size(18.dp)
-                )
-            }
-            Text(
-                text = valueText,
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Bold
-            )
-            IconButton(
-                onClick = onIncrement,
-                modifier = Modifier.size(48.dp)
-            ) {
-                Icon(
-                    Icons.Default.Add,
-                    contentDescription = null,
-                    modifier = Modifier.size(18.dp)
-                )
-            }
-        }
-    }
-}
+

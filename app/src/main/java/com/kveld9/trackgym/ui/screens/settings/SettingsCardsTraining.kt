@@ -131,18 +131,13 @@ private fun GetReadyCountdownSection(
         SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
             getReadyOptions.forEachIndexed { index, seconds ->
                 val isSelected = getReadySeconds == seconds
-                val label = if (seconds == 0) {
-                    stringResource(R.string.get_ready_off)
-                } else {
-                    stringResource(R.string.rest_duration_seconds, seconds)
-                }
                 SegmentedButton(
                     selected = isSelected,
                     onClick = { onGetReadyChange(seconds) },
                     shape = SegmentedButtonDefaults.itemShape(index = index, count = getReadyOptions.size),
                     label = {
                         Text(
-                            text = label,
+                            text = stringResource(R.string.rest_duration_seconds, seconds),
                             style = MaterialTheme.typography.labelSmall,
                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
                         )

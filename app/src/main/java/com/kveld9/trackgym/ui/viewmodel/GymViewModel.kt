@@ -836,7 +836,7 @@ class GymViewModel(
     fun addExerciseToRoutine(
         routineId: Long,
         exerciseId: Long,
-        targetSets: Int = 3,
+        targetSets: Int = 1,
         defaultWeightKg: Double = 0.0,
         defaultReps: Int = 10
     ) {

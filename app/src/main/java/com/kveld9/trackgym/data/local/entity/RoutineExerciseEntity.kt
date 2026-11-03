@@ -29,7 +29,7 @@ data class RoutineExerciseEntity(
     val routineId: Long,
     val exerciseId: Long,
     val orderIndex: Int = 0,
-    val targetSets: Int = 3,
+    val targetSets: Int = 1,
     val defaultWeightKg: Double = 0.0,
     val defaultReps: Int = 10,
     val setPlansJson: String? = null

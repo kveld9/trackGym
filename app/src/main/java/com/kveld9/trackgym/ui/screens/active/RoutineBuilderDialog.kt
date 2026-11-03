@@ -134,6 +134,8 @@ private fun RoutineBuilderExercisePicker(
         }
         ExercisePickerContent(
             exercises = allExercises,
+            modifier = Modifier.fillMaxSize(),
+            showHeaderTitle = false,
             onSelectExercise = { exercise ->
                 onSelectExercise(exercise.id)
             }

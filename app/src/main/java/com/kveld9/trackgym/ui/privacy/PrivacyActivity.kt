@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -71,7 +72,6 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.compose.ui.graphics.Color
-import com.kveld9.trackgym.MainActivity
 import com.kveld9.trackgym.R
 import com.kveld9.trackgym.TrackGymApp
 import com.kveld9.trackgym.data.ThemeSettings
@@ -139,7 +139,6 @@ class PrivacyActivity : ComponentActivity() {
                     isHealthConnectEnabled = themeSettings.healthConnectSync,
                     onManageNotifications = { handleManageNotifications() },
                     onConnectHealth = { handleConnectHealth() },
-                    onNavigateBackups = { handleNavigateBackups() },
                     onBackClick = { finish() },
                     areNotificationsEnabled = areNotificationsEnabled,
                     hasHealthConnectPermissions = hasHealthConnectPermissions,
@@ -155,15 +154,6 @@ class PrivacyActivity : ComponentActivity() {
                 )
             }
         }
-    }
-
-    private fun handleNavigateBackups() {
-        val intent = Intent(this, MainActivity::class.java).apply {
-            action = Intent.ACTION_APPLICATION_PREFERENCES
-            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-        }
-        startActivity(intent)
-        finish()
     }
 
     private fun handleConnectHealth() {
@@ -242,7 +232,6 @@ fun PrivacyScreen(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
     onConnectHealth: () -> Unit = {},
-    onNavigateBackups: () -> Unit = {},
     areNotificationsEnabled: Boolean = NotificationManagerCompat.from(LocalContext.current).areNotificationsEnabled(),
     hasHealthConnectPermissions: Boolean = false,
     showRationaleDialog: Boolean = false,
@@ -316,8 +305,7 @@ fun PrivacyScreen(
                 isHealthConnectEnabled = isHealthConnectEnabled,
                 hasHealthConnectPermissions = hasHealthConnectPermissions,
                 onManageNotifications = onManageNotifications,
-                onConnectHealth = onConnectHealth,
-                onNavigateBackups = onNavigateBackups
+                onConnectHealth = onConnectHealth
             )
 
             PrivacySectionHeader(title = stringResource(R.string.privacy_section_statement))
@@ -396,8 +384,7 @@ private fun PermissionStatusCard(
     hasHealthConnectPermissions: Boolean,
     onManageNotifications: () -> Unit,
     modifier: Modifier = Modifier,
-    onConnectHealth: () -> Unit = {},
-    onNavigateBackups: () -> Unit = {}
+    onConnectHealth: () -> Unit = {}
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -414,7 +401,7 @@ private fun PermissionStatusCard(
 
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
 
-            StoragePermissionRow(onNavigateBackups = onNavigateBackups)
+            StoragePermissionRow()
 
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
 
@@ -473,7 +460,9 @@ private fun NotificationPermissionRow(
                 onClick = onManageNotifications,
                 shape = RoundedCornerShape(8.dp),
                 contentPadding = PaddingValues(horizontal = 12.dp, vertical = 0.dp),
-                modifier = Modifier.defaultMinSize(minHeight = 48.dp)
+                modifier = Modifier
+                    .widthIn(min = 96.dp)
+                    .defaultMinSize(minHeight = 48.dp)
             ) {
                 Text(
                     text = stringResource(R.string.permission_action_manage),
@@ -485,9 +474,7 @@ private fun NotificationPermissionRow(
 }
 
 @Composable
-private fun StoragePermissionRow(
-    onNavigateBackups: () -> Unit = {}
-) {
+private fun StoragePermissionRow() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -513,26 +500,10 @@ private fun StoragePermissionRow(
             )
         }
         Spacer(modifier = Modifier.width(8.dp))
-        Column(
-            horizontalAlignment = Alignment.End,
-            verticalArrangement = Arrangement.spacedBy(6.dp)
-        ) {
-            PermissionBadge(
-                text = stringResource(R.string.permission_status_not_required),
-                style = PermissionBadgeStyle.NEUTRAL_OUTLINE
-            )
-            OutlinedButton(
-                onClick = onNavigateBackups,
-                shape = RoundedCornerShape(8.dp),
-                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 0.dp),
-                modifier = Modifier.defaultMinSize(minHeight = 48.dp)
-            ) {
-                Text(
-                    text = stringResource(R.string.permission_action_backups),
-                    fontSize = 12.sp
-                )
-            }
-        }
+        PermissionBadge(
+            text = stringResource(R.string.permission_status_not_required),
+            style = PermissionBadgeStyle.NEUTRAL_OUTLINE
+        )
     }
 }
 
@@ -610,7 +581,9 @@ private fun HealthConnectActionBlock(
                 onClick = onConnectHealth,
                 shape = RoundedCornerShape(8.dp),
                 contentPadding = PaddingValues(horizontal = 12.dp, vertical = 0.dp),
-                modifier = Modifier.defaultMinSize(minHeight = 48.dp)
+                modifier = Modifier
+                    .widthIn(min = 96.dp)
+                    .defaultMinSize(minHeight = 48.dp)
             ) {
                 Text(
                     text = stringResource(R.string.permission_action_connect),

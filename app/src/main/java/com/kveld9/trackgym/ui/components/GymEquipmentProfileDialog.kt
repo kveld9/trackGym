@@ -139,7 +139,7 @@ private fun GymProfilesSheetHeader(onAddClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 4.dp),
+            .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 4.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -231,7 +231,7 @@ private fun GymProfileActions(
         }
 
         if (canDelete) {
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(24.dp))
             IconButton(
                 onClick = onDeleteProfile,
                 modifier = Modifier.size(48.dp)
@@ -239,7 +239,7 @@ private fun GymProfileActions(
                 Icon(
                     imageVector = Icons.Default.Delete,
                     contentDescription = stringResource(R.string.gym_profile_delete),
-                    tint = MaterialTheme.colorScheme.error,
+                    tint = MaterialTheme.colorScheme.error.copy(alpha = 0.8f),
                     modifier = Modifier.size(18.dp)
                 )
             }
